@@ -1,0 +1,7 @@
+POST /dhost/_LOGIN_SERVER_RSP_ HTTP/1.1
+HOST:mierda
+CONNECTION:close
+Cookie: DHAC1=8ba900a3; Path=/
+
+
+usr=a&pwd=b

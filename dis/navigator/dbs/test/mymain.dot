@@ -1,0 +1,65 @@
+digraph G { node [fontname=Courier]; 
+ "080483a4" [shape=box, color = blue, label = ";;; Entry point ;;;\l\l080483a4	push   %ebp\l080483a5	mov    %esp,%ebp\l080483a7	sub    $0x28,%esp\l080483aa	cmpl   $0x1,0x8(%ebp)\l080483ae	jg     080483c8 <mymain+0x24>\l"]
+
+ "08048408" [shape=box, label = "08048408	movl   $0x8048578,(%esp)	; 'I'm an 1'\l0804840f	call   08048308 <puts@plt>\l08048414	jmp    0804845b <mymain+0xb7>\l"]
+
+ "08048436" [shape=box, label = "08048436	movl   $0x0,0xfffffff4(%ebp)\l0804843d	jmp    08048449 <mymain+0xa5>\l"]
+
+ "08048400" [shape=box, label = "08048400	cmpl   $0x0,0xffffffe8(%ebp)\l08048404	je     08048464 <mymain+0xc0>\l"]
+
+ "0804844f" [shape=box, label = "0804844f	movl   $0x8048590,(%esp)	; 'pringao'\l08048456	call   08048308 <puts@plt>\l"]
+
+ "08048416" [shape=box, label = "08048416	cmpl   $0x3,0x8(%ebp)\l0804841a	jne    0804842a <mymain+0x86>\l"]
+
+ "08048406" [shape=box, label = "08048406	jmp    0804844f <mymain+0xab>\l"]
+
+ "080483ee" [shape=box, label = "080483ee	mov    0xfffffff8(%ebp),%eax\l080483f1	mov    %eax,0xffffffe8(%ebp)\l080483f4	cmpl   $0x1,0xffffffe8(%ebp)\l080483f8	je     08048408 <mymain+0x64>\l"]
+
+ "080483fa" [shape=box, label = "080483fa	cmpl   $0x2,0xffffffe8(%ebp)\l080483fe	je     08048416 <mymain+0x72>\l"]
+
+ "080483c8" [shape=box, label = "080483c8	mov    0x8(%ebp),%eax\l080483cb	mov    %eax,0xfffffffc(%ebp)\l080483ce	movl   $0x3,0xfffffff8(%ebp)\l080483d5	cmpl   $0x0,0xfffffffc(%ebp)\l080483d9	jne    080483ee <mymain+0x4a>\l"]
+
+ "08048449" [shape=box, label = "08048449	cmpl   $0x2,0xfffffff4(%ebp)\l0804844d	jle    0804843f <mymain+0x9b>\l"]
+
+ "0804845b" [shape=box, label = "0804845b	movl   $0x0,0xffffffec(%ebp)\l08048462	jmp    08048477 <mymain+0xd3>\l"]
+
+ "0804843f" [shape=box, label = "0804843f	mov    0xfffffff4(%ebp),%eax\l08048442	add    %eax,0x8(%ebp)\l08048445	addl   $0x1,0xfffffff4(%ebp)\l"]
+
+ "0804841c" [shape=box, label = "0804841c	movl   $0x8048581,(%esp)	; 'Bai!'\l08048423	call   08048308 <puts@plt>\l08048428	jmp    08048436 <mymain+0x92>\l"]
+
+ "080483db" [shape=box, label = "080483db	mov    0xc(%ebp),%eax\l080483de	add    $0x4,%eax\l080483e1	mov    (%eax),%eax\l080483e3	mov    %eax,(%esp)\l080483e6	call   080482f8 <atoi@plt>\l080483eb	mov    %eax,0xfffffff8(%ebp)\l"]
+
+ "08048477" [shape=box, label = "08048477	mov    0xffffffec(%ebp),%eax\l0804847a	leave\l0804847b	ret\l"]
+
+ "080483b0" [shape=box, label = "080483b0	movl   $0x8048570,(%esp)	; 'Idiota!'\l080483b7	call   08048308 <puts@plt>\l080483bc	movl   $0xffffffff,0xffffffec(%ebp)\l080483c3	jmp    08048477 <mymain+0xd3>\l"]
+
+ "08048464" [shape=box, label = "08048464	movl   $0x8048598,(%esp)	; 'testing baby'\l0804846b	call   08048308 <puts@plt>\l08048470	movl   $0x1,0xffffffec(%ebp)\l"]
+
+ "0804842a" [shape=box, label = "0804842a	movl   $0x8048586,(%esp)	; 'Ez!!!!!!!'\l08048431	call   08048308 <puts@plt>\l"]
+"080483a4" -> "080483c8" [style = bold, color=green]
+"080483a4" -> "080483b0" [style = bold, color=red]
+"080483b0" -> "08048477" [style = bold, color=green]
+"080483c8" -> "080483ee" [style = bold, color=green]
+"080483c8" -> "080483db" [style = bold, color=red]
+"080483db" -> "080483ee" [style = bold, color=red]
+"080483ee" -> "08048408" [style = bold, color=green]
+"080483ee" -> "080483fa" [style = bold, color=red]
+"080483fa" -> "08048416" [style = bold, color=green]
+"080483fa" -> "08048400" [style = bold, color=red]
+"08048400" -> "08048464" [style = bold, color=green]
+"08048400" -> "08048406" [style = bold, color=red]
+"08048406" -> "0804844f" [style = bold, color=green]
+"08048408" -> "0804845b" [style = bold, color=green]
+"08048416" -> "0804842a" [style = bold, color=green]
+"08048416" -> "0804841c" [style = bold, color=red]
+"0804841c" -> "08048436" [style = bold, color=green]
+"0804842a" -> "08048436" [style = bold, color=red]
+"08048436" -> "08048449" [style = bold, color=green]
+"0804843f" -> "08048449" [style = bold, color=red]
+"08048449" -> "0804843f" [style = bold, color=green]
+"08048449" -> "0804844f" [style = bold, color=red]
+"0804844f" -> "0804844f" [style = bold, color=red]
+"0804844f" -> "0804845b" [style = bold, color=red]
+"0804845b" -> "08048477" [style = bold, color=green]
+"08048464" -> "08048477" [style = bold, color=red]
+}

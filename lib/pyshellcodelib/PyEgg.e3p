@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-3.8.dtd">
+<!-- Project file for project PyEgg -->
+<!-- Saved: 2007-11-19, 21:28:11 -->
+<!-- Copyright (C) 2007 Joxean Koret, joxeankoret@yahoo.es -->
+<Project version="3.8">
+  <ProgLanguage mixed="0">Python</ProgLanguage>
+  <UIType>Console</UIType>
+  <Description>PyEgg is a library to write shellcodes coding in Python.</Description>
+  <Version>0.1</Version>
+  <Author>Joxean Koret</Author>
+  <Email>joxeankoret@yahoo.es</Email>
+  <Sources>
+    <Source>
+      <Name>pyegg.py</Name>
+    </Source>
+    <Source>
+      <Name>syscalls.py</Name>
+    </Source>
+    <Source>
+      <Name>internal.py</Name>
+    </Source>
+  </Sources>
+  <Forms>
+  </Forms>
+  <Translations>
+  </Translations>
+  <Interfaces>
+  </Interfaces>
+  <Others>
+  </Others>
+  <MainScript>
+    <Name>pyegg.py</Name>
+  </MainScript>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.ui" type="FORMS" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+  </FiletypeAssociations>
+</Project>

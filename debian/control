@@ -1,0 +1,19 @@
+Source: inguma
+Section: net
+Priority: extra
+Maintainer: Pierre Chifflier <pollux@debian.org>
+Build-Depends:  debhelper (>= 5.0.37.2),
+                python-dev,
+                quilt (>= 0.40)
+Standards-Version: 3.7.3
+
+Package: inguma
+Architecture: all
+Depends: python ${misc:Depends}
+Recommends: python-scapy | scapy, tcpdump
+Suggests: python-gnuplot, python-qt3
+Description: Open source penetration testing toolkit
+ Inguma is a free penetration testing and vulnerability discovery toolkit
+ entirely written in Python. Framework includes modules to discover
+ hosts, gather information about, fuzz targets, brute force usernames and
+ passwords, exploits, and a disassembler.

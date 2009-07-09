@@ -1,0 +1,13 @@
+digraph G { node [fontname=Courier]; 
+ "0804880f" [shape=box, label = "0804880f	pop    %eax\l08048810	pop    %ebx\l08048811	pop    %ebp\l08048812	ret\l08048813	nop\l	\l"]
+
+ "0804880a" [shape=box, label = "0804880a	cmp    $0xffffffff,%eax\l0804880d	jne    08048803 <exit@plt+0x3f3>\l"]
+
+ "080487f0" [shape=box, color = blue, label = ";;; Entry point ;;;\l\l080487f0	push   %ebp\l080487f1	mov    %esp,%ebp\l080487f3	push   %ebx\l080487f4	sub    $0x4,%esp\l080487f7	mov    $0x8049f08,%ebx\l080487fc	mov    0x8049f08,%eax\l08048801	jmp    0804880a <exit@plt+0x3fa>\l"]
+
+ "08048803" [shape=box, label = "08048803	sub    $0x4,%ebx\l08048806	call   *%eax\l08048808	mov    (%ebx),%eax\l"]
+"080487f0" -> "0804880a" [style = bold, color=green]
+"08048803" -> "0804880a" [style = bold, color=red]
+"0804880a" -> "08048803" [style = bold, color=green]
+"0804880a" -> "0804880f" [style = bold, color=red]
+}

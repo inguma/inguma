@@ -1,0 +1,148 @@
+#!/usr/bin/python
+"""
+Module ping for Inguma
+Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
+
+License is GPL
+"""
+import os
+import time
+from lib.libexploit import CIngumaModule
+
+try:
+    if os.name == "nt":
+        from lib.winscapy import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
+    else:
+        from lib.scapy import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
+    bHasScapy = True
+except:
+    bHasScapy = False
+
+name = "icmping"
+brief_description = "Ping a host"
+type = "discover"
+
+globals = ["packetType", ]
+
+class CHostUp(CIngumaModule):
+
+    ECHO_REPLY = 0
+    DEST_UNREACH = 3
+    SOURCE_QUENCH = 4
+    REDIRECT = 5
+    ECHO_REQUEST = 8
+    ROUTER_ADVERTISEMENT = 9
+    ROUTER_SOLICITATION = 10
+    TIME_EXCEEDED = 11
+    PARAMETER_PROBLEM = 12
+    TIMESTAMP_REQUEST = 13
+    TIMESTAMP_REPLY = 14
+    INFORMATION_REQUEST = 15
+    INFORMATION_RESPONSE = 16
+    ADDRESS_MASK_REQUEST = 17
+    ADDRESS_MASK_REPPLY = 18
+
+    target = ""
+    waitTime = 0
+    up = {}
+    down = {}
+    timeout = 2
+    packetType = ECHO_REQUEST
+    exploitType = 0
+    results = {}
+    iface = get_working_if()
+    wizard = False
+    dict = None
+
+    def help(self):
+        print "target = <target host or network>"
+        print "timeout = <timeout>"
+        print "waitTime = <wait time between packets>"
+        print "packetType = <numeric packet type> (Default to ECHO_REQUEST)"
+        print "iface = <iface>"
+
+    def runAsWizard(self):
+        try:
+            print
+            print "Interface list"
+            print "--------------"
+            print
+            for miface in get_if_list():
+                print miface
+
+            print
+
+            res = raw_input("Interface [" + get_working_if() + "]: ")
+            
+            if res != "":
+                iface = res
+
+            res = raw_input("Timeout [" + str(self.timeout) + "]: ")
+
+            if res != "":
+                self.timeout = int(res)
+
+        except:
+            pass
+
+    def run(self):
+        if not bHasScapy:
+            print "No scapy support :("
+            return False
+        self.results = {}
+        self.up = {}
+        self.down = {}
+
+        mTargets = IP(dst=self.target)
+        
+        if self.wizard:
+            self.runAsWizard()
+
+        for target in mTargets:
+            self.gom.echo( "Sending probe to\t" + str(target.dst) )
+            p = IP(dst=target.dst)/ICMP(type=self.packetType)
+            ans, unans = sr(p, timeout=self.timeout, iface=self.iface, retry=0)
+
+            if ans:
+                if ans[0][0].type == 8:
+                    self.up[len(self.up)+1] = ans[0][0].dst
+                    self.addToDict("alive", ans[0][0].dst)
+                    self.addToDict("hosts", ans[0][0].dst)
+                    #self.addToDict(ans[0][0].dst + "_trace", ans[0][0].dst)
+                else:
+                    self.down[len(self.up)+1] = ans[0][0].dst
+                    self.gom.echo( "Answer of type " + str(icmptypes[ans[0][0].type]) + " from " + str(ans[0][0].dst) )
+
+        self.results = self.up
+        return True
+    
+    def printSummary(self):
+        if len(self.results) == 0:
+            return
+
+        i = 0
+        self.gom.echo( "" )
+        self.gom.echo( "Discovered hosts" )
+        self.gom.echo( "----------------" )
+        self.gom.echo( "" )
+
+        for res in self.results:
+            i += 1
+            self.gom.echo( "Found host " + str(i) + "\t" + str(self.results[res]) )
+
+        print
+
+if __name__ == "__main__":
+    import sys
+    objHostUp = CHostUp()
+    objHostUp.iface = "eth0"
+
+    if len(sys.argv) == 1:
+        objHostUp.target = "192.168.1.1"
+    else:
+        objHostUp.target = sys.argv[1]
+
+    objHostUp.run()
+
+    for host in objHostUp.up:
+        self.gom.echo( "Host " + str(host) +" is up" )

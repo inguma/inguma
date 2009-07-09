@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
+<!-- eric4 tasks file for project Inguma -->
+<!-- Saved: 2009-04-29, 16:25:34 -->
+<Tasks version="4.1">
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: Horrible hack(s)!</Summary>
+    <Description></Description>
+    <Created>2009-02-19, 16:49:24</Created>
+    <Resource>
+      <Filename>
+        <Dir>lib</Dir>
+        <Dir>pyshellcodelib</Dir>
+        <Name>pyshellcodelib.py</Name>
+      </Filename>
+      <Linenumber>47</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>

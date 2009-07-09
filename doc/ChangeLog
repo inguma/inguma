@@ -1,0 +1,337 @@
+Long development on road to 1.0...
+----------------------------------
+
+AT 30 04 2009
+    * Fixed on targetDialog combobox feed with hosts after loadKB
+
+AT 29 04 2009
+    * Modified om's echo function in order to use ModuleDialog
+    * Created ModuleDialog on om.py for module output
+    * Added option "Open with broswer" for open ports
+    * Improved targetDialog
+    * Reorganized discover and gather menu
+    * Solved problem with click on popup menu
+
+AT 27 04 2009
+    * Minor esthetic changes on main notebook
+    * Created new bruteDialog for bruteforce modules
+
+AT 25 04 2009
+    * Moved scapy and winscapy to lib dir
+
+AT 18-19 04 2009
+    * Added bruteforce modules on per port/service basis
+    * Added services on newcmenu
+
+AT 18-19 04 2009
+    * Added host information on popup menu
+    * Added port field to targetDialog (for tcp/udp ping and trace)
+    * Complete rewrite of cmenu, ported to UIManager popup
+
+AT 15 04 2009
+    * Added UDP Port scaner
+    * Added TCP/UDP Ping modules to discover
+
+AT 13-14 04 2009
+    * Changed dotgen to manage logal network cluster
+    * Improved ASN management and clustering
+    * Improved kbtree data parsing and representation
+
+AT 11 04 2009
+    * Added ComboBoxes for functionality selection on RCE tab
+    * RCE Tab now uses paned instead of HBox
+    * Changed RCE Tab layout, xdot and dasm side by side
+    * Improved initial dot generation
+    * Modified many dot graph attributes
+    * Added support for ASN clustering on graphs...
+
+AT 10 04 2009
+    * Completed New binary/Load binary funcions
+    * Added function graph creation to rcecore
+    * Added ScrollBar to KB TreeView
+    * lots of bug fixes in dotgen, core, inxdot, ...
+    * Added TreeView to show KB
+    * Removed old TextView to show KB
+    * Added line 120 at core.py
+
+AT 06 04 2009
+    * Created new gatherDialog that generates dialog depending on the module
+
+AT 05 04 2009
+    * Generated first dasm and updated rcetv to show it
+    * Changed uploadBin at rcecore to use pickle instead of sqlite
+
+AT 02 04 2009
+    * Some cosmetic changes on xdot
+    * Added initial support for creating RCE sqlite DDBB (rcecore.py)
+    * Added new HBox to contain both toolbars (Map and Rce)
+    * Added new toolbar for RCE interface
+
+AT 01 04 2009
+    * Added more fields to gatherDialog
+    * Fixed loadKB bug when fidding host list on gatherDialog
+    * Added all modules from gather that doesn't need special paramenters
+
+AT 31 03 2009
+    * Added portscan (syn scan) to ginguma
+    * Added tcpscan (connect scan) to ginguma
+    * Added code to inxdot to retrieve URL of nodes
+    * Modified dotgen to insert URL to nodes
+    * Added gatherDialog to handle gather modules input
+    * Added tooltips on module's menu at cmenu.py
+    * Added code to update dot map on loadKB at main.py
+
+AT 30 03 2009
+    * Added getLocalNetwork to core and used in getTargetPath
+    * Removed function getEmptyDot, replaced by modified getDot
+    * Modified isnated to warn users to perforn port scan
+    * Modified netcraft output
+    * Modified promisc to update KBWin
+    * Repaired dotcode generation code
+    * Redesigned targetDialog and added a combobox with host list
+    * Modified dotgen and getTargetPath (core) to handle better graphs
+    * Removed buttons for add/remove traget from graphmenu
+    * Moved addtarget.py to trash
+    * Added function getLocalGW at core so startup graph shows local IP -> GW
+    * Added version "1.2.0.2" of scapy (last vefore v2)
+    * modified getTargetPath at core to solve more graphing problems.
+    * Modified insertData at targetDialog. Solved graphing problems.
+
+AT 29 03 2009
+    * Complete review of add target + run module process
+
+AT 27 03 2009
+    * Now OutpuManager also handles KB Window, Log window and Graph updates
+    * Modified dotgen and addtarget to create properly graphs
+
+AT 26 03 2009
+    * Added error message on non valid IP/Net entered
+    * Added IPy library and used on new target dialog
+    * Added dialog for entering targets
+    * Added Buttons for graph management
+    * Removed ProgressBar
+
+AT 25 03 2009
+    * Modified code for gtkrc parsing on realice that rc_parse doesn't throw
+	exceptions
+    * Found a module for working with IP Addresses (under tools dir)
+    * Changed module trace to keep list of hosts (gensantadelamorhermoso)
+    * Added code get data to send for create dot
+    * Created dotgen.py to create dot code for map
+    * Added HPaned for xdot map and kb window on map tab
+    * Moved Progress Bar to bottom on top of status bar
+    * Added VPaned for notebook and log window
+
+AT 24 03 2009
+    * Fixed right click ONLY on nodes
+    * Partially added whois module to ginguma
+    * Repaired and added asn to gingum
+    * Added hostname module to ginguma
+    * Added getmac module to ginguma
+    * Added isnated module to ginguma (deep review pending)
+    * Added db2discover module to ginguma
+    * Added externip module to ginguma
+    * Added ping module to ginguma
+    * Added trace module to ginguma
+    * Added basic bluetooth support for ginguma
+    * Repaired and added netcraft to gingum
+    * Added ispromisc module to ginguma
+    * Show/hide kb window now updates kbwin contents
+    * Added ipaddr module to ginguma
+
+UP TO 23 03 2009
+    * Fixed module execution at core
+    * Added function to have the log window always on bottom
+    * Added buttons for show/hide Log and KB panels
+    * Added Output Manager for console and GUI output
+    * Added scrollbars to log window
+    * Solved WBwin refresh on uiRunModule
+    * Solved KBwin refresh on propdiag
+    * Added initial support to gtkrc themes
+    * Separated progressbar and context menu to own modules
+    * Added thread support on running modules
+
+    * Moved inguma load commands from constructor on core to import inguma on
+    top
+    * Moved partially code to create context menu to core.py
+    * Removed inguma stuff from inxdot.py
+    * Simplified the logic for creating the menu; now using more UIcore
+    * Added SaveKB functionality using core.py
+    * Added KB contents to textview on KBload
+    * Changed Log window to add contents
+
+----------------------------------
+
+CURRENT_RELEASE Joxean Koret - Version 0.1.0
+    * Added library libinformix. Supports connection establishment and command
+      execution. Pure python code.
+    * Added a brute force module for Informix databases (bruteifx).
+    * Fixed bugs in the Sybase's brute force module.
+    * Added an Informix SQLEXEC protocol fuzzer.
+    * Added liboracleinternals.py. Currently it just work for creating
+      oracle password files (from version 8 to 11).
+    * Added module db2discover to discover IBM DB2 database servers.
+    * Added an information gather module for Informix database servers.
+    * Very (basic) initial support for RDP protocol format.
+    * Added support for fuzzing based on PCAP packets.
+    * Added a POC for the Sun Java Web Proxy Server heap overflow (fixed).
+    * Distributed Nikto database updated.
+    * Added basic support for Bluetooth and Wifi (Hugo).
+    * Added a frontend for Nmap (Hugo).
+    * Added libhexdump (Hugo).
+    * Added modules tcpproxy, hexdump and simple web server (Hugo).
+    * Changed format of OpenDis databases to SQLite format (use
+      -sdb=file.sqlite).
+    * Added OpenDis Binary Navigator.
+
+(...a lot of silence...)
+
+2008-0811 Joxean Koret - Version 0.0.8
+    * Fixed bugs in the SMTP, POP3 and IMAP brute forcers. 
+    * Module "isnated" enhanced (Thanks you Sp0oKeR!).
+    * Added module "dnsspoof".
+    * Added module "fakearp", a fake ARP server.
+    * Added various changes to make Inguma Debian friendly.
+    * Added module "dtspc" to gather information from dtspcd.
+    * Many changes and enhancements to PyShellCodeLib.
+    * Added libdisassemble from Immunity Sec to the toolkit.
+    * Added a JavaScript object's fuzzer. Connect with your browser to the
+      spawned web server and follow the instructions that appears.
+    * Help command now shows output summarized by category (discover, gather,
+      etc...).
+    * Upgraded Scapy to version 1.2.0.2 to avoid problems with IKE.
+    * Added module "ikescan", a tool like the well know ike-scan.
+    * Added module "unicornscan", a wrapper for the popular tool. Thanks you
+      Hugo!.
+
+2008-03-12 Joxean Koret - Version 0.0.7
+
+    * Fixed bugs in allmost all modules.
+    * Added support for command line history and autocompletion (whenever
+      readline is available).
+    * Fixed various oracle module's documentation.
+    * Added the first version of "anticrypt", a tool to detect the encryption
+      algorithm used for a password hash. It saves a lot of time when auditing
+      a (weak) encryption algorithm.
+    * Added a Nikto plugin (Thanks you Sullo!).
+    * Added module "archanix". Usefull to check old Unix boxes.
+    * Many changes to PyShellcodelib (Thanks erg0t!).
+    * Added a brute forcer for SMTP servers.
+    * First release of the documentation by Andrew Brooks. Check the wiki
+      available at http://inguma.wiki.sourceforge.net/ (Many thanks Andrew!).
+    * Added 4 new Oracle exploit modules for CPUJAN2008.
+    * Added a skr1pT k1|>i3 like module for the Oracle PL/SQL gateway flaw.
+      Give a target & port and use "oragateway". The module will automagically
+      guess the correct DAD and bypass technique. After it an SQL terminal
+      will be opened.
+
+2007-11-26 Joxean Koret - Version 0.0.6
+
+    * Enhanced the module "sidguess". It now extracts the SID from Enterprise
+      Manager banner. Thanks to Alexander Kornbrust!
+    * Added more services to the identify module.
+    * Added a brute force module for HTTP servers.
+    * Renamed the directory "aux" to "auxi" to avoid problems in Win32.
+    * Added a tool to known your external ip address. Util to check how
+      anonymous an anonymous proxy server is ;) For more information navigate
+      to http://inguma.wiki.sourceforge.net/externip.
+    * Added various Oracle 8i, 9i and 10g SQL injection modules. A total of 5
+      new modules.
+    * Oracle payloads changed to use, when possible, the cursor injection
+      technique.
+    * Fixed bugs in whois module.
+    * Added module nmbstat to gather NetBIOS information.
+    * Enhanced the module firetest to make ICMP probes as well as TCP/IP
+      probes. The probes are executed with an small MTU and with a common
+      MTU (by default 16000).
+    * Initial version of the Website (http://inguma.sourceforge.net).
+    * Initial version of the Wiki (http://inguma.wiki.sourceforge.net).
+    * Added a protocol scanner. Check what IP protocols enabled has a target.
+      Take a look to the module "protoscan".
+    * Initial version of PyShellCodeLib. A GPL'ed library similar to the well
+      known InlineEgg.
+    * Module SIDVault uses now PyShellCodeLib instead of InlineEgg.
+    * Addedd module getmac to get the MAC address and the vendor name from a
+      given IP address.
+    * Added a module to poison ARP target's cache.
+    * Fixed security paranoia bugs.
+    * Added examples of the OpenDis framework. A tool called asmdiff.py has
+      been added to do binary diffs as a well as other example that prints an
+      OpenDis format database. See $INGUMA_DIR/dis/README for details.
+
+2007-10-20 Joxean Koret - Version 0.0.5
+
+    * Fixed too many bugs in the text and QT versions.
+    * Fixed too many bugs in the modules section.
+    * Added support to identify LDAP, RDP enabled servers and also some very
+      old Unix services.
+    * Added module "firetest" to test firewall configurations.
+    * Added module "brutessh" to brute force SSH servers.
+    * Removed many (stupids) sys.path.append (Thanks PH!).
+    * Added module "bruteora" to brute force Oracle servers. It will check for
+      every (commonly) possible user or for an specified user.
+    * Removed scapereal from distribution. You can use it, of course, but you
+      need to download it yourself.
+    * Added a tool to crack MD5 hashes using freely available rainbow tables.
+    * Added module "sidguess" to guess the SID of an Oracle Database instance.
+    * Added module's option "help". Type "info <command>" to get the
+      correspondient help.
+    * _*Initial*_ shellcode support. See the SIDVault remote root exploit and
+      $INGUMA_DIR/lib/libexploit.py for details. x86 support with InlineEgg.
+      Thanks you Gera!
+    * Added one exploit for the vulnerability in SYS.LT.FINDRICSET (CPU Oct. 2007).
+    * Added a password cracker for Oracle11g.
+    * Added a password cracker for MS SQL Server 7 and 2000.
+    * Enhanced the Oracle PL/SQL fuzzer.
+
+2007-10-03 Joxean Koret - Version 0.0.4
+
+    * Added one module to check for the most common Oracle Appplications Server vulnerable
+      urls.
+    * Added "smbgold" module, to search in SMB/CIFS shares for interesting
+      files (*.mdb, passwords.txt, ...).
+    * Added "scapereal" to distribution. Run "sniffer", sniff a packet list and type "ethereal". You
+      will see an ethereal like GTK Window showing all the sniffed packets in a graphical fashion.
+    * First version of the GUI using pyqt.
+    * Added a module to gather information from an Oracle TimesTen server.
+
+2007-09-06 Joxean Koret - Version 0.0.3
+
+    * Added a, non integrated, disassembler (you will need objdump). See
+      dis/README for details.
+    * Added a, non integrated, general purpose token based fuzzer. See
+      krash/README for details.
+    * Enhaced the Oracle PL/SQL fuzzer.
+    * Added a TNS fuzzer. Use the tnscmd's option "fuzz".
+    * Minor changes to the TNS Listener tool "tnscmd".
+    * Support to "autoscan" a complete network (i.e., 192.168.1.0/24).
+    * Now, it can "automagically" brute force username and passwords.
+    * Added "libfuzz", a library to make easier the task of writing new fuzzers.
+    * The module "identify" now can identify rmi, ocfs2, web servers, ftp servers, ssh servers,
+      TNS listeners, CIFS/SMB compatible servers, LPD servers, Jet Direct printers, SMTP servers
+      and MySQL servers. Sufficient for now (at least for me ;]).
+    * Better support for Win32.
+    * Basic plain text report support.
+    * Better support for kb (knowledge base) files.
+    * Better support for brute force modules.
+    * Added the "interactive" option to launch in interactive or batch mode.
+    * Autoscan can ignore specified hosts.
+    * Autoscan is "SMB/CIFS" aware and can automagically brute force username and passwords.
+    * Module "portscan" have been enhanced.
+    * Rpcdump and samrdump can use username and passwords (brute forced or guessed).
+    * Module "tcpscan" have been enhanced.
+    * Minor fixes for various discover modules.
+    * Added "libslp", a library (dissector?) for the Service Location Protocol.
+    * The FTP fuzzer have been integrated.
+
+2007-04-06 Joxean Koret - Version 0.0.2
+    * Added knowledge base support (DANGEROUS!).
+    * Added "whois" and "netcraft" discover modules.
+    * Added brute force modules for FTP, IMAP, POP3 and SMB.
+    * Added support for "autobrute".
+    * Support to generate reports of the command "autoscan".
+    * Many fixes mainly focused in Win32 support.
+
+2007-02-16 Joxean Koret - Version 0.0.1
+    * First public version. PRE-ALPHA
+

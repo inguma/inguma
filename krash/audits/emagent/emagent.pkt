@@ -1,0 +1,9 @@
+status /emd/main?X-ORCL-EMOV=4%2e0%2e0&X-ORCL-EMCV=10%2e1%2e0%2e4%2e1&X-ORCL-EMSV=10%2e1%2e0%2e4%2e1 HTTP/1.1
+Connection: Keep-Alive
+Host: mandriva.localdomain.com
+Expect: 100-continue
+X-ORCL-EMUR: http://mandriva.localdomain.com:1831/emd/main
+HOST:TEST
+CONNECTION:CLOSE
+
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-3.8.dtd">
+<!-- Tasks file for project PyEgg -->
+<!-- Saved: 2007-11-22, 19:28:26 -->
+<Tasks version="3.8">
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: Return a random NOP</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>42</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: If someone wants to do setuid(500) you will found 500 \x40 + 500 \x43 characters!</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>169</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: Fixme now!!!!!!!!!!!!!!!!!</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>382</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: Fixme now!!!!!!!!!!!!!!!!!</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>383</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: Fixme now!!!!!!!!!!!!!!!!!</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>402</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="0" bugfix="1">
+    <Description>FIXME: Fixme now!!!!!!!!!!!!!!!!!</Description>
+    <Created>2007-11-20, 22:16:21</Created>
+    <Resource>
+      <Filename>
+        <Name>internal.py</Name>
+      </Filename>
+      <Linenumber>403</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>

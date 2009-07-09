@@ -1,0 +1,5 @@
+GET /admin.cgi?cmd=preform_login&tcode=&user=a&password=b HTTP/1.1
+HOST:localhost
+CONNECTION:close
+
+

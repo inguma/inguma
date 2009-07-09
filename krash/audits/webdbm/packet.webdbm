@@ -1,0 +1,17 @@
+POST /webdbm HTTP/1.1
+User-Agent: a
+Referer: b
+Pragma: no-cache
+Cache-control: no-cache
+Accept: text/html, image/jpeg, image/png, text/*, image/*, */*
+Accept-Encoding: x-gzip, x-deflate, gzip, deflate
+Accept-Charset: utf-8, utf-8;q=0.5, *;q=0.5
+Accept-Language: es, en
+Host: localhost:9999
+Cookie: SID=C32A16E9FFBE66A1EDED65068FCE1763
+Content-Type: application/x-www-form-urlencoded
+Connection: Keep-Alive
+Content-Length: 66
+
+
+Event=DBM_LOGON&Action=LOGON&Server=localhost&Database=maxdb1&User=c&Password=d

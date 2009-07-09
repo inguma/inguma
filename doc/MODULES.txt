@@ -1,0 +1,385 @@
+Inguma Version 0.0.6
+--------------------
+
+The following is the list of currently supported modules and a brief description of these.
+
+Module protoscan, An IP protocol scanner
+------------------------------------------------------------------------------------------
+
+An IP protocol scanner. Workstations and desktops will only have support for ICMP, IGMP, 
+TCP and UDP while other servers (specially routers) will have several other protocols
+enabled. You can enumerate all supported IP protocols by using this tool.
+
+Module nmbstat, A NetBIOS tool
+------------------------------------------------------------------------------------------
+
+Gather NetBIOS information from the target. In example, you can known if the target is the
+master browser of a domain, what is the domain, if is a Windows or Unix based server and
+many other thinks.
+
+Module rpcdump, DCE/RPC endpoint mapper dumper
+------------------------------------------------------------------------------------------
+
+A simple DCE/RPC endpoints dumper. It has support to dump in anonymous and authenticated
+mode.
+
+Requires: Impacket
+
+Module mssqlcrack, Crack a MS SQL Server 7 or 2000 password
+------------------------------------------------------------------------------------------
+
+A Python implementation of the MS SQL Server 7 & 2000 password. It can hash any valid
+MS SQL Server 7&2000 passwords.
+
+Module bruteimap,  A simple IMAP brute force tool
+------------------------------------------------------------------------------------------
+
+A brute forcer for IMAP Servers. It simply works; uses only Python Core libraries.
+
+Module ping,    Ping a host
+------------------------------------------------------------------------------------------
+
+Ping a host. By default the tool sends an ICMP_ECHO_REQUEST packet but you can use any 
+kind of ICMP packets. To change the type of packet use the property "packetType" and set 
+to any of the following values:
+
+    ECHO_REPLY = 0
+    DEST_UNREACH = 3
+    SOURCE_QUENCH = 4
+    REDIRECT = 5
+    ECHO_REQUEST = 8
+    ROUTER_ADVERTISEMENT = 9
+    ROUTER_SOLICITATION = 10
+    TIME_EXCEEDED = 11
+    PARAMETER_PROBLEM = 12
+    TIMESTAMP_REQUEST = 13
+    TIMESTAMP_REPLY = 14
+    INFORMATION_REQUEST = 15
+    INFORMATION_RESPONSE = 16
+    ADDRESS_MASK_REQUEST = 17
+    ADDRESS_MASK_REPPLY = 18
+
+
+Module orainject4, Oracle 10g R2 SYS.DBMS_CDC_SUBSCRIBE SQL Injection
+------------------------------------------------------------------------------------------
+
+Self-explanatory.
+
+Requires: cx_Oracle
+
+Module orainject3, Oracle 10g R2 SYS.DBMS_CDC_IMPDP SQL Injection
+------------------------------------------------------------------------------------------
+
+Self-explanatory.
+
+Requires: cx_Oracle
+
+Module netcraft,   Query netcraft database
+------------------------------------------------------------------------------------------
+
+Simple tool that connects to netcraft and gathers information about the target.
+
+Module orainject1, Oracle 10g R2 SYS.KUPV$FT.ATTACH_JOB SQL Injection
+------------------------------------------------------------------------------------------
+
+Self-explanatory.
+
+Requires: cx_Oracle
+
+Module apps11i, Get information from Oracle E-Business Suite 11i
+------------------------------------------------------------------------------------------
+
+The modules gathers many information in a preauthentication fashion from Oracle Financials
+version 11i. It doesn't work (without specifying the DAD) in R12.
+
+
+Module ftpfuzz, A simple FTP fuzzer
+------------------------------------------------------------------------------------------
+
+A simple FTP fuzzer. The commands that will be fuzzed are specified in the following file:
+
+	$INGUMA_DIR/lib/libftp
+
+Take a look to the FTP_COMMANDS list. If you are interested in adding your own extensions 
+you need to add to the list the extension/command you are interested on.
+
+Module identify,   Identify services using discovered ports
+------------------------------------------------------------------------------------------
+
+Identify services in standard and non standard ports. It's able to detect many servers but
+is not nmap...
+
+Module firetest,   A firewall testing tool
+------------------------------------------------------------------------------------------
+
+It makes various security checks against a firewall: S+F scans, ACK scans, XMAS scans and
+scans changing the source port, etc...
+
+Module rainbow, Get the password for a hash using public rainbow tables
+------------------------------------------------------------------------------------------
+
+The module connects to one public website and executes a web query using the hash you 
+specify.
+
+NOTE: Subject to change and also to be removed.
+
+Module brutesyb,   Brute force tool for Sybase & MS SQL Servers
+------------------------------------------------------------------------------------------
+
+A brute force for Sybase & MS SQL Server servers. It was tested against Sybase version ? &
+MS SQL Server 2005. It only requires Python Core libraries.
+
+Module sidguess,   A simple Oracle SID guessing tool
+------------------------------------------------------------------------------------------
+
+Guess the Oracle database's SID by brute forcing the TNS Listener. The module tries at 
+first to get the SID from the Oracle Enterprise Manager & Grid Control tools (which leaks
+that information in versions prior to CPU Oct 2007). 
+
+Thanks to Alexander Kornbrust!
+
+Module oracrack11g, Crack an Oracle 11g password
+------------------------------------------------------------------------------------------
+
+A pure python brute forcer for Oracle 11g passwords. It tries to crack the password by 
+using the Inguma's supplied dictionary and encripting all the passwords.
+
+Module whois,   Query whois database
+------------------------------------------------------------------------------------------
+
+Query the whois database to gather information about the host.
+
+Module hostname,   Get the host's name
+------------------------------------------------------------------------------------------
+
+Not too much to say: gethostbyaddr()
+
+Module ipaddr,  Get the host's ip address
+------------------------------------------------------------------------------------------
+
+Less to say: gethostbyname()
+
+Module oratool, Oracle wrapper for all related stuff
+------------------------------------------------------------------------------------------
+
+A simple SQL terminal for Oracle databases.
+
+Requires: cx_Oracle
+
+Module smbgold, Search for 'gold' in shared SMB directories
+------------------------------------------------------------------------------------------
+
+The module tries to connect to the CIFS enabled server and walks over any shared resource
+and subfolders trying to find "interesting" documents.
+
+Requires: Impacket
+
+Module nmapfp,  Os detect with Nmap fingerprinting
+------------------------------------------------------------------------------------------
+
+Characteristic imported from Scapy. It fails almost always.
+
+NOTE: Subject to change and also to be removed.
+
+Module ispromisc,  Check if the target is in promiscous mode
+------------------------------------------------------------------------------------------
+
+Check if the target is promisc using the Scapy's builtin.
+
+Module autofuzz,   Automatically fuzz the target
+------------------------------------------------------------------------------------------
+
+It doesn't work at the moment :/
+
+Module osifuzz, Fuzzing interface for IP, ICMP and ARP protocols (Random)
+------------------------------------------------------------------------------------------
+
+A fuzzer for IP, ICMP and ARP protocols. "Like shooting bats in the dark", is a random 
+fuzzer but you my found a bug from time to time specially in embeded devices...
+
+Module sidvault,   SIDVault LDAP Server remote buffer overflow
+------------------------------------------------------------------------------------------
+
+A remote exploit for a buffer overflow in SIDVault LDAP Server. It doesn't need anymore
+InlineEgg to work. Instead, a new library (PyEgg) is being written (as of Inguma 0.0.6).
+
+Module p0f,     Inguma's p0f interface -os detection-
+------------------------------------------------------------------------------------------
+
+Passive OS detection. It only checks incoming connections (SYN packets).
+
+Module trace,   Trace a route to a host(s)
+------------------------------------------------------------------------------------------
+
+Trace the route to one host. It also adds all the hops as targets. Be carefull!
+
+Module smbclient,  A simple SMB Client
+------------------------------------------------------------------------------------------
+
+A simple SMB/CIFS client.
+
+Requires: Impacket
+
+Module arping,  Send an arp who has message to discover hosts
+------------------------------------------------------------------------------------------
+
+An arping utility. It support masks, ranges, etc...
+
+Module bruteora,   A simple Oracle brute force tool
+------------------------------------------------------------------------------------------
+
+A brute force for Oracle Database Servers. It may guess users and passwords.
+
+Requires: cx_Oracle
+
+Module brutesmb,   A simple SMB brute force tool
+------------------------------------------------------------------------------------------
+
+A brute force for SMB/CIFS enabled servers.
+
+Requires: Impacket
+
+Module orainject2, Oracle 10g R2 SYS.LT.FINDRICSET SQL Injection
+------------------------------------------------------------------------------------------
+
+Self-explanatory
+
+Requires: cx_Oracle
+
+Module nids,    A simple network based Intrusion Detection System (IDS)
+------------------------------------------------------------------------------------------
+
+A tool to check IDS signatures based on regexps. It may parse Snort rules.
+
+NOTE: Subject to change and to be removed.
+
+Module brutehttp,  A simple HTTP brute force tool
+------------------------------------------------------------------------------------------
+
+A brute forcer for HTTP servers.
+
+Module wksdos,  MS Windows NetrWkstaUserEnum Mem. Allocation DoS
+------------------------------------------------------------------------------------------
+
+Self-explanatory
+
+NOTE: Subject to be removed.
+
+Module isnated, Check if the target's port is NATed
+------------------------------------------------------------------------------------------
+
+Check if the host is NATed by enumerating the number of hops to connect to, at least, 
+
+Module brutessh,   A simple SSH brute force tool
+------------------------------------------------------------------------------------------
+
+A brute force for SSH servers.
+
+Requires: Paramiko
+
+Module tnscmd,  Interact with an Oracle TNS Listener
+------------------------------------------------------------------------------------------
+
+A TNS Listener interaction tool. It supports event NV strings fuzzing. Pure python.
+
+Module tcpscan, Simple TCP port scanner
+------------------------------------------------------------------------------------------
+
+A simple TCP scanner.
+
+Module ftpdwdos,   Hummingbird FTPD 6.1.0.0 preauth remote DOS
+------------------------------------------------------------------------------------------
+
+Self-explanatory
+
+NOTE: Subject to be removed
+
+Module snmpwalk,   Snmp walk module for Inguma
+------------------------------------------------------------------------------------------
+
+A tool to walk over SNMP trees.
+
+NOTE: Subject to be changed.
+
+Module spoolssdos, MS Windows spoolss GetPrinterData Mem. Allocation DoS
+------------------------------------------------------------------------------------------
+
+Self-explanatory
+
+NOTE: Subject to be removed
+
+Module samrdump,   Dump the SAM database
+------------------------------------------------------------------------------------------
+
+A tool to dump the SAM database from SMB/CIFS enabled servers. It supports anonymous and
+authenticated modes.
+
+Requires: Impacket
+
+Module oascheck,   Check an Oracle App. Server for the most common vulnerable URLs.
+------------------------------------------------------------------------------------------
+
+A tool to check for the most common vulnerable Oracle Applications Server urls.
+
+Module portscan,   A port scanner for SYN, ACK, XMAS and SYN+ACK scans
+------------------------------------------------------------------------------------------
+
+A portscanner that supports SYN scan, S+A, S+F, and any kind of format. Requires Scapy.
+
+Module winspdetect, Detect service pack using remote registry (LAME)
+------------------------------------------------------------------------------------------
+
+A tool that connects to the remote Windows registry and reads the Operative System and 
+Service Pack keys. It requires a server which supports the "feature" anonymously. If you
+found that the module (which only works in Win32) works you're the admin in the remote
+machine ;)
+
+Requires: Impacket and Win32
+
+Module bruteftp,   A simple FTP brute force tool
+------------------------------------------------------------------------------------------
+
+A simple brute forcer for FTP servers.
+
+Module xmlrpc,  Interact with an XMLRPC server
+------------------------------------------------------------------------------------------
+
+A module to interact with XMLRPC servers. Not too much to say.
+
+NOTE: Subject to change.
+
+Module oratt70info, Gather information from Oracle Times Ten 70
+------------------------------------------------------------------------------------------
+
+Gather information from one Oracle TimesTen Cache Connect server.
+
+Module rainbowmd5, Get the password for a MD5 hash using public rainbow tables
+------------------------------------------------------------------------------------------
+
+The module connects to one public website and executes a web query using the hash you 
+specify.
+
+NOTE: Subject to change and also to be removed.
+
+
+Module sniffer, A simple sniffer
+------------------------------------------------------------------------------------------
+
+A simple but beauty text based sniffer. It also "supports" and ethereal like viewer called
+scapereal, that you need to download yourself.
+
+Optionally requires: Scapereal
+
+Module brutepop,   A simple POP3 brute force tool
+------------------------------------------------------------------------------------------
+
+A brute force module for POP servers.
+
+
+FINAL NOTE
+----------
+
+The list of modules doesn't include those that aren't integrated (such as the Oracle PL/SQL
+fuzzer, Sybase fuzzer, etc...).
+
+Copyright (c) 2007 Joxean Koret

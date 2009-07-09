@@ -1,0 +1,329 @@
+<html>
+<head>
+  <title>Inguma - Javascript Object Fuzzer</title>
+
+<script>
+
+/** Javascript Objects Fuzzer, Part of the Inguma Project */
+var level = 0;
+//var obj;
+var nData, sData;
+var mDiv, mElement, mResult;
+var maxDepth;
+var objFuzz;
+
+var fuzzProps, fuzzFuncs;
+var ignoreSameObject;
+
+var stopNow = false;
+
+function writeStatus(mstatus, mdata)
+{
+	window.status = mstatus;
+	mDiv.innerHTML = mstatus + "<br>" + mdata;
+}
+
+function fuzzObject(mobj, adata, restore)
+{
+
+  var old;
+  var obj = mobj;
+
+  level++;
+
+  if (level > maxDepth)
+  {
+  	level--;
+  	return;
+  }
+ 
+  for (n in mobj)
+  {
+  	if (stopNow)
+		return;
+
+	data = n.toString();
+	mElement.innerHTML = "<b>Fuzzing " + data + "</b>";
+
+	if (ignoreSameObject)
+	{
+		if (eval("obj." + n.toString()) == obj)
+			continue;
+	}
+
+	try {
+	if (eval("obj." + data).toString().indexOf("function") > -1)
+	{
+		if ((data == "prompt") || (data == "alert") || (data == "print") || (data == "confirm") ||
+			(data.toLowerCase() == "comparedocumentposition") || (n.toLowerCase() == "SVGZoomAndPan".toLowerCase()))
+			continue;
+
+		fuzzFunc(obj, n);
+		continue;
+	}
+	}catch(e){}
+/*
+	if (data == "href")
+		continue;
+*/
+	try
+	{
+		if (eval("mobj." + n).toString().indexOf("object") > -1)
+		{
+			fuzzObject(eval("mobj." + n), restore);
+			continue;
+		}
+	}
+	catch(e) {}
+
+	if (!fuzzProps)
+		continue;
+
+	for (var i = 0; i<=sData.length; ++i)
+	{
+		if (stopNow)
+			return;
+
+		try {
+			x = sData[i];
+			window.status = 'Fuzzing property ' + obj.toString() + "." + data + ' = (char[' + x.length + ']) - Level ' + level;
+			window.title  = 'Fuzzing property ' + obj.toString() + "." + data + ' = (char[' + x.length + ']) - Level ' + level;
+			mDiv.innerHTML = window.status;
+			mDiv.innerHTML += "<br>" + x;
+	
+			try {
+				eval("old = obj." + n + ";");
+				mResult.innerHTML = "Old: " + old;
+				eval("obj." + n + " = x;");
+				mResult.innerHTML = "New: " + x;
+				
+				if (restore == 1)
+					eval("obj." + n + " = old;");
+			}
+			catch(e) {}
+		}
+		catch(e) {}
+	}
+  }
+
+  level--;
+
+}
+
+function fuzzFunc(mobj, n)
+{
+	var old;
+	var obj = mobj;
+
+	if (!fuzzFuncs)
+		return;
+
+	if ((n == "prompt") || (n == "alert") || (n == "print") || (n == "confirm") ||
+		(n.toLowerCase() == "comparedocumentposition") || (n.toLowerCase() == "SVGZoomAndPan".toLowerCase()) )
+		return;
+
+	for (var i =0; i<=sData.length;++i)
+	{
+		if (stopNow)
+			return;
+
+		x = sData[i];
+
+		try {
+			window.status = "Fuzzing function " + obj.toString() + "." + n + "(char[" + x.length + "]); with " + x.substr(0,6) + "..." +
+							" - Level " + level;
+			window.title = window.status;
+			mDiv.innerHTML = window.status;
+			mDiv.innerHTML += "<br>" + x;
+			mResult.innerHTML = eval("obj." + n + "(" + x + ");");
+		}
+		catch(e) {}
+	}
+}
+
+function getLongData(inData, inLength)
+{
+	x = inData;
+
+	for (i=0;i<=inLength;++i) 
+		x += x;//"ABCD";
+
+	return(x);
+}
+
+function stopFuzzing()
+{
+	stopNow = true;
+}
+
+function test()
+{
+var old;
+var win;
+
+	magic = "JOXEAN";
+
+	sData = new Array(
+		0x100000000,
+		 0x80000000,
+		 0x40000000,
+		 0x20000000,
+		 0x10000000,
+		 0x01000000,
+		 0x00100000,
+		 0x00010000,
+		 0x00001000,
+		 0x00000100,
+		 0x00000010,
+		 0x00000001
+	);
+
+	for (var i in sData) {
+		var d = sData[i];
+
+		sData.push(d);
+		sData.push(d+1);
+		sData.push(d+2);	
+		sData.push(d-1);	
+		sData.push(d-2);	
+		sData.push(d * -1);
+		sData.push(d * -2);
+	}
+
+	sData.push("A");
+	var longString = getLongData("AAAA", 16);
+	sData.push(longString);
+
+	for (var i = 0; i < 8192; i++) {
+		if ( (i % 64 == 0) || ((i-1) % 62 == 0) || ((i+1) % 62 == 0) )
+			sData.push(longString.substr(0, i));
+	}
+
+	sData.push(longString.substr(0, 1024));
+	sData.push(longString.substr(0, 16384));
+	sData.push(longString.substr(0, 32768));
+	sData.push(longString);
+
+	// Format strings
+	sData.push("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+	sData.push("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s");
+	sData.push("%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x");
+
+	// Long file paths
+	sData.push("C:\\"+longString.substr(0, 256));
+	sData.push("C:\\"+longString.substr(0, 512));
+	sData.push("C:\\"+longString.substr(0, 1024));
+	sData.push("C:\\"+longString.substr(0, 8192));
+	sData.push("C:\\"+magic);
+
+	// Long Unix like file paths
+	sData.push("/home"+longString.substr(0, 256));
+	sData.push("/home"+longString.substr(0, 512));
+	sData.push("/home"+longString.substr(0, 1024));
+	sData.push("/home"+longString.substr(0, 8192));
+	sData.push("/home"+magic);
+
+	// Long HTTP
+	sData.push("http://"+longString.substr(0, 256));
+	sData.push("http://"+longString.substr(0, 512));
+	sData.push("http://"+longString.substr(0, 1024));
+	sData.push("http://"+longString.substr(0, 8192));
+	sData.push("http://localhost/");
+	sData.push("http://localhost/"+magic);
+
+	// Long FTP	
+	sData.push("ftp://"+longString.substr(0, 256));
+	sData.push("ftp://"+longString.substr(0, 512));
+	sData.push("ftp://"+longString.substr(0, 1024));
+	sData.push("ftp://"+longString.substr(0, 8192));
+	sData.push("ftp://localhost/"+magic);
+
+	// Long UNC	
+	sData.push("\\\\"+longString.substr(0, 256));
+	sData.push("\\\\"+longString.substr(0, 512));
+	sData.push("\\\\"+longString.substr(0, 1024));
+	sData.push("\\\\"+longString.substr(0, 8192));
+	sData.push("\\\\localhost\\"+magic);	
+
+	// Magic
+	sData.push(magic);
+
+	mDiv = document.getElementById("divWrite");
+	mElement = document.getElementById("divElement");
+	mResult = document.getElementById("divResults");
+	maxDepth = document.getElementById("txtMaxDepth").value;
+	objFuzz = document.getElementById("txtObj").value;
+
+	fuzzProps = document.getElementById("txtProp").checked;
+	fuzzFuncs = document.getElementById("txtFuncs").checked;
+
+	ignoreSameObject = document.getElementById("txtSameObject").checked;
+
+	stopNow = false;
+
+	try
+	{
+		obj = eval(objFuzz);
+	}
+	catch(e)
+	{
+		alert("Can not fuzz " + objFuzz + ". " + e);
+		return;
+	}
+
+	level = 0;
+	fuzzObject(obj, 1);
+
+	mDiv.innerHTML = "Finished";
+	window.status = "Finished.";
+	window.title = "Finished.";
+}
+</script>
+</head>
+<body>
+<h2>Inguma - Javascript Object's Fuzzer</h2>
+<hr>
+<h3>Fuzzing options</h3>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td>Object to fuzz:</td>
+<td><input type="text" id="txtObj" value="window.document"/></td>
+</tr>
+<tr>
+<td>Max. Depth:</td><td><input type="text" id="txtMaxDepth" value="4"/></td>
+</tr>
+<tr>
+<td>Fuzz Properties</td>
+<td><input type="checkbox" id="txtProp" checked="true"/></td>
+</tr>
+<tr>
+<td>Fuzz Methods</td>
+<td><input type="checkbox" id="txtFuncs" checked="true"/></td>
+</tr>
+<tr>
+<td>Ignore references to the same object</td>
+<td><input type="checkbox" id="txtSameObject" checked="true"/></td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+<input type="button" value="Fuzz" onclick="javascript:test();"/>
+<input type="button" value="Stop" onclick="javascript:stopFuzzing();"/>
+</td>
+</table>
+<hr>
+<h3>Current Operation</h3>
+<font color="blue">
+<div id="divWrite"></div>
+</font>
+<hr>
+<h3>Current Property or Function</h3>
+<font color="blue">
+<div id="divElement"></div>
+</font>
+<hr>
+<h3>Results</h3>
+<font color="blue">
+<div id="divResults"></div>
+</font>
+</body>
+</html>

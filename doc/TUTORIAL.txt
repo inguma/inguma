@@ -1,0 +1,425 @@
+Inguma 0.0.3 Tutorial
+---------------------
+
+The following is the output of one Inguma session. What you see after the "inguma>"
+prompt is what you need to type:
+
+1) Example 1. Doing an automated scan in your local network (it requires root privileges!).
+
+$ su - 
+Password: <YOUR_PASSWORD_HERE>
+# ./inguma.py
+Inguma Version 0.0.3
+Copyright (c) 2006, 2007 Joxean Koret <joxeankoret@yahoo.es>
+
+inguma> user_data["ignore_host"] = "192.168.1.1" # My router. One small hack.
+inguma> autoscan
+Target host or network: 192.168.1.0/24
+Brute force username and passwords (y/n)[n]: y
+Print to filename (enter for stdout):
+Inguma 'autoscan' report started at Thu Sep  6 17:51:59 2007
+------------------------------------------------------------
+
+Detecting hosts in network 192.168.1.0/24
+
+Adding to discovered hosts 192.168.1.1
+Adding to discovered hosts 192.168.1.12
+Adding to discovered hosts 192.168.1.14
+Adding to discovered hosts 192.168.1.21
+
+
+List of discovered hosts
+------------------------
+
+00:13:49:e1:9b:c0 192.168.1.1 (ZyXEL Communications)
+00:0a:e6:18:07:45 192.168.1.12 (Elitegroup Computer System Co. (ECS))
+00:0c:29:7f:54:5a 192.168.1.14 (VMware)
+00:0c:29:fa:87:7f 192.168.1.21 (VMware)
+
+Port scanning target 192.168.1.12
+
+TCP scanning target 192.168.1.12
+
+Checking if is in promiscuous state target 192.168.1.12
+False
+
+Identifying services target 192.168.1.12
+
+Port 22 : 2.0-OpenSSH_4.5
+
+Checking what ports are nated target 192.168.1.12
+Port 22 is NOT NATed
+
+Detecting operative system target 192.168.1.12
+
+WARNING: Test T1 answered by an ICMP
+WARNING: Test T2 answered by an ICMP
+
+Possible Operative System List
+------------------------------
+
+  Netscreen 5XP firewall+vpn (OS 3.0.1r2)
+  Netscreen 5XP firewall+vpn (os 4.0.3r2.0)
+
+Accuracy: 96.250000 %
+
+Port scanning target 192.168.1.14
+
+
+Portscan results
+----------------
+
+Port 139/netbios-ssn is opened at 192.168.1.14
+Port 1028 is opened at 192.168.1.14
+Port 445/microsoft-ds is opened at 192.168.1.14
+Port 22/ssh is opened at 192.168.1.12
+Port 135/loc-srv is opened at 192.168.1.14
+
+TCP scanning target 192.168.1.14
+
+
+Open ports
+----------
+
+Port 139/netbios-ssn is open
+Port 1028 is open
+Port 445/microsoft-ds is open
+Port 135/loc-srv is open
+
+Checking if is in promiscuous state target 192.168.1.14
+
+False
+Identifying services target 192.168.1.14
+
+Port 135 : SMB Server FUCKING02-Windows Server 2003 3790 Service Pack 2/Windows Server 2003 5.2
+Port 139 : SMB Server FUCKING02-Windows Server 2003 3790 Service Pack 2/Windows Server 2003 5.2
+Port 445 : SMB Server FUCKING02-Windows Server 2003 3790 Service Pack 2/Windows Server 2003 5.2
+Port 1028 : Unknow
+Checking what ports are nated target 192.168.1.14
+
+Port 135 is NOT NATed
+Port 139 is NOT NATed
+Port 445 is NOT NATed
+Port 1028 is NOT NATed
+Detecting operative system target 192.168.1.14
+
+Possible Operative System List
+------------------------------
+
+  Microsoft Windows 2003 standard edition
+
+Accuracy: 98.611111 %
+
+Dumping RPC endpoints target 192.168.1.14
+
+[+] Trying an anonymous connection ...
+
+Gathered data
+-------------
+
+[+] Retrieving endpoint list from 192.168.1.14
+[+] Trying protocol 80/HTTP...
+[!] Protocol failed: Could not connect: (111, 'Connection refused')
+[+] Trying protocol 445/SMB...
+[!] Protocol failed: SessionError: SMB Library Error, class: ERRDOS, code: ERRnoaccess(Access denied.)
+[+] Trying protocol 135/TCP...
+
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/Version: 1
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/Annotation: DHCP Client LRPC Endpoint
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/StringBindings: ncalrpc:[dhcpcsvc]
+
+F5CC59B4-4264-101A-8C59-08002B2F8426/Provider: ntfrs.exe
+F5CC59B4-4264-101A-8C59-08002B2F8426/Version: 1
+F5CC59B4-4264-101A-8C59-08002B2F8426/Annotation: NtFrs Service
+F5CC59B4-4264-101A-8C59-08002B2F8426/StringBindings: ncalrpc:[OLE008412B8C94B487F9EEC32435EB6]
+
+F5CC59B4-4264-101A-8C59-08002B2F8426/Provider: ntfrs.exe
+F5CC59B4-4264-101A-8C59-08002B2F8426/Version: 1
+F5CC59B4-4264-101A-8C59-08002B2F8426/Annotation: NtFrs Service
+F5CC59B4-4264-101A-8C59-08002B2F8426/StringBindings: ncacn_ip_tcp:[1028]
+
+F5CC59B4-4264-101A-8C59-08002B2F8426/Provider: ntfrs.exe
+F5CC59B4-4264-101A-8C59-08002B2F8426/Version: 1
+F5CC59B4-4264-101A-8C59-08002B2F8426/Annotation: NtFrs Service
+F5CC59B4-4264-101A-8C59-08002B2F8426/StringBindings: ncalrpc:[LRPC000005a0.00000001]
+
+D049B186-814F-11D1-9A3C-00C04FC9B232/Provider: ntfrs.exe
+D049B186-814F-11D1-9A3C-00C04FC9B232/Version: 1
+D049B186-814F-11D1-9A3C-00C04FC9B232/Annotation: NtFrs API
+D049B186-814F-11D1-9A3C-00C04FC9B232/StringBindings: ncalrpc:[OLE008412B8C94B487F9EEC32435EB6]
+
+D049B186-814F-11D1-9A3C-00C04FC9B232/Provider: ntfrs.exe
+D049B186-814F-11D1-9A3C-00C04FC9B232/Version: 1
+D049B186-814F-11D1-9A3C-00C04FC9B232/Annotation: NtFrs API
+D049B186-814F-11D1-9A3C-00C04FC9B232/StringBindings: ncacn_ip_tcp:[1028]
+
+D049B186-814F-11D1-9A3C-00C04FC9B232/Provider: ntfrs.exe
+D049B186-814F-11D1-9A3C-00C04FC9B232/Version: 1
+D049B186-814F-11D1-9A3C-00C04FC9B232/Annotation: NtFrs API
+D049B186-814F-11D1-9A3C-00C04FC9B232/StringBindings: ncalrpc:[LRPC000005a0.00000001]
+
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Provider: ntfrs.exe
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Version: 1
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Annotation: PERFMON SERVICE
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/StringBindings: ncalrpc:[OLE008412B8C94B487F9EEC32435EB6]
+
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Provider: ntfrs.exe
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Version: 1
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Annotation: PERFMON SERVICE
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/StringBindings: ncacn_ip_tcp:[1028]
+
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Provider: ntfrs.exe
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Version: 1
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/Annotation: PERFMON SERVICE
+A00C021C-2BE2-11D2-B678-0000F87A8F8E/StringBindings: ncalrpc:[LRPC000005a0.00000001]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncacn_np:[\PIPE\lsass]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncalrpc:[audit]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncalrpc:[securityevent]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncalrpc:[protected_storage]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncacn_np:[\PIPE\protected_storage]
+
+12345678-1234-ABCD-EF00-0123456789AB/Provider: spoolsv.exe
+12345678-1234-ABCD-EF00-0123456789AB/Version: 1
+12345678-1234-ABCD-EF00-0123456789AB/Annotation: IPSec Policy agent endpoint
+12345678-1234-ABCD-EF00-0123456789AB/StringBindings: ncalrpc:[dsrole]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncacn_np:[\PIPE\lsass]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncalrpc:[audit]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncalrpc:[securityevent]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncalrpc:[protected_storage]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncacn_np:[\PIPE\protected_storage]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncalrpc:[dsrole]
+
+12345778-1234-ABCD-EF00-0123456789AC/Provider: samsrv.dll
+12345778-1234-ABCD-EF00-0123456789AC/Version: 1
+12345778-1234-ABCD-EF00-0123456789AC/StringBindings: ncacn_ip_tcp:[1025]
+
+906B0CE0-C70B-1067-B317-00DD010662DA/Provider: msdtcprx.dll
+906B0CE0-C70B-1067-B317-00DD010662DA/Version: 1
+906B0CE0-C70B-1067-B317-00DD010662DA/14E4963C-310A-410D-B60B-3634017D3E97/StringBindings: ncalrpc:[LRPC000003c4.00000001]
+
+906B0CE0-C70B-1067-B317-00DD010662DA/Provider: msdtcprx.dll
+906B0CE0-C70B-1067-B317-00DD010662DA/Version: 1
+906B0CE0-C70B-1067-B317-00DD010662DA/98F59BB0-9270-4772-B903-9FF96787981B/StringBindings: ncalrpc:[LRPC000003c4.00000001]
+
+906B0CE0-C70B-1067-B317-00DD010662DA/Provider: msdtcprx.dll
+906B0CE0-C70B-1067-B317-00DD010662DA/Version: 1
+906B0CE0-C70B-1067-B317-00DD010662DA/915CCA96-E6AC-4CE4-8C86-378BE1C987EF/StringBindings: ncalrpc:[LRPC000003c4.00000001]
+
+906B0CE0-C70B-1067-B317-00DD010662DA/Provider: msdtcprx.dll
+906B0CE0-C70B-1067-B317-00DD010662DA/Version: 1
+906B0CE0-C70B-1067-B317-00DD010662DA/2C077345-88A7-4408-AC97-D9B3E7A7AB4F/StringBindings: ncalrpc:[LRPC000003c4.00000001]
+
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Provider: mstask.exe
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Version: 1
+1FF70682-0A51-30E8-076D-740BE8CEE98B/StringBindings: ncalrpc:[wzcsvc]
+
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Provider: mstask.exe
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Version: 1
+1FF70682-0A51-30E8-076D-740BE8CEE98B/StringBindings: ncalrpc:[OLE024412EC86224FEE870E7C660455]
+
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Provider: mstask.exe
+1FF70682-0A51-30E8-076D-740BE8CEE98B/Version: 1
+1FF70682-0A51-30E8-076D-740BE8CEE98B/StringBindings: ncacn_np:[\PIPE\atsvc]
+
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Provider: mstask.exe
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Version: 1
+378E52B0-C0A9-11CF-822D-00AA0051E40F/StringBindings: ncalrpc:[wzcsvc]
+
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Provider: mstask.exe
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Version: 1
+378E52B0-C0A9-11CF-822D-00AA0051E40F/StringBindings: ncalrpc:[OLE024412EC86224FEE870E7C660455]
+
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Provider: mstask.exe
+378E52B0-C0A9-11CF-822D-00AA0051E40F/Version: 1
+378E52B0-C0A9-11CF-822D-00AA0051E40F/StringBindings: ncacn_np:[\PIPE\atsvc]
+
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/Version: 1
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/StringBindings: ncalrpc:[wzcsvc]
+
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/Version: 1
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/StringBindings: ncalrpc:[OLE024412EC86224FEE870E7C660455]
+
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/Version: 1
+0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53/StringBindings: ncacn_np:[\PIPE\atsvc]
+
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/Version: 1
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/Annotation: DHCP Client LRPC Endpoint
+3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5/StringBindings: ncalrpc:[DNSResolver]
+
+Received 37 endpoints.
+Dumping SAM database target 192.168.1.14
+
+[+] Trying an anonymous connection ...
+[+] Retrieving endpoint list from 192.168.1.14
+[+] Trying protocol 445/SMB...
+Error listing users: Connect error
+No entries received.
+Connecting to the CIFS server target 192.168.1.14
+
+[+] Trying a NULL connection ...
+[+] Ok. It works.
+Current connection information
+------------------------------
+
+Domain name      : WORKGROUP
+Lanman           : Windows Server 2003 5.2
+Server name      : FUCKING02
+Operative System : Windows Server 2003 3790 Service Pack 2
+Server Time      : Thu, 06 Sep 2007 15:55:55 GMT -2
+Session Key      : 0
+
+Is login required? True
+
+Port scanning target 192.168.1.21
+
+
+Portscan results
+----------------
+
+Port 1028 is opened at 192.168.1.14
+Port 135/loc-srv is opened at 192.168.1.14
+Port 139/netbios-ssn is opened at 192.168.1.14
+Port 1723 is opened at 192.168.1.21
+Port 445/microsoft-ds is opened at 192.168.1.14
+
+TCP scanning target 192.168.1.21
+
+
+Open ports
+----------
+
+Port 1028 is open
+Port 135/loc-srv is open
+Port 139/netbios-ssn is open
+Port 1723 is open
+Port 445/microsoft-ds is open
+
+Checking if is in promiscuous state target 192.168.1.21
+
+False
+Identifying services target 192.168.1.21
+
+Port 1723 : PPTP
+Checking what ports are nated target 192.168.1.21
+
+Port 1723 is NOT NATed
+Detecting operative system target 192.168.1.21
+
+Possible Operative System List
+------------------------------
+
+  Microsoft Windows Longhorn eval build 4051
+
+Accuracy: 98.611111 %
+
+inguma> save kb
+Filename [data.kb]: locallan.kb
+inguma> clear kb
+inguma> print user_data
+{'target': '', 'covert': 0, 'wizard': [], 'base_path': '.', 'waittime': '', 'user': '', 'timeout': 5, 'services': [], 'password': '', 'port': ''}
+inguma> load kb
+* Warning! Warning! Warning! Warning! Warning! Warning! *
+*** Never load kb files received from untrusted sources ***
+Filename [data.kb]: locallan.kb
+inguma> print user_data
+{'192.168.1.21_ports': [1723], 'covert': 0, 'waittime': '', '192.168.1.12_promisc': [False], '192.168.1.1_mac': ['00:13:49:e1:9b:c0'], '192.168.1.14_mac': ['00:0c:29:7f:54:5a'], 'port': '', '192.168.1.14_promisc': [False], 'wizard': [], 'dict': '.data/dict', '192.168.1.12_services': ['22/ssh'], '192.168.1.14_ports': [135, 139, 445, 1028], '192.168.1.14_rpc_endpoints': ['3C4728C5-F0AB-448B-BDA1-6CE01EB0A6D5', ['version', 1], ['annotation', 'DHCP Client LRPC Endpoint'], ['stringbindings', 'ncalrpc:[dhcpcsvc]'], 'F5CC59B4-4264-101A-8C59-08002B2F8426', ['provider', 'ntfrs.exe'], ['annotation', 'NtFrs Service'], ['stringbindings', 'ncalrpc:[OLE008412B8C94B487F9EEC32435EB6]'], ['stringbindings', 'ncacn_ip_tcp:[1028]'], ['stringbindings', 'ncalrpc:[LRPC000005a0.00000001]'], 'D049B186-814F-11D1-9A3C-00C04FC9B232', ['annotation', 'NtFrs API'], 'A00C021C-2BE2-11D2-B678-0000F87A8F8E', ['annotation', 'PERFMON SERVICE'], '12345678-1234-ABCD-EF00-0123456789AB', ['provider', 'spoolsv.exe'], ['annotation', 'IPSec Policy agent endpoint'], ['stringbindings', 'ncacn_np:[\\PIPE\\lsass]'], ['stringbindings', 'ncalrpc:[audit]'], ['stringbindings', 'ncalrpc:[securityevent]'], ['stringbindings', 'ncalrpc:[protected_storage]'], ['stringbindings', 'ncacn_np:[\\PIPE\\protected_storage]'], ['stringbindings', 'ncalrpc:[dsrole]'], '12345778-1234-ABCD-EF00-0123456789AC', ['provider', 'samsrv.dll'], ['stringbindings', 'ncacn_ip_tcp:[1025]'], '906B0CE0-C70B-1067-B317-00DD010662DA', ['provider', 'msdtcprx.dll'], ['obj_uuid', '14E4963C-310A-410D-B60B-3634017D3E97'], ['stringbindings', 'ncalrpc:[LRPC000003c4.00000001]'], ['obj_uuid', '98F59BB0-9270-4772-B903-9FF96787981B'], ['obj_uuid', '915CCA96-E6AC-4CE4-8C86-378BE1C987EF'], ['obj_uuid', '2C077345-88A7-4408-AC97-D9B3E7A7AB4F'], '1FF70682-0A51-30E8-076D-740BE8CEE98B', ['provider', 'mstask.exe'], ['stringbindings', 'ncalrpc:[wzcsvc]'], ['stringbindings', 'ncalrpc:[OLE024412EC86224FEE870E7C660455]'], ['stringbindings', 'ncacn_np:[\\PIPE\\atsvc]'], '378E52B0-C0A9-11CF-822D-00AA0051E40F', '0A74EF1C-41A4-4E06-83AE-DC74FB1CDD53', ['stringbindings', 'ncalrpc:[DNSResolver]']], '192.168.1.14_services': ['135/smb', '139/smb', '445/smb'], '192.168.1.21_promisc': [False], 'base_path': '.', 'ignore_host': '192.168.1.1', 'user': '', 'services': [], '192.168.1.12_ports': [22], 'password': '', 'target': '192.168.1.21', '192.168.1.14_smb': [{'domain': 'WORKGROUP', 'server_name': u'FUCKING02', 'lanman': 'Windows Server 2003 5.2', 'login_required': True, 'key': 0, 'time': (1189094155.9742601, 'Thu, 06 Sep 2007 15:55:55 GMT -2 '), 'os': 'Windows Server 2003 3790 Service Pack 2'}], '192.168.1.14_os': ['Windows Server 2003 3790 Service Pack 2'], '192.168.1.12_mac': ['00:0a:e6:18:07:45'], 'hosts': ['192.168.1.1', '192.168.1.12', '192.168.1.14', '192.168.1.21'], 'timeout': 5, '192.168.1.21_services': ['1723/pptp'], 'ports': [15, 21, 22, 23, 24, 25, 80, 81, 82, 83, 84, 85, 90, 87, 100, 120, 125, 135, 136, 137, 138, 139, 265, 383, 445, 386, 515, 566, 603, 628, 631, 635, 636, 686, 640, 650, 674, 677, 678, 691, 706, 723, 737, 754, 783, 799, 808, 871, 873, 898, 901, 902, 903, 950, 953, 975, 989, 990, 992, 993, 994, 995, 1002, 1012, 1023, 1024, 1026, 1027, 1028, 1029, 1033, 1034, 1040, 1050, 1076, 1103, 1109, 1112, 1127, 1139, 1158, 1167, 1178, 1220, 1234, 1241, 1337, 1383, 1521, 1522, 1523, 1524, 1525, 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538, 1539, 1540, 1541, 1546, 1551, 1561, 1571, 1581, 1591, 1645, 1646, 1680, 1636, 1686, 1701, 1720, 1723, 1755, 1761, 1762, 1763, 1764, 1812, 1813, 1827, 1935, 1984, 2003, 2021, 2053, 2064, 2068, 2103, 2104, 2111, 2112, 2120, 2121, 2301, 2564, 2600, 2601, 2602, 2603, 2604, 2605, 2628, 2638, 2766, 2809, 2903, 2948, 2967, 2998, 3000, 3001, 3005, 3006, 3052, 3064, 3086, 3128, 3130, 3268, 3269, 3292, 3306, 3372, 3389, 3401, 3462, 3632, 3689, 3996, 3997, 3998, 3999, 4125, 4144, 4224, 4333, 4480, 4557, 4559, 4660, 4827, 4899, 4987, 4998, 5100, 5101, 5102, 5232, 5400, 5405, 5428, 5432, 5490, 5500, 5510, 5520, 5530, 5550, 5560, 5631, 5679, 5680, 5800, 5801, 5802, 5803, 5900, 5901, 5902, 5903, 5977, 5978, 5979, 5997, 5998, 5999, 6000, 6001, 6002, 6003, 6004, 6005, 6006, 6007, 6008, 6009, 6017, 6050, 6101, 6103, 6105, 6106, 6112, 6346, 6400, 6401, 6543, 6544, 6547, 6548, 6549, 6588, 6666, 6667, 6668, 6699, 7070, 7273, 7326, 7464, 7597, 7648, 7649, 7650, 7651, 7937, 7776, 7777, 7778, 7779, 7938, 8000, 8001, 8002, 8003, 8004, 8007, 8009, 8021, 8080, 8081, 8082, 8443, 8888, 8892, 9090, 9100, 9111, 9152, 9991, 9992, 9999, 10000, 10005, 10080, 10082, 10083, 11371, 11521, 12000, 12345, 12346, 13701, 13702, 13705, 13706, 13708, 13709, 13710, 13711, 13712, 13713, 13714, 13715, 13716, 13717, 13718, 13720, 13721, 13722, 13782, 13783, 15126, 16959, 17185, 17300, 18181, 18182, 18183, 18184, 18185, 18187, 19150, 20005, 22273, 22289, 22305, 22321, 26000, 26208, 26900, 27000, 27001, 27002, 27003, 27004, 27005, 27006, 27007, 27008, 27009, 27010, 27015, 27374, 27444, 27500, 27665, 27910, 27960, 28910, 31335, 32768, 38292, 38293, 39213, 43188, 44334, 44442, 44443, 45000, 49400, 50000, 50002, 54320, 54321, 59769, 61439, 61440, 61441, 65301], '192.168.1.21_mac': ['00:0c:29:fa:87:7f']}
+
+2) Example 2. Fuzzing a TNS Listener (it doesn't require root privileges):
+
+$ ./inguma.py
+Inguma Version 0.0.3
+Copyright (c) 2006, 2007 Joxean Koret <joxeankoret@yahoo.es>
+
+inguma> target = "localhost"
+inguma> port = 1521
+inguma> tnscmd
+
+Oracle Decimal version    :  185599488
+Oracle Hexadecimal version:  0xb100600
+Major Oracle version      :  11
+TNSCMD> fuzz
+Base NV string: ((CONNECT_DATA=(HOST=LOCALHOST)(PORT=1521)))
+Start index: 0
+Variable: 0
+(...)
+Fuzzing var 2:103:1
+TNS Listener returns an error:
+
+Raw response:
+'\x00\xa8\x00\x00\x04\x00\x00\x00"\x00\x00\x9c(DESCRIPTION=(ERR=1153)(VSNNUM=185599488)(ERROR_STACK=(ERROR=(CODE=1153)(EMFI=4)(ARGS=\'((A_DATA=(HOST=LOCALHOST)(PORT=1521)))\'))(ERROR=(CODE=303)(EMFI=1))))'
+
+Formated response:
+
+    DESCRIPTION:
+      ERR: 1153
+      VSNNUM: 185599488
+      ERROR_STACK:
+        ERROR:
+          CODE: 1153
+          EMFI: 4
+          ARGS: '
+              A_DATA:
+                HOST: LOCALHOST
+                PORT: 1521
+'
+        ERROR:
+          CODE: 303
+          EMFI: 1
+
+    DESCRIPTION:
+      ERR: 1153
+      VSNNUM: 185599488
+      ERROR_STACK:
+        ERROR:
+          CODE: 1153
+          EMFI: 4
+          ARGS: '
+              A_DATA:
+                HOST: LOCALHOST
+                PORT: 1521
+
+'
+        ERROR:
+          CODE: 303
+          EMFI: 1
+(...)
+
+

@@ -1,0 +1,6 @@
+POST /_LOGIN_SERVER_ HTTP/1.1
+HOST:mierda
+CONNECTION:close
+Cookie: DHAC1=8ba900a3; Path=/
+
+

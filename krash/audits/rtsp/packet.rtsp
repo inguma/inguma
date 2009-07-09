@@ -1,0 +1,6 @@
+GET /sample_100kbit.mov RTSP/1.0
+HOST:TEST
+Cseq:0000
+Connection: close
+
+

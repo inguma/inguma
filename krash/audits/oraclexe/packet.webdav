@@ -1,0 +1,16 @@
+PROPFIND /public/ HTTP/1.1
+User-Agent: a
+Pragma: no-cache
+Cache-control: no-cache
+Accept: text/html, image/jpeg, image/png, text/*, image/*, */*
+Accept-Encoding: x-gzip, x-deflate, gzip, deflate
+Accept-Charset: utf-8, utf-8;q=0.5, *;q=0.5
+Accept-Language: es, en
+Host: localhost:8080
+Connection: Keep-Alive
+Depth: 0
+Content-Type: text/xml; charset=utf-8
+Content-Length: 303
+
+
+<?xml version="1.0" encoding="utf-8" ?><D:propfind xmlns:D="DAV:"><D:prop><D:creationdate/><D:getcontentlength/><D:displayname/><D:source/><D:getcontentlanguage/><D:getcontenttype/><D:executable/><D:getlastmodified/><D:getetag/><D:supportedlock/><D:lockdiscovery/><D:resourcetype/></D:prop></D:propfind>

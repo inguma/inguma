@@ -1,0 +1,130 @@
+General Notes
+-------------
+
+1) "0xAC 0xED 0x00 0x05"
+
+Magic string. Returned immediately after connecting with an RMI Server.
+Supposed to be also used to split packets.
+
+Flow: Server to client
+
+2) "0x4A 0x52 0x4D 0x49"
+
+The string JRMI (uppercase). Header of a JRMI OutputStream.
+
+Flow: Client to server
+
+3) "0x00 0x00" or "0x00 0x01"
+
+The version. The next field after the JRMI header.
+
+Flow: Client to server
+
+4) "0x4C"
+
+The protocol. Possible values are:
+
+    0x4B        Stream protocol
+    0x4C        SingleOp protocol
+    0x4D        Multiplex protocol
+
+The field goes immediately after the version field.
+Flow: Client to server
+
+5) A packet may look like the following:
+
++---------------------+-----------+------+     +------+---------+----------+
+| 0x4A 0x52 0x4D 0x49 | 0x00 0x01 | 0x4C |     | JRMI | VERSION | PROTOCOL |
++---------------------+-----------+------+ --> +------+---------+----------+
+|                  PING                  |     |          DATA             |
++----------------------------------------+     +---------------------------+
+
+Sending a "null" or "ping" OutputStream packet:
+-----------------------------------------------
+
+Received packet <----
+00000000  ac ed 00 05                                      ....
+
+Sended packet   ---->
+00000000  4a 52 4d 49 00 00 4c                             JRMI..L
+
+Received packet <----
+00000004  73 72 00 19 6a 61 76 61  2e 72 6d 69 2e 4d 61 72 sr..java .rmi.Mar
+00000014  73 68 61 6c 6c 65 64 4f  62 6a 65 63 74 7c bd 1e shalledO bject|..
+00000024  97 ed 63 fc 3e 02 00 03  49 00 04 68 61 73 68 5b ..c.>... I..hash[
+00000034  00 08 6c 6f 63 42 79 74  65 73 74 00 02 5b 42 5b ..locByt est..[B[
+00000044  00 08 6f 62 6a 42 79 74  65 73 71 00 7e 00 01    ..objByt esq.~..
+
+Sending an invalid or malformed OutputStream packet:
+----------------------------------------------------
+
+Received packet <----
+00000000  ac ed 00 05                                      ....
+
+Sended packet   ---->
+00000000  4a 52 4d 49 00 00 4c 49  4e 56 41 4c 49 44 20 44 JRMI..LI NVALID D
+00000010  41 54 41                                         ATA
+
+Received packet <----
+00000004  73 72 00 19 6a 61 76 61  2e 72 6d 69 2e 4d 61 72 sr..java .rmi.Mar
+00000014  73 68 61 6c 6c 65 64 4f  62 6a 65 63 74 7c bd 1e shalledO bject|..
+00000024  97 ed 63 fc 3e 02 00 03  49 00 04 68 61 73 68 5b ..c.>... I..hash[
+00000034  00 08 6c 6f 63 42 79 74  65 73 74 00 02 5b 42 5b ..locByt est..[B[
+00000044  00 08 6f 62 6a 42 79 74  65 73 71 00 7e 00 01 78 ..objByt esq.~..x
+00000054  70 44 b6 44 40 75 72 00  02 5b 42 ac f3 17 f8 06 pD.D@ur. .[B.....
+00000064  08 54 e0 02 00 00 78 70  00 00 00 30 ac ed 00 05 .T....xp ...0....
+00000074  74 00 1f 68 74 74 70 3a  2f 2f 6f 69 6d 2e 70 6f t..http: //oim.po
+00000084  63 2e 6f 72 61 63 6c 65  2e 63 6f 6d 3a 38 30 38 c.oracle .com:808
+00000094  33 2f 71 00 7e 00 00 71  00 7e 00 00 75 71 00 7e 3/q.~..q .~..uq.~
+000000A4  00 03 00 00 00 c5 ac ed  00 05 73 72 00 20 6f 72 ........ ..sr. or
+000000B4  67 2e 6a 6e 70 2e 73 65  72 76 65 72 2e 4e 61 6d g.jnp.se rver.Nam
+000000C4  69 6e 67 53 65 72 76 65  72 5f 53 74 75 62 00 00 ingServe r_Stub..
+000000D4  00 00 00 00 00 02 02 00  00 78 72 00 1a 6a 61 76 ........ .xr..jav
+000000E4  61 2e 72 6d 69 2e 73 65  72 76 65 72 2e 52 65 6d a.rmi.se rver.Rem
+000000F4  6f 74 65 53 74 75 62 e9  fe dc c9 8b e1 65 1a 02 oteStub. .....e..
+00000104  00 00 78 72 00 1c 6a 61  76 61 2e 72 6d 69 2e 73 ..xr..ja va.rmi.s
+00000114  65 72 76 65 72 2e 52 65  6d 6f 74 65 4f 62 6a 65 erver.Re moteObje
+00000124  63 74 d3 61 b4 91 0c 61  33 1e 03 00 00 78 70 77 ct.a...a 3....xpw
+00000134  39 00 0b 55 6e 69 63 61  73 74 52 65 66 32 00 00 9..Unica stRef2..
+00000144  0e 31 39 32 2e 31 36 38  2e 36 35 2e 31 30 30 00 .192.168 .65.100.
+00000154  00 04 4a 00 00 00 00 00  00 00 00 00 32 9f 3d 00 ..J..... ....2.=.
+00000164  00 01 11 9e 86 43 2e 80  01 00 78                .....C.. ..x
+
+But the latest received packet can be splited into various others. The 
+hexadecimal string 0xAC 0xED 0x00 0x05 can be found almost 2 times in 
+the received packet. Spliting it we will have the following: 
+
+
+00000004  73 72 00 19 6a 61 76 61  2e 72 6d 69 2e 4d 61 72 sr..java .rmi.Mar
+00000014  73 68 61 6c 6c 65 64 4f  62 6a 65 63 74 7c bd 1e shalledO bject|..
+00000024  97 ed 63 fc 3e 02 00 03  49 00 04 68 61 73 68 5b ..c.>... I..hash[
+00000034  00 08 6c 6f 63 42 79 74  65 73 74 00 02 5b 42 5b ..locByt est..[B[
+00000044  00 08 6f 62 6a 42 79 74  65 73 71 00 7e 00 01 78 ..objByt esq.~..x
+00000054  70 44 b6 44 40 75 72 00  02 5b 42 ac f3 17 f8 06 pD.D@ur. .[B.....
+00000064  08 54 e0 02 00 00 78 70  00 00 00 30             .T....xp ...0
+
+                                               ac ed 00 05              ....
+00000074  74 00 1f 68 74 74 70 3a  2f 2f 6f 69 6d 2e 70 6f t..http: //oim.po
+00000084  63 2e 6f 72 61 63 6c 65  2e 63 6f 6d 3a 38 30 38 c.oracle .com:808
+00000094  33 2f 71 00 7e 00 00 71  00 7e 00 00 75 71 00 7e 3/q.~..q .~..uq.~
+000000A4  00 03 00 00 00 c5                                ......
+
+                            ac ed  00 05 73 72 00 20 6f 72       .. ..sr. or
+000000B4  67 2e 6a 6e 70 2e 73 65  72 76 65 72 2e 4e 61 6d g.jnp.se rver.Nam
+000000C4  69 6e 67 53 65 72 76 65  72 5f 53 74 75 62 00 00 ingServe r_Stub..
+000000D4  00 00 00 00 00 02 02 00  00 78 72 00 1a 6a 61 76 ........ .xr..jav
+000000E4  61 2e 72 6d 69 2e 73 65  72 76 65 72 2e 52 65 6d a.rmi.se rver.Rem
+000000F4  6f 74 65 53 74 75 62 e9  fe dc c9 8b e1 65 1a 02 oteStub. .....e..
+00000104  00 00 78 72 00 1c 6a 61  76 61 2e 72 6d 69 2e 73 ..xr..ja va.rmi.s
+00000114  65 72 76 65 72 2e 52 65  6d 6f 74 65 4f 62 6a 65 erver.Re moteObje
+00000124  63 74 d3 61 b4 91 0c 61  33 1e 03 00 00 78 70 77 ct.a...a 3....xpw
+00000134  39 00 0b 55 6e 69 63 61  73 74 52 65 66 32 00 00 9..Unica stRef2..
+00000144  0e 31 39 32 2e 31 36 38  2e 36 35 2e 31 30 30 00 .192.168 .65.100.
+00000154  00 04 4a 00 00 00 00 00  00 00 00 00 32 9f 3d 00 ..J..... ....2.=.
+00000164  00 01 11 9e 86 43 2e 80  01 00 78                .....C.. ..
+
+
+References:
+
+http://java.sun.com/j2se/1.4.2/docs/guide/rmi/spec/rmi-protocol3.html
+packet-rmi.h source file from Ethereal source code.

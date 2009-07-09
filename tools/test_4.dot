@@ -1,0 +1,101 @@
+digraph trace {
+
+	node [shape=ellipse,color=black,style=solid];
+
+#ASN clustering
+	subgraph cluster_8928 {
+		color="#608686";
+		node [fillcolor="#608686",style=filled];
+		fontsize = 10;
+		label = "8928\n[INTEROUTE Interoute Communications Ltd]"
+		"195.81.196.223";
+		"89.202.161.21";
+		"212.23.42.25";
+		"212.23.42.29";
+		"89.202.171.30";
+	}
+	subgraph cluster_AS6067 {
+		color="#60baba";
+		node [fillcolor="#60baba",style=filled];
+		fontsize = 10;
+		label = "AS6067\n[ONYX Onyx Internet]"
+		"10.4.0.101";
+	}
+	subgraph cluster_AS6730 {
+		color="#60ffff";
+		node [fillcolor="#60ffff",style=filled];
+		fontsize = 10;
+		label = "AS6730\n[SUNRISE sunrise (TDC Switzerland AG)]"
+		"192.168.0.1";
+		"192.168.0.192";
+	}
+	subgraph cluster_12357 {
+		color="#868660";
+		node [fillcolor="#868660",style=filled];
+		fontsize = 10;
+		label = "12357\n[COMUNITEL Comunitel Global Autonomous System]"
+		"77.224.146.1";
+		"212.145.3.218";
+		"212.145.4.76";
+	}
+	subgraph cluster_3320 {
+		color="#86ba86";
+		node [fillcolor="#86ba86",style=filled];
+		fontsize = 10;
+		label = "3320\n[DTAG Deutsche Telekom AG]"
+		"193.159.227.54";
+		"217.239.40.189";
+		"217.239.40.181";
+		"217.243.217.109";
+	}
+	subgraph cluster_47739 {
+		color="#86ffba";
+		node [fillcolor="#86ffba",style=filled];
+		fontsize = 10;
+		label = "47739\n[MICROMEDIOS-DIGITALES-AS Micromedios Digitales, S.L.]"
+		"195.43.128.100";
+	}
+
+#Reachable Hosts
+	"195.81.196.223" [shape=record,color=black,fillcolor=green,style=filled,label="195.81.196.223"];
+	"195.43.128.100" [shape=record,color=black,fillcolor=green,style=filled,label="195.43.128.100"];
+	
+
+#-- ['192.168.0.192', '195.81.196.223']
+
+	edge [color="#a07070"];
+	"192.168.0.192"->
+	"192.168.0.1"->
+	"77.224.146.1"->
+	"10.4.0.101"->
+	"212.145.4.76"->
+	"217.243.217.109"->
+	"217.239.40.189"->
+	"193.159.227.54"->
+	"212.23.42.29"->
+	"212.23.42.25"->
+	"89.202.161.21"->
+	"195.81.196.223";
+
+#-- ['192.168.0.192', '195.43.128.100']
+
+	edge [color="#a04040"];
+	"192.168.0.192"->
+	"192.168.0.1"->
+	"77.224.146.1"->
+	"10.4.0.101"->
+	"212.145.3.218"->
+	"212.145.4.76"->
+	"217.243.217.109"->
+	"217.239.40.181"->
+	"193.159.227.54"->
+	"212.23.42.29"->
+	"212.23.42.25"->
+	"89.202.161.21"->
+	"89.202.171.30"->
+	"195.43.128.100";
+
+#Unreachable Hosts
+	
+
+}

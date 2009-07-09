@@ -1,0 +1,27 @@
+inguma (0.0.7.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Remove shipped scapy version (Closes: #466963)
+
+ -- Pierre Chifflier <pollux@debian.org>  Fri, 28 Mar 2008 19:16:40 +0100
+
+inguma (0.0.6-3) unstable; urgency=low
+
+  * Re-package inguma (Closes: #467446)
+  * Do not use python-support, packages are no real libs,
+    just private modules, so they are now installed
+    in /usr/share/inguma
+
+ -- Pierre Chifflier <pollux@debian.org>  Mon, 25 Feb 2008 17:55:00 +0100
+
+inguma (0.0.6-2) unstable; urgency=low
+
+  * Move package to section net (Closes: #466765)
+
+ -- Pierre Chifflier <pollux@debian.org>  Thu, 21 Feb 2008 11:27:07 +0100
+
+inguma (0.0.6-1) unstable; urgency=low
+
+  * Initial release (Closes: #456512)
+
+ -- Pierre Chifflier <pollux@debian.org>  Fri, 01 Feb 2008 21:25:23 +0100

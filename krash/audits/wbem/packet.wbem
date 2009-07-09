@@ -1,0 +1,13 @@
+POST /cimom HTTP/1.1
+Host: 192.168.1.22:5988
+Accept-Encoding: identity
+Content-type: application/xml
+Content-length: 377
+Authorization: Basic aWJlcm1hdGljYTppYmVybWF0aWNhMQ==
+CIMOperation: MethodCall
+CIMMethod: EnumerateInstances
+CIMObject: root/cimv2
+
+
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0"><MESSAGE ID="1001" PROTOCOLVERSION="1.0"><SIMPLEREQ><IMETHODCALL NAME="EnumerateInstances"><LOCALNAMESPACEPATH><NAMESPACE NAME="root"/><NAMESPACE NAME="cimv2"/></LOCALNAMESPACEPATH><IPARAMVALUE NAME="ClassName"><CLASSNAME NAME="CIM_Process"/></IPARAMVALUE></IMETHODCALL></SIMPLEREQ></MESSAGE></CIM>

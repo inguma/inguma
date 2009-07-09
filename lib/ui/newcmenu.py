@@ -1,0 +1,250 @@
+##      newcmenu.py
+#       
+#       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+
+import pygtk
+import gtk, gobject
+
+from . import core
+
+from . import targetDialog
+from . import bruteDialog
+from . import gatherDialog
+from . import config
+
+class UIManager(gtk.UIManager):
+
+    def __init__(self, gom):
+        gtk.UIManager.__init__(self)
+
+        self.ui_id = 0
+
+        self.uicore = core.UIcore()
+        self.uicore.set_om(gom)
+
+        # Add the accelerator group
+        self.accel = self.get_accel_group()
+
+        # Create an ActionGroup
+        self.actiongroup = gtk.ActionGroup('Base')
+
+        # Parse config file
+        categories = getattr(config, 'categories')
+        subdiscovers = getattr(config, 'subdiscovers')
+        subgathers = getattr(config, 'gathers')
+
+        self.menu_base = ''
+        for category in categories:
+
+            #Create menu for category
+
+            self.menu_base += '<menu action="' + category.capitalize() + '">'
+            self.actiongroup.add_actions( [(category.capitalize(), gtk.STOCK_EXECUTE, '  ' + category.capitalize())] )
+
+            # NEW NEW NEW NEW NEW NEW NEW NEW
+
+            #print category
+            subcategories = getattr(config, 'sub' + category)
+            for subcat in subcategories.keys():
+                self.menu_base += '<menu action="' + subcat + '">'
+                self.actiongroup.add_actions( [(subcat, None, '  ' + subcat.capitalize() + '  ')] )
+                #print '\t' + subcat
+
+                for element in subcategories[subcat]:
+                    self.menu_base += '<menuitem action="' + element + '">'
+                    if category == 'discovers':
+                        # xml_name, icon, real_menu_text, accelerator, tooltip, callback
+                        self.actiongroup.add_actions([(element, gtk.STOCK_QUIT, element, None, element, self.showDialog)])
+                    elif category == 'gathers':
+                        self.actiongroup.add_actions([(element, gtk.STOCK_QUIT, element, None, element, self.showGather)])
+
+                    self.menu_base += '</menuitem>'
+                    #print '\t\t' + element
+                self.menu_base += '</menu>'
+
+            # NEW NEW NEW NEW NEW NEW NEW NEW
+
+            self.menu_base += '</menu>'
+
+        self.menu_base += '''</popup>
+        </ui>'''
+
+        self.insert_action_group(self.actiongroup, 0)
+
+    # Functions
+
+    def set_data(self, ip=None):
+        ''' called on click to prepend target info on the popup menu'''
+
+        self.ip = ip
+
+        if self.get_uiID() != 0:
+            self.remove_ui(self.ui_id)
+        # Empty target_menu
+        self.target_menu = '''<ui>
+        <popup name="Popup">
+        '''
+
+        if not ip:
+            self.actiongroup2 = gtk.ActionGroup('Target')
+
+            self.target_menu += self.menu_base
+    
+            # Add the actiongroup to the uimanager
+            self.insert_action_group(self.actiongroup2, 0)
+        else:
+            self.remove_action_group(self.actiongroup2)
+            self.actiongroup2 = gtk.ActionGroup('Target')
+
+            kb = self.uicore.get_kbList()
+
+            # Add menu elements in reverse order to be shown correctly    
+            # Target Services
+            self.actiongroup2.add_actions( [('services', gtk.STOCK_NETWORK, '  Services')] )
+            self.target_menu += '<menu action="services" position="top">'
+
+            if kb.__contains__(ip + '_ports'):
+                for port in kb[ip + '_ports']:
+
+#                    if kb.__contains__(ip + '_passwords'):
+#                        self.actiongroup2.add_actions( [('pass', None, 'user/password')] )
+#                        self.target_menu += '<menuitem action="pass">'
+#
+#                        self.actiongroup2.add_actions( [(kb[ip + 'passwords'], None, str(kb[ip + 'passwords']))] )
+#                        self.target_menu += '<menuitem action="' + kb[ip + '_passwords'] + '">'
+
+                    self.actiongroup2.add_actions( [(str(port), None, str(port))] )
+                    self.target_menu += '<menu action="' + str(port) + '">'
+
+                    #Menuitems for connect and browser
+                    self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with broswer', None, None, self.show_browser)], [str(port), ip] )
+                    self.target_menu += '<menuitem action="' + str(port) + '_browser"/>'
+                    self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, gtk.main_quit)] )
+                    self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
+
+                    # Menu for brute modules
+                    self.actiongroup2.add_actions( [(str(port) + '_brutes', None, 'Bruteforce')] )
+                    self.target_menu += '<menu action="' + str(port) + '_brutes' + '">'
+                    #Brute menuitems for each module
+                    for brute in getattr(config, 'brutes'):
+                        id = ip + '_' + str(port) + '_' + brute
+                        self.actiongroup2.add_actions( [(id, gtk.STOCK_REFRESH, 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
+self.showBrute )], user_data=[ip, port] )
+                        self.target_menu += '<menuitem action="' + id + '"/>'
+                    self.target_menu += '</menu>'
+                    self.target_menu += '</menu>'
+                        
+
+#            elif kb.__contains__(ip + '_ports'):
+#                for port in kb[ip + '_ports']:
+#
+##                    if kb.__contains__(ip + '_passwords'):
+##                        self.actiongroup2.add_actions( [('pass', None, 'user/password')] )
+##                        self.target_menu += '<menuitem action="pass">'
+##
+##                        self.actiongroup2.add_actions( [(kb[ip + 'passwords'], None, str(kb[ip + 'passwords']))] )
+##                        self.target_menu += '<menuitem action="' + kb[ip + '_passwords'] + '">'
+#
+#                    self.actiongroup2.add_actions( [(str(port), None, str(port))] )
+#                    self.target_menu += '<menu action="' + str(port) + '">'
+#    
+#                    for brute in getattr(config, 'brutes'):
+#                        id = ip + '_' + str(port) + '_' + brute
+#                        self.actiongroup2.add_actions( [(id, gtk.STOCK_REFRESH, 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
+#self.showBrute )], user_data=[ip, port] )
+#                        self.target_menu += '<menuitem action="' + id + '"/>'
+#                    self.target_menu += '</menu>'
+                        
+            self.target_menu += '</menu><separator/>'
+
+            # Add target's information
+            self.actiongroup2.add_actions( [('Information', gtk.STOCK_INFO, '  Information')] )
+            self.target_menu += '<menu action="Information" position="top">'
+   
+            if kb.__contains__(ip + '_name'):
+                # Host name 
+                self.actiongroup2.add_actions( [('host', None, 'Host Name')] )
+                self.target_menu += '<menuitem action="host"/>'
+                self.actiongroup2.add_actions( [('name', None, kb[ip + '_name'][0] )] )
+                self.target_menu += '<menuitem action="name"/><separator/>'
+
+            if kb.__contains__(ip + '_asn'):
+                # ASN Information
+                self.actiongroup2.add_actions( [('asname', None, 'ASN')] )
+                self.target_menu += '<menuitem action="asname"/>'
+                self.actiongroup2.add_actions( [('tasn', None, kb[ip + '_asn'][-1] )] )
+                self.target_menu += '<menuitem action="tasn"/>'
+    
+            self.target_menu += '</menu><separator/>'
+    
+            # Add IP Address
+            self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
+            self.target_menu += '<menuitem action="' + ip + '" position="top">'
+            self.target_menu += '</menuitem><separator/>'
+    
+            self.target_menu += self.menu_base
+
+            # Add the actiongroup to the uimanager
+            self.insert_action_group(self.actiongroup2, 0)
+
+        # Menu
+        ui_id = self.add_ui_from_string(self.target_menu)
+        self.set_uiID(ui_id)
+        self.popmenu = self.get_widget('/Popup')
+
+    def set_uiID(self, id):
+        self.ui_id = id
+
+    def get_uiID(self):
+        return self.ui_id
+
+    def show_browser(self, action, data):
+        from webbrowser import open_new
+        port, ip = data
+        open_new('http://' + ip + ':' + port)
+
+    def showDialog(self, action):
+        module = action.get_name()
+        tg = targetDialog.TargetDialog(module, self.uicore)
+
+    def showGather(self, action):
+        module = action.get_name()
+        inputs = getattr(config, module)
+
+        if type(inputs) == dict:
+            exec 'import ' + inputs.keys()[0]
+            dialog = eval(inputs.keys()[0] + '.' + inputs.values()[0] + '(ip=\'' + str(self.ip) + '\')')
+            setattr(dialog, 'uicore', self.uicore)
+            setattr(dialog, 'module', module)
+        elif not inputs:
+            tg = gatherDialog.GatherDialog(module, gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)
+        else:
+            tg = gatherDialog.GatherDialog(module, gtk.STOCK_NEW, inputs, self.uicore)
+
+    def showBrute(self, action, params):
+        module = action.get_name().split('_')[-1]
+        inputs = getattr(config, module)
+        defaults = ["target", "port", "user"]
+
+        if not inputs:
+            tg = bruteDialog.BruteDialog(module, gtk.STOCK_NEW, defaults, self.uicore, params)
+        else:
+            for input in inputs:
+                defaults.append(input)
+            tg = bruteDialog.BruteDialog(module, gtk.STOCK_NEW, defaults, self.uicore, params)
+

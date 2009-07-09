@@ -1,0 +1,8 @@
+POST /xxx/a.jsp?b=1 HTTP/1.1
+Cookie: foo=bar
+user-agent: x
+Connection: Keep-Alive
+
+
+foo=bar
+

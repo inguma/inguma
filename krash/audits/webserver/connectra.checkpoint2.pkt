@@ -1,0 +1,7 @@
+POST /cgi-bin/cgixml.exe?request_id=IS_EULA_ACCEPTED&token=&serial=1 HTTP/1.1
+Host: host
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+
+request_data=mierdaputa

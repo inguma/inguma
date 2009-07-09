@@ -1,0 +1,6 @@
+GET /samples/1.1/webservice/ConverterService.asmx?page=op&tab=main&op=Login&bnd=ConverterServiceSoap HTTP/1.1
+HOST: host
+Cookie: ASPSESSION=A4D69C7D7319D570D94E6626ED9BD9
+connection:close
+
+

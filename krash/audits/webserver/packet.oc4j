@@ -1,0 +1,14 @@
+GET /dmsoc4j/AggreSpy?format=spytable HTTP/1.1
+language: es
+encoding: x
+charset: x
+authorization: x
+cookie2: x
+content-type: x
+host: x
+pragma: x
+referer: x
+user-agent: x
+Connection: Keep-Alive
+
+

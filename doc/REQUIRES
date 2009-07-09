@@ -1,0 +1,23 @@
+Library Requirements for Inguma
+-------------------------------
+
+Inguma requires the following libraries in order to work all modules:
+
+	* Impacket
+	* Scapy
+	* Paramiko
+	* cx_Oracle
+	* pysnmp
+    * python-bluez
+
+For GTK user interface install:
+
+    * pygtk
+    * pygraphviz
+    * python-vte
+
+Many modules will work without these libraries BUT the most interesting
+modules will requires these libraries. At least is recommended to have
+installed in your box Impacket, Scapy and Paramiko.
+
+

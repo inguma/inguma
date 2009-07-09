@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+cd /usr/share/inguma
+python /usr/share/inguma/ingumagui.py
+
+

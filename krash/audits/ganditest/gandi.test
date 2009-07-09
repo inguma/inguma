@@ -1,0 +1,27 @@
+POST /favicon.ico HTTP/1.1
+Host: a:b
+User-Agent: M
+Accept: text/xml
+Accept-Language: es-es
+Accept-Charset: ISO
+Keep-Alive: 300
+Referer: http://host:port/webis/lostpwd.html
+Content-Type: multipart/form-data;
+Content-Length: 728
+
+
+-----------------------------9483694351630936721635005847
+
+Content-Disposition: form-data; name="request_data"
+
+
+
+<upload_file></upload_file>
+
+-----------------------------9483694351630936721635005847
+
+Content-Disposition: form-data; name="upload_file"; filename="test.c"
+
+Content-Type: text/x-csrc
+
+lasttoken

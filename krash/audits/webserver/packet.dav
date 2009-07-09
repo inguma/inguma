@@ -1,0 +1,11 @@
+GET /dav_public/.?log HTTP/1.1
+HOST:TEST
+User-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.2 (like Gecko) Kubuntu 6.06 Dapper
+Accept: */*
+Accept-Encoding: x-gzip, x-deflate, gzip, deflate
+Accept-Charset: utf-8, utf-8;q=0.5, *;q=0.5
+Accept-Language: es, en
+Cookie: jsessionid=00000000000000000;Path=/
+Connection: Keep-Alive
+
+

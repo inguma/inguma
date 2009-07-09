@@ -1,0 +1,6 @@
+GET http://fedora7:8080 HTTP/1.1
+HOST: fedora7:8080
+Connection: close
+
+
+

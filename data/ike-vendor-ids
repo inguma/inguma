@@ -1,0 +1,483 @@
+# The IKE Scanner (ike-scan) is Copyright (C) 2003-2007 Roy Hills,
+# NTA Monitor Ltd.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+# If this license is unacceptable to you, I may be willing to negotiate
+# alternative licenses (contact ike-scan@nta-monitor.com).
+#
+# $Id: ike-vendor-ids 9884 2007-01-14 19:05:39Z rsh $
+#
+# ike-vendor-ids -- File containing known Vendor IDs for ike-scan
+#
+# Author: Roy Hills <Roy.Hills@nta-monitor.com>
+#
+# Format:
+# Implementation_Name<Tab>Vendor_ID_Pattern
+#
+# The Vendor_ID_Pattern should be specified as a Posix extended regular
+# expression that will match the hex value of the Vendor ID.  The Posix regular
+# expression routines "regcomp" and "regexec" are used to compile and
+# match the patterns.
+#
+# The hex value of the Vendor ID can only contain the characters [0-9a-f].
+# The regular expression match is case insensitive so you can use either
+# upper or lower case letters [A-F] in the pattern, although I recommend that
+# you use only lower-case for consistency.
+#
+# The pattern is not anchored by default.  If you want to match from the
+# beginning of the vendor ID hex value (which is normally the case), you
+# should start your pattern with "^" to anchor it at the beginning of the hex
+# value.  If you don't want to allow any extra trailing data, you should end
+# the pattern with "$" to anchor it at the end of the hex value.
+#
+# Each entry must be on one line.  A line can be up to 254 characters long.
+# To allow for longer lines, adjust the MAXLINE macro in ike-scan.h
+#
+# Lines beginning with '#' and blank lines are ignored.
+#
+# The input format is quite strict.  In particular, the separator between
+# the implementation name and the VendorID pattern must be a single TAB and
+# not a space.
+#
+# If you have problems adding entries, run ike-scan as:
+# ike-scan -v -v -v <any-target>
+# Which will dump the VendorID pattern table.
+#
+# You are encouraged to send comments, improvements or suggestions to
+# me at ike-scan@nta-monitor.com.
+#
+
+# Microsoft/Cisco IPsec implementation for Win-2000 and above.
+# The first 16 bytes are the MD5 hash of "MS NT5 ISAKMPOAKLEY"
+# The next four bytes appear to be a version number in big endian format
+# The observed version numbers are:
+#
+# 2	Windows 2000
+# 3	Windows XP SP1
+# 4	Windows 2003 and Windows XP SP2
+# 5	Windows Vista (tested against Beta 2 build 5384)
+#
+Windows-2000	^1e2b516905991c7d7c96fcbfb587e46100000002
+Windows-XP-SP1	^1e2b516905991c7d7c96fcbfb587e46100000003
+Windows-2003-or-XP-SP2	^1e2b516905991c7d7c96fcbfb587e46100000004
+Windows-Vista	^1e2b516905991c7d7c96fcbfb587e46100000005
+
+# Checkpoint Firewall-1/VPN-1
+#
+# Firewall-1 v4.0 didn't use Vendor IDs.  v3.0 and below didn't support IPsec.
+#
+# This is a 40-byte Vendor ID, which consists of the following fields:
+#
+# Bytes		Description
+#  1-20		Checkpoint VID (Probably an SHA1 hash of something)
+# 21-24		Product (1=Firewall-1, 2=SecuRemote/SecureClient)
+# 25-28		Encoded Version number
+# 29-32		Timestamp (NGX only; always zero in 4.1 or NG)
+# 33-36		Reserved
+# 37-40		Features
+#
+# The Checkpoint VID is "f4ed19e0c114eb516faaac0ee37daf2807b4381f".  I suspect
+# that this is an SHA1 hash of something, but I don't know what the input text
+# is.
+#
+# The Product is either 1 (0x00000001) for Firewall-1/VPN-1 or 2 (0x00000002)
+# for SecuRemote/SecureClient (Checkpoint's VPN client).
+#
+# The encoded version number is described in the URL below.
+#
+# The timestamp field contains the Firewall's date and time encoded as seconds
+# since 1st Jan 1970 (standard Unix epoch).  Only NGX fills this in; it is
+# always zero on 4.1 and NG.
+#
+# The first byte of the features field contains the number of bits used.  This
+# is normally 0x18 (24).  The remaining three bytes (24 bits) are feature
+# flags.
+#
+# Firewall-1 4.1 and NG only returns a Vendor ID if you send a Vendor ID
+# payload starting with the Checkpoint VID. Firewall-1 NGX always returns
+# a Vendor ID, regardless of whether the client sends the Checkpoint VID
+# or not.
+#
+# See http://www.nta-monitor.com/news/checkpoint2004/index.htm for full details
+#
+Firewall-1 4.1 Base	^f4ed19e0c114eb516faaac0ee37daf2807b4381f00000001000000020000000000000000........
+Firewall-1 4.1 SP1	^f4ed19e0c114eb516faaac0ee37daf2807b4381f00000001000000030000000000000000........
+Firewall-1 4.1 SP2-SP6	^f4ed19e0c114eb516faaac0ee37daf2807b4381f0000000100000fa20000000000000000........
+Firewall-1 NG Base	^f4ed19e0c114eb516faaac0ee37daf2807b4381f00000001000013880000000000000000........
+Firewall-1 NG FP1	^f4ed19e0c114eb516faaac0ee37daf2807b4381f00000001000013890000000000000000........
+Firewall-1 NG FP2	^f4ed19e0c114eb516faaac0ee37daf2807b4381f000000010000138a0000000000000000........
+Firewall-1 NG FP3	^f4ed19e0c114eb516faaac0ee37daf2807b4381f000000010000138b0000000000000000........
+Firewall-1 NG AI R54	^f4ed19e0c114eb516faaac0ee37daf2807b4381f000000010000138c0000000000000000........
+Firewall-1 NG AI R55	^f4ed19e0c114eb516faaac0ee37daf2807b4381f000000010000138d0000000000000000........
+Firewall-1 NGX	^f4ed19e0c114eb516faaac0ee37daf2807b4381f000000010000138d........00000000........
+Firewall-1 Unknown Vsn	^f4ed19e0c114eb516faaac0ee37daf2807b4381f
+
+# Dead Peer Detection (DPD), detailed in RFC 3706.
+# This is a truncated MD5 hash of "CISCO-DEAD-PEER-DETECTION"
+# The last 2 bytes (4 hex chars) are major & minor version.
+# The current version, and the only one that has been observed, is 1.0.
+# Thanks to Hakan Olsson for clarifing this.
+Dead Peer Detection v1.0	^afcad71368a1f1c96b8696fc77570100
+Dead Peer Detection	^afcad71368a1f1c96b8696fc7757....
+
+# XAUTH
+# This is a truncated MD5 hash of "draft-ietf-ipsra-isakmp-xauth-06.txt"
+# IPSRA = "IP Security Remote Access"
+# Also known as "draft-beaulieu-ike-xauth-02.txt"
+XAUTH	^09002689dfd6b712
+
+# SSH Communications Security IPSEC Express
+# These VIDs are MD5 hashes of the text
+# "SSH Communications Security IPSEC Express version x.y.z" or
+# "Ssh Communications Security IPSEC Express version x.y.z"
+# Where x.y.z is the version, e.g. 1.1.0
+SSH IPSEC Express 1.1.0	^fbf47614984031fa8e3bb6198089b223
+SSH IPSEC Express 1.1.1	^1952dc91ac20f646fb01cf42a33aee30
+SSH IPSEC Express 1.1.2	^e8bffa643e5c8f2cd10fda7370b6ebe5
+SSH IPSEC Express 1.2.1	^c1111b2dee8cbc3d620573ec57aab9cb
+SSH IPSEC Express 1.2.2	^09ec27bfbc09c75823cfecbffe565a2e
+SSH IPSEC Express 2.0.0	^7f21a596e4e318f0b2f4944c2384cb84
+SSH IPSEC Express 2.1.0	^2836d1fd2807bc9e5ae30786320451ec
+SSH IPSEC Express 2.1.1	^a68de756a9c5229bae66498040951ad5
+SSH IPSEC Express 2.1.2	^3f2372867e237c1cd8250a75559cae20
+SSH IPSEC Express 3.0.0	^0e58d5774df602007d0b02443660f7eb
+SSH IPSEC Express 3.0.1	^f5ce31ebc210f44350cf71265b57380f
+SSH IPSEC Express 4.0.0	^f64260af2e2742daddd56987068a99a0
+SSH IPSEC Express 4.0.1	^7a54d3bdb3b1e6d923892064be2d981c
+SSH IPSEC Express 4.1.0	^9aa1f3b43472a45d5f506aeb260cf214
+SSH IPSEC Express 4.1.1	^89f7b760d86b012acf263382394d962f
+SSH IPSEC Express 4.2.0	^6880c7d026099114e486c55430e7abee
+SSH IPSEC Express 5.0	^b037a21aceccb5570f602546f97bde8c
+SSH IPSEC Express 5.0.0	^2b2dad97c4d140930053287f996850b0
+SSH IPSEC Express 5.1.0	^45e17f3abe93944cb202910c59ef806b
+SSH IPSEC Express 5.1.1	^5925859f7377ed7816d2fb81c01fa551
+
+# Cisco Unity compliant peer. VID is the MD5 hash of "CISCO-UNITY" with
+# the last two bytes replaced with 0x0100.
+Cisco Unity	^12f5f28c457168a9702d9fe274cc0100
+
+# Cisco VPN 3000 Concentrator (formerly Altega Networks)
+# There are several models: 3005, 3015, 3020, 3030, 3060 and 3080, which are
+# equivalent to the old Altiga C5, C15 Etc.
+#
+# The VPN 3000 client VID is the MD5 hash of "ALTIGA NETWORKS"
+# The VPN 3000 concentrator VID is a truncated MD5 hash of "ALTIGA GATEWAY"
+#
+# I've seen this pattern with trailing 500306 and 500400.  I suspect that
+# the last two bytes indicate the version number, e.g 0306 = 3.0.6.  However,
+# I need more examples before I'm confident that this is the case, so for
+# now I'm just including the generic pattern.
+VPN-3000-client	^f6f7efc7f5aeb8cb158cb9d094ba69e7
+Cisco VPN Concentrator	^1f07f70eaa6514d3b0fa96542a
+
+# IKE Fragmentation.  VID is the MD5 hash of the text "FRAGMENTATION"
+# I've seen extra bytes on the end of a fragmentation VID payload, e.g.
+# c0000000 and 80000000.  I don't know what these represent.
+IKE Fragmentation	^4048b7d56ebce88525e7de7f00d6c2d3
+
+# Various IKE Internet drafts.  The VID payload is the MD5 hash of the
+# implementation name given below.
+draft-stenberg-ipsec-nat-traversal-01	^27bab5dc01ea0760ea4e3190ac27c0d0
+draft-stenberg-ipsec-nat-traversal-02	^6105c422e76847e43f9684801292aecd
+draft-huttunen-ipsec-esp-in-udp-00.txt	^6a7434c19d7e36348090a02334c9c805
+
+# SafeNet SoftRemote VPN Client.
+# Extra data has been observed at the end of this VID payload.
+SafeNet SoftRemote	^47bbe7c993f1fc13b4e6d0db565c68e5
+
+# HeartBeat Notify.
+# VID is ASCII "HeartBeat_Notify"
+# Extra data has been observed at the end of this VID payload.  It is
+# suspected that this may be a version number.  E.g:
+# 4865617274426561745f4e6f74696679386b0100
+Heartbeat Notify	^4865617274426561745f4e6f74696679
+
+# OpenPGP
+OpenPGP	^4f70656e5047503130313731
+
+# draft-huttunen-ipsec-esp-in-udp-01.txt
+# VID is an MD5 hash of "ESPThruNAT"
+ESPThruNAT	^50760f624c63e5c53eea386c685ca083
+
+# SSH Sentinel.
+# These VIDs are MD5 hashes of the implementation names given below.
+SSH Sentinel	^054182a07c7ae206f9d2cf9d2432c482
+SSH Sentinel 1.1	^b91623e693ca18a54c6a2778552305e8
+SSH Sentinel 1.2	^5430888de01a31a6fa8f60224e449958
+SSH Sentinel 1.3	^7ee5cb85f71ce259c94a5c731ee4e752
+SSH Sentinel 1.4	^63d9a1a7009491b5a0a6fdeb2a8284f0
+SSH Sentinel 1.4.1	^eb4b0d96276b4e220ad16221a7b2a5e6
+
+# Timestep VID is ASCII "TIMESTEP" (54494d4553544550) followed by further
+# ASCII characters which seem to indicate a version number.  e.g:
+# 54494d455354455020312053475720313532302033313520322e303145303133
+# which is "TIMESTEP 1 SGW 1520 315 2.01E013"
+Timestep	^54494d4553544550
+
+# VID is MD5 hash of "KAME/racoon"
+KAME/racoon	^7003cbc1097dbe9c2600ba6983bc8b35
+
+# Negotiation of NAT-Traversal in the IKE - previously IETF draft, now RFC.
+# The VID is the MD5 hash of the implementation name given below.
+# The trailing newline (\n) on one entry is explained in
+# http://www.sandelman.ottawa.on.ca/ipsec/2002/04/msg00233.html
+# Jan 2005: RFC released as RFC 3947 "Negotiation of NAT-Traversal in the IKE"
+# VID is MD5 hash of "RFC 3947"
+draft-ietf-ipsec-nat-t-ike	^4df37928e9fc4fd1b3262170d515c662
+draft-ietf-ipsec-nat-t-ike-00	^4485152d18b6bbcd0be8a8469579ddcc
+draft-ietf-ipsec-nat-t-ike-01	^16f6ca16e4a4066d83821a0f0aeaa862
+draft-ietf-ipsec-nat-t-ike-02\n	^90cb80913ebb696e086381b5ec427b1f
+draft-ietf-ipsec-nat-t-ike-02	^cd60464335df21f87cfdb2fc68b6a448
+draft-ietf-ipsec-nat-t-ike-03	^7d9419a65310ca6f2c179d9215529d56
+draft-ietf-ipsec-nat-t-ike-04	^9909b64eed937c6573de52ace952fa6b
+draft-ietf-ipsec-nat-t-ike-05	^80d0bb3def54565ee84645d4c85ce3ee
+draft-ietf-ipsec-nat-t-ike-06	^4d1e0e136deafa34c4f3ea9f02ec7285
+draft-ietf-ipsec-nat-t-ike-07	^439b59f8ba676c4c7737ae22eab8f582
+draft-ietf-ipsec-nat-t-ike-08	^8f8d83826d246b6fc7a8a6a428c11de8
+draft-ietf-ipsec-nat-t-ike-09	^42ea5b6f898d9773a575df26e7dd19e1
+Testing NAT-T RFC	^c40fee00d5d39ddb1fc762e09b7cfea7
+RFC 3947 NAT-T	^4a131c81070358455c5728f20e95452f
+
+# A GSS-API Authentication Method for IKE - draft-ietf-ipsec-isakmp-gss-auth
+# This is used by Windows 2000 and later.  Specific Windows VIDs are in a
+# separate section.
+# Note that the MD5 hash for "A GSS-API ..." in draft version 07 is given as
+# the hash of the string with a newline appended.  I think that this is an
+# error, so I've added patterns both with and without the trailing newline.
+MS NT5 ISAKMPOAKLEY	^1e2b516905991c7d7c96fcbfb587e461
+A GSS-API Authentication Method for IKE	^ad2c0dd0b9c32083ccba25b8861ec455
+A GSS-API Authentication Method for IKE\n	^b46d8914f3aaa3f2fedeb7c7db2943ca
+GSSAPI	^621b04bb09882ac1e15935fefa24aeee
+
+# Nortel Contivity VPN Router (was Bay Networks Enterprise Switch)
+# The first 4 bytes are ASCII "BNES" (Bay Networks Enterprise Switch)
+# The second 4 bytes appear to be a version number in big endian format.
+# I've seen values 00000004, 00000005, 00000007, 00000009 and 0000000a in
+# this position.
+Nortel Contivity	^424e4553000000..
+
+# Observed to be sent from SonicWall Firewalls
+SonicWall	^404bf439522ca3f6
+
+# SSH QuickSec
+# The VIDs are the MD5 hashes of "SSH Communications Security QuickSec x.y.z"
+# Where x.y.z is the version number
+SSH QuickSec 0.9.0	^37eba0c4136184e7daf8562a77060b4a
+SSH QuickSec 1.1.0	^5d72925e55948a9661a7fc48fdec7ff9
+SSH QuickSec 1.1.1	^777fbf4c5af6d1cdd4b895a05bf82594
+SSH QuickSec 1.1.2	^2cdf08e712ede8a5978761267cd19b91
+SSH QuickSec 1.1.3	^59e454a8c2cf02a34959121f1890bc87
+
+# VIDs are MD5 hash of:
+# "IKE Challenge/Response for Authenticated Cryptographic Keys"
+# "IKE Challenge/Response for Authenticated Cryptographic Keys (Revised)"
+# both without and with trailing newline.
+IKE Challenge-Response	^ba290499c24e84e53a1d83a05e5f00c9
+IKE Challenge-Response-2	^0d33611a5d521b5e3c9c03d2fc107e12
+IKE Challenge-Response Revised	^ad3251042cdc4652c9e0734ce5de4c7d
+IKE Challenge-Response Revised-2	^13f11823f966fa91900f024ba66a86ba
+
+# draft-krywaniuk-ipsec-antireplay-00.txt - Using Isakmp Message Ids for
+# Replay Protection
+#
+#  "They may also be enabled in the short term by mutual exchange of the
+#   vendor id 0x325df29a2319f2dd"
+draft-krywaniuk-ipsec-antireplay-00	^325df29a2319f2dd
+
+# draft-ietf-ipsec-heartbeats-00.txt - Using Isakmp Heartbeats for Dead Peer
+# Detection
+# The draft says that the VID is a truncated MD5 hash of
+# "draft-ietf-krywaniuk-ipsec-heartbeats-00.txt"
+# but it is not.
+draft-ietf-ipsec-heartbeats-00	^8db7a41811221660
+
+# MacOS X
+# Unconfirmed, from StrongSwan vendor.c
+MacOS 10.x	^4d6163204f53582031302e78
+
+# strongSwan
+# VID is MD5 hash of "strongSwan x.y.z" where x.y.z is version number
+# Obtained from strongSwan 4.0.5 pluto/vendor.c
+strongSwan 4.0.5	^dd180d21e5ce655a768ba32211dd8ad9
+strongSwan 4.0.4	^1ef283f83549b5ff9608b6d634f84d75
+strongSwan 4.0.3	^b181b18e114fc209b3c6e26c3a80718e
+strongSwan 4.0.2	^77e8eea6f556a499de3ffe7f7f95661c
+strongSwan 4.0.1	^9dbbafcf1db0dd595ae065294003ad3e
+strongSwan 4.0.0	^2ce9c946a4c879bf11b50b76cc5692cb
+strongSwan 2.8.0	^32f0e9b9c06dfe8c9ad5599a636971a1
+strongSwan 2.7.3	^7f50cc4ebf04c2d9da73abfd69b77aa2
+strongSwan 2.7.2	^a194e2aaddd0bafb95253dd96dc733eb
+strongSwan 2.7.1	^8134878582121785ba65ea345d6ba724
+strongSwan 2.7.0	^07fa128e4754f9447b1dd46374eef360
+strongSwan 2.6.4	^b927f95219a0fe3600dba3c1182ae55f
+strongSwan 2.6.3	^b2860e7837f711bef3d0eeb106872ded
+strongSwan 2.6.2	^5b1cd6fe7d050eda6c93871c107db3d2
+strongSwan 2.6.1	^66afbc12bbfe6ce108b1f69f4bc917b7
+strongSwan 2.6.0	^3f3266499ffdbd85950e702298062844
+strongSwan 2.5.7	^1f4442296b83d7e33a8b45209ba0e590
+strongSwan 2.5.6	^3c5eba3d8564928e32ae43c3d9924dee
+strongSwan 2.5.5	^3f267ed621ada7ee6c7d8893ccb0b14b
+strongSwan 2.5.4	^7a6bf5b7df89642a75a78ef7d657c1c0
+strongSwan 2.5.3	^df5b1f0f1d5679d9f8512b16c55a6065
+strongSwan 2.5.2	^861ce5eb72164b190e9e629a31cf4901
+strongSwan 2.5.1	^9a4a4648f60f8eda7cfcbfe271ee5b7d
+strongSwan 2.5.0	^9eb3d907ed7ada4e3cbcacb917abc8e4
+strongSwan 2.4.4	^485a70361b4433b31dea1c6be0df243e
+strongSwan 2.4.3	^982b7a063a33c143a8eadc88249f6bcc
+strongSwan 2.4.2	^e7a3fd0c6d771a8f1b8a86a4169c9ea4
+strongSwan 2.4.1	^75b0653cb281eb26d31ede38c8e1e228
+strongSwan 2.4.0	^e829c88149bab3c0cee85da60e18ae9b
+strongSwan 2.3.2	^42a4834c92ab9a7777063afa254bcb69
+strongSwan 2.3.1	^f697c1afcc2ec8ddcdf99dc7af03a67f
+strongSwan 2.3.0	^b8f92b2fa2d3fe5fe158344bda1cc6ae
+strongSwan 2.2.2	^99dc7cc823376b3b33d04357896ae07b
+strongSwan 2.2.1	^d9118b1e9de5efced9cc9d883f2168ff
+strongSwan 2.2.0	^85b6cbec480d5c8cd9882c825ac2c244
+
+# ZyXEL ZyWALL router
+# Observed on several devices.  HTTP interface shows that they are XyWALL
+# I suspect that this VID is an SHA-1 hash of something because of the length
+XyXEL ZyWALL Router	^b858d1addd08c1e8adafea150608aa4497aa6cc8
+
+# Microsoft Initial Contact
+# VID is MD5 hash of "Vid-Initial-Contact"
+Microsoft Initial-Contact	^26244d38eddb61b3172a36e3d0cfb819
+
+# FreeS/WAN and Openswan
+# VID is a 12-byte printable string.  The first two bytes are "OE", which
+# stands for "Opportunistic Encryption" (the FreeS/WAN designers were
+# enthusiastic about opportunistic encryption); the remaining ten bytes are
+# a truncated, "ASCIIfied" MD5 hash of the implementation name given below.
+# The "ASCIIfication" process involves clearing bit 7 and setting bit 6 in
+# each byte, thus constraining the range to 64-127 inclusive.
+# I think that support for this VID was added in FreeS/WAN 2.00, and carried
+# over into openswan 2.x.
+Linux FreeS/WAN 2.00	^4f45486b7d44784d42676b5d
+Linux FreeS/WAN 2.01	^4f457c4f547e6e615b426e56
+Linux FreeS/WAN 2.02	^4f456c6b44696d7f6b4c4e60
+Linux FreeS/WAN 2.03	^4f45566671474962734e6264
+Linux FreeS/WAN 2.04	^4f45704f736579505c6e5f6d
+Linux FreeS/WAN 2.05	^4f457271785f4c7e496f4d54
+Linux FreeS/WAN 2.06	^4f457e4c466e5d427c5c6b52
+Openswan 2.2.0	^4f4548724b6e5e68557c604f
+Openswan 2.3.0	^4f4572696f5c77557f746249
+
+# OpenPGP
+# VID starts with ASCII "OpenPGP".  This is generally followed by some extra
+# data, e.g. "OpenPGP10171", but we don't match that.
+OpenPGP	^4f70656e504750
+
+# Observed on Fortinet ForteGate Firewalls.
+# Probably an MD5 hash of something.
+FortiGate	^1d6e178f6c2c0be284985465450fe9d4
+
+# Juniper NetScreen running ScreenOS
+#
+# There are many different entries for this implementation, because the VID
+# varies depending on the s/w version and h/w model, and maybe other things
+# as well.
+#
+# The first 20 bytes are suspected to be an SHA1 hash of something.
+# This suspected hash appears to include the s/w version and the h/w platform.
+#
+# This is followed by eight bytes, which we don't include in the pattern.
+# This eight bytes consists of two four-byte values in big endian format,
+# e.g. 0000000900000500, the last four bytes appear to indicate the ScreenOS
+# version.
+#
+# Examples:
+#
+# For the examples below, we show the entire VID, the netscreen model, and
+# the ScreenOS version number.
+#
+# 64405f46f03b7660a23be116a1975058e69e83870000000400000403 ns5xp 4.0.3r3.0
+# 299ee8289f40a8973bc78687e2e7226b532c3b760000000900000500 ns5xp 5.0.0r1.0
+# 299ee8289f40a8973bc78687e2e7226b532c3b760000000900000500 ns5xp 5.0.0r6.0
+# 299ee8289f40a8973bc78687e2e7226b532c3b760000000900000500 ns5xp 5.0.0r9.0
+# 4a4340b543e02b84c88a8b96a8af9ebe77d9accc0000000b00000500 ns5gt 5.0.0r7.1
+# 2a2bcac19b8e91b426107807e02e7249569d6fd30000000b0000050a ns5gt 5.1.0r1.0
+# 166f932d55eb64d8e4df4fd37e2313f0d0fd84510000000000000000 ns5gt 5.2.0r3b.0
+# 166f932d55eb64d8e4df4fd37e2313f0d0fd84510000000000000000 ns5gt 5.3.0r4.0
+# 166f932d55eb64d8e4df4fd37e2313f0d0fd84510000000000000000 ns5gt 5.4.0r1.0
+# a35bfd05ca1ac0b3d2f24e9e82bfcbff9c9e52b50000000b00000514 unknown unknown
+#
+# The Netscreen hardware referenced above is:
+#
+# ns5xp model NS-5XP
+# ns5gt	model NS-5GT-103 serial no 0064062004015770
+#
+# Netscreens also return:
+# 4865617274426561745f4e6f74696679386b0100 (Heartbeat Notify)
+# In addition, ScreenOS Version 5.3 and 5.4 returns:
+# afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection)
+#
+Netscreen-01	^299ee8289f40a8973bc78687e2e7226b532c3b76
+Netscreen-02	^3a15e1f3cf2a63582e3ac82d1c64cbe3b6d779e7
+Netscreen-03	^47d2b126bfcd83489760e2cf8c5d4d5a03497c15
+Netscreen-04	^4a4340b543e02b84c88a8b96a8af9ebe77d9accc
+Netscreen-05	^64405f46f03b7660a23be116a1975058e69e8387
+Netscreen-06	^699369228741c6d4ca094c93e242c9de19e7b7c6
+Netscreen-07	^8c0dc6cf62a0ef1b5c6eabd1b67ba69866adf16a
+Netscreen-08	^92d27a9ecb31d99246986d3453d0c3d57a222a61
+Netscreen-09	^9b096d9ac3275a7d6fe8b91c583111b09efed1a0
+Netscreen-10	^bf03746108d746c904f1f3547de24f78479fed12
+Netscreen-11	^c2e80500f4cc5fbf5daaeed3bb59abaeee56c652
+Netscreen-12	^c8660a62b03b1b6130bf781608d32a6a8d0fb89f
+Netscreen-13	^f885da40b1e7a9abd17655ec5bbec0f21f0ed52e
+Netscreen-14	^2a2bcac19b8e91b426107807e02e7249569d6fd3
+Netscreen-15	^166f932d55eb64d8e4df4fd37e2313f0d0fd8451
+Netscreen-16	^a35bfd05ca1ac0b3d2f24e9e82bfcbff9c9e52b5
+
+# Avaya
+# Observed on Avaya VSU 100R
+# Not sure if this is common to all Avaya equipment
+avaya	^4485152d18b6bbcc0be8a8469579ddcc
+
+# Stonegate
+# Observed on Stonesoft StoneGate v2.2.1
+StoneGate-01	^c573b056d7faca36c2fba28374127cbf
+StoneGate-02	^baeb239037e17787d730eed9d95d48aa
+
+# Symantec Raptor / Enterprise Firewall
+# Observed on Symantec Enterprise Firewall 8.0 running on Windows 2000
+# An example vendor ID returned by these systems is:
+# 526170746f7220506f77657256706e20536572766572205b56382e315d
+# which corresponds to the ASCII string: "Raptor PowerVpn Server [V8.1]"
+# 
+Symantec-Raptor-v8.1	^526170746f7220506f77657256706e20536572766572205b56382e315d
+Symantec-Raptor	^526170746f7220506f77657256706e20536572766572
+
+# Other things I've seen but not fully classified yet.
+# If anyone can confirm any of these, please let me know.
+Maybe Cisco IOS	^bdb41038a7ec5e5534dd004d0f91f927
+# Unknown 1 was classified as Cisco VPN Concentrator
+# Unknown 2 was classified as Windows-2000
+Unknown 3	^edea53a3c15d45cafb11e59ea68db2aa99c1470e0000000400000303
+Unknown 4	^bedc86dabf0ab7973870b5e6c4b87d3ee824de310000001000000401
+Unknown 5	^ac5078c25cabb9523979978e76a3d0d2426bc9260000000400000401
+# Unknown 6 was classified as SSH IPSEC Express 4.1.0
+Unknown 7	^69b761a173cc1471dc4547d2a5e94812
+Unknown 8	^4c5647362e303a627269636b3a362e302e353732
+Unknown 9	^3499691eb82f9eaefed378f5503671debd0663b4000000040000023c
+# I've seen Unknown 10 sent from SonicWall Global VPN Client
+Unknown 10	^975b7816f69789600dda89040576e0db
+# The "Safenet or Watchguard" Vendor ID has also been seen sent from SonicWall
+# Global VPN client.  It is normally followed by 80010000, which looks like a
+# version number.
+Safenet or Watchguard	^da8e9378
+Unknown-cisco	^e23ae9f51a46876ff93d89ba725d649d
+Maybe Sidewinder G2	^8404adf9cda05760b2ca292e4bff537b
+Maybe Sidewinder G2	^e720cdd49d2ee7b83ce1970a6c69b528

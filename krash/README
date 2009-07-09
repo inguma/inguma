@@ -1,0 +1,63 @@
+Krash Token Fuzzer
+------------------
+
+Author: 	Joxean Koret
+Location: 	Basque Country
+License:	GPL v2
+
+What is Krash?
+--------------
+
+Krash is a token based fuzzer. It takes a raw packet and tries to tokenize it. 
+Every token that the fuzzer generates will be fuzzed. 
+
+It's something like "block based fuzzing", but a little bit more automagic.
+
+Any sample?
+-----------
+
+In the "audits" directory you will find many raw packets.
+
+New packets
+-----------
+
+Use an sniffer such as wireshark to get a raw packet, write a binary raw packet
+in the "audits" folder or in another you want. Test the packet with the tool 
+"testpacket" against the desired target to see if it works by typing:
+
+./testpacket.py <hostname> <port> <packet file>
+
+Next, fuzz the target by typing:
+
+./krash.py <pkt file> <host> <port> <start index> <verbose> [flags]
+
+Did it found any vulnerability?
+-------------------------------
+
+A lot, but many of these aren't public and that is not going to change someday.
+A public one is the SIDVault LDAP remote buffer overflow, in example. 
+
+See BID 25460 at the following url: http://www.securityfocus.com/bid/25460
+
+It doesn't work for me!
+-----------------------
+
+Send me an email and I will fix the problem (if you're not using the multi-thread 
+feature, please). If you are using the multi-thread feature you will found many
+strange errors in almost all platforms. Try using it with a single thread.
+
+It sucks! I can't fuzz the product XXX!
+---------------------------------------
+
+It doesn't have support for cookies or statefull protocols. Take a look to the
+supplied "libfuzz" library to write your own fuzzer for the protocol XXX. It's 
+designed for that kind of things. See ../../lib directory. Or just use the new
+pcap based fuzzer.
+
+Anyway, remember: fuzzing always suck.
+
+I can't fuzz a (line based|ssl based|url based) protocol!
+---------------------------------------------------------
+
+Use the line mode flag (-L), the ssl flag (-S) or the url flag (-U).
+

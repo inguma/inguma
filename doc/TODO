@@ -1,0 +1,56 @@
+TODO
+----
+
+ [ ] nmap module
+ [ ] nmap-identify module
+ [ ] Integrate ldapcrak
+ [ ] Integrate Oracle PL/SQL fuzzer
+ [/] PHP exploits
+ [ ] TFTP support in identify module and a fuzzer
+ [ ] One NFS tool
+ [ ] Integrate "correctly" the Sybase/SQL Server brute forcer
+ [ ] One VNC crack module (and maybe a fuzzer)
+ [ ] Implement OVAL
+ [ ] Web application testing module (Very interesting!)
+ [ ] Integrate the old PostgreSQL PL/PgSQL fuzzer (sure...?)
+ [Y] Integrate MORE rainbow tables sites and an standard way to gather the information
+ [ ] Brute force modules for CVS, MySQL, PostgreSQL, rexec, rlogin, SNMP, SVN, Telnet and VmAuthd
+ [ ] Add automation for finding blocks (for Krash fuzzer)
+ 	[ ] A proxy like tool to record packets between client and server?
+ [ ] autopwn like tool?
+ [ ] Automagic tool to own Oracle based servers (orabreak)
+ [ ] SNMP community guess
+
+ [ ] Add scripts ala w3af...
+ [ ] Add Xplico like passive information gathering
+ [ ] Add tools like edge-security ones (http://www.edge-security.com/soft.php)
+ [ ] Webshag web server auditing
+ [ ] Nmap new features (NSE)
+ [X] Add config file using ConfigParser module
+    * Used config.py with getattr instead
+ [ ] Review functions of scapy XXXX_am like DNS_am, etc...
+ [ ] Add report creation; XML based??
+ [ ] Use SAINT EXPloit from BT4 for inguma vuln scanner :P
+ [ ] Modules from: http://thesprawl.org/memdump/doku.php?id=tools:scapy
+ [ ] Add X Backdor as payload?
+        http://www.ja-psi.fr/tools/xbackdoor/
+
+GInguma
+-------
+
+ [X] Add HBox to Tactical Map (Zooms and layouts)
+ [ ] Try to create simple wrapper for Inguma (launch modules) to see... HOW THE HELL!!!!
+
+ [ ] Taxonomi for managing Inguma ala Gnome-Do or Ubiquity
+ [ ] "Acortar" grafos añadiendo [...] que, al pinchar, muestren nodos intermedios.
+ [ ] Aplicar grafos circulares de w3af "cluster graph" a ginguma
+ [ ] Mirar cheops-ng para ideas de interfaz
+ [ ] Multiples representaciones de datos: grafos, zoomed canvas... (Humanized, office labs, clutter, radialnet)
+ [ ] Fix thread status check on uicore.uiRunModile
+ [ ] Use Zynamics Binnavy and HBGary Inspector as example of GUI and functionalities
+ [ ] Improve bluetooth integration with ginguma
+ [ ] Get icons from Picol (www.picol.org)
+ [ ] Add wifi (discover) to ginguma
+ [ ] gtkSourceView for module and exploit edit and creation
+        http://projects.gnome.org/gtksourceview/
+ [ ] Use python-webkitgtk for emedded web browser

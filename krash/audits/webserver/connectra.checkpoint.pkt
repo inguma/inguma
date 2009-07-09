@@ -1,0 +1,12 @@
+POST /cgi-bin/cgixml.exe?request_id=AUTHENTICATE_ADMINISTRATOR&token=&serial=2 HTTP/1.1
+Host: 192.168.1.10:4433
+User-Agent: M
+Accept: text/xml,application/xml,application/xhtml+xml
+Accept-Language: es-es
+Accept-Charset: ISO-8859-1
+Keep-Alive: 300
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+
+request_data=%3Cauthenticate_administrator%20name%3D%22user%22%20password%3D%22password%22%2F%3E

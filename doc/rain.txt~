@@ -1,0 +1,20 @@
+* Listado de elementos a obtener durante las fases de un PY (ej: ip, puerto, nombre, dominio, etc...).
+    - Usar la lista para describir la representación visual de esos elementos y sus relaciones
+* Múltiples vistas para representar los mismo elementos pero mostrando diferente información.
+* "Elimina" de la GUI los módulos que no sirvan para hacer un PT básico y sólido.
+* Dos maneras de explotar un sistema:
+    - Exploit normal y corriente usando payloads.
+    - Explotar fallo de "configuración" (ej: contraseña debil, subir fichero, etc...)
+        · Otro tipo de payload estilo backdor (hydrogen, TCL backdor, vdaemon, w3af_agent, etc...)
+
+-------------------------------------------------------------------------------------------------------
+
+Elementos
+---------
+
+IP
+Nombre de maquina
+Puertos
+Protocolos
+SSOO
+

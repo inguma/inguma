@@ -1,0 +1,41 @@
+[X] CApps11i.py             -> Add extra parameters to dialog (dad - DAD name)
+[X] CArchanix.py
+[X] CArpCachePoison.py      -> Need to test module on controlled lab
+[ ] CAutoCrackMod.py        -> Needs own window
+[X] CDnsSpoof.py            -> Need to test module on controlled lab
+[X] CDtspcGather.py         -> Need to test module...
+[X] CFakeArpServer.py       -> Need to test module...
+[/] CFirewallTest.py        -> Partially ported to ginguma
+[X] CHexDump.py             -> Removed from gather (rce)
+[/] CIds.py                 -> Not a finished/working module...
+[X] CIkeScan.py             -> Not tested against a IKE server
+[X] CInformixGather.py      -> Not tested against a real Informix Server
+[ ] CMd5Rainbow.py          -> Needs own window
+[X] CNikto.py               -> libnikto needs to be ported also
+[ ] CNmapFp.py              -> Needs to repair Nmap OS Fingerprint DB read
+[ ] CNmapScan.py            -> Needs own window
+[X] CNmbStat.py
+[ ] COracleApps.py
+[ ] COracleMode.py
+[ ] COraCrack11g.py
+[ ] COraTt70Info.py
+[ ] COsiFuzz.py             -> Needs own window
+[ ] CP0f.py                 -> Needs own window
+[X] CPortScan.py            -> Allow more scan types (ACK, SYN/ACK, etc...)
+[X] CProtoScan.py
+[X] CRainbow.py             -> Added but passcracking.com doesn't work so...
+[X] CRpcDump.py             -> Done but direct run from command line won't work
+[X] CSamrDump.py            -> Not tested on all enviroments
+[X] CServiceIdentify.py
+[X] CSmbClient.py           -> Needs own window
+[X] CSmbGold.py             -> Need to be tested on real enviroment
+[ ] CSniffer.py             -> Needs own window
+[ ] CSnmpWalk.py            -> Need to be fixed module pysnmp
+[ ] CSqlServerCrack.py      -> Needs own window
+[ ] CTcpProxy.py            -> Needs own window
+[X] CTCPScan.py             -> Update progress text to gom
+[ ] CTnsCmd.py              -> Need Oracle to test... and own window...
+[ ] CUnicornScan.py         -> Needs own window, and unicorn to test...
+[ ] CWebServer.py           -> Needs own window
+[ ] CWinSpDetect.py         -> Need to test in WinSuX
+[ ] CXmlRpc.py              -> Needs own window
