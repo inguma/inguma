@@ -158,8 +158,9 @@ class NmapScan:
         PORTS = []
         for i in host.ports:
             for p in i['port']:
-                PORTS.append(p['portid'])
-                print "\t%s" % repr(p)
+                if p['port_state'] == 'open':
+                    PORTS.append(p['portid'])
+                    print "\t%s" % repr(p)
         self.uicore.set_kbfield(self.ip + '_ports', PORTS)
         print "IP:", repr(host.ip)
         print "Hostnames:", repr(host.hostnames)
