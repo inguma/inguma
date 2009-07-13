@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Inguma -->
-<!-- Saved: 2009-04-29, 10:14:01 -->
+<!-- Saved: 2009-07-10, 12:54:29 -->
 <!-- Copyright (C) 2009 ,  -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -1047,11 +1047,6 @@
     <Source>
       <Dir>lib</Dir>
       <Dir>ui</Dir>
-      <Name>cmenu.py</Name>
-    </Source>
-    <Source>
-      <Dir>lib</Dir>
-      <Dir>ui</Dir>
       <Name>core.py</Name>
     </Source>
     <Source>
@@ -1114,11 +1109,6 @@
     <Source>
       <Dir>lib</Dir>
       <Dir>ui</Dir>
-      <Name>xfiles.py</Name>
-    </Source>
-    <Source>
-      <Dir>lib</Dir>
-      <Dir>ui</Dir>
       <Name>kbtree.py</Name>
     </Source>
     <Source>
@@ -1130,6 +1120,15 @@
       <Dir>lib</Dir>
       <Dir>ui</Dir>
       <Name>rcemenu.py</Name>
+    </Source>
+    <Source>
+      <Dir>lib</Dir>
+      <Name>NmapParser.py</Name>
+    </Source>
+    <Source>
+      <Dir>lib</Dir>
+      <Dir>ui</Dir>
+      <Name>nmapscan.py</Name>
     </Source>
   </Sources>
   <Forms>

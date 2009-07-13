@@ -131,9 +131,10 @@ class UIcore():
                 # If not, add it
                 #print "\tAppending non existing content"
                 inguma.user_data[field] += [new_content]
-            inguma.user_data[field] = new_content
+            else:
+                inguma.user_data[field] = new_content
         else:
-            #print "Adding non-existing field", field, "content", new_content
+            print "Adding non-existing field", field, "content", new_content
             inguma.user_data[field] = new_content
 
         setattr(inguma, field, new_content)
