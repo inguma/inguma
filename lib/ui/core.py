@@ -253,13 +253,15 @@ class UIcore():
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
 
-    def uiRunDiscover(self, mod):
+    def uiRunDiscover(self, mod, join=False):
         '''Runs specified module and returns data'''
 
         vars = inguma.vars
         self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
+        if join:
+            t.join()
 
     def run_system_command(self, command):
         '''Manage the process of run a system command

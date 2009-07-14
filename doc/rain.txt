@@ -17,7 +17,7 @@
 * Dos maneras de explotar un sistema:
     - Exploit normal y corriente usando payloads.
     - Explotar fallo de "configuración" (ej: contraseña debil, subir fichero, etc...)
-        · Otro tipo de payload estilo backdor (hydrogen, TCL backdor, vdaemon, w3af_agent, etc...)
+        · Otro tipo de payload estilo backdor (hydrogen, TCL backdor, vdaemon, w3af_agent, sqlninja, etc...)
 
 * Alternativa para VTE: http://ipython.scipy.org/moin/Cookbook/EmbeddingInGTK
 

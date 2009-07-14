@@ -65,6 +65,7 @@ import lib.ui.rcemenu as rcemenu
 import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.newcmenu as newcmenu
+import lib.ui.addTargetDlg as addtargetdlg
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -81,6 +82,7 @@ ui_menu = """
     <separator name="s3"/>
     <toolitem action="Scapy"/>
     <separator name="s4"/>
+    <toolitem action="Add Target"/>
     <toolitem action="Properties"/>
     <toolitem action="Show Log"/>
     <toolitem action="Show KB"/>
@@ -192,6 +194,7 @@ class MainApp:
 
             ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), gtk.main_quit),
             ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, (''), self.show_term),
+            ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, (''), self.addTarget),
             ('Properties', gtk.STOCK_PROPERTIES, ('Properties'), None, (''), self.showProp),
             ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
             ('Show KB', gtk.STOCK_DND, ('Show KB'), None, (''), self.show_kb),
@@ -711,6 +714,9 @@ class MainApp:
             self.gom.echo( 'Closed, no files selected', False)
         chooser.destroy()
 
+    def addTarget(self, event):
+
+        addtgt = addtargetdlg.addTargetDialog(self.uicore)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
