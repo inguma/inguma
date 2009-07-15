@@ -153,17 +153,21 @@ class NmapScan:
 
         host = np.nmap["hosts"][-1]
 
-        print "OS Match:", repr(host.osmatches)
+        print "OS Match:", host.osmatches[0]['name']
+        self.uicore.set_kbfield(self.ip + '_os', host.osmatches[0]['name'])
+
         print "Ports:"
         PORTS = []
         for i in host.ports:
             for p in i['port']:
                 if p['port_state'] == 'open':
-                    PORTS.append(p['portid'])
+                    #PORTS.append(p['portid'])
                     print "\t%s" % repr(p)
-        self.uicore.set_kbfield(self.ip + '_ports', PORTS)
+                    self.uicore.set_kbfield(self.ip + '_ports', p['portid'])
+        #self.uicore.set_kbfield(self.ip + '_ports', PORTS)
         print "IP:", repr(host.ip)
-        print "Hostnames:", repr(host.hostnames)
+        print "Hostnames:", host.hostnames[0]['hostname']
+        self.uicore.set_kbfield(self.ip + '_name', host.hostnames[0]['hostname'])
         os.remove('/tmp/nmapxml.xml')
 
 
