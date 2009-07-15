@@ -188,7 +188,14 @@ self.showBrute )], user_data=[ip, port] )
                 self.actiongroup2.add_actions( [('asname', None, 'ASN')] )
                 self.target_menu += '<menuitem action="asname"/>'
                 self.actiongroup2.add_actions( [('tasn', None, kb[ip + '_asn'][-1] )] )
-                self.target_menu += '<menuitem action="tasn"/>'
+                self.target_menu += '<menuitem action="tasn"/><separator/>'
+    
+            if kb.__contains__(ip + '_os'):
+                # OS Information
+                self.actiongroup2.add_actions( [('osname', None, 'OS')] )
+                self.target_menu += '<menuitem action="osname"/>'
+                self.actiongroup2.add_actions( [('tos', None, kb[ip + '_os'][-1] )] )
+                self.target_menu += '<menuitem action="tos"/><separator/>'
     
             self.target_menu += '</menu><separator/>'
     
