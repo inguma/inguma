@@ -31,7 +31,8 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     dotcode += 'rankdir="' + direction + '"\n'
     dotcode += "bgcolor=gray0\n\n"
     dotcode += 'root="' + localip + '";\n\n'
-    dotcode += "\nnode [shape=record,color=blue,style=filled fillcolor=skyblue];\n"
+    #dotcode += "\nnode [shape=record,color=blue,style=filled fillcolor=skyblue];\n"
+    dotcode += "\nnode [shape=record,color=blue, fontcolor=blue];\n"
 
     #######################################
     #
@@ -47,7 +48,8 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
         else:
             dotcode += '\t\tcolor="#608686";'
             dotcode += '\t\tfontcolor="#608686";'
-        dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
+        dotcode += '\t\tnode [fillcolor="#60baba"];'
+        #dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
         dotcode += '\t\tfontsize = 10;'
         dotcode += '\t\tlabel = "%s\\n[%s]"\n' % (asn,ASDs[asn])
         for ip in ASNs[asn]:
@@ -76,7 +78,8 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     #######################################
     if len(targets) != 0 or len(locals) != 0:
         for target in targets:
-            dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fillcolor=red1,style=filled,label="' + target + '"];' + "\n"
+            dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fontcolor=red1,label="' + target + '"];' + "\n"
+            #dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fillcolor=red1,style=filled,label="' + target + '"];' + "\n"
         dotcode += "\n"
     
         i = 0
