@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pickle, os
+import pickle, os, platform
 import inguma
 
 import threading, time
@@ -50,6 +50,12 @@ class UIcore():
 
         ip = self.getLocalIP()
         gw = self.getLocalGW()
+
+        #Get localhost information
+        local_info = platform.uname()
+        local_os, local_name = local_info[0], local_info[1]
+        inguma.user_data[ip + '_os'] = [local_os]
+        inguma.user_data[ip + '_name'] = [local_name]
 
         inguma.user_data['graph']['ASNs']['local'] = [ip, gw]
         inguma.user_data['graph']['ASDs']['local'] = 'Local Network'
