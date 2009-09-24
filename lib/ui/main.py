@@ -645,7 +645,7 @@ class MainApp:
             self.scrolled_window.is_visible = True
 
     def onSwitch(self, widget, data, more):
-        if more == 2:
+        if more == 1:
             self.handlebox.hide()
             self.rcehb.show()
             self.log_scrolled_window.hide()
@@ -661,7 +661,7 @@ class MainApp:
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.gom.echo( 'Loading Binary...', False)
-            self.gom.echo( chooser.get_filename() )
+            self.gom.echo( chooser.get_filename(), False )
             res = chooser.get_filename()
             rcecore.uploadFile(res)
             rcecore.generate_graphs(res)
