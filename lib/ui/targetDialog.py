@@ -54,7 +54,7 @@ class TargetDialog:
         self.dom_rbutton.connect("toggled", self.rbcallback, "DOM")
 
         # A target text entry
-        self.tgentry = gtk.Entry(max=15)
+        self.tgentry = gtk.Entry(max=20)
         self.tgentry.set_focus = True
 
         # A domain text entry
