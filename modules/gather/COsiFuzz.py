@@ -14,10 +14,7 @@ import sys
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        from lib.winscapy import *
-    else:
-        from lib.scapy import *
+    from scapy.all import *
 
     bScapy = True
 except:

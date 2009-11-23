@@ -7,7 +7,7 @@ import socket
 
 from lib import libfuzz
 
-from lib.scapy import *
+from scapy.all import *
 from fuzzpcap import *
 
 def main(pcapFile, dest, destPort):

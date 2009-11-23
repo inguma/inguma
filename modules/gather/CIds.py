@@ -23,10 +23,7 @@ try:
 except:
     snortSupport = False
 try:
-    if os.name == "nt":
-        import lib.winscapy as scapy
-    else:
-        import lib.scapy as scapy
+    import scapy.all as scapy
 
     bScapy = True
 except:

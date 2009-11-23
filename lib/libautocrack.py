@@ -3,8 +3,7 @@
 import os
 import sys
 
-import sha
-import md5
+import hashlib
 import base64
 import binascii
 
@@ -78,7 +77,7 @@ class CAutoCrack:
             print "  --> Uses %s (reverse)" % msg
 
     def tryMd5(self, password):
-        tmpPassword = md5.md5(password).hexdigest()
+        tmpPassword = hashlib.md5(password).hexdigest()
         tmpHash = self.hash
         ret = self.pCompare(tmpPassword, tmpHash)
         self.printMsg(ret, "MD5")
@@ -86,10 +85,10 @@ class CAutoCrack:
         return ret
 
     def getMd5(self, password):
-        return md5.md5(password).hexdigest()
+        return hashlib.md5(password).hexdigest()
 
     def trySha1(self, password):
-        tmpPassword = sha.sha(password).hexdigest().lower()
+        tmpPassword = hashlib.sha1(password).hexdigest().lower()
         tmpHash = self.hash.lower()
 
         ret = self.pCompare(tmpPassword, tmpHash)
@@ -97,7 +96,7 @@ class CAutoCrack:
         return ret
     
     def getSha1(self, password):
-        return sha.sha(password).hexdigest()
+        return hashlib.sha1(password).hexdigest()
 
     def tryCrypt(self, password):
         tmpPassword = crypt.crypt(password, self.hash).lower()

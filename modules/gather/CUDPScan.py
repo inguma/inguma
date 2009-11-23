@@ -9,7 +9,7 @@ License is GPL
 import sys
 import time
 import socket
-from lib.scapy import *
+from scapy.all import *
 
 from lib.libexploit import CIngumaModule
 

@@ -17,10 +17,7 @@ import sys
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        import lib.winscapy as scapy
-    else:
-        import lib.scapy as scapy
+    from scapy.modules.nmap import *
 
     hasScapy = True
 except:
@@ -56,9 +53,9 @@ class CNmapFp(CIngumaModule):
             return False
         
         try:
-            res = scapy.nmap_fp(target=self.target, oport = self.oport, cport = self.cport)
+            res = nmap_fp(target=self.target, oport = self.oport, cport = self.cport)
         except:
-            self.gom.echo( "Couldn't find nmap OS fingerprint DB at " + scapy.conf.nmap_base )
+            self.gom.echo( "Couldn't find nmap OS fingerprint DB at " + conf.nmap_base )
             return False
         self.accuracy = res[0]
         data = res[1]

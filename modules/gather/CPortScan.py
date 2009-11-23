@@ -15,11 +15,7 @@ import random
 from lib.libexploit import CIngumaModule
 
 try:
-
-    if os.name == "nt":
-        from lib.winscapy import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
-    else:
-        from lib.scapy import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
+    from scapy.all import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
 
     hasScapy = True
 except:

@@ -10,10 +10,7 @@ import time
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        from lib.winscapy import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
-    else:
-        from lib.scapy import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
+    from scapy.all import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
     bHasScapy = True
 except:
     bHasScapy = False

@@ -1,4 +1,4 @@
-from lib.scapy import *
+from scapy.all import *
 import sys
 
 unique = []

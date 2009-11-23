@@ -7,7 +7,7 @@ import socket
 
 from lib import libfuzz
 
-from lib.scapy import *
+from scapy.all import *
 
 """
 

@@ -7,17 +7,10 @@ License is GPL
 """
 
 try:
-    from lib.winscapy import getmacbyip
+    from scapy.all import getmacbyip
     bHasScapy = True
 except:
     bHasScapy = False
-
-if bHasScapy == False:
-    try:
-        from lib.scapy import getmacbyip
-        bHasScapy = True
-    except:
-        bHasScapy = False
 
 from lib.core import getMacVendor
 from lib.libexploit import CIngumaModule

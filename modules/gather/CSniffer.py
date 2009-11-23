@@ -15,10 +15,8 @@ import sys
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        import lib.winscapy as scapy
-    else:
-        import lib.scapy as scapy
+    from scapy.modules.p0f import *
+    import scapy.all as scapy
 
     bScapy = True
 except:
@@ -49,16 +47,16 @@ class CSniffer(CIngumaModule):
 
     def prnp0f(self, pkt):
         try:
-            r = scapy.p0f(pkt)
+            r = p0f(pkt)
             if r == []:
-                r = ("UNKNOWN", "[" + ":".join(map(str, scapy.packet2p0f(pkt))) + ":?:?]", None)
+                r = ("UNKNOWN", "[" + ":".join(map(str, packet2p0f(pkt))) + ":?:?]", None)
             else:
                 r = r[0]
         except:
             return
         uptime = None
         try:
-            uptime = scapy.pkt2uptime(pkt)
+            uptime = pkt2uptime(pkt)
         except:
             pass
         if uptime == 0:

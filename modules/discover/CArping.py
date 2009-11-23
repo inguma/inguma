@@ -14,10 +14,7 @@ from lib.core import getMacVendor
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        import lib.winscapy as scapy
-    else:
-        import lib.scapy as scapy
+    import scapy.all as scapy
 
     hasScapy = True
 except:
@@ -44,7 +41,9 @@ class CArping(CIngumaModule):
 
     def getMacVendor(self, mac):
         try:
-            path = scapy.conf.nmap_base.replace('os-fingerprints', 'mac-prefixes')
+            # TODO fix get path from scapy
+            #path = scapy.conf.nmap_base.replace('os-fingerprints', 'mac-prefixes')
+            path = "/usr/share/nmap/nmap-mac-prefixes"
             mac = mac.replace(":", "")
 
             f = file(path, "r")

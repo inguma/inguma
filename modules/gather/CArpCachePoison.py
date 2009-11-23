@@ -7,17 +7,10 @@ License is GPL
 """
 
 try:
-    from lib.winscapy import get_if_addr, get_working_if, arpcachepoison, conf
+    from scapy.all import get_if_addr, get_working_if, arpcachepoison, conf
     bHasScapy = True
 except:
     bHasScapy = False
-
-if bHasScapy == False:
-    try:
-        from lib.scapy import get_if_addr, get_working_if, arpcachepoison, conf
-        bHasScapy = True
-    except:
-        bHasScapy = False
 
 from lib.core import getMacVendor
 from lib.libexploit import CIngumaModule

@@ -16,17 +16,17 @@
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
+import sys
+sys.path.append('../..')
 
 import pickle, os, platform
 import inguma
 
 import threading, time
-import lib.scapy as scapy
+import scapy.all as scapy
 scapy.conf.verb = 0
 import dotgen
 
-import sys
-sys.path.append('../..')
 import lib.IPy as IPy
 
 #inguma.debug = True
@@ -196,6 +196,7 @@ class UIcore():
 
     def get_asn(self, ip):
         self.gom.echo( "Getting ASN for: " + ip , False)
+        #scapy.conf.AS_resolver = scapy.AS_resolver_radb()
         ASres = scapy.conf.AS_resolver
         asn = ASres.resolve(ip)
 

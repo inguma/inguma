@@ -16,11 +16,7 @@ from lib.core import getProtocolName
 from lib.libexploit import CIngumaModule
 
 try:
-
-    if os.name == "nt":
-        from lib.winscapy import sr, IP
-    else:
-        from lib.scapy import sr, IP
+    from scapy.all import sr, IP
 
     hasScapy = True
 except:

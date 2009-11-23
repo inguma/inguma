@@ -50,7 +50,7 @@ class CSidGuess(CIngumaModule):
                 if ret:
                     self.addToDict(self.target + "_sid", sid)
                     self.results[self.target] = sid
-                    self.gom.echo( ·· )
+                    self.gom.echo( "" )
                     self.gom.echo( "[+] Guessed SID " + sid )
 
                     return True

@@ -34,10 +34,7 @@ from lib.printwrapper import CPrintWrapper
 import lib.ui.om as om
 
 try:
-    if os.name == "nt":
-        import lib.winscapy as scapy
-    else:
-        import lib.scapy as scapy
+    import scapy.all as scapy
 
     hasScapy = True
 except:

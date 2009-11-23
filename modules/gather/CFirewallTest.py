@@ -10,20 +10,14 @@ License is GPL
 import os
 import sys
 import time
-import lib.scapy as scapy
+import scapy.all as scapy
 import socket
 import random
 
 from lib.libexploit import CIngumaModule
 
 try:
-
-    if os.name == "nt":
-        from lib.winscapy import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
-        import lib.winscapy as scapy
-    else:
-        from lib.scapy import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
-        import lib.scapy as scapy
+    from scapy.all import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
 
     hasScapy = True
 except:

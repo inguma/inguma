@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 import sys
-import sha
+import hashlib
 
 from core import str2uni
 
@@ -58,9 +58,9 @@ class CSQLServerPassword:
         # Append the random stuff (the key)
         mPasswd += str(self._key)
         # Get the first hash (normal)
-        baseHash = sha.sha(mPasswd).hexdigest().upper()
+        baseHash = hashlib.sha1(mPasswd).hexdigest().upper()
         # Get the upper case hash
-        upperHash = sha.sha(mPasswd.upper()).hexdigest().upper()
+        upperHash = hashlib.sha1(mPasswd.upper()).hexdigest().upper()
 
         # Generate the password
         buf  = "0x"

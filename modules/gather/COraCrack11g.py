@@ -9,7 +9,7 @@ License is GPL
 
 import os
 import sys
-import sha # Yes, I known, will be replaced someday...
+import hashlib
 import binascii
 
 from lib.libexploit import CIngumaModule
@@ -57,7 +57,7 @@ class COraCrack11g(CIngumaModule):
         salt = binascii.a2b_hex(salt)
         for passwd in self.getPasswordList():
             passwd = passwd.strip()
-            x = sha.sha(passwd + salt).hexdigest()
+            x = hashlib.sha1(passwd + salt).hexdigest()
 
             if x == thepasswd:
                 self.addToDict(hash, passwd)

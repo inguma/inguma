@@ -8,7 +8,7 @@ License is GPL
 """
 
 import sys
-from lib.scapy import *
+#from scapy.all import *
 from lib.libexploit import CIngumaModule
 from lib.libwifi import *
 

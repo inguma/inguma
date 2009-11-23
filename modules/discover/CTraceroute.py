@@ -13,10 +13,7 @@ import socket
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        from lib.winscapy import IP, TCP, sr, conf, getmacbyip, get_working_if, traceroute, TracerouteResult
-    else:
-        from lib.scapy import IP, TCP, sr, conf, getmacbyip, get_working_if, traceroute, TracerouteResult
+    from scapy.all import IP, TCP, sr, conf, getmacbyip, get_working_if, traceroute, TracerouteResult
     
     bHasScapy = True
 except:
@@ -34,7 +31,8 @@ class CTraceroute(CIngumaModule):
     dport = 80
     hosts = {}
     timeout = 10
-    iface = get_working_if()
+    #iface = get_working_if()
+    iface = conf.iface
     tcp = 1
     minttl = 1
     maxttl = 20
@@ -64,13 +62,12 @@ class CTraceroute(CIngumaModule):
         #self.dict["hosts"] = []
 
         if self.tcp == 1:
-            a,b = sr(IP(dst=self.target, ttl=(self.minttl,self.maxttl))/TCP(sport=self.sport, dport=self.dport), 
-            timeout=self.timeout, iface = self.iface, retry = 0)
+            a,b = sr(IP(dst=self.target, ttl=(self.minttl,self.maxttl))/TCP(sport=self.sport, dport=self.dport), timeout=self.timeout, iface = self.iface, retry = 0)
         else:
             a,b = sr(IP(dst=self.target, ttl=(self.minttl,self.maxttl)), retry=0)
 
         a = TracerouteResult(a.res)
-        a.make_graph()
+        #a.make_graph()
         self.packets = a
 
         start = 0

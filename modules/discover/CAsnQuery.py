@@ -11,7 +11,7 @@ import sys
 import time
 import socket
 
-import lib.scapy as scapy
+import scapy.all as scapy
 from lib.libexploit import CIngumaModule
 
 name = "asn"

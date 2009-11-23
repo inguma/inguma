@@ -13,10 +13,7 @@ import time
 from lib.libexploit import CIngumaModule
 
 try:
-    if os.name == "nt":
-        from lib.winscapy import *
-    else:
-        from lib.scapy import *
+    import scapy.all as scapy
 
     hasScapy = True
 except:

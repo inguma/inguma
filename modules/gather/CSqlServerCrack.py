@@ -9,7 +9,7 @@ License is GPL
 
 import os
 import sys
-import sha # Yes, I known, will be replaced someday...
+import hashlib
 import binascii
 
 from lib.libexploit import CIngumaModule

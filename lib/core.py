@@ -19,17 +19,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
 try:
-    import lib.winscapy as scapy
+    import scapy.all as scapy
+    from scapy.modules.nmap import *
     bHasScapy = True
 except:
     bHasScapy = False
-
-if not bHasScapy:
-    try:
-        import lib.scapy as scapy
-        bHasScapy = True
-    except:
-        bHasScapy = False
 
 def int2hex(iNum):
     sNum = str(hex(iNum))
@@ -93,7 +87,7 @@ def isIpAddr4(data):
 
 def getMacVendor(mac):
     try:
-        path = scapy.conf.nmap_base.replace('os-fingerprints', 'mac-prefixes')
+        path = conf.nmap_base.replace('os-fingerprints', 'mac-prefixes')
         mac = mac.replace(":", "")
 
         f = file(path, "r")
