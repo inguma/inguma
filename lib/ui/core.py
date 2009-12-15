@@ -1,4 +1,4 @@
-##      coremain.py
+##      core.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       

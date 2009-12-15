@@ -23,6 +23,9 @@
 import socket
 if not socket.has_ipv6:
     raise socket.error("can't use AF_INET6, IPv6 is disabled")
+if not hasattr(socket, "IPPROTO_IPV6"):
+    # Workaround for http://bugs.python.org/issue6926
+    socket.IPPROTO_IPV6 = 41
 
 from scapy.config import conf
 from scapy.layers.l2 import *
@@ -206,6 +209,8 @@ class IP6Field(Field):
                 vaddr = in6_6to4ExtractAddr(x)
                 return "%s [6to4 GW: %s]" % (self.i2h(pkt, x), vaddr)
         return self.i2h(pkt, x)       # No specific information to return
+    def randval(self):
+        return RandIP6()
 
 class SourceIP6Field(IP6Field):
     def __init__(self, name, dstname):
@@ -1227,7 +1232,6 @@ class ICMPv6EchoRequest(_ICMPv6):
     
 class ICMPv6EchoReply(ICMPv6EchoRequest):
     name = "ICMPv6 Echo Reply"
-    __metaclass__ = NewDefaultValues
     type = 129
     def answers(self, other):
         # We could match data content between request and reply. 
@@ -1262,7 +1266,6 @@ class _ICMPv6ML(_ICMPv6):
 #        Option in a Destination Option Header.
 class ICMPv6MLQuery(_ICMPv6ML): # RFC 2710
     name = "MLD - Multicast Listener Query"
-    __metaclass__ = NewDefaultValues
     type   = 130
     mrd    = 10000
     mladdr = "::" # 10s for mrd
@@ -1278,7 +1281,6 @@ class ICMPv6MLQuery(_ICMPv6ML): # RFC 2710
 #        Option in a Destination Option Header.
 class ICMPv6MLReport(_ICMPv6ML): # RFC 2710
     name = "MLD - Multicast Listener Report"
-    __metaclass__ = NewDefaultValues
     type = 131
     overload_fields = {IPv6: {"hlim": 1}}
     # implementer le hashret et le answers
@@ -1291,7 +1293,6 @@ class ICMPv6MLReport(_ICMPv6ML): # RFC 2710
 #        Option in a Destination Option Header.
 class ICMPv6MLDone(_ICMPv6ML): # RFC 2710
     name = "MLD - Multicast Listener Done"
-    __metaclass__ = NewDefaultValues
     type = 132
     overload_fields = {IPv6: { "dst": "ff02::2", "hlim": 1}}
 
@@ -1430,7 +1431,6 @@ class ICMPv6NDOptSrcLLAddr(_ICMPv6NDGuessPayload, Packet):
 
 class ICMPv6NDOptDstLLAddr(ICMPv6NDOptSrcLLAddr):
     name = "ICMPv6 Neighbor Discovery Option - Destination Link-Layer Address"
-    __metaclass__ = NewDefaultValues
     type = 2
 
 class ICMPv6NDOptPrefixInfo(_ICMPv6NDGuessPayload, Packet):
@@ -1695,7 +1695,6 @@ class ICMPv6ND_NS(_ICMPv6NDGuessPayload, _ICMPv6, Packet):
 
 class ICMPv6ND_NA(ICMPv6ND_NS):
     name = "ICMPv6 Neighbor Discovery - Neighbor Advertisement"
-    __metaclass__ = NewDefaultValues
     type = 136
     R    = 1
     O    = 1
@@ -1729,7 +1728,6 @@ class ICMPv6NDOptSrcAddrList(_ICMPv6NDGuessPayload, Packet):
 
 class ICMPv6NDOptTgtAddrList(ICMPv6NDOptSrcAddrList):
     name = "ICMPv6 Inverse Neighbor Discovery Option - Target Address List"
-    __metaclass__ = NewDefaultValues
     type = 10 
 
 
@@ -2009,19 +2007,16 @@ class ICMPv6NIQueryNOOP(_ICMPv6NIHashret, _ICMPv6):
 
 class ICMPv6NIQueryName(ICMPv6NIQueryNOOP): 
     name = "ICMPv6 Node Information Query - IPv6 Name Query"
-    __metaclass__ = NewDefaultValues
     qtype = 2 
 
 # We ask for the IPv6 address of the peer 
 class ICMPv6NIQueryIPv6(ICMPv6NIQueryNOOP):
     name = "ICMPv6 Node Information Query - IPv6 Address Query"
-    __metaclass__ = NewDefaultValues
     qtype = 3
     flags = 0x3E
 
 class ICMPv6NIQueryIPv4(ICMPv6NIQueryNOOP): 
     name = "ICMPv6 Node Information Query - IPv4 Address Query"
-    __metaclass__ = NewDefaultValues
     qtype = 4
 
 _nireply_code = { 0: "Successful Reply", 
@@ -2176,27 +2171,22 @@ class ICMPv6NIReplyNOOP(_ICMPv6NIAnswers, _ICMPv6NIHashret, _ICMPv6):
 
 class ICMPv6NIReplyName(ICMPv6NIReplyNOOP): 
     name = "ICMPv6 Node Information Reply - Node Names"
-    __metaclass__ = NewDefaultValues
     qtype = 2
 
 class ICMPv6NIReplyIPv6(ICMPv6NIReplyNOOP): 
     name = "ICMPv6 Node Information Reply - IPv6 addresses"
-    __metaclass__ = NewDefaultValues
     qtype = 3
 
 class ICMPv6NIReplyIPv4(ICMPv6NIReplyNOOP): 
     name = "ICMPv6 Node Information Reply - IPv4 addresses"
-    __metaclass__ = NewDefaultValues
     qtype = 4
 
 class ICMPv6NIReplyRefuse(ICMPv6NIReplyNOOP):
     name = "ICMPv6 Node Information Reply - Responder refuses to supply answer"
-    __metaclass__ = NewDefaultValues
     code = 1
 
 class ICMPv6NIReplyUnknown(ICMPv6NIReplyNOOP):
     name = "ICMPv6 Node Information Reply - Qtype unknown to the responder"
-    __metaclass__ = NewDefaultValues
     code = 2
 
 
@@ -2674,7 +2664,6 @@ class MIP6MH_HoTI(_MobilityHeader):
 
 class MIP6MH_CoTI(MIP6MH_HoTI):
     name = "IPv6 Mobility Header - Care-of Test Init"
-    __metaclass__ = NewDefaultValues
     mhtype = 2
     def hashret(self):
         return self.cookie
@@ -2703,7 +2692,6 @@ class MIP6MH_HoT(_MobilityHeader):
 
 class MIP6MH_CoT(MIP6MH_HoT):
     name = "IPv6 Mobility Header - Care-of Test"
-    __metaclass__ = NewDefaultValues
     mhtype = 4
     def hashret(self):
         return self.cookie
@@ -2955,6 +2943,7 @@ conf.l3types.register(ETH_P_IPV6, IPv6)
 conf.l2types.register(31, IPv6)
 
 bind_layers(Ether,     IPv6,     type = 0x86dd )
+bind_layers(CookedLinux, IPv6,   proto = 0x86dd )
 bind_layers(IPerror6,  TCPerror, nh = socket.IPPROTO_TCP )
 bind_layers(IPerror6,  UDPerror, nh = socket.IPPROTO_UDP )
 bind_layers(IPv6,      TCP,      nh = socket.IPPROTO_TCP )

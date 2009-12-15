@@ -46,28 +46,34 @@ class Net(Gen):
     """Generate a list of IPs from a network address or a name"""
     name = "ip"
     ipaddress = re.compile(r"^(\*|[0-2]?[0-9]?[0-9](-[0-2]?[0-9]?[0-9])?)\.(\*|[0-2]?[0-9]?[0-9](-[0-2]?[0-9]?[0-9])?)\.(\*|[0-2]?[0-9]?[0-9](-[0-2]?[0-9]?[0-9])?)\.(\*|[0-2]?[0-9]?[0-9](-[0-2]?[0-9]?[0-9])?)(/[0-3]?[0-9])?$")
-    def __init__(self, net):
-        self.repr=net
 
+    @staticmethod
+    def _parse_digit(a,netmask):
+        netmask = min(8,max(netmask,0))
+        if a == "*":
+            a = (0,256)
+        elif a.find("-") >= 0:
+            x,y = map(int,a.split("-"))
+            if x > y:
+                y = x
+            a = (x &  (0xffL<<netmask) , max(y, (x | (0xffL>>(8-netmask))))+1)
+        else:
+            a = (int(a) & (0xffL<<netmask),(int(a) | (0xffL>>(8-netmask)))+1)
+        return a
+
+    @classmethod
+    def _parse_net(cls, net):
         tmp=net.split('/')+["32"]
-        if not self.ipaddress.match(net):
+        if not cls.ipaddress.match(net):
             tmp[0]=socket.gethostbyname(tmp[0])
         netmask = int(tmp[1])
+        return map(lambda x,y: cls._parse_digit(x,y), tmp[0].split("."), map(lambda x,nm=netmask: x-nm, (8,16,24,32))),netmask
 
-        def parse_digit(a,netmask):
-            netmask = min(8,max(netmask,0))
-            if a == "*":
-                a = (0,256)
-            elif a.find("-") >= 0:
-                x,y = map(int,a.split("-"))
-                if x > y:
-                    y = x
-                a = (x &  (0xffL<<netmask) , max(y, (x | (0xffL>>(8-netmask))))+1)
-            else:
-                a = (int(a) & (0xffL<<netmask),(int(a) | (0xffL>>(8-netmask)))+1)
-            return a
+    def __init__(self, net):
+        self.repr=net
+        self.parsed,self.netmask = self._parse_net(net)
 
-        self.parsed = map(lambda x,y: parse_digit(x,y), tmp[0].split("."), map(lambda x,nm=netmask: x-nm, (8,16,24,32)))
+
                                                                                                
     def __iter__(self):
         for d in xrange(*self.parsed[3]):
@@ -83,6 +89,24 @@ class Net(Gen):
                           
     def __repr__(self):
         return "Net(%r)" % self.repr
+    def __eq__(self, other):
+        if hasattr(other, "parsed"):
+            p2 = other.parsed
+        else:
+            p2,nm2 = self._parse_net(other)
+        return self.parsed == p2
+    def __contains__(self, other):
+        if hasattr(other, "parsed"):
+            p2 = other.parsed
+        else:
+            p2,nm2 = self._parse_net(other)
+        for (a1,b1),(a2,b2) in zip(self.parsed,p2):
+            if a1 > a2 or b1 < b2:
+                return False
+        return True
+    def __rcontains__(self, other):        
+        return self in self.__class__(other)
+        
 
 class OID(Gen):
     name = "OID"
@@ -122,43 +146,75 @@ class OID(Gen):
 
 class Packet_metaclass(type):
     def __new__(cls, name, bases, dct):
+        if "fields_desc" in dct: # perform resolution of references to other packets
+            current_fld = dct["fields_desc"]
+            resolved_fld = []
+            for f in current_fld:
+                if isinstance(f, Packet_metaclass): # reference to another fields_desc
+                    for f2 in f.fields_desc:
+                        resolved_fld.append(f2)
+                else:
+                    resolved_fld.append(f)
+        else: # look for a field_desc in parent classes
+            resolved_fld = None
+            for b in bases:
+                if hasattr(b,"fields_desc"):
+                    resolved_fld = b.fields_desc
+                    break
+
+        if resolved_fld: # perform default value replacements
+            final_fld = []
+            for f in resolved_fld:
+                if f.name in dct:
+                    f = f.copy()
+                    f.default = dct[f.name]
+                    del(dct[f.name])
+                final_fld.append(f)
+
+            dct["fields_desc"] = final_fld
+
         newcls = super(Packet_metaclass, cls).__new__(cls, name, bases, dct)
-        for f in newcls.fields_desc:
+        if hasattr(newcls,"register_variant"):
+            newcls.register_variant()
+        for f in newcls.fields_desc:                
             f.register_owner(newcls)
         config.conf.layers.register(newcls)
         return newcls
+
     def __getattr__(self, attr):
         for k in self.fields_desc:
             if k.name == attr:
                 return k
         raise AttributeError(attr)
 
+    def __call__(cls, *args, **kargs):
+        if "dispatch_hook" in cls.__dict__:
+            cls =  cls.dispatch_hook(*args, **kargs)
+        i = cls.__new__(cls, cls.__name__, cls.__bases__, cls.__dict__)
+        i.__init__(*args, **kargs)
+        return i
+
+
 class NewDefaultValues(Packet_metaclass):
-    """NewDefaultValues metaclass. Example usage:
-    class MyPacket(Packet):
-        fields_desc = [ StrField("my_field", "my default value"),  ]
-        
-    class MyPacket_variant(MyPacket):
+    """NewDefaultValues is deprecated (not needed anymore)
+    
+    remove this:
         __metaclass__ = NewDefaultValues
-        my_field = "my new default value"
+    and it should still work.
     """    
     def __new__(cls, name, bases, dct):
-        fields = None
-        for b in bases:
-            if hasattr(b,"fields_desc"):
-                fields = b.fields_desc
-                break
-        if fields is None:
-            raise error.Scapy_Exception("No fields_desc in superclasses")
-
-        new_fields = []
-        for f in fields:
-            if f.name in dct:
-                f = f.copy()
-                f.default = dct[f.name]
-                del(dct[f.name])
-            new_fields.append(f)
-        dct["fields_desc"] = new_fields
+        from error import log_loading
+        import traceback
+        try:
+            for tb in traceback.extract_stack()+[("??",-1,None,"")]:
+                f,l,_,line = tb
+                if line.startswith("class"):
+                    break
+        except:
+            f,l="??",-1
+            raise
+        log_loading.warning("Deprecated (no more needed) use of NewDefaultValues  (%s l. %i)." % (f,l))
+        
         return super(NewDefaultValues, cls).__new__(cls, name, bases, dct)
 
 class BasePacket(Gen):

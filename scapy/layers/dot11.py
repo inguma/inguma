@@ -263,8 +263,8 @@ class Dot11AssoResp(Packet):
 class Dot11ReassoReq(Packet):
     name = "802.11 Reassociation Request"
     fields_desc = [ FlagsField("cap", 0, 16, capability_list),
-                    MACField("current_AP", ETHER_ANY),
-                    LEShortField("listen_interval", 0x00c8) ]
+                    LEShortField("listen_interval", 0x00c8),
+                    MACField("current_AP", ETHER_ANY) ]
 
 
 class Dot11ReassoResp(Dot11AssoResp):
@@ -362,11 +362,12 @@ bind_layers( Dot11Auth,       Dot11Elt,    )
 bind_layers( Dot11Elt,        Dot11Elt,    )
 
 
-conf.l2types.register(801, Dot11)
-conf.l2types.register_num2layer(105, Dot11)
-conf.l2types.register(802, PrismHeader)
-conf.l2types.register(803, RadioTap)
-conf.l2types.register_num2layer(127, RadioTap)
+conf.l2types.register(105, Dot11)
+conf.l2types.register_num2layer(801, Dot11)
+conf.l2types.register(119, PrismHeader)
+conf.l2types.register_num2layer(802, PrismHeader)
+conf.l2types.register(127, RadioTap)
+conf.l2types.register_num2layer(803, RadioTap)
 
 
 class WiFi_am(AnsweringMachine):
