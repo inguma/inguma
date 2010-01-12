@@ -16,6 +16,8 @@ NMAP_PROFILES = {
 'UDP Polite Scan' : 'nmap -v -v  -T Polite -n -sU -PN --max_retries 3 '
 }
 
+##########################################################################
+
 # Categories
 categories = ["discovers", "gathers"]
 
