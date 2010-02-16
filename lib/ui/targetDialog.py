@@ -58,7 +58,7 @@ class TargetDialog:
         self.tgentry.set_focus = True
 
         # A domain text entry
-        self.domainentry = gtk.Entry(max=20)
+        self.domainentry = gtk.Entry(max=40)
         self.domainentry.set_sensitive(False)
 
         # Domain separator

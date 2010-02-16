@@ -66,6 +66,7 @@ import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.newcmenu as newcmenu
 import lib.ui.addTargetDlg as addtargetdlg
+import lib.ui.libTerminal as libTerminal
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -316,24 +317,36 @@ class MainApp:
         #################################################################
         # Notebook
         #################################################################
-        notebook = gtk.Notebook()
-        notebook.set_tab_pos(gtk.POS_LEFT)
+        self.notebook = gtk.Notebook()
+        self.notebook.set_tab_pos(gtk.POS_LEFT)
         #notebook.append_page(frame, label)
-        notebook.append_page(frame, b)
-        notebook.connect("switch_page", self.onSwitch)
+        self.notebook.append_page(frame, b)
+        self.notebook.connect("switch_page", self.onSwitch)
 
-#        #################################################################################################################################
-#        # Consoles Tab
-#        #################################################################
-#        label = gtk.Label('Term')
-#        label.set_angle(90)
-#        b_factory = gtk.VBox
-#        b = b_factory(spacing=1)
-#        i = gtk.Image()
-#        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_SMALL_TOOLBAR)
-#        b.pack_start(label)
-#        b.pack_start(i)
-#        b.show_all()
+        #################################################################################################################################
+        # Consoles Tab
+        #################################################################
+        label = gtk.Label('Term')
+        label.set_angle(90)
+        b_factory = gtk.VBox
+        b = b_factory(spacing=1)
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        b.pack_start(label)
+        b.pack_start(i)
+        b.show_all()
+
+        term_box = gtk.VBox()
+        term_button = gtk.Button("New Tab")
+        term_box.pack_start(term_button,False)
+        self.term_notebook = libTerminal.TerminalNotebook()
+        #term_button.connect("clicked", term_notebook.new_tab)
+        term_button.connect("clicked", self.new_tab)
+        term_box.pack_start(self.term_notebook)
+
+        self.notebook.append_page(term_box, b)
+        term_box.show_all()
+
 #
 #        # Vertical Pane to contain terms
 #        vterm = gtk.HPaned()
@@ -385,7 +398,7 @@ class MainApp:
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
-        notebook.append_page(frame, b)
+        self.notebook.append_page(frame, b)
 
         # RCE graph menu
         self.rmenu = rcemenu.RceMenu(self.xdotr, rcecore)
@@ -484,11 +497,11 @@ class MainApp:
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
-        notebook.append_page(frame, b)
+        self.notebook.append_page(frame, b)
 
         #mainvbox.pack_start(notebook, True, True, 1)
-        self.vpaned.add1(notebook)
-        notebook.show()
+        self.vpaned.add1(self.notebook)
+        self.notebook.show()
 
 
         #################################################################################################################################
@@ -595,30 +608,37 @@ class MainApp:
         propdiag.PropertiesDialog(self.textview)
 
     def show_term(self, widget):
-        import pango
-        # Terminal Window
-        termwin = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        termwin.set_title("Scapy Terminal")
-        termwin.connect("destroy", lambda w: termwin.destroy())
-        termwin.set_border_width(5)
-        termwin.set_size_request(800, 600)
+#        import pango
+#        # Terminal Window
+#        termwin = gtk.Window(gtk.WINDOW_TOPLEVEL)
+#        termwin.set_title("Scapy Terminal")
+#        termwin.connect("destroy", lambda w: termwin.destroy())
+#        termwin.set_border_width(5)
+#        termwin.set_size_request(800, 600)
+#
+#        # Terminal
+#        terminal = vte.Terminal()
+#        terminal.set_font(pango.FontDescription('mono 9'))
+#        terminal.connect("child-exited", lambda w: termwin.destroy())
+#        terminal.fork_command('scapy',None,None,'/home/hteso/',True,True,True)
+#
+##        terminal.fork_command('./inguma.py')
+##        terminal.feed_child('user_data = ' + str(self.uicore.user_data) + "\n" )
+##        terminal.feed_child('help\n')
+#
+#        terminal.set_scrollback_lines(500)
+#        terminal.set_scroll_on_output = True
+#        terminal.set_size(5,5)
+#
+#        # Join and show
+#        termwin.add(terminal)
+#        terminal.show()
+#        termwin.show()
 
-        # Terminal
-        terminal = vte.Terminal()
-        terminal.set_font(pango.FontDescription('mono 9'))
-        terminal.connect("child-exited", lambda w: termwin.destroy())
-        terminal.fork_command('scapy',None,None,'/home/hteso/',True,True,True)
-#        terminal.fork_command('./inguma.py')
-#        terminal.feed_child('user_data = ' + str(self.uicore.user_data) + "\n" )
-#        terminal.feed_child('help\n')
-        terminal.set_scrollback_lines(500)
-        terminal.set_scroll_on_output = True
-        terminal.set_size(5,5)
+        self.new_tab('scapy', 'scapy')
 
-        # Join and show
-        termwin.add(terminal)
-        terminal.show()
-        termwin.show()
+    def new_tab(self, widget, command=''):
+        self.term_notebook.new_tab(command)
 
     def show_log(self, widget):
         ''' Show/hide log panel'''
@@ -645,7 +665,7 @@ class MainApp:
             self.scrolled_window.is_visible = True
 
     def onSwitch(self, widget, data, more):
-        if more == 1:
+        if more == 2:
             self.handlebox.hide()
             self.rcehb.show()
             self.log_scrolled_window.hide()
