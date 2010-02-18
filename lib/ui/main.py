@@ -193,7 +193,8 @@ class MainApp:
             ('Proxy', gtk.STOCK_CONNECT, ('Proxy'), None, (''), gtk.main_quit),
             ('Web Server', gtk.STOCK_EXECUTE, ('Web'), None, ('Web'), gtk.main_quit),
 
-            ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), gtk.main_quit),
+            #('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), gtk.main_quit),
+            ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), self.run_sniffer),
             ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, (''), self.show_term),
             ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, (''), self.addTarget),
             ('Properties', gtk.STOCK_PROPERTIES, ('Properties'), None, (''), self.showProp),
@@ -637,8 +638,12 @@ class MainApp:
 
         self.new_tab('scapy', 'scapy')
 
+    def run_sniffer(self, widget):
+        self.new_tab('sniffer', 'tools/sniffer')
+
     def new_tab(self, widget, command=''):
         self.term_notebook.new_tab(command)
+        self.notebook.set_current_page(1)
 
     def show_log(self, widget):
         ''' Show/hide log panel'''

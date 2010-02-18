@@ -1,0 +1,10 @@
+#!/usr/bin/python
+import sys
+
+# Ugly but mandatory
+sys.path.append('.')
+
+import modules.gather.CSniffer as csniffer
+sniffer = csniffer.CSniffer()
+sniffer.showHelp()
+sniffer.run()
