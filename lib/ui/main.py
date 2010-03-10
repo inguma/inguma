@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys, time, vte
+import os, sys, time, vte, threading
 
 # Need root for most modules, so...
 if os.geteuid() != 0:
@@ -66,6 +66,7 @@ import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.newcmenu as newcmenu
 import lib.ui.addTargetDlg as addtargetdlg
+import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
@@ -498,7 +499,11 @@ class MainApp:
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
-        self.notebook.append_page(frame, b)
+
+        self.exploitsInst = exploits.Exploits()
+        exploitsGui = self.exploitsInst.get_widget()
+        exploitsGui.show_all()
+        self.notebook.append_page(exploitsGui, b)
 
         #mainvbox.pack_start(notebook, True, True, 1)
         self.vpaned.add1(self.notebook)
@@ -563,6 +568,7 @@ class MainApp:
         self.vpaned.show()
         self.window.show()
         splash.destroy()
+        
         gtk.main()
 
 #################################################################################################################################
@@ -680,6 +686,11 @@ class MainApp:
             self.handlebox.show()
             self.log_scrolled_window.show()
             self.log_scrolled_window.is_visible = True
+
+        #Detect Exploits tab selected to start loading exploits...
+        if more == 3:
+            t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
+            t.start()
 
     def newBin(self, widget):
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
