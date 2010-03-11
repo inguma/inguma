@@ -76,6 +76,7 @@ ui_menu = """
   <toolbar name="Toolbar">
     <toolitem action="Load"/>
     <toolitem action="Save"/>
+    <toolitem action="Edit"/>
     <separator name="s1"/>
     <toolitem action="Proxy"/>
     <toolitem action="Web Server"/>
@@ -191,6 +192,7 @@ class MainApp:
 
             ('Load', gtk.STOCK_OPEN, ('Load'), None, (''), self.loadKB),
             ('Save', gtk.STOCK_SAVE, ('Save'), None, (''), self.saveKB),
+            ('Edit', gtk.STOCK_EDIT, ('Edit'), None, (''), self.loadEditor),
             ('Proxy', gtk.STOCK_CONNECT, ('Proxy'), None, (''), gtk.main_quit),
             ('Web Server', gtk.STOCK_EXECUTE, ('Web'), None, ('Web'), gtk.main_quit),
 
@@ -610,6 +612,12 @@ class MainApp:
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected' , False)
         chooser.destroy()
+
+    def loadEditor(self, widget):
+        """ Loads module editor """
+
+        import lib.ui.editor as editor
+        editor.main()
 
     def showProp(self, widget):
         propdiag.PropertiesDialog(self.textview)

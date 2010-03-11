@@ -16,7 +16,9 @@ NMAP_PROFILES = {
 'UDP Polite Scan' : 'nmap -v -v  -T Polite -n -sU -PN --max_retries 3 '
 }
 
-##########################################################################
+# Editor color themes
+# classic.xml  cobalt.xml  kate.xml  oblivion.xml  styles.rng  tango.xml
+theme = "oblivion"
 
 # Categories
 categories = ["discovers", "gathers"]
