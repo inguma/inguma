@@ -1437,7 +1437,8 @@ class DotWidget(gtk.DrawingArea):
         )
         cr.clip()
 
-        cr.set_source_rgba(1.0, 1.0, 1.0, 1.0)
+        #cr.set_source_rgba(1.0, 1.0, 1.0, 1.0)
+        cr.set_source_rgba(0.215, 0.239, 0.286, 255)
         cr.paint()
 
         cr.save()

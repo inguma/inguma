@@ -29,10 +29,11 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 #    dotcode += 'ranksep = "0.25 equally"\n'
 
     dotcode += 'rankdir="' + direction + '"\n'
-    dotcode += "bgcolor=gray0\n\n"
+    #dotcode += "bgcolor=grey0\n\n"
+    dotcode += "bgcolor=\"#373D49\"\n\n"
     dotcode += 'root="' + localip + '";\n\n'
-    #dotcode += "\nnode [shape=record,color=blue,style=filled fillcolor=skyblue];\n"
-    dotcode += "\nnode [shape=record,color=blue, fontcolor=blue];\n"
+    #dotcode += "\nnode [shape=record,color=azure3,style=filled fillcolor=skyazure3];\n"
+    dotcode += "\nnode [shape=record,color=azure3, fontcolor=azure3, style=rounded];\n"
 
     #######################################
     #
@@ -43,8 +44,8 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     for asn in ASNs:
         dotcode += '\tsubgraph cluster_%s {\n' % asn
         if asn == 'local':
-            dotcode += '\t\tcolor="lawngreen";'
-            dotcode += '\t\tfontcolor="lawngreen";'
+            dotcode += '\t\tcolor="mediumseagreen";'
+            dotcode += '\t\tfontcolor="mediumseagreen";'
         else:
             dotcode += '\t\tcolor="#608686";'
             dotcode += '\t\tfontcolor="#608686";'
@@ -78,7 +79,7 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     #######################################
     if len(targets) != 0 or len(locals) != 0:
         for target in targets:
-            dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fontcolor=red1,label="' + target + '"];' + "\n"
+            dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
             #dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fillcolor=red1,style=filled,label="' + target + '"];' + "\n"
         dotcode += "\n"
     
@@ -86,12 +87,12 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
         for target in targets:
             for step in steps[i][0:-1]:
                 dotcode += '\t"' + step + '"->' + "\n"
-            dotcode += '\t"' + target + '" [color="blue"];' + "\n\n"
+            dotcode += '\t"' + target + '" [color="azure3"];' + "\n\n"
             i = i + 1
     
         for local in locals:
             dotcode += '\t"' + localip + '"->' + "\n"
-            dotcode += '\t"' + local + '" [color="blue"];' + "\n\n"
+            dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"
 
 
 #    #######################################
@@ -102,8 +103,8 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 #    else:
 #        dotcode += "\n#ASN clustering\n"
 #        dotcode += '\tsubgraph cluster_local {\n'
-#        dotcode += '\t\tcolor="lawngreen";'
-#        dotcode += '\t\tfontcolor="lawngreen";'
+#        dotcode += '\t\tcolor="mediumseagreen";'
+#        dotcode += '\t\tfontcolor="mediumseagreen";'
 #        dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
 #        dotcode += '\t\tfontsize = 10;'
 #        dotcode += '\t\tlabel = "Local Network"\n'
@@ -112,9 +113,9 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 #        dotcode += '\t\t"' + gateway + '";\n'
 #        dotcode += "\t}\n"
 #
-#        dotcode += '\t"' + localip +  '"' + ' [shape=record,color=blue,fillcolor=skyblue,style=filled,label="' + localip + '"];' + "\n"
+#        dotcode += '\t"' + localip +  '"' + ' [shape=record,color=azure3,fillcolor=skyazure3,style=filled,label="' + localip + '"];' + "\n"
 #        dotcode += '\t"' + localip + '"->' + "\n"
-#        dotcode += '\t"' + gateway + '" [color="blue"];' + "\n\n"
+#        dotcode += '\t"' + gateway + '" [color="azure3"];' + "\n\n"
 
     dotcode += "}"
 

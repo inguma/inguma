@@ -57,7 +57,8 @@ class MyDotWidget(xdot.DotWidget):
         )
         cr.clip()
 
-#        cr.set_source_rgba(0.0, 0.0, 0.0, 0.804)
+        cr.set_source_rgba(0.215, 0.239, 0.286, 255)
+        #cr.set_source_rgba(0.0, 0.0, 0.0, 0.804)
         cr.paint()
 
         cr.save()
