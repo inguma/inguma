@@ -37,7 +37,7 @@ class CNikto(CIngumaModule):
     ssl = False
 
     def help(self):
-        print "target = <target host or network>"
+        print "target = <target host or URL (without prefix http/s)>"
         print "port = <target port>"
         print "timeout = <timeout>"
         print "ssl = True|False"
@@ -98,7 +98,7 @@ class CNikto(CIngumaModule):
                 self.gom.echo( "Aborted." )
                 return
             except:
-                self.gom.echo( "Exception:" + sys.exc_info()[0] + " " + sys.exc_info()[1] )
+                self.gom.echo( "Exception:" + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]) )
 
         self.gom.echo( "Done." )
 
