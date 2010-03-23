@@ -301,6 +301,7 @@ def showHelp():
     print "| load kb                 | Load the knowledge base                          |"
     print "| save kb                 | Save the knowledge base                          |"
     print "| clear kb                | Clear the knowledge base's data                  |"
+    print "| show kb                 | Shows the knowledge base's data (very verbose)   |"
     print "| report                  | Generate a report                                |"
     print "|----------------------------------------------------------------------------|"
     print "| show discover           | Show discover modules                            |"
