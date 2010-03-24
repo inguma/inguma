@@ -19,7 +19,7 @@
 
 import sys
 
-def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASDs={}, direction='TD'):
+def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASDs={}, direction='TD', user_data=None):
 
     dotcode = "digraph G {\n\n\t"
 

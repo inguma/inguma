@@ -56,6 +56,7 @@ class CNmapFp(CIngumaModule):
         try:
             res = nmap_fp(target=self.target, oport = self.oport, cport = self.cport)
         except:
+            self.gom.echo( "An error ocurred, may be user has not enough privileges or" )
             self.gom.echo( "Couldn't find nmap OS fingerprint DB at " + conf.nmap_base )
             return False
         self.accuracy = res[0]

@@ -244,7 +244,7 @@ class UIcore():
 
             #Create dot code for actual KB and add it to user_data
             #dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, ASNs, ASDs)
-            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction)
+            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
             inguma.user_data['dotcode'] = dotcode
 
         else:
