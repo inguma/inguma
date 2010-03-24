@@ -79,7 +79,23 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     #######################################
     if len(targets) != 0 or len(locals) != 0:
         for target in targets:
-            dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
+
+            # I don't like this code...
+            try:
+                # Get OS String
+                target_os = target + '_os'
+                target_os = user_data[target_os][0]
+                target_os = target_os.split(' ')
+                # Get just two words if OS name is too large
+                if len(target_os) > 1:
+                    target_os = ' '.join([target_os[0], target_os[1], '...'])
+                else:
+                    target_os = target_os[0]
+                dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '\\n' + target_os + '"];' + "\n"
+            except:
+                dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
+
+            #dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
             #dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fillcolor=red1,style=filled,label="' + target + '"];' + "\n"
         dotcode += "\n"
     
