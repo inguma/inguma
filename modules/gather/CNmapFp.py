@@ -41,6 +41,7 @@ class CNmapFp(CIngumaModule):
     dict = None
     oport = 80
     cport = 81
+    conf.nmap_base='data/nmap-os-fingerprints'
 
     def help(self):
         print "target = <target host or network>"

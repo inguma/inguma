@@ -8,6 +8,7 @@ import os
 from scapy.data import KnowledgeBase
 from scapy.config import conf
 from scapy.arch import WINDOWS
+from scapy.all import *
 
 
 if WINDOWS:
