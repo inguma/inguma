@@ -131,11 +131,24 @@ class UIManager(gtk.UIManager):
                     self.actiongroup2.add_actions( [(str(port), None, str(port))] )
                     self.target_menu += '<menu action="' + str(port) + '">'
 
-                    #Menuitems for connect and browser
+                    # Menuitems for connect and browser
                     self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with broswer', None, None, self.show_browser)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_browser"/>'
                     self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, gtk.main_quit)] )
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
+
+                    # Lets try to add web vulns...
+                    if kb.__contains__(ip + '_vulnerable-urls') and port == 80:
+                        #print "* We have port 80 with web vulns!"
+                        # Menu for vulnerabilities
+                        self.actiongroup2.add_actions( [(str(port) + '_web_vulns', gtk.STOCK_DIALOG_WARNING, 'Web Vulns')] )
+                        self.target_menu += '<menu action="' + str(port) + '_web_vulns' + '">'
+
+                        # Menuitems for each vuln
+                        for vuln in kb[ip + '_vulnerable-urls']:
+                            self.actiongroup2.add_actions( [(str(port) + '_' + vuln, gtk.STOCK_YES, vuln, None, None, self.show_browser)], [str(port), ip, vuln] )
+                            self.target_menu += '<menuitem action="' + str(port) + '_' + vuln + '"/>'
+                        self.target_menu += '</menu>'
 
                     # Menu for brute modules
                     self.actiongroup2.add_actions( [(str(port) + '_brutes', None, 'Bruteforce')] )
@@ -222,8 +235,8 @@ self.showBrute )], user_data=[ip, port] )
 
     def show_browser(self, action, data):
         from webbrowser import open_new
-        port, ip = data
-        open_new('http://' + ip + ':' + port)
+        port, ip, vuln = data
+        open_new('http://' + ip + ':' + port + vuln)
 
     def showDialog(self, action):
         module = action.get_name()
