@@ -1,6 +1,6 @@
 #       graphmenu.py
 #       
-#       Copyright 2009 Hugo Teso <hteso@Meneillos>
+#       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       Based on code from w3af by Andres Riancho (w3af.sourceforge.net)
 #       
 #       This program is free software; you can redistribute it and/or modify
