@@ -212,6 +212,10 @@ class MainApp:
 
         # Toolbar
         toolbar = uimanager.get_widget('/Toolbar')
+        button_proxy = uimanager.get_widget('/Toolbar/Proxy')
+        button_proxy.set_sensitive(False)
+        button_web = uimanager.get_widget('/Toolbar/Web Server')
+        button_web.set_sensitive(False)
         self.handlebox.add(toolbar)
         toolbar.show()
         self.handlebox.show()
