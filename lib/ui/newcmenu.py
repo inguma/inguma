@@ -138,14 +138,14 @@ class UIManager(gtk.UIManager):
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
 
                     # Lets try to add web vulns...
-                    if kb.__contains__(ip + '_vulnerable-urls') and port == 80:
-                        #print "* We have port 80 with web vulns!"
+                    if kb.__contains__(ip + "_" + str(port) + '-vulns'):
+                        #print "* We have port %s with vulns!" % port
                         # Menu for vulnerabilities
-                        self.actiongroup2.add_actions( [(str(port) + '_web_vulns', gtk.STOCK_DIALOG_WARNING, 'Web Vulns')] )
-                        self.target_menu += '<menu action="' + str(port) + '_web_vulns' + '">'
+                        self.actiongroup2.add_actions( [(str(port) + '_vulns', gtk.STOCK_DIALOG_WARNING, 'Vulns')] )
+                        self.target_menu += '<menu action="' + str(port) + '_vulns' + '">'
 
                         # Menuitems for each vuln
-                        for vuln in kb[ip + '_vulnerable-urls']:
+                        for vuln in kb[ip + '_' + str(port) + '-vulns']:
                             self.actiongroup2.add_actions( [(str(port) + '_' + vuln, gtk.STOCK_YES, vuln, None, None, self.show_browser)], [str(port), ip, vuln] )
                             self.target_menu += '<menuitem action="' + str(port) + '_' + vuln + '"/>'
                         self.target_menu += '</menu>'

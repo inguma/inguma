@@ -79,7 +79,8 @@ class CNikto(CIngumaModule):
                 x = urllib2.urlopen(baseurl + page)
                 if x.read().find(niktoRule.match1) > -1:
                     del x
-                    self.addToDict(self.target + "_vulnerable-urls", page)
+                    #self.addToDict(self.target + "_vulnerable-urls", page)
+                    self.addToDict(self.target + "_" + str(self.port) + "-vulns", page)
 
                     self.gom.echo( "Adding vulnerable URL '%s'..." % page )
                     self.gom.echo( "-"*40 )
