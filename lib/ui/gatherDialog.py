@@ -45,8 +45,13 @@ class GatherDialog(gtk.Dialog):
 
         # the text entries
         self.entries = []
+        # kb fields
+        self.titles = []
+        # Numeric fields
+        self.numerics = ['port', 'timeout']
         table = gtk.Table(len(options), 2)
         for row,tit in enumerate(options):
+            self.titles.append(tit)
             titlab = gtk.Label(tit.capitalize() + ":\t")
             titlab.set_alignment(0.0, 0.5)
             table.attach(titlab, 0,1,row,row+1)
@@ -81,6 +86,14 @@ class GatherDialog(gtk.Dialog):
 #        if not self._allWithText():
 #            return
         self.inputtexts = [x.get_text() for x in self.entries]
+        count = 0
+        for tit in self.titles:
+            # FIXME horrible, horrible FIXME
+            if self.numerics.__contains__(tit):
+                self.uicore.set_kbfield(tit, int(self.inputtexts[count]))
+            else:
+                self.uicore.set_kbfield(tit, self.inputtexts[count])
+            count += 1
         self._run_module()
         if close:
             self.response(gtk.RESPONSE_OK)
