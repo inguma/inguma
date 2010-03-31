@@ -48,7 +48,7 @@ class GatherDialog(gtk.Dialog):
         # kb fields
         self.titles = []
         # Numeric fields
-        self.numerics = ['port', 'timeout']
+        self.numerics = ['port', 'timeout', 'oport', 'cport']
         table = gtk.Table(len(options), 2)
         for row,tit in enumerate(options):
             self.titles.append(tit)
