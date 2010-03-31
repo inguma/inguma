@@ -224,12 +224,14 @@ class UIcore():
                 if not inguma.user_data.has_key(ip + 'asn'):
                     asn = self.get_asn(ip)
                     inguma.user_data[ip + 'asn'] = True
+                    inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
                     ASNlist.append(asn[0])
             for path in paths:
                 for ip in path:
                     if not inguma.user_data.has_key(ip + 'asn'):
                         asn = self.get_asn(ip)
                         inguma.user_data[ip + 'asn'] = True
+                        inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
                         ASNlist.append(asn[0])
 
             ASNs = {}
