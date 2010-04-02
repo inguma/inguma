@@ -257,6 +257,10 @@ class UIcore():
             dotcode = dotgen.generate_dot(local, gw, targets, paths, locals)
             inguma.user_data['dotcode'] = dotcode
 
+    def set_threadtv(self, threadtv):
+        print "Creating thread manager on core"
+        self.threadtv = threadtv
+
     def uiRunModule(self, widget, callback_data, mod):
         '''Runs specified module and returns data'''
 
@@ -264,6 +268,7 @@ class UIcore():
         self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
+        self.threadtv.add_action(mod)
 
     def uiRunDiscover(self, mod, join=False):
         '''Runs specified module and returns data'''
@@ -272,6 +277,7 @@ class UIcore():
         self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
+        self.threadtv.add_action(mod)
         if join:
             t.join()
 

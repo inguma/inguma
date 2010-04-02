@@ -68,6 +68,7 @@ import lib.ui.newcmenu as newcmenu
 import lib.ui.addTargetDlg as addtargetdlg
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
+import lib.ui.threadstv as threadstv
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -255,13 +256,13 @@ class MainApp:
 #
 #        self.xdotw = inxdot.MyDotWidget(self.context, self.uicore)
 
-        self.uiman = newcmenu.UIManager(self.gom)
+        self.uiman = newcmenu.UIManager(self.gom, self.uicore)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
         self.window.add_accel_group(accel)
         self.xdotw = inxdot.MyDotWidget(self.uiman, self.uicore)
 
-        self.xdotw.set_size_request(900,500)
+        self.xdotw.set_size_request(900,450)
         self.gom.set_map(self.xdotw)
         #self.uicore.getEmptyDot()
         self.uicore.getDot(doASN=True)
@@ -543,16 +544,61 @@ class MainApp:
         #self.log_scrolled_window.set_size_request(40,40)
         #self.logtext.set_size_request(20,20)
 
-        #mainvbox.pack_start(self.log_scrolled_window, False, False, 1)
-        self.vpaned.add2(self.log_scrolled_window)
-        mainvbox.pack_start(self.vpaned, True, True, 1)
-        self.log_scrolled_window.show()
-
         # Add Textview to Scrolled Window
         self.log_scrolled_window.add_with_viewport(self.logtext)
 
         # Set logtext as output for gui
         self.gom.set_gui(self.logbuffer)
+
+        # Add Scrolled Log Window to Bottom Notebook
+        ############################################
+
+        # Notebook for bottom panel
+        self.bottom_nb = gtk.Notebook()
+        self.bottom_nb.set_tab_pos(gtk.POS_LEFT)
+
+        # Icon and label for Logs tab
+        label = gtk.Label('Logs')
+        label.set_angle(90)
+        b_factory = gtk.VBox
+        b = b_factory(spacing=1)
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        b.pack_start(label)
+        b.pack_start(i)
+        b.show_all()
+
+        self.bottom_nb.append_page(self.log_scrolled_window, b)
+
+        # Icon and label for Actions tab
+        label = gtk.Label('Actions')
+        label.set_angle(90)
+        b_factory = gtk.VBox
+        b = b_factory(spacing=1)
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        b.pack_start(label)
+        b.pack_start(i)
+        b.show_all()
+
+        # Add Threads TreeView
+        self.threadsInst = threadstv.ThreadsTv()
+        threadsGui = self.threadsInst.get_widget()
+        threadsGui.show_all()
+
+        self.bottom_nb.append_page(threadsGui, b)
+
+        #self.bottom_nb.set_scrollable(True)
+        self.bottom_nb.set_current_page(0)
+        self.bottom_nb.is_visible = True
+        self.bottom_nb.show()
+
+        self.vpaned.add2(self.bottom_nb)
+        mainvbox.pack_start(self.vpaned, True, True, 1)
+        self.log_scrolled_window.show()
+
+        # Add threadtv to core
+        self.uicore.set_threadtv(self.threadsInst)
 
 #        #################################################################################################################################
 #        # Progress Bar
@@ -668,13 +714,13 @@ class MainApp:
     def show_log(self, widget):
         ''' Show/hide log panel'''
 
-        if self.log_scrolled_window.is_visible == True:
-            self.log_scrolled_window.hide()
-            self.log_scrolled_window.is_visible = False
+        if self.bottom_nb.is_visible == True:
+            self.bottom_nb.hide()
+            self.bottom_nb.is_visible = False
 
         else:
-            self.log_scrolled_window.show()
-            self.log_scrolled_window.is_visible = True
+            self.bottom_nb.show()
+            self.bottom_nb.is_visible = True
 
     def show_kb(self, widget):
         ''' Show/hide KB panel'''
@@ -693,13 +739,13 @@ class MainApp:
         if more == 2:
             self.handlebox.hide()
             self.rcehb.show()
-            self.log_scrolled_window.hide()
-            self.log_scrolled_window.is_visible = False
+            self.bottom_nb.hide()
+            self.bottom_nb.is_visible = False
         else:
             self.rcehb.hide()
             self.handlebox.show()
-            self.log_scrolled_window.show()
-            self.log_scrolled_window.is_visible = True
+            self.bottom_nb.show()
+            self.bottom_nb.is_visible = True
 
         #Detect Exploits tab selected to start loading exploits...
         if more == 3:

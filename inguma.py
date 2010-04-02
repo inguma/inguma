@@ -118,7 +118,7 @@ global listenPort; global ignore_host;
 """
 
 debug = False
-version = "0.1.1"
+version = "1.0-dev"
 prompt = "inguma> "
 
 commands = {}

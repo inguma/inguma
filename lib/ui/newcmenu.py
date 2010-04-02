@@ -29,13 +29,12 @@ from . import config
 
 class UIManager(gtk.UIManager):
 
-    def __init__(self, gom):
+    def __init__(self, gom, core):
         gtk.UIManager.__init__(self)
 
         self.ui_id = 0
 
-        self.uicore = core.UIcore()
-        self.uicore.set_om(gom)
+        self.uicore = core
 
         # Add the accelerator group
         self.accel = self.get_accel_group()
