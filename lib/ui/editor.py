@@ -149,7 +149,7 @@ def tabs_toggled_cb(action, action2, sourceview):
 
 def new_view_cb(action, sourceview):
     window = create_view_window(gtksourceview.Buffer(), sourceview)
-    window.set_default_size(500, 500)
+    #window.set_default_size(500, 500)
     window.show()
 
 ######################################################################
@@ -304,7 +304,9 @@ buffer_ui_description = """
 def create_view_window(buffer, sourceview = None):
     # window
     window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    window.set_border_width(0)
+    window.set_default_size(800, 600)
+    window.set_position(gtk.WIN_POS_CENTER)
+    #window.set_border_width(0)
     window.set_title('Inguma module editor')
     windows.append(window) # this list contains all view windows
 
@@ -422,17 +424,21 @@ def create_main_window(buffer):
 
 ######################################################################
 ##### main
-def main():
+def main(exploit=''):
     # create buffer
     buffer = gtksourceview.Buffer()
     mgr = gtksourceview.style_scheme_manager_get_default()
     
-    #Set theme ftom config theme
+    # Set theme ftom config theme
     style_scheme = mgr.get_scheme(theme)
     if style_scheme:
         buffer.set_style_scheme(style_scheme)
+    if exploit != '':
+        open_file(buffer, exploit)
 
     # create first window
     window = create_main_window(buffer)
-    window.set_default_size(500, 500)
+    window.set_default_size(800, 600)
+    window.set_position(gtk.WIN_POS_CENTER)
+    window.set_title('Inguma module editor - ' + exploit)
     window.show()

@@ -754,6 +754,9 @@ class MainApp:
                 if opt == True:
                     t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
                     t.start()
+            else:
+                    t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
+                    t.start()
 
     def newBin(self, widget):
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
