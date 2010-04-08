@@ -101,8 +101,12 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     
         i = 0
         for target in targets:
-            for step in steps[i][0:-1]:
-                dotcode += '\t"' + step + '"->' + "\n"
+            # If there are steps for that target
+            try:
+                for step in steps[i][0:-1]:
+                    dotcode += '\t"' + step + '"->' + "\n"
+            except:
+                pass
             dotcode += '\t"' + target + '" [color="azure3"];' + "\n\n"
             i = i + 1
     

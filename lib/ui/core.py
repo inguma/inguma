@@ -62,6 +62,7 @@ class UIcore():
         inguma.user_data[ip + '_trace'] = [ip, gw]
         inguma.user_data['hosts'].append(ip)
         inguma.user_data['hosts'].append(gw)
+        inguma.user_data['targets'].append(ip)
 
         inguma.user_data[ip + 'asn'] = True
         inguma.user_data[gw + 'asn'] = True
@@ -195,6 +196,9 @@ class UIcore():
                     locals.append(host)
 
 #        print "Steps", steps, "\n"
+
+        targets = inguma.user_data["targets"]
+
         return targets, steps, locals
 
     def get_asn(self, ip):

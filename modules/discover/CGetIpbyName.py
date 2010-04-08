@@ -39,5 +39,6 @@ class CGetIpbyName(CIngumaModule):
         self.gom.echo( "Adding to discovered hosts " + self.results[0] )
         self.addToDict("hosts", self.results[0])
         self.addToDict(self.results[0] + "_name", self.target)
+        self.addToDict("targets", self.results[0])
         #self.addToDict(self.results[0] + "_trace", self.results[0])
         #print self.results[0]

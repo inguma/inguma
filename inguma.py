@@ -47,6 +47,7 @@ from rce import *
 isGui = False
 
 global target
+global targets
 global otherTargets
 global services
 global port
@@ -67,6 +68,7 @@ global url
 
 wizard = False
 target = ""
+targets = []
 otherTargets = []
 services = {}
 port = 0
@@ -96,6 +98,7 @@ except:
 
 user_data = {}
 user_data["target"] = ""
+user_data["targets"] = []
 user_data["port"] = ""
 user_data["covert"] = 0
 user_data["timeout"] = 5
@@ -111,7 +114,7 @@ user_data["ports"] = ports
 user_data["isGui"] = False
 
 GLOBAL_VARIABLES = """
-global target; global port; global covert; global timeout; global waittime; global debug
+global target; global targets; global port; global covert; global timeout; global waittime; global debug
 global otherTargets; global services; global wizard; global user_data; global user;
 global password; global domain; global payload; global ostype; global command; 
 global listenPort; global ignore_host;

@@ -145,6 +145,7 @@ class CTraceroute(CIngumaModule):
         self.gom.echo( "" )
         for element in self.trace:
             self.addToDict(self.target + "_trace", element)
+            self.addToDict("targets", self.target)
 
 
 if __name__ == "__main__":
