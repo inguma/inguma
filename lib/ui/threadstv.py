@@ -42,7 +42,8 @@ class ThreadsTv:
         self.treeview.columns[4] = gtk.TreeViewColumn('End')
 
         # create a CellRenderers to render the data
-        self.cellpb = gtk.CellRendererPixbuf()
+        #self.cellpb = gtk.CellRendererPixbuf()
+        self.cellpb = gtk.CellRendererProgress()
         # add the cells to the columns - 2 in the first
         self.treeview.columns[1].pack_start(self.cellpb, False)
         # set the cell attributes to the appropriate liststore column
@@ -50,7 +51,12 @@ class ThreadsTv:
 
         # make ui layout
         self.scrolledwindow = gtk.ScrolledWindow()
+        # remove hscrollbar
+        self.scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
+        #Always on bottom on change
+        self.vajd = self.scrolledwindow.get_vadjustment()
+        self.vajd.connect('changed', lambda a, s=self.scrolledwindow: self.rescroll(a,s))
 
         for n in range(5):
             self.treeview.append_column(self.treeview.columns[n])
@@ -62,15 +68,19 @@ class ThreadsTv:
 
         self.counter = 0
 
-    def add_action(self, module):
+    def add_action(self, module, target):
         """ Adds a new action to the list """
 
         print "Adding new content for:", module
-        self.liststore.append([self.counter, gtk.STOCK_EXECUTE, module, time.strftime("%H:%M:%S", time.gmtime()), '' ])
+        self.liststore.append([self.counter, self.cellpb.set_property("pulse", 5), "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.gmtime()), '' ])
         self.counter += 1
 
     def get_widget(self):
         return self.scrolledwindow
+
+    def rescroll(self, adj, scroll):
+        adj.set_value(adj.upper-adj.page_size)
+        scroll.set_vadjustment(adj)
 
     def load_exploits(self, gom):
         if self.exploits_loaded == 0:
