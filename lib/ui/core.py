@@ -272,7 +272,7 @@ class UIcore():
         self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
-        self.threadtv.add_action(mod, inguma.user_data['target'])
+        self.threadtv.add_action(mod, inguma.user_data['target'], t)
 
     def uiRunDiscover(self, mod, join=False):
         '''Runs specified module and returns data'''
@@ -281,7 +281,7 @@ class UIcore():
         self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
-        self.threadtv.add_action(mod, inguma.user_data['target'])
+        self.threadtv.add_action(mod, inguma.user_data['target'], t)
         if join:
             t.join()
 
