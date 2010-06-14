@@ -1,4 +1,4 @@
-##       main.py
+##      main.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -77,11 +77,11 @@ ui_menu = """
   <toolbar name="Toolbar">
     <toolitem action="Load"/>
     <toolitem action="Save"/>
+    <toolitem action="Import"/>
     <toolitem action="Edit"/>
     <separator name="s1"/>
     <toolitem action="Proxy"/>
     <toolitem action="Web Server"/>
-    <separator name="s2"/>
     <toolitem action="Sniffer"/>
     <separator name="s3"/>
     <toolitem action="Scapy"/>
@@ -193,6 +193,7 @@ class MainApp:
 
             ('Load', gtk.STOCK_OPEN, ('Load'), None, (''), self.loadKB),
             ('Save', gtk.STOCK_SAVE, ('Save'), None, (''), self.saveKB),
+            ('Import', gtk.STOCK_CONVERT, ('Import'), None, (''), self.importScan),
             ('Edit', gtk.STOCK_EDIT, ('Edit'), None, (''), self.loadEditor),
             ('Proxy', gtk.STOCK_CONNECT, ('Proxy'), None, (''), gtk.main_quit),
             ('Web Server', gtk.STOCK_EXECUTE, ('Web'), None, ('Web'), gtk.main_quit),
@@ -665,6 +666,30 @@ class MainApp:
             self.gom.echo( 'Closed, no files selected' , False)
         chooser.destroy()
 
+    def importScan(self, widget):
+        """ Parse and import nmap scan """
+
+        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        filter = gtk.FileFilter()
+        filter.set_name('Nmap scan')
+        filter.add_pattern('*.xml')
+        chooser.add_filter(filter)
+
+        response = chooser.run()
+        if response == gtk.RESPONSE_OK:
+            self.gom.echo( 'Loading Nmap Scan...', False)
+            self.gom.echo(  chooser.get_filename() + ' selected' , False)
+            res = chooser.get_filename()
+
+            import lib.ui.nmapParser as nmapParser
+            nmapData = nmapParser.parseNmap(res)
+            nmapParser.insertData(self.uicore, nmapData)
+
+        elif response == gtk.RESPONSE_CANCEL:
+            self.gom.echo( 'Closed, no files selected', False)
+
+        chooser.destroy()
+
     def loadEditor(self, widget):
         """ Loads module editor """
 
@@ -675,33 +700,6 @@ class MainApp:
         propdiag.PropertiesDialog(self.textview)
 
     def show_term(self, widget):
-#        import pango
-#        # Terminal Window
-#        termwin = gtk.Window(gtk.WINDOW_TOPLEVEL)
-#        termwin.set_title("Scapy Terminal")
-#        termwin.connect("destroy", lambda w: termwin.destroy())
-#        termwin.set_border_width(5)
-#        termwin.set_size_request(800, 600)
-#
-#        # Terminal
-#        terminal = vte.Terminal()
-#        terminal.set_font(pango.FontDescription('mono 9'))
-#        terminal.connect("child-exited", lambda w: termwin.destroy())
-#        terminal.fork_command('scapy',None,None,'/home/hteso/',True,True,True)
-#
-##        terminal.fork_command('./inguma.py')
-##        terminal.feed_child('user_data = ' + str(self.uicore.user_data) + "\n" )
-##        terminal.feed_child('help\n')
-#
-#        terminal.set_scrollback_lines(500)
-#        terminal.set_scroll_on_output = True
-#        terminal.set_size(5,5)
-#
-#        # Join and show
-#        termwin.add(terminal)
-#        terminal.show()
-#        termwin.show()
-
         self.new_tab('scapy', 'scapy')
 
     def run_sniffer(self, widget):
