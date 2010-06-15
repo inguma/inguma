@@ -1598,10 +1598,13 @@ class DotWidget(gtk.DrawingArea):
             url = self.get_url(x, y)
             if url is not None:
                 self.emit('clicked', unicode(url.url), event)
-            else:
-                jump = self.get_jump(x, y)
-                if jump is not None:
-                    self.animate_to(jump.x, jump.y)
+#            else:
+#                jump = self.get_jump(x, y)
+#                if jump is not None:
+#                    self.animate_to(jump.x, jump.y)
+            jump = self.get_jump(x, y)
+            if jump is not None:
+                self.animate_to(jump.x, jump.y)
 
             return True
         if event.button == 1 or event.button == 2:

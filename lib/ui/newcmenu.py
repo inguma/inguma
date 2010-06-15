@@ -136,7 +136,7 @@ class UIManager(gtk.UIManager):
                     self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, gtk.main_quit)] )
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
 
-                    # Lets try to add web vulns...
+                    # Add web vulns...
                     if kb.__contains__(ip + "_" + str(port) + '-vulns'):
                         #print "* We have port %s with vulns!" % port
                         # Menu for vulnerabilities
@@ -147,6 +147,19 @@ class UIManager(gtk.UIManager):
                         for vuln in kb[ip + '_' + str(port) + '-vulns']:
                             self.actiongroup2.add_actions( [(str(port) + '_' + vuln, gtk.STOCK_YES, vuln, None, None, self.show_browser)], [str(port), ip, vuln] )
                             self.target_menu += '<menuitem action="' + str(port) + '_' + vuln + '"/>'
+                        self.target_menu += '</menu>'
+
+                    # Add services info
+                    if kb.__contains__(ip + "_" + str(port) + '-info'):
+                        #print "* We have port %s with info!" % port
+                        # Menu for service info
+                        self.actiongroup2.add_actions( [(str(port) + '_info', gtk.STOCK_INFO, 'Info')] )
+                        self.target_menu += '<menu action="' + str(port) + '_info' + '">'
+
+                        # Menuitems for each info
+                        for info in kb[ip + '_' + str(port) + '-info']:
+                            self.actiongroup2.add_actions( [(str(port) + '_' + info, gtk.STOCK_YES, info, None, None, None)]  )
+                            self.target_menu += '<menuitem action="' + str(port) + '_' + info + '"/>'
                         self.target_menu += '</menu>'
 
                     # Menu for brute modules

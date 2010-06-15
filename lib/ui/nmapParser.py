@@ -44,6 +44,7 @@ class NmapHandler(sax.ContentHandler):
             if self.state == 'open' or self.state == 'filtered':
                 self.isOpen += 1
                 self.output['ports'][self.port] = []
+                self.output['ports'][self.port].append( str(self.state) )
                 self.state = ""
         elif name == 'service':
 #            self.output += "Service:\t" + self.serv + " " + self.product + " " + self.version + "\n\n"
@@ -84,13 +85,14 @@ def insertData(uicore, output):
     uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
 
     # Add Open ports and services
-    print output['ports']
+#    print output['ports']
     for port in output['ports'].keys():
-        uicore.set_kbfield( output['hostip'] + '_ports', port )
-        try:
-            uicore.set_kbfield( output['hostip'] + '_' + port + '-vulns', output['ports'][port][1] )
-        except:
-            pass
+        if output['ports'][port][0] == 'open':
+            uicore.set_kbfield( output['hostip'] + '_ports', port )
+            try:
+                uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )
+            except:
+                pass
 
     # Add traceroute
     for host in output['hops']:

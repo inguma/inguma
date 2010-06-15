@@ -669,12 +669,14 @@ class MainApp:
     def importScan(self, widget):
         """ Parse and import nmap scan """
 
+        # Choose nmap scan file
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         filter = gtk.FileFilter()
         filter.set_name('Nmap scan')
         filter.add_pattern('*.xml')
         chooser.add_filter(filter)
 
+        # Try to parse and import data
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.gom.echo( 'Loading Nmap Scan...', False)
@@ -682,13 +684,27 @@ class MainApp:
             res = chooser.get_filename()
 
             import lib.ui.nmapParser as nmapParser
-            nmapData = nmapParser.parseNmap(res)
-            nmapParser.insertData(self.uicore, nmapData)
+            try:
+                self.gom.echo( 'Parsing scan results...', False)
+                nmapData = nmapParser.parseNmap(res)
+                self.gom.echo( 'Inserting data in KB...', False)
+                nmapParser.insertData(self.uicore, nmapData)
+
+                self.gom.echo( 'Loaded\nUpdating Graph', False)
+                self.uicore.getDot(doASN=True)
+                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+                self.gom.kbwin.updateTree()
+
+            except:
+                md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
+                md.run()
+                md.destroy()
+
+            chooser.destroy()
 
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
-
-        chooser.destroy()
+            chooser.destroy()
 
     def loadEditor(self, widget):
         """ Loads module editor """
