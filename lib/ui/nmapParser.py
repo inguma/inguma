@@ -47,8 +47,7 @@ class NmapHandler(sax.ContentHandler):
                 self.output['ports'][self.port].append( str(self.state) )
                 self.state = ""
         elif name == 'service':
-#            self.output += "Service:\t" + self.serv + " " + self.product + " " + self.version + "\n\n"
-            self.output['ports'][self.port].append( str(self.serv) )
+            self.output['ports'][self.port].append( str( self.serv + ' (' + self.product + ' ' + self.version + ')' ) )
             self.serv = ""
             self.product = ""
             self.version = ""
@@ -90,6 +89,7 @@ def insertData(uicore, output):
         if output['ports'][port][0] == 'open':
             uicore.set_kbfield( output['hostip'] + '_ports', port )
             try:
+                uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][1] )
                 uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )
             except:
                 pass

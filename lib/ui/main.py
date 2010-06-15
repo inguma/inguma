@@ -690,8 +690,18 @@ class MainApp:
                 self.gom.echo( 'Inserting data in KB...', False)
                 nmapParser.insertData(self.uicore, nmapData)
 
+
+                askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
+                do_asn = askASN.run()
+
                 self.gom.echo( 'Loaded\nUpdating Graph', False)
-                self.uicore.getDot(doASN=True)
+
+                if do_asn == gtk.RESPONSE_OK:
+                    self.uicore.getDot(doASN=True)
+                else:
+                    self.uicore.getDot(doASN=False)
+                askASN.destroy()
+
                 self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
                 self.gom.kbwin.updateTree()
 
