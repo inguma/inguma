@@ -47,7 +47,10 @@ class NmapHandler(sax.ContentHandler):
                 self.output['ports'][self.port].append( str(self.state) )
                 self.state = ""
         elif name == 'service':
-            self.output['ports'][self.port].append( str( self.serv + ' (' + self.product + ' ' + self.version + ')' ) )
+            try:
+                self.output['ports'][self.port].append( str( self.serv + ' (' + self.product + ' ' + self.version + ')' ) )
+            except:
+                pass
             self.serv = ""
             self.product = ""
             self.version = ""
@@ -80,8 +83,10 @@ def insertData(uicore, output):
 
     # Add a new target, hostname and OS
     uicore.set_kbfield( 'targets', output['hostip'] )
-    uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
-    uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
+    if 'hostname' in output.keys():
+        uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
+    if 'os' in output.keys():
+        uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
 
     # Add Open ports and services
 #    print output['ports']
@@ -98,3 +103,6 @@ def insertData(uicore, output):
     for host in output['hops']:
         uicore.set_kbfield( 'hosts', host )
         uicore.set_kbfield( output['hostip'] + '_trace', host )
+
+#if __name__ == '__main__':
+#    parseNmap('/tmp/nmapxml.xml')

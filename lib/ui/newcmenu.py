@@ -33,7 +33,7 @@ class UIManager(gtk.UIManager):
         gtk.UIManager.__init__(self)
 
         self.ui_id = 0
-
+        self.gom = gom
         self.uicore = core
 
         # Add the accelerator group
@@ -262,6 +262,7 @@ self.showBrute )], user_data=[ip, port] )
             exec 'import ' + inputs.keys()[0]
             dialog = eval(inputs.keys()[0] + '.' + inputs.values()[0] + '(ip=\'' + str(self.ip) + '\')')
             setattr(dialog, 'uicore', self.uicore)
+            setattr(dialog, 'gom', self.gom)
             setattr(dialog, 'module', module)
         elif not inputs:
             tg = gatherDialog.GatherDialog(module, gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)

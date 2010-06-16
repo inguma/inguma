@@ -258,7 +258,7 @@ class UIcore():
 
         else:
             #Create dot code for actual KB and add it to user_data
-            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals)
+            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, direction=direction)
             inguma.user_data['dotcode'] = dotcode
 
     def set_threadtv(self, threadtv):
@@ -328,5 +328,5 @@ class UIcore():
         pass
 
     def set_direction(self, direction):
-        self.getDot(True, direction)
+        self.getDot(False, direction)
         return True

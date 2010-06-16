@@ -696,7 +696,7 @@ class MainApp:
 
                 self.gom.echo( 'Loaded\nUpdating Graph', False)
 
-                if do_asn == gtk.RESPONSE_OK:
+                if do_asn == gtk.RESPONSE_YES:
                     self.uicore.getDot(doASN=True)
                 else:
                     self.uicore.getDot(doASN=False)

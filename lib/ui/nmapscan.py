@@ -24,7 +24,7 @@ import sys, os
 sys.path.append('../..')
 import lib.IPy as IPy
 
-from . import core
+#from . import core
 from . import config
 
 class NmapScan:
@@ -144,31 +144,33 @@ class NmapScan:
         self.dialog.destroy()
 
     def parse_data(self):
-        import lib.NmapParser as NmapParser
 
-        file_to_parse = open('/tmp/nmapxml.xml')
+            import lib.ui.nmapParser as nmapParser
+            try:
+                self.gom.echo( 'Parsing scan results...', False)
+                nmapData = nmapParser.parseNmap('/tmp/nmapxml.xml')
+                self.gom.echo( 'Inserting data in KB...', False)
+                nmapParser.insertData(self.uicore, nmapData)
 
-        np = NmapParser.NmapParser(file_to_parse)
-        np.parse()
 
-        host = np.nmap["hosts"][-1]
+                askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
+                do_asn = askASN.run()
 
-        print "OS Match:", host.osmatches[0]['name']
-        self.uicore.set_kbfield(self.ip + '_os', host.osmatches[0]['name'])
+                self.gom.echo( 'Loaded\nUpdating Graph', False)
 
-        print "Ports:"
-        PORTS = []
-        for i in host.ports:
-            for p in i['port']:
-                if p['port_state'] == 'open':
-                    #PORTS.append(p['portid'])
-                    print "\t%s" % repr(p)
-                    self.uicore.set_kbfield(self.ip + '_ports', p['portid'])
-        #self.uicore.set_kbfield(self.ip + '_ports', PORTS)
-        print "IP:", repr(host.ip)
-        print "Hostnames:", host.hostnames[0]['hostname']
-        self.uicore.set_kbfield(self.ip + '_name', host.hostnames[0]['hostname'])
-        os.remove('/tmp/nmapxml.xml')
+                if do_asn == gtk.RESPONSE_YES:
+                    self.uicore.getDot(doASN=True)
+                else:
+                    self.uicore.getDot(doASN=False)
+                askASN.destroy()
+
+                self.gom.update_graph( self.uicore.get_kbfield('dotcode') )
+                self.gom.kbwin.updateTree()
+
+            except:
+                md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
+                md.run()
+                md.destroy()
 
 
     def show_help(self):
