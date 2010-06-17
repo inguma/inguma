@@ -251,15 +251,18 @@ class UIcore():
             self.add_asns(ASNs)
             self.add_asds(ASDs)
 
-            #Create dot code for actual KB and add it to user_data
-            #dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, ASNs, ASDs)
-            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
-            inguma.user_data['dotcode'] = dotcode
+        dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
+        inguma.user_data['dotcode'] = dotcode
 
-        else:
-            #Create dot code for actual KB and add it to user_data
-            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, direction=direction)
-            inguma.user_data['dotcode'] = dotcode
+#            #Create dot code for actual KB and add it to user_data
+#            #dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, ASNs, ASDs)
+#            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
+#            inguma.user_data['dotcode'] = dotcode
+#
+#        else:
+#            #Create dot code for actual KB and add it to user_data
+#            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, direction=direction)
+#            inguma.user_data['dotcode'] = dotcode
 
     def set_threadtv(self, threadtv):
         print "Creating thread manager on core"

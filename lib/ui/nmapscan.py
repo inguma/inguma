@@ -52,7 +52,7 @@ class NmapScan:
         self.tglab.set_alignment(0.0, 0.5)
 
         # A target text entry
-        self.tgentry = gtk.Entry(max=15)
+        self.tgentry = gtk.Entry(max=50)
         self.tgentry.set_text(self.ip)
 
         # Label 
@@ -119,13 +119,14 @@ class NmapScan:
     def validateData(self, widget):
         '''Validate user input and call insertData when done'''
 
-        try:
-            if self.tgentry.get_text():
-                ip = IPy.IP( self.tgentry.get_text() )
-            #self.dialog.destroy()
-            self.run_nmap()
-        except:
-            self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
+        self.run_nmap()
+#        try:
+#            if self.tgentry.get_text():
+#                ip = IPy.IP( self.tgentry.get_text() )
+#            #self.dialog.destroy()
+#            self.run_nmap()
+#        except:
+#            self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
 
     def run_nmap(self):
 

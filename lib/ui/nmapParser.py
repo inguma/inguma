@@ -5,6 +5,7 @@ class NmapHandler(sax.ContentHandler):
 
     def __init__(self):
         self.isOpen = 0
+        self.outputs = []
         self.output = {}
         self.output['ports'] = {}
         self.output['hops'] = []
@@ -68,7 +69,13 @@ class NmapHandler(sax.ContentHandler):
         elif name == 'host':
             if self.isOpen > 0:
 #                print self.output
+                self.outputs.append(self.output)
+
+                # Clean to add new host data
+                self.output = {}
                 self.isOpen = 0
+                self.output['ports'] = {}
+                self.output['hops'] = []
 
 def parseNmap(file):
 
@@ -77,32 +84,35 @@ def parseNmap(file):
     parser.setContentHandler(curHandler)
     parser.parse(open(file))
 
-    return curHandler.output
+    return curHandler.outputs
 
-def insertData(uicore, output):
+def insertData(uicore, outputs):
 
-    # Add a new target, hostname and OS
-    uicore.set_kbfield( 'targets', output['hostip'] )
-    if 'hostname' in output.keys():
-        uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
-    if 'os' in output.keys():
-        uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
-
-    # Add Open ports and services
-#    print output['ports']
-    for port in output['ports'].keys():
-        if output['ports'][port][0] == 'open':
-            uicore.set_kbfield( output['hostip'] + '_ports', port )
-            try:
-                uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][1] )
-                uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )
-            except:
-                pass
-
-    # Add traceroute
-    for host in output['hops']:
-        uicore.set_kbfield( 'hosts', host )
-        uicore.set_kbfield( output['hostip'] + '_trace', host )
+    for output in outputs:
+        
+        # Add a new target, hostname and OS
+        uicore.set_kbfield( 'targets', output['hostip'] )
+        if 'hostname' in output.keys():
+            uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
+        if 'os' in output.keys():
+            uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
+    
+        # Add Open ports and services
+#        print output['ports']
+        for port in output['ports'].keys():
+            if output['ports'][port][0] == 'open':
+                uicore.set_kbfield( output['hostip'] + '_ports', port )
+                try:
+                    uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][1] )
+                    uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )
+                except:
+                    pass
+    
+        # Add traceroute
+        for host in output['hops']:
+            uicore.set_kbfield( 'hosts', host )
+            uicore.set_kbfield( output['hostip'] + '_trace', host )
 
 #if __name__ == '__main__':
-#    parseNmap('/tmp/nmapxml.xml')
+#   import sys
+#   parseNmap(sys.argv[1])
