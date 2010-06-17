@@ -697,13 +697,18 @@ class MainApp:
                 self.gom.echo( 'Loaded\nUpdating Graph', False)
 
                 if do_asn == gtk.RESPONSE_YES:
-                    self.uicore.getDot(doASN=True)
+                    doASN=True
                 else:
-                    self.uicore.getDot(doASN=False)
+                    doASN=False
+
+                t = threading.Thread(target=self.uicore.getDot, args=(doASN,))
+                t.start()
+
                 askASN.destroy()
 
-                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-                self.gom.kbwin.updateTree()
+                gobject.timeout_add(1000, self.update_graph, t)
+#                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+#                self.gom.kbwin.updateTree()
 
             except:
                 md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
@@ -715,6 +720,16 @@ class MainApp:
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
             chooser.destroy()
+
+    def update_graph(self, thread):
+
+        if thread.isAlive() == True:
+            return True
+        else:
+            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            self.gom.kbwin.updateTree()
+            return False
+
 
     def loadEditor(self, widget):
         """ Loads module editor """

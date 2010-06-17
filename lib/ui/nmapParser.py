@@ -1,4 +1,5 @@
 
+import os
 from xml import sax
 
 class NmapHandler(sax.ContentHandler):
@@ -83,6 +84,7 @@ def parseNmap(file):
     curHandler = NmapHandler()
     parser.setContentHandler(curHandler)
     parser.parse(open(file))
+#    os.remove(file)
 
     return curHandler.outputs
 

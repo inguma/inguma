@@ -18,6 +18,7 @@
 #       MA 02110-1301, USA.
 import sys
 sys.path.append('../..')
+import gobject
 
 import pickle, os, platform
 import inguma
@@ -294,8 +295,8 @@ class UIcore():
 
         id = os.popen(command)
         output = id.read()
-        self.gom.create_module_dialog()
-        self.gom.echo(output)
+        gobject.idle_add( self.gom.create_module_dialog )
+        gobject.idle_add( self.gom.echo, output )
 
     #####################################
     #

@@ -2,3 +2,5 @@ syntax: glob
 *.pyc
 inguma_history
 data/exploits/
+data/*.xml
+data/*.kb

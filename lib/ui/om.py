@@ -47,6 +47,8 @@ class OutputManager:
         elif self.iface == 'console':
             print data
 
+        return False
+
     def update_graph(self, dotcode):
 
         self.map.set_dotcode(dotcode)
@@ -54,6 +56,8 @@ class OutputManager:
     def create_module_dialog(self):
 
         self.module_dialog = ModuleDialog()
+
+        return False
 
     def set_gui(self, widget):
 
