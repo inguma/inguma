@@ -857,7 +857,7 @@ class MainApp:
 
     def addTarget(self, event):
 
-        addtgt = addtargetdlg.addTargetDialog(self.uicore)
+        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)

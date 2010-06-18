@@ -40,7 +40,7 @@ def runModule(vars, module, dict, om=None):
         objModule.printSummary()
 
         if vars['isGui'] == True:
-            objModule.gom.uicore.getDot(True)
+            objModule.gom.uicore.getDot(False)
             objModule.gom.map.set_dotcode( dict['dotcode'] )
 
             objModule.gom.kbwin.updateTree()

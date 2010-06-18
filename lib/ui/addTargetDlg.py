@@ -20,7 +20,7 @@
 import pygtk
 import gtk, gobject
 
-import sys, time, threading
+import os, sys, time, threading
 sys.path.append('../..')
 import lib.IPy as IPy
 
@@ -29,7 +29,7 @@ import lib.IPy as IPy
 class addTargetDialog:
     '''Dialog for adding targets and run some modules'''
 
-    def __init__(self, core):
+    def __init__(self, core, gom):
 
         TITLE = "Scpecify target"
 
@@ -42,6 +42,7 @@ class addTargetDialog:
 
         # Core instance for manage the KB
         self.uicore = core
+        self.gom = gom
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
@@ -59,9 +60,12 @@ class addTargetDialog:
         self.tgentry = gtk.Entry(max=30)
         self.tgentry.set_focus = True
 
+        # Checkbox to use nmap
+        self.nmap = button = gtk.CheckButton("Use Nmap")
+
         #########################################################
         # Table
-        table = gtk.Table(rows=2, columns=2, homogeneous=True)
+        table = gtk.Table(rows=3, columns=2, homogeneous=True)
         table.set_row_spacings(2)
         table.set_col_spacings(2)
 
@@ -69,6 +73,7 @@ class addTargetDialog:
         table.attach(self.ip_rbutton, 0, 1, 0, 1)
         table.attach(self.dom_rbutton, 1, 2, 0, 1)
         table.attach(self.tgentry, 0, 2, 1, 2)
+        table.attach(self.nmap, 1, 2, 2, 3)
 
         # Add HBox to VBox
         self.dialog.vbox.pack_start(table, False, False, 2)
@@ -113,10 +118,17 @@ class addTargetDialog:
             #print "Adding Domain target: " + ip
             self.uicore.set_kbfield( 'target', ip )
 
-        # Run discover modules
-        t = threading.Thread(target=self.runDiscovers, args=(type,))
-        t.start()
-        #self.runDiscovers(type)
+        if self.nmap.get_active:
+            command = 'nmap -sS -F -A ' + ip + ' -oX /tmp/nmapxml.xml'
+            print "Will use Nmap:", command
+            t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
+            t.start()
+            gobject.timeout_add(1000, self.check_thread, t)
+        else:
+            # Run discover modules
+            t = threading.Thread(target=self.runDiscovers, args=(type,))
+            t.start()
+            #self.runDiscovers(type)
 
     def runDiscovers(self, type):
 
@@ -132,9 +144,33 @@ class addTargetDialog:
             print "Running discover: " + module
             self.uicore.uiRunDiscover(module, join=True)
 
-        for module in self.GATHERS:
-            print "Running gather: " + module
-            self.uicore.uiRunDiscover(module, join=True)
+#        for module in self.GATHERS:
+#            print "Running gather: " + module
+#            self.uicore.uiRunDiscover(module, join=True)
+
+    def check_thread(self, thread):
+        if thread.isAlive() == True:
+            return True
+        else:
+            self.parse_data()
+            return False
+
+    def parse_data(self):
+
+            import lib.ui.nmapParser as nmapParser
+
+            self.gom.echo( 'Parsing scan results...', False)
+            nmapData = nmapParser.parseNmap('/tmp/nmapxml.xml')
+            os.remove('/tmp/nmapxml.xml')
+            self.gom.echo( 'Inserting data in KB...', False)
+            nmapParser.insertData(self.uicore, nmapData)
+
+            self.gom.echo( 'Loaded\nUpdating Graph', False)
+
+            self.uicore.getDot(doASN=False)
+
+            self.gom.kbwin.updateTree()
+            self.gom.update_graph( self.uicore.get_kbfield('dotcode') )
 
     def get_active_text(self, combobox):
         model = combobox.get_model()
