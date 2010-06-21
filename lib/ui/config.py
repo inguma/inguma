@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # Startup preferences
-SHOW_LOG=False
-SHOW_KBTREE=False
+SHOW_LOG=True
+SHOW_KBTREE=True
 
 # Paths to externmal tools
 NMAP_PATH = '/usr/bin/nmap'

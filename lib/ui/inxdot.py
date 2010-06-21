@@ -26,8 +26,9 @@ import xdot
 class MyDotWidget(xdot.DotWidget):
     '''Working'''
 
-    def __init__(self, cmenu, core):
+    def __init__(self, cmenu, gmenu, core):
         self.context = cmenu
+        self.graph_menu = gmenu
         self.core = core
         xdot.DotWidget.__init__(self)
 #        self.set_filter('twopi')
@@ -38,6 +39,10 @@ class MyDotWidget(xdot.DotWidget):
             url = self.get_url(x, y)
             if url is not None:
                 self.core.set_kbfield('target', url.url)
+
+            else:
+                self.graph_menu.popmenu.popup(None, None, None, 1, event.time)
+                
             jump = self.get_jump(x, y)
             if jump is not None:
                 #Right Click on Node!!
