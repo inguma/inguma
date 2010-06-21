@@ -58,6 +58,18 @@ class GraphMenu(gtk.VBox):
         b.connect("clicked", self._dir, "LR")
         self.toolbox.pack_start(b, False, False)
 
+        # Separator
+        self.sep = gtk.HSeparator()
+        self.toolbox.pack_start(self.sep, False, False)
+
+        # Cluster ToggleButton
+        self.img_leave = gtk.image_new_from_stock(gtk.STOCK_LEAVE_FULLSCREEN,  gtk.ICON_SIZE_BUTTON)
+        self.img_full = gtk.image_new_from_stock(gtk.STOCK_FULLSCREEN,  gtk.ICON_SIZE_BUTTON)
+        self.clusterBtn = gtk.ToggleButton("")
+        self.clusterBtn.set_property("image", self.img_leave)
+        self.clusterBtn.connect('clicked', self._on_toggle)
+        self.toolbox.pack_start(self.clusterBtn, False, False)
+
         # Grayed?
         self.toolbox.set_sensitive(True)
         self.show_all()
@@ -71,6 +83,12 @@ class GraphMenu(gtk.VBox):
         ret = self.uicore.set_direction(where)
         if ret:
             self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
+
+    def _on_toggle(self, widget):
+        if self.clusterBtn.get_active():
+            self.clusterBtn.set_property("image", self.img_full)
+        else:
+            self.clusterBtn.set_property("image", self.img_leave)
 
 #    def _addTarget(self, widg):
 #        addw = addtarget.TargetDialog()

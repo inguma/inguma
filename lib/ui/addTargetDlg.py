@@ -118,7 +118,7 @@ class addTargetDialog:
             #print "Adding Domain target: " + ip
             self.uicore.set_kbfield( 'target', ip )
 
-        if self.nmap.get_active:
+        if self.nmap.get_active():
             command = 'nmap -sS -F -A ' + ip + ' -oX /tmp/nmapxml.xml'
             print "Will use Nmap:", command
             t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
