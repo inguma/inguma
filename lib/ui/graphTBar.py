@@ -1,4 +1,4 @@
-#       graphmenu.py
+#       graphTBar.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       Based on code from w3af by Andres Riancho (w3af.sourceforge.net)

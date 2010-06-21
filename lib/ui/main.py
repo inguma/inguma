@@ -60,15 +60,16 @@ import lib.ui.propdiag as propdiag
 import lib.ui.kbwin as kbwin
 import lib.ui.pbar as pbar
 import lib.ui.om as om
-import lib.ui.graphmenu as graphmenu
-import lib.ui.rcemenu as rcemenu
+import lib.ui.graphTBar as graphTBar
+import lib.ui.rceTBar as rceTBar
 import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
-import lib.ui.newcmenu as newcmenu
+import lib.ui.nodeMenu as nodeMenu
 import lib.ui.addTargetDlg as addtargetdlg
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
+import lib.ui.config as config
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -257,7 +258,7 @@ class MainApp:
 #
 #        self.xdotw = inxdot.MyDotWidget(self.context, self.uicore)
 
-        self.uiman = newcmenu.UIManager(self.gom, self.uicore)
+        self.uiman = nodeMenu.UIManager(self.gom, self.uicore)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
         self.window.add_accel_group(accel)
@@ -274,7 +275,7 @@ class MainApp:
         #################################################################
         # Graph Menu
         #################################################################
-        gmenu = graphmenu.GraphMenu(self.xdotw, self.uicore)
+        gmenu = graphTBar.GraphMenu(self.xdotw, self.uicore)
         #################################################################
         # HBox for Map and GraphMenu
         #################################################################
@@ -291,7 +292,6 @@ class MainApp:
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolled_window.set_size_request(100,100)
-        self.scrolled_window.is_visible = True
 
         # Add Textview to Scrolled Window
         #self.scrolled_window.add_with_viewport(self.textview)
@@ -312,7 +312,14 @@ class MainApp:
         self.hpaned.add1(menubox)
         self.hpaned.add2(self.scrolled_window)
         self.textview.show()
-        self.scrolled_window.show()
+
+        # Check visibility on config preferences
+        if config.SHOW_KBTREE:
+            self.scrolled_window.show()
+            self.scrolled_window.is_visible = True
+        else:
+            self.scrolled_window.is_visible = False
+
         self.hpaned.show()
         self.xdotw.show()
 
@@ -359,34 +366,6 @@ class MainApp:
         self.notebook.append_page(term_box, b)
         term_box.show_all()
 
-#
-#        # Vertical Pane to contain terms
-#        vterm = gtk.HPaned()
-#
-#        debugger_term = vte.Terminal()
-#        scapy_term = vte.Terminal()
-#
-#        scapy_term.set_font(pango.FontDescription('mono 8'))
-#        scapy_term.fork_command('lib/scapy.py')
-#        scapy_term.set_scrollback_lines(500)
-#        scapy_term.set_scroll_on_output = True
-#        #scapy_term.set_size(5,5)
-#
-#        debugger_term.set_font(pango.FontDescription('mono 8'))
-#        #debugger_term.connect("child-exited", lambda w: termwin.destroy())
-#        debugger_term.fork_command('lib/debugger/vdbbin')
-#        #debugger_term.feed_child('user_data = ' + str(self.uicore.user_data) + "\n" )
-#        debugger_term.feed_child('help\n')
-#        debugger_term.set_scrollback_lines(500)
-#        debugger_term.set_scroll_on_output = True
-#        #debugger_term.set_size(5,5)
-#
-#        vterm.add1(debugger_term)
-#        vterm.add2(scapy_term)
-#        vterm.show_all()
-#
-#        notebook.append_page(vterm, b)
-
         #################################################################################################################################
         # RCE Iface
         #################################################################
@@ -413,8 +392,8 @@ class MainApp:
         self.notebook.append_page(frame, b)
 
         # RCE graph menu
-        self.rmenu = rcemenu.RceMenu(self.xdotr, rcecore)
-        self.dasmenu = rcemenu.DasmMenu()
+        self.rmenu = rceTBar.RceMenu(self.xdotr, rcecore)
+        self.dasmenu = rceTBar.DasmMenu()
 
         #################################################################################################################################
         # UIManager for RCE Toolbar
@@ -591,8 +570,13 @@ class MainApp:
 
         #self.bottom_nb.set_scrollable(True)
         self.bottom_nb.set_current_page(0)
-        self.bottom_nb.is_visible = True
-        self.bottom_nb.show()
+
+        # Check visibility on config preferences
+        if config.SHOW_LOG:
+            self.bottom_nb.is_visible = True
+            self.bottom_nb.show()
+        else:
+            self.bottom_nb.is_visible = False
 
         self.vpaned.add2(self.bottom_nb)
         mainvbox.pack_start(self.vpaned, True, True, 1)
