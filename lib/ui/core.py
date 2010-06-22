@@ -210,6 +210,9 @@ class UIcore():
 
         return asn
 
+    def getToFromDot(self, type):
+        dotcode = dotgen.graph_to_from(inguma.user_data, type)
+        inguma.user_data['dotcode'] = dotcode
 
     def getDot(self, doASN, direction='TD'):
         ''' Gets new dot code for graph '''

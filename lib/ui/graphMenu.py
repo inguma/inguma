@@ -39,6 +39,10 @@ class UIManager(gtk.UIManager):
                 <separator/>
                 <menuitem action="do_asn"/>
                 <separator/>
+                <menuitem action="asn_cluster"/>
+                <menuitem action="get_to_from"/>
+                <menuitem action="get_from_to"/>
+                <menuitem action="get_vulns_ip"/>
             </popup>
         </ui>
         '''
@@ -54,6 +58,10 @@ class UIManager(gtk.UIManager):
         self.actiongroup.add_actions( [('Graph options', None, 'Graph Options')] )
         self.actiongroup.add_actions( [('options', None, 'Graph Options')] )
         self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, 'Get ASN', None, 'ToolTip', self.doAsn )] )
+        self.actiongroup.add_actions( [('asn_cluster', gtk.STOCK_EXECUTE, 'ASN Clustered', None, 'ToolTip', self.doNormal )] )
+        self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_EXECUTE, 'Ports per IP', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
+        self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_EXECUTE, 'IP per Port', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
+        self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_EXECUTE, 'Vulns per Port', None, 'ToolTip', gtk.main_quit )] )
 
         # Add the actiongroup to the uimanager
         self.insert_action_group(self.actiongroup, 0)
@@ -65,6 +73,11 @@ class UIManager(gtk.UIManager):
         ui_id = self.add_ui_from_string(self.graph_menu)
         #self.set_uiID(ui_id)
         self.popmenu = self.get_widget('/Popup')
+
+    def doNormal(self, widget):
+        self.xdot.set_filter('dot')
+        self.uicore.getDot(False)
+        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
     def doAsn(self, widget):
         #self.uicore.getDot(True)
@@ -83,3 +96,8 @@ class UIManager(gtk.UIManager):
             self.gom.kbwin.updateTree()
             return False
 
+    def doToFrom(self, widget, type):
+        self.xdot.set_filter('neato')
+        self.xdot.on_zoom_100(None)
+        self.uicore.getToFromDot(type[0])
+        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )

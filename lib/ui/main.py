@@ -709,11 +709,10 @@ class MainApp:
                 md.run()
                 md.destroy()
 
-            chooser.destroy()
-
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
-            chooser.destroy()
+
+        chooser.destroy()
 
     def update_graph(self, thread):
 

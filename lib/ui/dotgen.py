@@ -53,6 +53,7 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
         dotcode += '\t\tnode [fillcolor="#60baba"];'
         #dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
         dotcode += '\t\tfontsize = 10;'
+        dotcode += '\t\tstyle=rounded;'
         dotcode += '\t\tlabel = "%s\\n[%s]"\n' % (asn,ASDs[asn])
         for ip in ASNs[asn]:
 
@@ -116,5 +117,38 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
             dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"
 
     dotcode += "}"
+
+    return dotcode
+
+def graph_to_from(kb, type):
+
+    dotcode = '''
+    graph G {
+        graph [ overlap="scale", bgcolor="#373D49", concentrate="true"]
+		    node [color=azure3, fontcolor=white, fillcolor="#373D49", shape=circle, style=filled, fixedsize=1, height=0.7,width=0.7];
+    '''
+    #bgcolor="#475672"
+    if type == 'ports_ip':
+        for target in kb['targets']:
+            dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.7,width=0.7]\n'
+            try:
+                for port in kb[target + '_ports']:
+                    dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
+                    dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=0.09, color=azure3];\n'
+            except:
+                #print sys.exc_info()
+                pass
+    elif type == 'ip_ports':
+        for target in kb['targets']:
+            try:
+                for port in kb[target + '_ports']:
+                    dotcode += '"' + str(port) + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.7,width=0.7]\n'
+                    dotcode += '"' + str(port) + '_' + target + '" [label="' + target + '"]\n'
+                    dotcode += '"' + str(port) + '" -- "' + str(port) + '_' + target + '" [len=0.09, color=azure3];\n'
+            except:
+                #print sys.exc_info()
+                pass
+
+    dotcode += '\n}'
 
     return dotcode
