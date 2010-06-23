@@ -80,6 +80,7 @@ class GraphMenu(gtk.VBox):
         f(None)
 
     def _dir(self, widg, where):
+        self.graph.set_filter('dot')
         ret = self.uicore.set_direction(where)
         if ret:
             self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )

@@ -55,13 +55,13 @@ class UIManager(gtk.UIManager):
         self.actiongroup = gtk.ActionGroup('Popup')
 
         # Add actions
-        self.actiongroup.add_actions( [('Graph options', None, 'Graph Options')] )
-        self.actiongroup.add_actions( [('options', None, 'Graph Options')] )
-        self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, 'Get ASN', None, 'ToolTip', self.doAsn )] )
-        self.actiongroup.add_actions( [('asn_cluster', gtk.STOCK_EXECUTE, 'ASN Clustered', None, 'ToolTip', self.doNormal )] )
-        self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_EXECUTE, 'Ports per IP', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
-        self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_EXECUTE, 'IP per Port', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
-        self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_EXECUTE, 'Vulns per Port', None, 'ToolTip', gtk.main_quit )] )
+        self.actiongroup.add_actions( [('Graph options', None, ' Graph Options ')] )
+        self.actiongroup.add_actions( [('options', None, ' Graph Options ')] )
+        self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, ' Get ASN ', None, 'ToolTip', self.doAsn )] )
+        self.actiongroup.add_actions( [('asn_cluster', gtk.STOCK_CONVERT, ' ASN Clustered ', None, 'ToolTip', self.doNormal )] )
+        self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_CONVERT, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
+        self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_CONVERT, ' IP per Port ', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
+        self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_CONVERT, ' Vulns per Port ', None, 'ToolTip', self.doToFrom )], ['ports_vuln'] )
 
         # Add the actiongroup to the uimanager
         self.insert_action_group(self.actiongroup, 0)

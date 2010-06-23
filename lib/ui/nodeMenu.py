@@ -137,16 +137,18 @@ class UIManager(gtk.UIManager):
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
 
                     # Add web vulns...
-                    if kb.__contains__(ip + "_" + str(port) + '-vulns'):
+                    if kb.__contains__(ip + "_" + str(port) + '-web-vulns'):
                         #print "* We have port %s with vulns!" % port
                         # Menu for vulnerabilities
                         self.actiongroup2.add_actions( [(str(port) + '_vulns', gtk.STOCK_DIALOG_WARNING, 'Vulns')] )
                         self.target_menu += '<menu action="' + str(port) + '_vulns' + '">'
 
                         # Menuitems for each vuln
-                        for vuln in kb[ip + '_' + str(port) + '-vulns']:
-                            self.actiongroup2.add_actions( [(str(port) + '_' + vuln, gtk.STOCK_YES, vuln, None, None, self.show_browser)], [str(port), ip, vuln] )
-                            self.target_menu += '<menuitem action="' + str(port) + '_' + vuln + '"/>'
+                        vuln_id = 0
+                        for vuln in kb[ip + '_' + str(port) + '-web-vulns']:
+                            self.actiongroup2.add_actions( [(str(port) + '_' + vuln[0] + str(vuln_id), gtk.STOCK_YES, 'OSVDB:' + vuln[0] + ' ' + vuln[1], None, None, self.show_browser)], [str(port), ip, vuln[1]] )
+                            self.target_menu += '<menuitem action="' + str(port) + '_' + vuln[0] + str(vuln_id) + '"/>'
+                            vuln_id += 1
                         self.target_menu += '</menu>'
 
                     # Add services info
