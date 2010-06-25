@@ -41,9 +41,13 @@ class ThreadsTv:
         self.treeview.columns = [None]*5
         self.treeview.columns[0] = gtk.TreeViewColumn('No.')
         self.treeview.columns[1] = gtk.TreeViewColumn('State')
+        self.treeview.columns[1].set_min_width(150)
         self.treeview.columns[2] = gtk.TreeViewColumn('Description')
+        self.treeview.columns[2].set_min_width(300)
         self.treeview.columns[3] = gtk.TreeViewColumn('Start')
+        self.treeview.columns[3].set_min_width(100)
         self.treeview.columns[4] = gtk.TreeViewColumn('End')
+        self.treeview.columns[4].set_min_width(100)
 
         # Lets control right click on treeview
         self.treeview.connect('button_press_event', self.on_treeview_button_press_event )
@@ -52,7 +56,7 @@ class ThreadsTv:
         #self.cellpb = gtk.CellRendererPixbuf()
         self.cellpb = gtk.CellRendererProgress()
         # add the cells to the columns - 2 in the first
-        self.treeview.columns[1].pack_start(self.cellpb, False)
+        self.treeview.columns[1].pack_start(self.cellpb, True)
         # set the cell attributes to the appropriate liststore column
         self.treeview.columns[1].set_attributes(self.cellpb, stock_id=1)
 
@@ -89,43 +93,6 @@ class ThreadsTv:
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
         scroll.set_vadjustment(adj)
-
-#    def load_exploits(self, gom):
-#        if self.exploits_loaded == 0:
-#            gom.echo( 'Loading Exploits DDBB...' , False)
-#            # load exploits from csv
-#            ifile  = open('data/exploits/files.csv', "rb")
-#            reader = csv.reader(ifile, delimiter=';')
-#            headerList = reader.next()
-#    
-#            # add bug data
-#            self.states = []
-#            for line in reader:
-#                self.liststore.append([ int(line[0]), line[1], line[2], line[3], line[4], line[5], line[6], line[7] ])
-#    #            if not line[5] in self.states:
-#    #                print "Adding button for: '", line[5], "'"
-#    #                self.states.append(line[5])
-#    
-#            self.show_states = self.states[:]
-#            self.modelfilter.set_visible_func(self.visible_cb, self.show_states)
-#    
-#            self.treeview.set_model(self.modelfilter)
-#    
-#            for n in range(8):
-#                # add columns to treeview
-#                self.treeview.append_column(self.treeview.columns[n])
-#                # create a CellRenderers to render the data
-#                self.treeview.columns[n].cell = gtk.CellRendererText()
-#                # add the cells to the columns
-#                self.treeview.columns[n].pack_start(self.treeview.columns[n].cell, True)
-#                # set the cell attributes to the appropriate liststore column
-#                self.treeview.columns[n].set_attributes(
-#                    self.treeview.columns[n].cell, text=n)
-#    
-#            # make treeview searchable
-#            self.treeview.set_search_column(5)
-#    
-#            self.exploits_loaded = 1
 
     def on_treeview_button_press_event(self, treeview, event):
         if event.button == 3:

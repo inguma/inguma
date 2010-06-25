@@ -30,7 +30,7 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 
     dotcode += 'rankdir="' + direction + '"\n'
     #dotcode += "bgcolor=grey0\n\n"
-    dotcode += "bgcolor=\"#373D49\"\n\n"
+    dotcode += "bgcolor=\"#475672\"\n\n"
     dotcode += 'root="' + localip + '";\n\n'
     dotcode += 'concentrate="true";\n\n'
     #dotcode += "\nnode [shape=record,color=azure3,style=filled fillcolor=skyazure3];\n"
@@ -45,15 +45,16 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     for asn in ASNs:
         dotcode += '\tsubgraph cluster_%s {\n' % asn
         if asn == 'local':
+            dotcode += '\t\tfillcolor="#373D49";'
             dotcode += '\t\tcolor="mediumseagreen";'
             dotcode += '\t\tfontcolor="mediumseagreen";'
         else:
-            dotcode += '\t\tcolor="#608686";'
-            dotcode += '\t\tfontcolor="#608686";'
+            dotcode += '\t\tcolor="#373D49";'
+            dotcode += '\t\tfontcolor="azure3";'
         dotcode += '\t\tnode [fillcolor="#60baba"];'
         #dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
         dotcode += '\t\tfontsize = 10;'
-        dotcode += '\t\tstyle=rounded;'
+        dotcode += '\t\tstyle=\"rounded,filled\";'
         dotcode += '\t\tlabel = "%s\\n[%s]"\n' % (asn,ASDs[asn])
         for ip in ASNs[asn]:
 
@@ -124,7 +125,7 @@ def graph_to_from(kb, type):
 
     dotcode = '''
     graph G {
-        graph [ overlap="scale", bgcolor="#373D49", concentrate="true"]
+        graph [ overlap="scale", bgcolor="#475672", concentrate="true"]
 		    node [color=azure3, fontcolor=white, fillcolor="#373D49", shape=circle, style=filled, fixedsize=1, height=0.7,width=0.7];
     '''
     #bgcolor="#475672"
@@ -154,7 +155,10 @@ def graph_to_from(kb, type):
             try:
                 for port in kb[target + '_ports']:
                     vuln_id = 0
-                    dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '", shape=doublecircle]\n'
+                    if target + "_" + str(port) + '-web-vulns' in kb:
+                        dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '", shape=doublecircle]\n'
+                    else:
+                        dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
                     dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=1.25, color=azure3];\n'
                     for vuln in kb[target + "_" + str(port) + '-web-vulns']:
                         dotcode += '"' + vuln[0] + str(vuln_id) + '" [style=filled, fillcolor=indianred4, fixedsize=1, height=0.7,width=0.7, label=\"OSVDB:' + vuln[0] + '\"]\n'
