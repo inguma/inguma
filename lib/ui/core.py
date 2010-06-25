@@ -151,6 +151,12 @@ class UIcore():
         self.gom = om
         self.gom.set_new_nodes(False)
 
+    def get_interfaces(self):
+        return scapy.get_if_list()
+
+    def set_interface(self, iface):
+        scapy.conf.iface = iface
+
     def getLocalIP(self):
         return scapy.get_if_addr(scapy.conf.iface)
 
@@ -298,6 +304,7 @@ class UIcore():
 
         id = os.popen(command)
         output = id.read()
+        print output
         gobject.idle_add( self.gom.create_module_dialog )
         gobject.idle_add( self.gom.echo, output )
 

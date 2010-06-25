@@ -56,7 +56,7 @@ splash = Splash()
 # Import ui modules
 splash.push(("Loading UI modules"))
 import lib.ui.core as core
-import lib.ui.propdiag as propdiag
+import lib.ui.propDialog as propDialog
 import lib.ui.kbwin as kbwin
 import lib.ui.pbar as pbar
 import lib.ui.om as om
@@ -731,7 +731,7 @@ class MainApp:
         editor.main()
 
     def showProp(self, widget):
-        propdiag.PropertiesDialog(self.textview)
+        propDialog.propDialog(self.uicore, self.gom)
 
     def show_term(self, widget):
         self.new_tab('scapy', 'scapy')

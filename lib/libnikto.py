@@ -101,14 +101,14 @@ def getDatabases(update = False):
 
 def updateDatabases():
 
-    try:
-        res = raw_input("Do you want to download Nikto databases (y/n)? [n] ")
-        
-        if res.lower() != "y":
-            return False
-    except:
-        print "Aborted."
-        return False
+#    try:
+#        res = raw_input("Do you want to download Nikto databases (y/n)? [n] ")
+#        
+#        if res.lower() != "y":
+#            return False
+#    except:
+#        print "Aborted."
+#        return False
 
     print "[+] Downloading nikto database ... "
     data = urllib.urlopen(DATABASE_URL).read()

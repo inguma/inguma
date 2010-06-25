@@ -120,7 +120,7 @@ class addTargetDialog:
 
         if self.nmap.get_active():
             command = 'nmap -sS -F -A ' + ip + ' -oX /tmp/nmapxml.xml'
-            print "Will use Nmap:", command
+            #print "Will use Nmap:", command
             t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
             t.start()
             gobject.timeout_add(1000, self.check_thread, t)
