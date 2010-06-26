@@ -34,7 +34,7 @@ class TerminalNotebook(gtk.Notebook):
     #we do not show the tab if there is only one tab i total
 #    self.set_property('show-tabs', False) 
 
-  def new_tab(self, command=''):
+  def new_tab(self, command='', args=[]):
     #we create a "Random" image to put in the tab
     #icons = [gtk.STOCK_ABOUT, gtk.STOCK_ADD, gtk.STOCK_APPLY, gtk.STOCK_BOLD] 
     image = gtk.Image()
@@ -48,7 +48,7 @@ class TerminalNotebook(gtk.Notebook):
 
     term.set_font(pango.FontDescription('mono 8'))
     if command:
-        term.fork_command(command)
+        term.fork_command(command=command, argv=args)
     else:
         term.fork_command()
     term.set_scrollback_lines(500)

@@ -372,6 +372,8 @@ class MainApp:
         #term_button.connect("clicked", term_notebook.new_tab)
         term_button.connect("clicked", self.new_tab)
         term_box.pack_start(self.term_notebook)
+        setattr(self.uiman, 'termnb', self.term_notebook)
+        setattr(self.uiman, 'mainnb', self.notebook)
 
         self.notebook.append_page(term_box, b)
         term_box.show_all()

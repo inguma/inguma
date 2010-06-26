@@ -133,7 +133,7 @@ class UIManager(gtk.UIManager):
                     # Menuitems for connect and browser
                     self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with broswer', None, None, self.show_browser)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_browser"/>'
-                    self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, gtk.main_quit)] )
+                    self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, self.open_terminal)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
 
                     # Add web vulns...
@@ -251,6 +251,12 @@ self.showBrute )], user_data=[ip, port] )
         from webbrowser import open_new
         port, ip, vuln = data
         open_new('http://' + ip + ':' + port + vuln)
+
+    def open_terminal(self, action, data):
+        port, ip = data
+        command = 'tools/nc'
+        self.termnb.new_tab(command, [command, ip, port])
+        self.mainnb.set_current_page(1)
 
     def showDialog(self, action):
         module = action.get_name()
