@@ -249,8 +249,13 @@ self.showBrute )], user_data=[ip, port] )
 
     def show_browser(self, action, data):
         from webbrowser import open_new
-        port, ip, vuln = data
-        open_new('http://' + ip + ':' + port + vuln)
+
+        if len(data) == 3:
+            port, ip, vuln = data
+            open_new('http://' + ip + ':' + port + vuln)
+        else:
+            port, ip = data
+            open_new('http://' + ip + ':' + port)
 
     def open_terminal(self, action, data):
         port, ip = data
