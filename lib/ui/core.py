@@ -220,6 +220,10 @@ class UIcore():
         dotcode = dotgen.graph_to_from(inguma.user_data, type)
         inguma.user_data['dotcode'] = dotcode
 
+    def getFolded(self):
+        dotcode = dotgen.generate_folded(inguma.user_data)
+        inguma.user_data['dotcode'] = dotcode
+
     def getDot(self, doASN, direction='TD'):
         ''' Gets new dot code for graph '''
 

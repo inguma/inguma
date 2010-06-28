@@ -88,8 +88,14 @@ class GraphMenu(gtk.VBox):
     def _on_toggle(self, widget):
         if self.clusterBtn.get_active():
             self.clusterBtn.set_property("image", self.img_full)
+            self.graph.set_filter('neato')
+            self.uicore.getFolded()
+            self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
         else:
             self.clusterBtn.set_property("image", self.img_leave)
+            self.graph.set_filter('dot')
+            self.uicore.getDot(False)
+            self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
 #    def _addTarget(self, widg):
 #        addw = addtarget.TargetDialog()

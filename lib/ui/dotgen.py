@@ -121,6 +121,31 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 
     return dotcode
 
+def generate_folded(kb):
+
+    dotcode = '''
+    graph G {
+        graph [ overlap="scale", bgcolor="#475672", concentrate="true", root="Internet"]
+            node [color=azure3, fontcolor=white, fillcolor="#373D49", shape=circle, style=filled, fixedsize=true, height=0.9,width=0.9];
+
+            "Internet" [style=filled, fillcolor="#5E82C6", fixedsize=true, height=1.0,width=1.0, shape=doublecircle]
+    '''
+
+    for target in kb['targets']:
+        dotcode += '"' + target + '" [style=filled, fillcolor="#373D49", fixedsize=true, height=0.9,width=0.9, URL="' + target + '"]\n'
+        dotcode += '"Internet" -- "' + target + '" [len=1.50, color=azure3];\n'
+
+#        for local in locals:
+#            dotcode += '\t"' + localip + '"->' + "\n"
+#            dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"
+
+    dotcode += '\n}'
+
+    return dotcode
+
+def pairs(dlist):
+    return zip(dlist,dlist[1:]+[dlist[0]])
+
 def graph_to_from(kb, type):
 
     dotcode = '''
@@ -139,6 +164,11 @@ def graph_to_from(kb, type):
             except:
                 #print sys.exc_info()
                 pass
+
+        target_pairs = pairs(kb['targets'])
+        for pair in target_pairs:
+            dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
+
     elif type == 'ip_ports':
         for target in kb['targets']:
             try:
@@ -149,6 +179,7 @@ def graph_to_from(kb, type):
             except:
                 #print sys.exc_info()
                 pass
+
     elif type == 'ports_vuln':
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9,width=0.9]\n'
@@ -167,6 +198,10 @@ def graph_to_from(kb, type):
             except:
                 #print sys.exc_info()
                 pass
+
+        target_pairs = pairs(kb['targets'])
+        for pair in target_pairs:
+            dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
 
     dotcode += '\n}'
 
