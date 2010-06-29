@@ -30,7 +30,7 @@ class ThreadsTv:
         self.threads = {}
 
         # create a liststore with one string column to use as the model
-        self.liststore = gtk.ListStore(int, str, str, str, str)
+        self.liststore = gtk.ListStore(int, int, str, str, str)
 
         #self.modelfilter = self.liststore.filter_new()
 
@@ -52,14 +52,6 @@ class ThreadsTv:
         # Lets control right click on treeview
         self.treeview.connect('button_press_event', self.on_treeview_button_press_event )
 
-        # create a CellRenderers to render the data
-        #self.cellpb = gtk.CellRendererPixbuf()
-        self.cellpb = gtk.CellRendererProgress()
-        # add the cells to the columns - 2 in the first
-        self.treeview.columns[1].pack_start(self.cellpb, True)
-        # set the cell attributes to the appropriate liststore column
-        self.treeview.columns[1].set_attributes(self.cellpb, stock_id=1)
-
         # make ui layout
         self.scrolledwindow = gtk.ScrolledWindow()
         # remove hscrollbar
@@ -69,11 +61,24 @@ class ThreadsTv:
         self.vajd = self.scrolledwindow.get_vadjustment()
         self.vajd.connect('changed', lambda a, s=self.scrolledwindow: self.rescroll(a,s))
 
-        for n in range(5):
+        for n in [0,2,3,4]:
+            # add columns to treeview
             self.treeview.append_column(self.treeview.columns[n])
+            # create a CellRenderers to render the data
             self.treeview.columns[n].cell = gtk.CellRendererText()
+            # add the cells to the columns
             self.treeview.columns[n].pack_start(self.treeview.columns[n].cell, True)
+            # set the cell attributes to the appropriate liststore column
             self.treeview.columns[n].set_attributes(self.treeview.columns[n].cell, text=n)
+
+        # add columns to treeview
+        self.treeview.insert_column(self.treeview.columns[1], 1)
+        # create a CellRenderers to render the data
+        self.cellpb = gtk.CellRendererProgress()
+        # add the cells to the columns - 2 in the first
+        self.treeview.columns[1].pack_start(self.cellpb, True)
+        # set the cell attributes to the appropriate liststore column
+        self.treeview.columns[1].add_attribute(self.cellpb, "value", 1)
 
         self.scrolledwindow.add(self.treeview)
 
@@ -83,9 +88,20 @@ class ThreadsTv:
         """ Adds a new action to the list """
 
         print "Adding new content for:", module
-        self.liststore.append([self.counter, self.cellpb.set_property("pulse", 5), "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.gmtime()), ''])
+        iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.gmtime()), ''])
         self.threads[self.counter] = threadid
         self.counter += 1
+        gobject.timeout_add(1000, self.check_thread, threadid, iter)
+
+    def check_thread(self, threadid, iter):
+        model = self.treeview.get_model()
+        if threadid.is_alive():
+            model.set_value(iter, 1, 75)
+            return True
+        else:
+            model.set_value(iter, 4, time.strftime("%H:%M:%S", time.gmtime()))
+            model.set_value(iter, 1, 100)
+            return False
 
     def get_widget(self):
         return self.scrolledwindow
