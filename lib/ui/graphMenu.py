@@ -75,7 +75,6 @@ class UIManager(gtk.UIManager):
         self.popmenu = self.get_widget('/Popup')
 
     def doNormal(self, widget):
-        self.xdot.set_filter('dot')
         self.uicore.getDot(False)
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
@@ -97,7 +96,6 @@ class UIManager(gtk.UIManager):
             return False
 
     def doToFrom(self, widget, type):
-        self.xdot.set_filter('neato')
         self.xdot.on_zoom_100(None)
         self.uicore.getToFromDot(type[0])
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )

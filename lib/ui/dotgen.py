@@ -156,7 +156,7 @@ def graph_to_from(kb, type):
     #bgcolor="#475672"
     if type == 'ports_ip':
         for target in kb['targets']:
-            dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9,width=0.9]\n'
+            dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             try:
                 for port in kb[target + '_ports']:
                     dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
@@ -182,7 +182,7 @@ def graph_to_from(kb, type):
 
     elif type == 'ports_vuln':
         for target in kb['targets']:
-            dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9,width=0.9]\n'
+            dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             try:
                 for port in kb[target + '_ports']:
                     vuln_id = 0

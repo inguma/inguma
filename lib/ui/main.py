@@ -276,7 +276,7 @@ class MainApp:
 
         self.xdotw.set_size_request(900,450)
         self.gom.set_map(self.xdotw)
-        #self.uicore.getEmptyDot()
+        setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=True)
 
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
@@ -463,6 +463,9 @@ class MainApp:
         rcetv = gtk.TextView(buffer=None)
         rcetv.set_wrap_mode(gtk.WRAP_NONE)
         rcetv.set_editable(False)
+        fontdesc = pango.FontDescription("MonoSpace 10")
+        #fontdesc = pango.FontDescription("Purisa 10")
+        rcetv.modify_font(fontdesc)
         rcetv.show()
         self.textbuffer = rcetv.get_buffer()
 

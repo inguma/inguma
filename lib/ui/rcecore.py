@@ -63,10 +63,13 @@ def get_complete_dasm(poc):
     for element in data[1]:
         #for function in element:
         buf += '\n'
-        buf += '--------------' + element.name + '\'s ' + 'Entry Point -----------------\n'
-        buf += '\n'
+        buf += '; FUNCTION ' + element.name + '\n'
         for line in element.lines:
-            buf += str(line.address) + '\t\t\t' + str(line.code) + '\t\t\t' + str(line.description) + '\n'
+            buf += '0x' + str(line.address) + '\t\t' + str(line.code)
+            if line.description:
+                buf += '\t\t' + str(line.description).rstrip('\n') + '\n'
+            else:
+                buf += "\n"
 
     return buf, data[1]
         
