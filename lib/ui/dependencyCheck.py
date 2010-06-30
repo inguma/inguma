@@ -39,7 +39,7 @@ def gtkui_dependency_check():
         import gtk, gobject
         assert gtk.gtk_version >= (2, 12)
         assert gtk.pygtk_version >= (2, 12)
-        print OKGREEN + "OK" + ENDC
+        print OKGREEN + "\tOK" + ENDC
     except:
         print FAIL + "D'oh!" + ENDC
         msg = 'You have to install GTK and PyGTK versions >=2.12 to be able to run the GTK user interface.\n'
@@ -51,32 +51,36 @@ def gtkui_dependency_check():
     try:
         print "\tScapy...",
         import scapy.all as scapy
-        print OKGREEN + "OK" + ENDC
+        print OKGREEN + "\t\tOK" + ENDC
     except:
-        print FAIL + "D'oh!" + ENDC
-        print "No scapy found"
+        print FAIL + "\tD'oh!" + ENDC
+        print WARNING + "No scapy found" + ENDC
         sys.exit( 1 )
 
     try:
         print "\tNetwork conectivity...",
-        print OKGREEN + "OK" + ENDC
+        net,msk,gw,iface,addr = scapy.read_routes()
+        if gw:
+            print OKGREEN + "\tOK" + ENDC
+        else:
+            raise "D'Oh!"
     except:
-        print FAIL + "D'oh!" + ENDC
-        print "No network conectivity found"
+        print FAIL + "\tD'oh!" + ENDC
+        print WARNING + "No network conectivity found" + ENDC
         sys.exit( 1 )
 
     try:
         print "\tGtkSourceView2...",
         import gtksourceview2 as gtksourceview
-        print OKGREEN + "OK" + ENDC
+        print OKGREEN + "\tOK" + ENDC
     except:
-        print WARNING + "D'oh!" + ENDC
-        print "GtkSourceView2 not found, module and exploits editors will be disabled"
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "GtkSourceView2 not found, module and exploits editors will be disabled" + ENDC
 
     try:
         print "\tVTE Terminal...",
         import vte
-        print OKGREEN + "OK" + ENDC
+        print OKGREEN + "\tOK" + ENDC
     except:
-        print WARNING + "D'oh!" + ENDC
-        print "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled"
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC
