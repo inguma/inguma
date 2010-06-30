@@ -615,6 +615,7 @@ class MainApp:
 
         # Add threadtv to core
         self.uicore.set_threadtv(self.threadsInst)
+        setattr(self.graph_uiman, 'threadtv', self.threadsInst)
 
 #        #################################################################################################################################
 #        # Progress Bar

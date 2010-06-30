@@ -83,6 +83,7 @@ class UIManager(gtk.UIManager):
 
         t = threading.Thread(target=self.uicore.getDot, args=(True,))
         t.start()
+        self.threadtv.add_action('Get ASN', 'all nodes', t)
 
         gobject.timeout_add(1000, self.update_graph, t)
 
