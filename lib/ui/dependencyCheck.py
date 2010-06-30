@@ -24,7 +24,14 @@ def gtkui_dependency_check():
     '''
     This function verifies that the dependencies that are needed by the GTK user interface are met.
     '''
-    print 'Checking GTK UI dependencies'
+
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    print 'Checking:'
+    print '\tGTK UI dependencies...',
 
     try:
         import pygtk
@@ -32,9 +39,44 @@ def gtkui_dependency_check():
         import gtk, gobject
         assert gtk.gtk_version >= (2, 12)
         assert gtk.pygtk_version >= (2, 12)
+        print OKGREEN + "OK" + ENDC
     except:
+        print FAIL + "D'oh!" + ENDC
         msg = 'You have to install GTK and PyGTK versions >=2.12 to be able to run the GTK user interface.\n'
         msg += '    - On Debian based distributions: apt-get install python-gtk2\n'
         msg += '    - On Mac: sudo port install py25-gtk'        
         print msg
         sys.exit( 1 )
+
+    try:
+        print "\tScapy...",
+        import scapy.all as scapy
+        print OKGREEN + "OK" + ENDC
+    except:
+        print FAIL + "D'oh!" + ENDC
+        print "No scapy found"
+        sys.exit( 1 )
+
+    try:
+        print "\tNetwork conectivity...",
+        print OKGREEN + "OK" + ENDC
+    except:
+        print FAIL + "D'oh!" + ENDC
+        print "No network conectivity found"
+        sys.exit( 1 )
+
+    try:
+        print "\tGtkSourceView2...",
+        import gtksourceview2 as gtksourceview
+        print OKGREEN + "OK" + ENDC
+    except:
+        print WARNING + "D'oh!" + ENDC
+        print "GtkSourceView2 not found, module and exploits editors will be disabled"
+
+    try:
+        print "\tVTE Terminal...",
+        import vte
+        print OKGREEN + "OK" + ENDC
+    except:
+        print WARNING + "D'oh!" + ENDC
+        print "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled"
