@@ -29,7 +29,7 @@ import lib.IPy as IPy
 class addTargetDialog:
     '''Dialog for adding targets and run some modules'''
 
-    def __init__(self, core, gom, threadtv):
+    def __init__(self, core, gom, threadtv, config):
 
         TITLE = "Scpecify target"
 
@@ -44,6 +44,7 @@ class addTargetDialog:
         self.uicore = core
         self.gom = gom
         self.threadtv = threadtv
+        self.config = config
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
@@ -63,6 +64,8 @@ class addTargetDialog:
 
         # Checkbox to use nmap
         self.nmap = button = gtk.CheckButton("Use Nmap")
+        if not self.config.HAS_NMAP:
+            self.nmap.set_sensitive(False)
 
         #########################################################
         # Table

@@ -104,9 +104,13 @@ class NmapScan:
 
         # the save button
         self.butt_save = self.dialog.action_area.get_children()[0]
-        #self.butt_save.set_sensitive(False)
-        #self.butt_save.connect("clicked", self.insertData, data)
         self.butt_save.connect("clicked", self.validateData)
+
+        # Check nmap availability
+        if not os.path.exists(config.NMAP_PATH):
+            self.progressbar.set_text('Nmap not found on: ' + config.NMAP_PATH)
+            self.progressbar.set_fraction(1)
+            self.butt_save.set_sensitive(False)
 
         # Finish
         self.dialog.show_all()

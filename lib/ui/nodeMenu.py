@@ -29,7 +29,7 @@ from . import config
 
 class UIManager(gtk.UIManager):
 
-    def __init__(self, gom, core):
+    def __init__(self, gom, core, config):
         gtk.UIManager.__init__(self)
 
         self.ui_id = 0
@@ -258,10 +258,11 @@ self.showBrute )], user_data=[ip, port] )
             open_new('http://' + ip + ':' + port)
 
     def open_terminal(self, action, data):
-        port, ip = data
-        command = 'tools/nc'
-        self.termnb.new_tab(command, [command, ip, port])
-        self.mainnb.set_current_page(1)
+        if config.HAS_VTE:
+            port, ip = data
+            command = 'tools/nc'
+            self.termnb.new_tab(command, [command, ip, port])
+            self.mainnb.set_current_page(1)
 
     def showDialog(self, action):
         module = action.get_name()

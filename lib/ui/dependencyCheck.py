@@ -18,9 +18,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys
+import os, sys
 
-def gtkui_dependency_check():
+def gtkui_dependency_check(config):
     '''
     This function verifies that the dependencies that are needed by the GTK user interface are met.
     '''
@@ -33,6 +33,7 @@ def gtkui_dependency_check():
     print 'Checking:'
     print '\tGTK UI dependencies...',
 
+    # Check Gtk
     try:
         import pygtk
         pygtk.require('2.0')
@@ -48,6 +49,7 @@ def gtkui_dependency_check():
         print msg
         sys.exit( 1 )
 
+    # Check Scapy
     try:
         print "\tScapy...",
         import scapy.all as scapy
@@ -57,9 +59,12 @@ def gtkui_dependency_check():
         print WARNING + "No scapy found" + ENDC
         sys.exit( 1 )
 
+    # Check Network
     try:
         print "\tNetwork conectivity...",
-        net,msk,gw,iface,addr = scapy.read_routes()
+        for net,msk,gw,iface,addr in scapy.read_routes():
+            if iface == scapy.conf.iface and gw != '0.0.0.0':
+                pass
         if gw:
             print OKGREEN + "\tOK" + ENDC
         else:
@@ -69,6 +74,7 @@ def gtkui_dependency_check():
         print WARNING + "No network conectivity found" + ENDC
         sys.exit( 1 )
 
+    # Check tkSourceView2
     try:
         print "\tGtkSourceView2...",
         import gtksourceview2 as gtksourceview
@@ -76,7 +82,9 @@ def gtkui_dependency_check():
     except:
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "GtkSourceView2 not found, module and exploits editors will be disabled" + ENDC
+        config.HAS_SOURCEVIEW = False
 
+    # Check Vte
     try:
         print "\tVTE Terminal...",
         import vte
@@ -84,3 +92,28 @@ def gtkui_dependency_check():
     except:
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC
+        config.HAS_VTE = False
+
+    # Check Nmap
+    try:
+        print "\t" + config.NMAP_PATH + "...",
+        if os.path.exists(config.NMAP_PATH):
+            print OKGREEN + "\tOK" + ENDC
+        else:
+            raise    
+    except:
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC
+        config.HAS_NMAP = False
+
+    # Check w3af
+    try:
+        print "\t" + config.W3AF_PATH + "...",
+        if os.path.exists(config.W3AF_PATH):
+            print OKGREEN + "\tOK" + ENDC
+        else:
+            raise    
+    except:
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
+        config.HAS_W3AF = False

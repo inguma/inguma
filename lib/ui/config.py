@@ -6,6 +6,13 @@ SHOW_KBTREE=True
 
 # Paths to externmal tools
 NMAP_PATH = '/usr/bin/nmap'
+W3AF_PATH = '/pentest/web/w3af/w3af_console'
+
+# Tools Availability
+HAS_NMAP = True
+HAS_W3AF = True
+HAS_SOURCEVIEW = True
+HAS_VTE = True
 
 NMAP_PROFILES = {
 'Intense Scan' : 'nmap -T Aggressive -A -v ',

@@ -29,7 +29,8 @@ if os.geteuid() != 0:
 
 # Perform the GTK UI dependency check here
 from . import dependencyCheck
-dependencyCheck.gtkui_dependency_check()
+import lib.ui.config as config
+dependencyCheck.gtkui_dependency_check(config)
 
 # Now that I know that I have them, import them!
 import pygtk
@@ -70,7 +71,6 @@ import lib.ui.addTargetDlg as addtargetdlg
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
-import lib.ui.config as config
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -216,11 +216,24 @@ class MainApp:
 
         # Toolbar
         toolbar = uimanager.get_widget('/Toolbar')
+
         # Disabled until I get them working
         button_proxy = uimanager.get_widget('/Toolbar/Proxy')
         button_proxy.set_sensitive(False)
         button_web = uimanager.get_widget('/Toolbar/Web Server')
         button_web.set_sensitive(False)
+
+        # Disable if not GtkSourceView2
+        if not config.HAS_SOURCEVIEW:
+            button_edit = uimanager.get_widget('/Toolbar/Edit')
+            button_edit.set_sensitive(False)
+
+        # Disable if not Vte
+        if not config.HAS_VTE:
+            button_sniffer = uimanager.get_widget('/Toolbar/Sniffer')
+            button_sniffer.set_sensitive(False)
+            button_scapy = uimanager.get_widget('/Toolbar/Scapy')
+            button_scapy.set_sensitive(False)
 
         self.handlebox.add(toolbar)
         toolbar.show()
@@ -260,7 +273,7 @@ class MainApp:
 #        self.xdotw = inxdot.MyDotWidget(self.context, self.uicore)
 
         # nodeMenu initialization stuff
-        self.uiman = nodeMenu.UIManager(self.gom, self.uicore)
+        self.uiman = nodeMenu.UIManager(self.gom, self.uicore, config)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
         self.window.add_accel_group(accel)
@@ -367,6 +380,9 @@ class MainApp:
 
         term_box = gtk.VBox()
         term_button = gtk.Button("New Tab")
+        # Disable if VTE not available
+        if not config.HAS_VTE:
+            term_button.set_sensitive(False)
         term_box.pack_start(term_button,False)
         self.term_notebook = libTerminal.TerminalNotebook()
         #term_button.connect("clicked", term_notebook.new_tab)
@@ -504,7 +520,7 @@ class MainApp:
         b.pack_start(i)
         b.show_all()
 
-        self.exploitsInst = exploits.Exploits()
+        self.exploitsInst = exploits.Exploits(config)
         exploitsGui = self.exploitsInst.get_widget()
         exploitsGui.show_all()
         self.notebook.append_page(exploitsGui, b)
@@ -855,7 +871,7 @@ class MainApp:
 
     def addTarget(self, event):
 
-        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom, self.threadsInst)
+        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom, self.threadsInst, config)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
