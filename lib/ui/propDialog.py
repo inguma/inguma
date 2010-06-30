@@ -26,13 +26,14 @@ sys.path.append('../..')
 class propDialog:
     '''Dialog for adding targets and run some modules'''
 
-    def __init__(self, core, gom):
+    def __init__(self, core, gom, threadtv):
 
         TITLE = "Preferences"
 
         # Core instance for manage the KB
         self.uicore = core
         self.gom = gom
+        self.threadtv = threadtv
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
@@ -127,8 +128,10 @@ class propDialog:
         self.exploitsInst = exploits.Exploits()
         t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
         t.start()
+        self.threadtv.add_action('Exploit-db Update', 'Exploits DB', t)
 
     def update_nikto(self, widget):
         command = 'python lib/libnikto.py'
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
+        self.threadtv.add_action('Nikto Update', 'Nikto DB', t)

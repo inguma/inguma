@@ -29,7 +29,7 @@ import lib.IPy as IPy
 class addTargetDialog:
     '''Dialog for adding targets and run some modules'''
 
-    def __init__(self, core, gom):
+    def __init__(self, core, gom, threadtv):
 
         TITLE = "Scpecify target"
 
@@ -43,6 +43,7 @@ class addTargetDialog:
         # Core instance for manage the KB
         self.uicore = core
         self.gom = gom
+        self.threadtv = threadtv
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
@@ -123,6 +124,7 @@ class addTargetDialog:
             #print "Will use Nmap:", command
             t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
             t.start()
+            self.threadtv.add_action('Nmap Scan', ip, t)
             gobject.timeout_add(1000, self.check_thread, t)
         else:
             # Run discover modules

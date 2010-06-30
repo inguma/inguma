@@ -39,11 +39,6 @@ class NmapScan:
         self.profiles = getattr(config, 'NMAP_PROFILES')
         self.ip = ip
 
-#        # Core instance for manage the KB
-#        self.uicore = core
-#        # Module to be launched after insert the data
-#        self.module = module
-
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, buttons=(gtk.STOCK_HELP, gtk.RESPONSE_HELP, gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
         self.dialog.resize(250, 75)
@@ -121,19 +116,11 @@ class NmapScan:
         '''Validate user input and call insertData when done'''
 
         self.run_nmap()
-#        try:
-#            if self.tgentry.get_text():
-#                ip = IPy.IP( self.tgentry.get_text() )
-#            #self.dialog.destroy()
-#            self.run_nmap()
-#        except:
-#            self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
 
     def run_nmap(self):
 
         # Start progressbar
         self.progressbar.pulse()
-        self.progressbar.set_pulse_step(0.80)
         self.progressbar.set_text('Running Nmap, please wait')
 
         # Create and read popen
@@ -141,10 +128,11 @@ class NmapScan:
         command += ' -oX /tmp/nmapxml.xml'
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
-        gobject.timeout_add(1000, self.check_thread, t)
+        gobject.timeout_add(100, self.check_thread, t)
 
     def check_thread(self, thread):
         if thread.isAlive() == True:
+            self.progressbar.pulse()
             return True
         else:
             self.progressbar.set_text('Parsing Data...')

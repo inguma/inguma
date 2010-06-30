@@ -736,7 +736,7 @@ class MainApp:
         editor.main()
 
     def showProp(self, widget):
-        propDialog.propDialog(self.uicore, self.gom)
+        propDialog.propDialog(self.uicore, self.gom, self.threadsInst)
 
     def show_term(self, widget):
         self.new_tab('scapy', 'scapy')
@@ -855,7 +855,7 @@ class MainApp:
 
     def addTarget(self, event):
 
-        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom)
+        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom, self.threadsInst)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
