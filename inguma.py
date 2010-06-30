@@ -94,6 +94,12 @@ except:
     print sys.exc_info()[1]
     pass
 
+# Colors
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
+
 #global user_data
 
 user_data = {}
@@ -214,7 +220,7 @@ def loadModule(path, atype, marray, bLoad = True):
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
-                    debugPrint("Error loading global variables")
+                    debugPrint(FAIL + "Error loading global variables" + ENDC)
                     print sys.exc_info()[1]
 
                 exec(marray + ".append(eval(f))")
@@ -242,14 +248,14 @@ def loadModule(path, atype, marray, bLoad = True):
                         obj = eval(f + "." + x +"()")
                         del obj
             except:
-                debugPrint("Error loading module",f,":",sys.exc_info()[1])
+                debugPrint(FAIL + "Error loading module",f,":" + ENDC,sys.exc_info()[1])
                 if f.lower().find("smtp") > -1:
                     raise
         else:
             if f.isalnum():
                 eval(marray).append(f)
             else:
-                print "The, supposed, module %s appears to be a non valid module" % f
+                print WARNING + "The, supposed, module %s appears to be a non valid module" + ENDC % f
                 continue
 
 def readDiscover():
