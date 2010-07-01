@@ -66,7 +66,7 @@ class NmapHandler(sax.ContentHandler):
         elif name == 'trace':
             pass
         elif name == 'hop':
-            self.output['hops'].append( str(self.hopip) )
+            self.output['hops'].append( [str(self.hopip), self.hopname] )
         elif name == 'host':
             if self.isOpen > 0:
 #                print self.output
@@ -112,8 +112,10 @@ def insertData(uicore, outputs):
     
         # Add traceroute
         for host in output['hops']:
-            uicore.set_kbfield( 'hosts', host )
-            uicore.set_kbfield( output['hostip'] + '_trace', host )
+            uicore.set_kbfield( 'hosts', host[0] )
+            if host[1] != '':
+                uicore.set_kbfield( host[0] + '_name', host[1] )
+            uicore.set_kbfield( output['hostip'] + '_trace', host[0] )
 
 #if __name__ == '__main__':
 #   import sys
