@@ -116,8 +116,9 @@ class addTargetDialog:
     def insertData(self, type, ip):
         if type == 'ip':
             #print "Adding IP target: " + ip.strNormal()
-            self.uicore.set_kbfield( 'target', ip.strNormal() )
-            self.uicore.set_kbfield( 'hosts', ip.strNormal() )
+            ip = ip.strNormal()
+            self.uicore.set_kbfield( 'target', ip )
+            self.uicore.set_kbfield( 'hosts', ip )
         elif type == 'dom':
             #print "Adding Domain target: " + ip
             self.uicore.set_kbfield( 'target', ip )
