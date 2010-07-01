@@ -143,6 +143,49 @@ def generate_folded(kb):
 
     return dotcode
 
+def graph_weighted(kb, type):
+
+    dotcode = '''
+    graph G {
+    graph [ overlap="scale", bgcolor="#475672", rankdir="LR"]
+        node [color=azure3, fontcolor=white, fillcolor="#373D49", shape=circle, style=filled];
+    '''
+
+    if type == 'ip':
+        # Calculate IP weight
+        weights = {}
+        for target in kb['targets']:
+            weights[target] = 0.5
+            try:
+                for port in kb[target + '_ports']:
+                    weights[target] += 0.3
+            except:
+                pass
+    elif type == 'port':
+        # Calculate Port weight
+        weights = {}
+        for target in kb['targets']:
+            if target + '_ports' in kb:
+                for port in kb[target + '_ports']:
+                    if not port in weights.keys():
+                        weights[port] = 0.5
+                    else:
+                        weights[port] += 0.3
+#    print weights
+
+    # Add weight ordered nodes
+    for weight in weights:
+        dotcode += '"' + weight + '" [style=filled, fillcolor="#5E82C6", fixedsize=1, height=' + str(weights[weight]) + ', width=' + str(weights[weight]) + ', shape=circle]\n'
+
+    # Add edges
+    target_pairs = pairs( weights.keys() )
+    for pair in target_pairs[0:-1]:
+        dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis", minlen=2]\n'
+
+    dotcode += '}'
+
+    return dotcode
+
 def pairs(dlist):
     return zip(dlist,dlist[1:]+[dlist[0]])
 
@@ -150,13 +193,15 @@ def graph_to_from(kb, type):
 
     dotcode = '''
     graph G {
-        graph [ overlap="scale", bgcolor="#475672", concentrate="true"]
+        graph [ overlap="scale", bgcolor="#475672", concentrate="true", root="Invisnode"]
 		    node [color=azure3, fontcolor=white, fillcolor="#373D49", shape=circle, style=filled, fixedsize=1, height=0.7,width=0.7];
     '''
     #bgcolor="#475672"
+    dotcode += '"Invisnode" [style=invis, fixedsize=1, height=1, width=1, shape=circle]\n'
     if type == 'ports_ip':
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
+            dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
             try:
                 for port in kb[target + '_ports']:
                     dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
@@ -183,6 +228,7 @@ def graph_to_from(kb, type):
     elif type == 'ports_vuln':
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
+            dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
             try:
                 for port in kb[target + '_ports']:
                     vuln_id = 0

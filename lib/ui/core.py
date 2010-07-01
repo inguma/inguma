@@ -216,6 +216,11 @@ class UIcore():
 
         return asn
 
+    def getWeighted(self, type):
+        self.xdot.set_filter('dot')
+        dotcode = dotgen.graph_weighted(inguma.user_data, type)
+        inguma.user_data['dotcode'] = dotcode
+
     def getToFromDot(self, type):
         self.xdot.set_filter('neato')
         dotcode = dotgen.graph_to_from(inguma.user_data, type)

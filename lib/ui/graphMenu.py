@@ -43,6 +43,9 @@ class UIManager(gtk.UIManager):
                 <menuitem action="get_to_from"/>
                 <menuitem action="get_from_to"/>
                 <menuitem action="get_vulns_ip"/>
+                <separator/>
+                <menuitem action="get_weighted_ip"/>
+                <menuitem action="get_weighted_port"/>
             </popup>
         </ui>
         '''
@@ -62,6 +65,8 @@ class UIManager(gtk.UIManager):
         self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_CONVERT, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
         self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_CONVERT, ' IP per Port ', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
         self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_CONVERT, ' Vulns per Port ', None, 'ToolTip', self.doToFrom )], ['ports_vuln'] )
+        self.actiongroup.add_actions( [('get_weighted_ip', gtk.STOCK_CONVERT, ' Weighted IP ', None, 'ToolTip', self.doWeighted )], ['ip'] )
+        self.actiongroup.add_actions( [('get_weighted_port', gtk.STOCK_CONVERT, ' Weighted Ports ', None, 'ToolTip', self.doWeighted )], ['port'] )
 
         # Add the actiongroup to the uimanager
         self.insert_action_group(self.actiongroup, 0)
@@ -99,4 +104,9 @@ class UIManager(gtk.UIManager):
     def doToFrom(self, widget, type):
         self.xdot.on_zoom_100(None)
         self.uicore.getToFromDot(type[0])
+        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
+
+    def doWeighted(self, widget, type):
+        self.xdot.on_zoom_100(None)
+        self.uicore.getWeighted(type[0])
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
