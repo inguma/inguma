@@ -26,7 +26,7 @@ sys.path.append('../..')
 class propDialog:
     '''Dialog for adding targets and run some modules'''
 
-    def __init__(self, core, gom, threadtv):
+    def __init__(self, core, gom, threadtv, config):
 
         TITLE = "Preferences"
 
@@ -34,6 +34,7 @@ class propDialog:
         self.uicore = core
         self.gom = gom
         self.threadtv = threadtv
+        self.config = config
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
@@ -125,7 +126,7 @@ class propDialog:
     def update_exploits(self, widget):
         import lib.ui.exploits as exploits
 
-        self.exploitsInst = exploits.Exploits()
+        self.exploitsInst = exploits.Exploits(self.config)
         t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
         t.start()
         self.threadtv.add_action('Exploit-db Update', 'Exploits DB', t)

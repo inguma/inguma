@@ -753,7 +753,7 @@ class MainApp:
         editor.main()
 
     def showProp(self, widget):
-        propDialog.propDialog(self.uicore, self.gom, self.threadsInst)
+        propDialog.propDialog(self.uicore, self.gom, self.threadsInst, config)
 
     def show_term(self, widget):
         self.new_tab('scapy', 'scapy')
