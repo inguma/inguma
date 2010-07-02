@@ -85,6 +85,7 @@ class GraphMenu(gtk.VBox):
             self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
     def _on_toggle(self, widget):
+        self._zoom(widget, '100')
         if self.clusterBtn.get_active():
             self.clusterBtn.set_property("image", self.img_full)
             self.uicore.getFolded()

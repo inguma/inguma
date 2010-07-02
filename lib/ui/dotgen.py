@@ -34,7 +34,7 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     dotcode += 'root="' + localip + '";\n\n'
     dotcode += 'concentrate="true";\n\n'
     #dotcode += "\nnode [shape=record,color=azure3,style=filled fillcolor=skyazure3];\n"
-    dotcode += "\nnode [shape=record,color=azure3, fontcolor=azure3, style=rounded];\n"
+    dotcode += '\nnode [shape=record, color=azure3, fontcolor=azure3, style="filled,rounded", fillcolor="#373D49"];\n'
 
     #######################################
     #
@@ -51,7 +51,7 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
         else:
             dotcode += '\t\tcolor="#373D49";'
             dotcode += '\t\tfontcolor="azure3";'
-        dotcode += '\t\tnode [fillcolor="#60baba"];'
+#        dotcode += '\t\tnode [fillcolor="#60baba"];'
         #dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
         dotcode += '\t\tfontsize = 10;'
         dotcode += '\t\tstyle=\"rounded,filled\";'
