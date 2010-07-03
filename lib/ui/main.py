@@ -808,9 +808,11 @@ class MainApp:
                 if opt == True:
                     t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
                     t.start()
+                    self.threadsInst.add_action('Load Exploits', 'local', t)
             else:
                 t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
                 t.start()
+                self.threadsInst.add_action('Load Exploits', 'local', t)
 
     def newBin(self, widget):
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
