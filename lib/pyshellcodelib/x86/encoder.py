@@ -73,7 +73,7 @@ def x86XorEncode(shcode, avoid="\x00"):
                 key=i
                 break
         if not ok:
-            raise "xor loader: no suitable xor key found."
+            raise Exception("xor loader: no suitable xor key found.")
 
         shcode = "".join(map(lambda x: chr(ord(x)^key), shcode))
         length = len(shcode)
@@ -93,7 +93,7 @@ def x86XorEncode(shcode, avoid="\x00"):
                 ok=0
                 break
         if not ok:
-            raise "xor loader: no suitable xor loader found"
+            raise Exception("xor loader: no suitable xor loader found")
         return ld+shcode
 
 def xorEncode(shcode, avoid="\x00"):

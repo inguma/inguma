@@ -146,10 +146,10 @@ def parse_sib(bytes, offset, mod):
         # FIXME is there special stuff needed here?
         elif mod == 1:
             pass
-            #raise "OMG MOD 1"
+            #raise Exception("OMG MOD 1")
         elif mod == 2:
             pass
-            #raise "OMG MOD 2"
+            #raise Exception("OMG MOD 2")
 
     return (size, scale, index, base, imm)
 
@@ -2007,7 +2007,7 @@ class IntelEmulator(envi.Emulator):
 
     def i_wait(self, op):
         if len(self.fp_exceptions) > 0:
-            raise "WAIT DOESN'T KNOW WHAT TO DO"
+            raise Exception("WAIT DOESN'T KNOW WHAT TO DO")
 
     def i_xadd(self, op):
         val1 = self.getOperValue(op, 0)

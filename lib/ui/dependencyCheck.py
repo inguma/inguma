@@ -68,7 +68,7 @@ def gtkui_dependency_check(config):
         if gw:
             print OKGREEN + "\tOK" + ENDC
         else:
-            raise "D'Oh!"
+            raise Exception("D'Oh!")
     except:
         print FAIL + "\tD'oh!" + ENDC
         print WARNING + "No network conectivity found" + ENDC

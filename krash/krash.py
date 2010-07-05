@@ -314,7 +314,7 @@ def checkAlive(host, port, times = 0):
             print "~"*80
             print
             print "-"*80
-            #raise "*** Found a bug?\r\n" + "-"*80
+            #raise Exception("*** Found a bug?\r\n" + "-"*80)
         
             if startCommand:
                 print "[+] Starting up target program ..."

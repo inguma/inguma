@@ -218,7 +218,7 @@ def valueToLayers(values):
     try:
         mValue = int(values)
     except:
-        raise "Invalid value for supported layers"
+        raise Exception("Invalid value for supported layers")
 
     for i in range(1, len(LAYER_VALUES)):
         if LAYER_VALUES[i] > mValue:

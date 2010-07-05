@@ -36,10 +36,10 @@ class CSQLServerPassword:
             self.data = data
 
             if len(self.data) != 94:
-                raise "Invalid password hash size"
+                raise Exception("Invalid password hash size")
 
             if self.data[0:2].lower() != "0x":
-                raise "Invalid password hash"
+                raise Exception("Invalid password hash")
 
             self._header   = int(self.data[2:6])
             self._key      = int(self.data[6:8])

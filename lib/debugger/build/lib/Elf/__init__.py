@@ -452,7 +452,7 @@ class Elf:
                     if self.bits == 32:
                         reloc = Elf32Reloca(bytes)
                     else:
-                        raise "FIXME"
+                        raise Exception("FIXME")
                     index = reloc.getSymTabIndex()
                     try:
                         sym = self.dynamic_symbols[index]

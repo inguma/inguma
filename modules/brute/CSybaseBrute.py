@@ -65,7 +65,7 @@ class CSybaseBrute(CIngumaModule):
             if data.find("Login failed") == -1:
                 return True
             else:
-                raise "Login failed"
+                raise Exception("Login failed")
         except:
             self.gom.echo( sys.exc_info()[1] )
             self.gom.echo( "Aborted." )

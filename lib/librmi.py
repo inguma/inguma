@@ -49,7 +49,7 @@ class RMIOutputStream:
 
     def readPacket(self,  pkt):
         if len(pkt) < 6:
-            raise "Invalid RMI packet"
+            raise Exception("Invalid RMI packet")
     
         self.header = pkt[:4]
         self.version = pkt[4:5]
@@ -78,10 +78,10 @@ class RMIResponse:
 
     def readPacket(self, pkt):
         if len(pkt)<4:
-            raise "Invalid RMI Packet"
+            raise Exception("Invalid RMI Packet")
 
         if pkt[:2] != RMI_OUTPUT_RESPONSE_MAGIC:
-            raise "Invalid RMI Header"
+            raise Exception("Invalid RMI Header")
 
         self.header = pkt[:2]
         self.major = pkt[2:3]

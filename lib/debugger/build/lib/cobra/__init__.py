@@ -461,7 +461,7 @@ class CobraSslDaemon(CobraDaemon):
             ssock.set_connect_state()
             self.socket = ssock
         except:
-            raise "SSL: SSL setup failed"
+            raise Exception("SSL: SSL setup failed")
 
 class CobraConnectionHandler(BaseRequestHandler):
 

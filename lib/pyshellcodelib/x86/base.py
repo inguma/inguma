@@ -313,7 +313,7 @@ class CBaseOpcodes:
         values = addr.split(".")
 
         if len(values) != 4:
-            raise "Bad IP address specified"
+            raise Exception("Bad IP address specified")
 
         values[0] = "%x" % int(values[0])
         if len(values[0]) == 1:
@@ -636,7 +636,7 @@ class CBaseStub(CBaseOpcodes):
         """
         # FIXME: Fixme now!!!!!!!!!!!!!!!!!
         # FIXME: Fixme now!!!!!!!!!!!!!!!!!
-        raise "Not implemented!"
+        raise Exception("Not implemented!")
 
     def execSh(self):
         """

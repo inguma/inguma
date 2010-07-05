@@ -145,7 +145,7 @@ class CSnmpWalk(CIngumaModule):
         
             # Make sure response matches request (request IDs, communities, etc)
             if req != rsp:
-                raise 'Unmatched response: %s vs %s' % (str(req), str(rsp))
+                raise Exception('Unmatched response: %s vs %s' % (str(req), str(rsp)))
         
             # Decode BER encoded Object IDs.
             oids = map(lambda x: x[0], map(asn1.OBJECTID().decode, \
@@ -167,8 +167,8 @@ class CSnmpWalk(CIngumaModule):
                     for l in oids, vals, head_oids:
                         del l[rsp['error_index']-1]
                 else:
-                    raise 'SNMP error #' + str(rsp['error_status']) + ' for OID #' \
-                          + str(rsp['error_index'])
+                    raise Exception('SNMP error #' + str(rsp['error_status']) + ' for OID #' \
+                          + str(rsp['error_index']))
         
             # Exclude completed OIDs
             while 1:
