@@ -23,7 +23,7 @@ import os, sys, time, vte, threading
 if os.geteuid() != 0:
     print "You must be root to run most of the modules"
     try:
-        raw_input("Press any Key or Crtl+C\n") 
+        raw_input("Press any key to continue, or Ctrl+C to stop.\n") 
     except KeyboardInterrupt:
         sys.exit(1)
 
