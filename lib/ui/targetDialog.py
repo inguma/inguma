@@ -31,7 +31,7 @@ class TargetDialog:
 
     def __init__(self, module, core):
 
-        TITLE = "Scpecify target for " + module
+        TITLE = "Specify target for " + module
 
         # Core instance for manage the KB
         self.uicore = core

@@ -31,7 +31,7 @@ class addTargetDialog:
 
     def __init__(self, core, gom, threadtv, config):
 
-        TITLE = "Scpecify target"
+        TITLE = "Specify target"
 
         self.DISCOVERS = ['hostname',
                     'tcptrace',

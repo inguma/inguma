@@ -35,7 +35,7 @@ class GatherDialog(gtk.Dialog):
         super(GatherDialog,self).__init__(title, None, gtk.DIALOG_MODAL,
                       (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,stockok,gtk.RESPONSE_OK))
 
-        TITLE = "Scpecify data for " + title
+        TITLE = "Specify data for " + title
 
         # Core instance for manage the KB
         self.uicore = core
