@@ -107,7 +107,7 @@ class CTraceroute(CIngumaModule):
             
             if res == "" or res.lower() == "y":
                 res = raw_input("Path to file (otherwise display using ImageMagick): ")
-                res3d = raw_input("Graphic 3D (y/n)[n]?: ")
+                res3d = raw_input("Graphic 3D (y/n) [n]?: ")
 
                 if res == "":
                     if res3d == "y":

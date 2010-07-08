@@ -27,7 +27,7 @@ import lib.IPy as IPy
 #from . import core
 
 class addTargetDialog:
-    '''Dialog for adding targets and run some modules'''
+    '''Dialog for adding targets and running some modules'''
 
     def __init__(self, core, gom, threadtv, config):
 
@@ -73,7 +73,7 @@ class addTargetDialog:
         table.set_row_spacings(2)
         table.set_col_spacings(2)
 
-        # Add lements to Table
+        # Add elements to Table
         table.attach(self.ip_rbutton, 0, 1, 0, 1)
         table.attach(self.dom_rbutton, 1, 2, 0, 1)
         table.attach(self.tgentry, 0, 2, 1, 2)
@@ -83,11 +83,11 @@ class addTargetDialog:
         self.dialog.vbox.pack_start(table, False, False, 2)
 
         #########################################################
-        # the cancel button
+        # The cancel button
         self.butt_cancel = self.dialog.action_area.get_children()[1]
         self.butt_cancel.connect("clicked", lambda x: self.dialog.destroy())
 
-        # the save button
+        # The save button
         self.butt_save = self.dialog.action_area.get_children()[0]
         self.butt_save.connect("clicked", self.validateData)
 
