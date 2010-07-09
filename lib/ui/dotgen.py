@@ -157,7 +157,7 @@ def graph_weighted(kb, type):
         for target in kb['targets']:
             weights[target] = 0.5
             try:
-                for port in kb[target + '_ports']:
+                for port in kb[target + '_tcp_ports']:
                     weights[target] += 0.3
             except:
                 pass
@@ -165,8 +165,8 @@ def graph_weighted(kb, type):
         # Calculate Port weight
         weights = {}
         for target in kb['targets']:
-            if target + '_ports' in kb:
-                for port in kb[target + '_ports']:
+            if target + '_tcp_ports' in kb:
+                for port in kb[target + '_tcp_ports']:
                     if not port in weights.keys():
                         weights[port] = 0.5
                     else:
@@ -203,7 +203,7 @@ def graph_to_from(kb, type):
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
             try:
-                for port in kb[target + '_ports']:
+                for port in kb[target + '_tcp_ports']:
                     dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
                     dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=1.25, color=azure3];\n'
             except:
@@ -217,7 +217,7 @@ def graph_to_from(kb, type):
     elif type == 'ip_ports':
         for target in kb['targets']:
             try:
-                for port in kb[target + '_ports']:
+                for port in kb[target + '_tcp_ports']:
                     dotcode += '"' + str(port) + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.7,width=0.7]\n'
                     dotcode += '"' + str(port) + '_' + target + '" [label="' + target + '"]\n'
                     dotcode += '"' + str(port) + '" -- "' + str(port) + '_' + target + '" [len=1.25, color=azure3];\n'
@@ -230,7 +230,7 @@ def graph_to_from(kb, type):
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
             try:
-                for port in kb[target + '_ports']:
+                for port in kb[target + '_tcp_ports']:
                     vuln_id = 0
                     if target + "_" + str(port) + '-web-vulns' in kb:
                         dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '", shape=doublecircle]\n'

@@ -103,7 +103,7 @@ def insertData(uicore, outputs):
 #        print output['ports']
         for port in output['ports'].keys():
             if output['ports'][port][0] == 'open':
-                uicore.set_kbfield( output['hostip'] + '_ports', port )
+                uicore.set_kbfield( output['hostip'] + '_tcp_ports', port )
                 try:
                     uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][1] )
                     uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )

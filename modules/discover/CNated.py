@@ -75,7 +75,7 @@ class CNated(CIngumaModule):
         if res:
             ttls.append(res)
 
-        for port in self.dict[self.target + "_ports"]:
+        for port in self.dict[self.target + "_tcp_ports"]:
             res = self.probeTcpPort(port)
             
             if res:
@@ -94,7 +94,7 @@ class CNated(CIngumaModule):
     def run(self):
         if hasScapy:
             if self.port == 0:
-                if self.dict.has_key(self.target + "_ports"):
+                if self.dict.has_key(self.target + "_tcp_ports"):
                     return self.checkIsNated()
                 else:
                     self.gom.echo( "Can't check NATed ports for " + self.target + " without ports scanned" )

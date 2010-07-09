@@ -49,7 +49,7 @@ class CTCPScan(CIngumaModule):
                     s.close()
     
                     self.opened[port] = "open"
-                    self.addToDict(self.target + "_ports", port)
+                    self.addToDict(self.target + "_tcp_ports", port)
                 except:
                     self.closed[port] = "close"
         except KeyboardInterrupt:

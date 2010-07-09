@@ -95,12 +95,12 @@ class CSidGuess(CIngumaModule):
         Thanks to Alexander Kornbrust.
         """
         target= self.target
-        if not self.dict.has_key(target + "_ports"):
+        if not self.dict.has_key(target + "_tcp_ports"):
             return False
 
-        if 1158 in self.dict[target + "_ports"]:
+        if 1158 in self.dict[target + "_tcp_ports"]:
             port = 1158
-        elif 5560 in self.dict[target + "_ports"]:
+        elif 5560 in self.dict[target + "_tcp_ports"]:
             port = 5560
         else:
             return False

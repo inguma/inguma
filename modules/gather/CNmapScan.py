@@ -60,7 +60,7 @@ class CNmapScan(CIngumaModule):
             self.gom.echo( "Host ports info:" )
             for p in host.ports.ports:
                 self.gom.echo( "%7s%9s%6s" % (p.portid, p.state, p.protocol) )
-                self.addToDict(host.address[0]['addr'] + "_ports", p.portid)
+                self.addToDict(host.address[0]['addr'] + "_tcp_ports", p.portid)
             
             if 'script' in host.ports.ports[0].options:
                 self.gom.echo( "" )

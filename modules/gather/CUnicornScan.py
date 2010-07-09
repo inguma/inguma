@@ -52,7 +52,7 @@ class CUnicornScan(CIngumaModule):
                 port = portmatch.group(0)[:-1]
                 
                 self.opened[port] = "open"
-                self.addToDict(self.target + "_ports", port)
+                self.addToDict(self.target + "_tcp_ports", port)
             return True
         except:
             return False

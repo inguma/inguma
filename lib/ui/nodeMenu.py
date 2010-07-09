@@ -117,8 +117,8 @@ class UIManager(gtk.UIManager):
             self.actiongroup2.add_actions( [('services', gtk.STOCK_NETWORK, '  Services')] )
             self.target_menu += '<menu action="services" position="top">'
 
-            if kb.__contains__(ip + '_ports'):
-                for port in kb[ip + '_ports']:
+            if kb.__contains__(ip + '_tcp_ports'):
+                for port in kb[ip + '_tcp_ports']:
 
 #                    if kb.__contains__(ip + '_passwords'):
 #                        self.actiongroup2.add_actions( [('pass', None, 'user/password')] )
@@ -177,8 +177,8 @@ self.showBrute )], user_data=[ip, port] )
                     self.target_menu += '</menu>'
                         
 
-#            elif kb.__contains__(ip + '_ports'):
-#                for port in kb[ip + '_ports']:
+#            elif kb.__contains__(ip + '_tcp_ports'):
+#                for port in kb[ip + '_tcp_ports']:
 #
 ##                    if kb.__contains__(ip + '_passwords'):
 ##                        self.actiongroup2.add_actions( [('pass', None, 'user/password')] )

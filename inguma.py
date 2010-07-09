@@ -831,8 +831,8 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
                 showLaunch("ispromisc", "Checking if is in promiscuous state target %s\n" % target)
                 showLaunch("identify", "Identifying services target %s\n" % target)
-                if user_data.has_key(target + "_ports"):
-                    ports = user_data[target + "_ports"]
+                if user_data.has_key(target + "_tcp_ports"):
+                    ports = user_data[target + "_tcp_ports"]
 
                     showLaunch("isnated",  "Checking what ports are nated target %s\n" % target)
 

@@ -699,8 +699,8 @@ class CServiceIdentify(CIngumaModule):
         return data
 
     def run(self):
-        if self.dict.has_key(self.target + "_ports"):
-            mList = self.dict[self.target + "_ports"]
+        if self.dict.has_key(self.target + "_tcp_ports"):
+            mList = self.dict[self.target + "_tcp_ports"]
             for service in mList:
                 self.gom.echo( "Port " + str(service) + ": " + self.identifyService(service).lstrip(" ").rstrip(" ").replace("\n", "") )
         else:

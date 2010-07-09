@@ -62,7 +62,7 @@ class CFirewallTest(CIngumaModule):
                 if r.payload.flags == 0x12:
                     self.opened[r.sport] = r.src
                     self.gom.echo( "  Discovered open port " + str(r.sport) )
-                    self.addToDict(r.src + "_ports", r.sport)
+                    self.addToDict(r.src + "_tcp_ports", r.sport)
 
         for s,r in ans:
             if r.haslayer(ICMP):

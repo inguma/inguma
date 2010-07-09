@@ -43,8 +43,8 @@ class CArchanix(CIngumaModule):
             return False
 
     def run(self):
-        if self.dict.has_key(self.target + "_ports"):
-            mList = self.dict[self.target + "_ports"]
+        if self.dict.has_key(self.target + "_tcp_ports"):
+            mList = self.dict[self.target + "_tcp_ports"]
             for service in mList:
                 if self._servicesList.has_key(service):
                     if service != "finger":
