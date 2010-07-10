@@ -7,7 +7,7 @@ AT 30 04 2009
 AT 29 04 2009
     * Modified om's echo function in order to use ModuleDialog
     * Created ModuleDialog on om.py for module output
-    * Added option "Open with broswer" for open ports
+    * Added option "Open with browser" for open ports
     * Improved targetDialog
     * Reorganized discover and gather menu
     * Solved problem with click on popup menu

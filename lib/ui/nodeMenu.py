@@ -131,7 +131,7 @@ class UIManager(gtk.UIManager):
                     self.target_menu += '<menu action="' + str(port) + '">'
 
                     # Menuitems for connect and browser
-                    self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with broswer', None, None, self.show_browser)], [str(port), ip] )
+                    self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with browser', None, None, self.show_browser)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_browser"/>'
                     self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, self.open_terminal)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
