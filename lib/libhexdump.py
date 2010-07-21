@@ -24,7 +24,7 @@ from types import *
 # BEGIN
 # The following piece of code was found at:
 # http://code.activestate.com/recipes/82748/
-# BEGIN
+# END
 
 class Display:
 	def __init__(self):
