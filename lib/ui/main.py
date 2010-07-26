@@ -21,10 +21,9 @@ import os, sys, time, vte, threading
 
 # Need root for most modules, so...
 if os.geteuid() != 0:
-    print "You must be root to run most of the modules"
-    try:
-        raw_input("Press any key to continue, or Ctrl+C to stop.\n") 
-    except KeyboardInterrupt:
+    print "You must be root to run most of the modules."
+    answer = raw_input("Do you want to continue [y/N]? ")
+    if answer.lower() != 'y':
         sys.exit(1)
 
 # Perform the GTK UI dependency check here
