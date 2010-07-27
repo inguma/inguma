@@ -61,7 +61,7 @@ def gtkui_dependency_check(config):
 
     # Check Network
     try:
-        print "\tNetwork conectivity...",
+        print "\tNetwork connectivity...",
         for net,msk,gw,iface,addr in scapy.read_routes():
             if iface == scapy.conf.iface and gw != '0.0.0.0':
                 pass
@@ -71,7 +71,7 @@ def gtkui_dependency_check(config):
             raise Exception("D'Oh!")
     except:
         print FAIL + "\tD'oh!" + ENDC
-        print WARNING + "No network conectivity found" + ENDC
+        print WARNING + "No network connectivity found" + ENDC
         sys.exit( 1 )
 
     # Check tkSourceView2
