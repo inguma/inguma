@@ -47,5 +47,10 @@ def generateReport(data):
                         for y in data[x][0]:
                             print "\t", str(y).upper() +':', data[x][0][y]
                     else:
-                        print field + ':', data[x]
+                        if len(data[x]) == 1:
+                            print field + ':\t', data[x][0]
+                        else :
+                            print field + ':'
+                            for element in data[x]:
+                                print "\t" + str(element)
             print

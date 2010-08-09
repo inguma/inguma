@@ -91,6 +91,8 @@ ui_menu = """
     <toolitem action="Properties"/>
     <toolitem action="Show Log"/>
     <toolitem action="Show KB"/>
+    <separator name="s5"/>
+    <toolitem action="Report"/>
     <toolitem action="Quit"/>
   </toolbar>
 </ui>
@@ -206,6 +208,7 @@ class MainApp:
             ('Properties', gtk.STOCK_PROPERTIES, ('Properties'), None, (''), self.showProp),
             ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
             ('Show KB', gtk.STOCK_DND, ('Show KB'), None, (''), self.show_kb),
+            ('Report', gtk.STOCK_DND, ('Report'), None, (''), self.report),
             ('Quit', gtk.STOCK_QUIT, ('Quit'), None, (''), gtk.main_quit),
         ])
 
@@ -445,6 +448,7 @@ class MainApp:
             ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
             #('Debugger', gtk.STOCK_EXECUTE, ('Debugger'), None, (''), gtk.main_quit),
             ('Debugger', gtk.STOCK_EXECUTE, ('Debugger'), None, (''), self.run_debugger),
+            #('Report', gtk.STOCK_DND, ('Report'), None, (''), gtk.main_quit),
             ('Quit', gtk.STOCK_QUIT, ('Quit'), None, (''), gtk.main_quit),
         ])
 
@@ -763,6 +767,12 @@ class MainApp:
     def new_tab(self, widget, command=''):
         self.term_notebook.new_tab(command)
         self.notebook.set_current_page(1)
+
+    def report(self, widget):
+        from reports import generateReport
+
+        report_data = generateReport(self.uicore.user_data)
+        print report_data
 
     def show_log(self, widget):
         ''' Show/hide log panel'''
