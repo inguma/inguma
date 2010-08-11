@@ -52,6 +52,11 @@ class UIcore():
         ip = self.getLocalIP()
         gw = self.getLocalGW()
 
+        if (gw is None):
+            # We don't have a gateway at the moment.
+            print "\nERROR: Houston, we have a problem.  It's been impossible to determine your current gateway.  I cannot continue."
+            sys.exit(1)
+
         #Get localhost information
         local_info = platform.uname()
         local_os, local_name = local_info[0], local_info[1]

@@ -89,7 +89,7 @@ ui_menu = """
     <toolitem action="Scapy"/>
     <separator name="s4"/>
     <toolitem action="Add Target"/>
-    <toolitem action="Properties"/>
+    <toolitem action="Preferences"/>
     <toolitem action="Show Log"/>
     <toolitem action="Show KB"/>
     <separator name="s5"/>
@@ -206,7 +206,7 @@ class MainApp:
             ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), self.run_sniffer),
             ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, (''), self.show_term),
             ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, (''), self.addTarget),
-            ('Properties', gtk.STOCK_PROPERTIES, ('Properties'), None, (''), self.showProp),
+            ('Preferences', gtk.STOCK_PREFERENCES, ('Preferences'), None, (''), self.showPref),
             ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
             ('Show KB', gtk.STOCK_DND, ('Show KB'), None, (''), self.show_kb),
             ('Report', gtk.STOCK_DND, ('Report'), None, (''), self.report),
@@ -756,7 +756,8 @@ class MainApp:
         import lib.ui.editor as editor
         editor.main()
 
-    def showProp(self, widget):
+    def showPref(self, widget):
+        # FIXME: Change propWhatever to prefWhatever.
         propDialog.propDialog(self.uicore, self.gom, self.threadsInst, config)
 
     def show_term(self, widget):
