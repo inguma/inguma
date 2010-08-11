@@ -1,6 +1,8 @@
 #!/usr/bin/python
 """
 Inguma Penetration Testing Toolkit
+
+Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
 Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
 
 This program is free software; you can redistribute it and/or
@@ -29,13 +31,18 @@ baseVars = ["target", "otherTargets", "services", "port", "covert",
                     "timeout", "waittime", "wizard", "user", "password"]
 
 def generateReport(data):
-    
+
+    DATA = ''
+ 
     if data.has_key("hosts"):
         for host in data["hosts"]:
             title = "Report for host %s" % host
             print title
+            DATA += title + '\n'
             print "-"*len(title)
+            DATA += "-"*len(title) + '\n'
             print
+            DATA += '\n'
 
             for x in data:
                 if x.startswith(host + "_"):
@@ -43,14 +50,22 @@ def generateReport(data):
 
                     if type(data[x][0]) is dict:
                         print str(field) + ":"
+                        DATA += str(field) + ":\n"
 
                         for y in data[x][0]:
                             print "\t", str(y).upper() +':', data[x][0][y]
+                            DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n' 
                     else:
                         if len(data[x]) == 1:
                             print field + ':\t', data[x][0]
+                            DATA += field + ':\t' + str(data[x][0]) + '\n'
                         else :
                             print field + ':'
+                            DATA += field + ':\n'
                             for element in data[x]:
                                 print "\t" + str(element)
+                                DATA += "\t" + str(element) + '\n'
             print
+            DATA += '\n'
+
+    return DATA

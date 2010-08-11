@@ -70,6 +70,7 @@ import lib.ui.addTargetDlg as addtargetdlg
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
+import lib.ui.reportWin as reportWin
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -769,10 +770,8 @@ class MainApp:
         self.notebook.set_current_page(1)
 
     def report(self, widget):
-        from reports import generateReport
 
-        report_data = generateReport(self.uicore.user_data)
-        print report_data
+        reportWin.reportWin(self.uicore)
 
     def show_log(self, widget):
         ''' Show/hide log panel'''
