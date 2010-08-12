@@ -44,13 +44,29 @@ class reportWin(gtk.Window):
         # Menu
         self.mb = gtk.MenuBar()
 
+        agr = gtk.AccelGroup()
+        self.add_accel_group(agr)
+
         filemenu = gtk.Menu()
         filem = gtk.MenuItem("_File")
         filem.set_submenu(filemenu)
-       
-        exit = gtk.MenuItem("Exit")
-        exit.connect("activate", self.win_destroy)
+
+        savi = gtk.ImageMenuItem(gtk.STOCK_SAVE, agr)
+        key, mod = gtk.accelerator_parse("S")
+        savi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+        filemenu.append(savi)
+
+        savi.connect("activate", self.save_report)
+
+        sep = gtk.SeparatorMenuItem()
+        filemenu.append(sep)
+
+        exit = gtk.ImageMenuItem(gtk.STOCK_QUIT, agr)
+        key, mod = gtk.accelerator_parse("Q")
+        exit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
         filemenu.append(exit)
+
+        exit.connect("activate", self.win_destroy)
 
         self.mb.append(filem)
         # Add Menu to VBox
@@ -61,7 +77,7 @@ class reportWin(gtk.Window):
 
         self.reporttv.set_wrap_mode(gtk.WRAP_NONE)
         self.reporttv.set_editable(False)
-        self.reporttv.set_cursor_visible(False)
+        #self.reporttv.set_cursor_visible(False)
 
         # Change text font
         fontdesc = pango.FontDescription("MonoSpace 10")
@@ -85,3 +101,16 @@ class reportWin(gtk.Window):
 
     def win_destroy(self, widget, data=None):
         self.destroy()
+
+    def save_report(self, widget):
+        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        response = chooser.run()
+        if response == gtk.RESPONSE_OK:
+            filename = chooser.get_filename()
+            file = open(filename, 'w')
+            file.write(self.report_data)
+            file.close()
+        elif response == gtk.RESPONSE_CANCEL:
+            pass
+        chooser.destroy()
+        
