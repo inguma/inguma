@@ -141,6 +141,7 @@ class MainApp:
         self.window.connect("destroy", lambda w: gtk.main_quit())
         self.window.connect("delete_event", self.quit)
         splash.push(("Loading..."))
+        gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
 
         # Title
         self.window.set_title(MAINTITLE)
@@ -219,6 +220,7 @@ class MainApp:
 
         # Toolbar
         toolbar = uimanager.get_widget('/Toolbar')
+        toolbar.set_style(gtk.TOOLBAR_BOTH)
 
         # Disabled until I get them working
         button_proxy = uimanager.get_widget('/Toolbar/Proxy')
