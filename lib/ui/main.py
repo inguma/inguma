@@ -635,8 +635,8 @@ class MainApp:
         #################################################################
         statusbar = gtk.Statusbar() 
         mainvbox.pack_end(statusbar, False, False, 1)
-        context_id = statusbar.get_context_id("Inguma 1.0-dev")
-        message_id = statusbar.push(context_id, 'Inguma 1.0-dev')
+        context_id = statusbar.get_context_id("Inguma 0.2")
+        message_id = statusbar.push(context_id, 'Inguma 0.2')
         statusbar.show()
 
         #################################################################################################################################

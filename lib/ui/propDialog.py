@@ -127,7 +127,7 @@ class propDialog:
         import lib.ui.exploits as exploits
 
         self.exploitsInst = exploits.Exploits(self.config)
-        t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
+        t = threading.Thread(target=self.exploitsInst.download_exploits, args=(self.gom,))
         t.start()
         self.threadtv.add_action('Exploit-db Update', 'Exploits DB', t)
 
