@@ -20,7 +20,7 @@
 #       MA 02110-1301, USA.
 
 import sys, os, string
-from lib.nmapparser import NmapParser
+import lib.ui.nmapParser as nmapParser
 from lib.libexploit import CIngumaModule
 
 name = "nmapscan"
@@ -52,32 +52,46 @@ class CNmapScan(CIngumaModule):
         os.popen(options + " -oX /tmp/nmapxml.xml")
         nmapxml = open('/tmp/nmapxml.xml')
         
-        parser = NmapParser()
-        parser.parse(nmapxml)
+        outputs = nmapParser.parseNmap('/tmp/nmapxml.xml')
         nmapxml.close()
         os.remove('/tmp/nmapxml.xml')
         
-        #self.gom.echo( "Options: ",  parser.options )
-        self.gom.echo( "Finish time:", parser.runstats.finished.time )
-        
-        h_stats = parser.runstats.hosts
-        self.gom.echo( "Hosts -> total %s, up: %s, down: %s" % (h_stats.total, h_stats.up, h_stats.down) )
-        
-        for host in parser.host:
-            #self.gom.echo( "Host options:", host.options )
+        for output in outputs:
             
-            if host.hostnames:
-                self.gom.echo( "Hostname:", host.hostnames[0]['name'] )
-            self.gom.echo( "Host Address;",  host.address[0]['addr'] )
-            self.gom.echo( "Host ports info:" )
-            for p in host.ports.ports:
-                self.gom.echo( "%7s%9s%6s" % (p.portid, p.state, p.protocol) )
-                self.addToDict(host.address[0]['addr'] + "_tcp_ports", p.portid)
-            
-            if 'script' in host.ports.ports[0].options:
-                self.gom.echo( "" )
-                self.gom.echo( host.ports.ports[0].script[0].output )
-                self.gom.echo( "" )
+            # Add a new target, hostname and OS
+            self.addToDict( 'targets', output['hostip'] )
+            self.gom.echo( "Host IP:\t" + output['hostip'] )
+            if 'hostname' in output.keys():
+                self.addToDict( output['hostip'] + '_name', output['hostname'] )
+                self.gom.echo( "Host Name:\t" + output['hostname'] )
+            if 'os' in output.keys():
+                self.addToDict( output['hostip'] + '_os', output['os'] )
+                self.gom.echo( "Host OS:\t" + output['os'] )
+        
+            # Add Open ports and services
+            self.gom.echo( "Host Ports:" )
+            for port in output['ports'].keys():
+                if output['ports'][port][0] == 'open':
+                    self.gom.echo( "\n\tPort: " + port )
+                    self.addToDict(output['hostip'] + "_tcp_ports", port)
+                    try:
+                        self.addToDict(output['hostip'] + "_" + port + '-info', output['ports'][port][1])
+                        self.addToDict(output['hostip'] + "_" + port + '-info', output['ports'][port][2])
+                        self.gom.echo( "\tInfo 1: " + output['ports'][port][1] )
+                        self.gom.echo( "\tInfo 2: " + output['ports'][port][2] )
+                    except:
+                        pass
+        
+            # Add traceroute
+            self.gom.echo( "\nTraceroute:" )
+            for host in output['hops']:
+                self.addToDict( 'hosts', host[0] )
+                if host[1] != '':
+                    self.addToDict( host[0] + '_name', host[1] )
+                    self.gom.echo( "\t" + host[0] + "\t-> " + host[1] )
+                else:
+                    self.gom.echo( "\t" + host[0] )
+                self.addToDict( output['hostip'] + '_trace', host[0] )
 
     def runLoop(self):
         while 1:

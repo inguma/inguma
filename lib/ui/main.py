@@ -526,7 +526,7 @@ class MainApp:
         b.pack_start(i)
         b.show_all()
 
-        self.exploitsInst = exploits.Exploits(config)
+        self.exploitsInst = exploits.Exploits(config, self.term_notebook)
         exploitsGui = self.exploitsInst.get_widget()
         exploitsGui.show_all()
         self.notebook.append_page(exploitsGui, b)
