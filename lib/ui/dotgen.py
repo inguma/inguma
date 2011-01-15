@@ -211,7 +211,8 @@ def graph_to_from(kb, type):
                 pass
 
         target_pairs = pairs(kb['targets'])
-        for pair in target_pairs:
+        print target_pairs
+        for pair in target_pairs[0:-1]:
             dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
 
     elif type == 'ip_ports':
@@ -246,7 +247,8 @@ def graph_to_from(kb, type):
                 pass
 
         target_pairs = pairs(kb['targets'])
-        for pair in target_pairs:
+        print target_pairs
+        for pair in target_pairs[0:-1]:
             dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
 
     dotcode += '\n}'
