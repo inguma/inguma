@@ -106,14 +106,15 @@ def gtkui_dependency_check(config):
         print WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC
         config.HAS_NMAP = False
 
-    # Check w3af
-    try:
-        print "\t" + config.W3AF_PATH + "...",
-        if os.path.exists(config.W3AF_PATH):
-            print OKGREEN + "\tOK" + ENDC
-        else:
-            raise    
-    except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
-        config.HAS_W3AF = False
+#   Not yey necessary
+#    # Check w3af
+#    try:
+#        print "\t" + config.W3AF_PATH + "...",
+#        if os.path.exists(config.W3AF_PATH):
+#            print OKGREEN + "\tOK" + ENDC
+#        else:
+#            raise    
+#    except:
+#        print WARNING + "\tD'oh!" + ENDC
+#        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
+#        config.HAS_W3AF = False
