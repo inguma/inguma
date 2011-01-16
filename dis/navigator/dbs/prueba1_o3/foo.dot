@@ -1,3 +1,0 @@
-digraph G { node [fontname=Courier]; 
- "08048394" [shape=box, label = "08048394	push   %ebp\l08048395	mov    %esp,%ebp\l08048397	push   %ebx\l08048398	sub    $0x24,%esp\l0804839b	mov    0x8(%ebp),%ebx\l0804839e	mov    %ebx,0x4(%esp)\l080483a2	lea    0xfffffff4(%ebp),%eax\l080483a5	mov    %eax,(%esp)\l080483a8	call   080482e4 <strcpy@plt>\l080483ad	mov    %ebx,(%esp)\l080483b0	call   080482c4 <puts@plt>\l080483b5	add    $0x24,%esp\l080483b8	pop    %ebx\l080483b9	pop    %ebp\l080483ba	ret\l"]
-}

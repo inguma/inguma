@@ -1,3 +1,0 @@
-digraph G { node [fontname=Courier]; 
- "0804847c" [shape=box, color = blue, label = ";;; Entry point ;;;\l\l0804847c	lea    0x4(%esp),%ecx\l08048480	and    $0xfffffff0,%esp\l08048483	pushl  0xfffffffc(%ecx)\l08048486	push   %ebp\l08048487	mov    %esp,%ebp\l08048489	push   %ecx\l0804848a	sub    $0x14,%esp\l0804848d	mov    0x4(%ecx),%eax\l08048490	mov    %eax,0x4(%esp)\l08048494	mov    (%ecx),%eax\l08048496	mov    %eax,(%esp)\l08048499	call   080483a4 <mymain>\l0804849e	add    $0x14,%esp\l080484a1	pop    %ecx\l080484a2	pop    %ebp\l080484a3	lea    0xfffffffc(%ecx),%esp\l080484a6	ret\l080484a7	nop\l080484a8	nop\l080484a9	nop\l080484aa	nop\l080484ab	nop\l080484ac	nop\l080484ad	nop\l080484ae	nop\l080484af	nop\l"]
-}
