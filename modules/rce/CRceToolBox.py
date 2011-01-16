@@ -20,7 +20,6 @@
 #       MA 02110-1301, USA.
 
 import sys, os, string
-from lib.libradare import *
 from lib.libasciienc import *
 from lib.librcetools import *
 from lib.libexploit import CIngumaModule
@@ -56,22 +55,6 @@ class CRceToolBox(CIngumaModule):
         print "oct2ascii                Convert Octal to ASCII"
         print "hex2ascii                Convert Hexadecimal to ASCII"
         print "str2ascii                Convert string to ASCII"
-        print
-        print "rasm                     Compile hexpairs to the opcode"
-        print "rdasm                    Disassemble an hexpair string"
-        print
-        print "Binary Analisys"
-        print "---------------"
-        print
-        print "all                      Get all information available"
-        print "fileid                   Show basic information of the file"
-        print "entrypoint               Get file entry point"
-        print "imports                  Get all the imported objects"
-        print "symbols                  Get all the exported symbols"
-        print "libraries                List libraries used by the binary"
-        print "strings                  List all the strings in the section .rodata "
-        print "                         for ELF binaries, and .text for PE ones. "
-        print "sections                 Information about the program sections"
         print
         print "Misc"
         print "----"
@@ -109,53 +92,6 @@ class CRceToolBox(CIngumaModule):
 
     def ascii2str(self, data):
         print unencrypt(data)
-
-    def rasm(self, data):
-        r=Radare()
-        r.rasm(data)
-
-    def rdasm(self, data):
-        r=Radare()
-        r.rasm(data)
-
-    def all(self, file):
-        r=Radare()
-
-        r.fileid('/bin/ls')
-        r.entrypoint('/bin/ls')
-        r.imports('/bin/ls')
-        r.symbols('/bin/ls')
-        r.libraries('/bin/ls')
-        r.strings('/bin/ls')
-        r.sections('/bin/ls')
-
-    def fileid(self, file):
-        r=Radare()
-        r.fileid(file)
-
-    def entrypoint(self, file):
-        r=Radare()
-        r.entrypoint(file)
-
-    def imports(self, file):
-        r=Radare()
-        r.imports(file)
-
-    def symbols(self, file):
-        r=Radare()
-        r.symbols(file)
-
-    def libraries(self, file):
-        r=Radare()
-        r.libraries(file)
-
-    def strings(self, file):
-        r=Radare()
-        r.strings(file)
-
-    def sections(self, file):
-        r=Radare()
-        r.sections(file)
 
     def pattern(self, input):
 
@@ -248,36 +184,6 @@ class CRceToolBox(CIngumaModule):
             elif words[0].lower() == "ascii2str" and len(words)>1:
                 mystring = string.join(words[1:])
                 self.ascii2str(mystring)
-            elif words[0].lower() == "rasm" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.rasm(mystring)
-            elif words[0].lower() == "rdasm" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.rdasm(mystring)
-            elif words[0].lower() == "all" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.all(mystring)
-            elif words[0].lower() == "fileid" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.fileid(mystring)
-            elif words[0].lower() == "entrypoint" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.entrypoint(mystring)
-            elif words[0].lower() == "imports" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.imports(mystring)
-            elif words[0].lower() == "symbols" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.symbols(mystring)
-            elif words[0].lower() == "libraries" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.libraries(mystring)
-            elif words[0].lower() == "strings" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.strings(mystring)
-            elif words[0].lower() == "sections" and len(words)>1:
-                mystring = string.join(words[1:])
-                self.sections(mystring)
             elif words[0].lower() == "help":
                 self.showHelp()
             elif words[0].lower() in ["exit", "quit"]:
