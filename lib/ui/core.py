@@ -188,23 +188,15 @@ class UIcore():
         for host in inguma.user_data['hosts']:
             try:
                 if len(inguma.user_data[host + '_trace']) != 1:
-                #if inguma.user_data[host + '_trace']:
                     # Host has _trace
                     steps.append(inguma.user_data[host + '_trace'])
 #                    print "Found trace for host:", host, "\nTrace:", inguma.user_data[host + "_trace"]
                     # Host _trace has only host as content
                     targets.append(host)
-#                elif len(inguma.user_data[host + '_trace']) == 1:
-#                    inguma.user_data[host + '_trace'] = [self.getLocalIP(), self.getLocalGW() , host]
-#                    steps.append(inguma.user_data[host + '_trace'])
-#                    targets.append(host)
             except:
                 ip = IPy.IP(host)
-                #if len(ip) == 1 and ip.iptype() == 'PRIVATE' and ip.strNormal() != self.getLocalIP() and ip.strNormal() in net:
                 if len(ip) == 1 and ip.strNormal() != self.getLocalIP() and ip.strNormal() in net:
 #                    print "Local IP found on host:", host
-                    #inguma.user_data[host + '_trace'] = [self.getLocalIP(), host]
-                    #steps.append(inguma.user_data[host + '_trace'])
                     locals.append(host)
 
 #        print "Steps", steps, "\n"
@@ -280,16 +272,6 @@ class UIcore():
 
         dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
         inguma.user_data['dotcode'] = dotcode
-
-#            #Create dot code for actual KB and add it to user_data
-#            #dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, ASNs, ASDs)
-#            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
-#            inguma.user_data['dotcode'] = dotcode
-#
-#        else:
-#            #Create dot code for actual KB and add it to user_data
-#            dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, direction=direction)
-#            inguma.user_data['dotcode'] = dotcode
 
     def set_threadtv(self, threadtv):
         #print "Creating thread manager on core"

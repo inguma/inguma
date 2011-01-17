@@ -60,8 +60,6 @@ class GatherDialog(gtk.Dialog):
                 entry.set_text( str(self.kblist[tit]) )
             except:
                 pass
-            #entry.connect("changed", self._checkEntry)
-            #entry.connect("activate", self._setInputText, True)
             table.attach(entry, 1,2,row,row+1)
             self.entries.append(entry)
         self.vbox.pack_start(table)

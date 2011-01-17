@@ -29,11 +29,9 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
 #    dotcode += 'ranksep = "0.25 equally"\n'
 
     dotcode += 'rankdir="' + direction + '"\n'
-    #dotcode += "bgcolor=grey0\n\n"
     dotcode += "bgcolor=\"#475672\"\n\n"
     dotcode += 'root="' + localip + '";\n\n'
     dotcode += 'concentrate="true";\n\n'
-    #dotcode += "\nnode [shape=record,color=azure3,style=filled fillcolor=skyazure3];\n"
     dotcode += '\nnode [shape=record, color=azure3, fontcolor=azure3, style="filled,rounded", fillcolor="#373D49"];\n'
 
     #######################################
@@ -51,8 +49,6 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
         else:
             dotcode += '\t\tcolor="#373D49";'
             dotcode += '\t\tfontcolor="azure3";'
-#        dotcode += '\t\tnode [fillcolor="#60baba"];'
-        #dotcode += '\t\tnode [fillcolor="#60baba",style=filled];'
         dotcode += '\t\tfontsize = 10;'
         dotcode += '\t\tstyle=\"rounded,filled\";'
         dotcode += '\t\tlabel = "%s\\n[%s]"\n' % (asn,ASDs[asn])
@@ -98,8 +94,6 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
             except:
                 dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
 
-            #dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
-            #dotcode += '\t"' + target +  '"' + ' [shape=record,color=red3,fillcolor=red1,style=filled,label="' + target + '"];' + "\n"
         dotcode += "\n"
     
         i = 0
@@ -134,10 +128,6 @@ def generate_folded(kb):
     for target in kb['targets']:
         dotcode += '"' + target + '" [style=filled, fillcolor="#373D49", fixedsize=true, height=0.9,width=0.9, URL="' + target + '"]\n'
         dotcode += '"Internet" -- "' + target + '" [len=1.50, color=azure3];\n'
-
-#        for local in locals:
-#            dotcode += '\t"' + localip + '"->' + "\n"
-#            dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"
 
     dotcode += '\n}'
 

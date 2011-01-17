@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 """
-Inguma Penetration Testing Toolkit 0.0.8
+Inguma Penetration Testing Toolkit 0.2
 Copyright (c) 2006, 2007, 2008 Joxean Koret, joxeankoret [at] yahoo.es
+Copyright (c) 2009 - 2011 Hugo Teso, hugo.teso [at] gmail.com
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -145,6 +146,7 @@ vars = globals()
 def printBanner():
     print "Inguma Version",version
     print "Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>"
+    print "Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>"
     print
 
 def usage():
