@@ -25,13 +25,11 @@ import sys, os
 sys.path.append('../..')
 import lib.IPy as IPy
 
-#from . import core
 from . import config
 
 class NmapScan:
     '''Dialog for add targets to the KB'''
 
-    #def __init__(self, module, core):
     def __init__(self, ip):
 
         TITLE = "Nmap Scan Module"
@@ -65,8 +63,8 @@ class NmapScan:
         self.comlab = gtk.Label('Command:')
         self.comlab.set_alignment(0.0, 0.5)
 
-        # A target text entry
-        self.comentry = gtk.Entry(max=125)
+        # A command text entry
+        self.comentry = gtk.Entry(max=200)
         self.comentry.set_text('nmap -v -A ' + self.ip)
 
         # Separator
