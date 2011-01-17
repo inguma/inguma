@@ -19,8 +19,9 @@
 
 import pygtk
 import gtk, gobject
-
 import time
+
+import lib.ui.libAutosave as libAutosave
 
 class ThreadsTv:
 
@@ -101,6 +102,8 @@ class ThreadsTv:
         else:
             model.set_value(iter, 4, time.strftime("%H:%M:%S", time.gmtime()))
             model.set_value(iter, 1, 100)
+            kbpath = libAutosave.getKbPath()
+            self.uicore.saveKB(kbpath)
             return False
 
     def get_widget(self):

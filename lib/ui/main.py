@@ -71,6 +71,7 @@ import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
 import lib.ui.reportWin as reportWin
+import lib.ui.libAutosave as libAutosave
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -138,7 +139,7 @@ class MainApp:
         splash.push(("Creatin main window..."))
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_focus = True
-        self.window.connect("destroy", lambda w: gtk.main_quit())
+#        self.window.connect("destroy", lambda w: gtk.main_quit())
         self.window.connect("delete_event", self.quit)
         splash.push(("Loading..."))
         gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
@@ -601,6 +602,7 @@ class MainApp:
         # Add Threads TreeView
         self.threadsInst = threadstv.ThreadsTv()
         threadsGui = self.threadsInst.get_widget()
+        setattr(self.threadsInst, 'uicore', self.uicore)
         threadsGui.show_all()
 
         self.bottom_nb.append_page(threadsGui, b)
@@ -645,7 +647,30 @@ class MainApp:
         self.vpaned.show()
         self.window.show()
         splash.destroy()
-        
+
+        # Check for autosaved KB and ask for loading
+        libAutosave.checkDir()
+        if not libAutosave.checkKB():
+            print "Autosaved KB not found, skipping..."
+        else:
+            toload = libAutosave.askDialog()
+            if toload:
+                kbpath = libAutosave.getKbPath()
+                self.uicore.loadKB(kbpath)
+                libAutosave.removeKB()
+                
+                # Update KB textview
+                self.textview.updateWin()
+                self.treeview.updateTree()
+                # Update Map
+                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+                self.xdotw.zoom_image(1.0)
+    
+                # Adding text to Log window
+                self.gom.echo( 'Loaded' , False)
+            else:
+                libAutosave.removeKB()
+
         gtk.main()
 
 #################################################################################################################################
@@ -684,6 +709,7 @@ class MainApp:
             filename = chooser.get_filename()
             self.uicore.saveKB(filename)
             self.gom.echo( filename + ' selected' , False)
+            libAutosave.removeKB()
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected' , False)
         chooser.destroy()
