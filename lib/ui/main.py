@@ -865,8 +865,8 @@ class MainApp:
             dotcode = rcecore.get_dot_code(func[0].name, res)
             self.xdotr.set_dotcode(dotcode)
 
-            self.rmenu.set_functions(func)
             self.rmenu.set_poc(res)
+            self.rmenu.set_functions(func)
             self.dasmenu.set_options()
 
             # Adding text to Log window
