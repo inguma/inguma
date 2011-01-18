@@ -55,6 +55,11 @@ class TargetDialog:
 
         # A target text entry
         self.tgentry = gtk.Entry(max=20)
+
+        # Auto fill with selected node IP
+        target = self.uicore.get_kbfield('target')
+        self.tgentry.set_text(target)
+
         self.tgentry.set_focus = True
 
         # A domain text entry
@@ -77,6 +82,7 @@ class TargetDialog:
         # A ComboBox
         self.combobox = gtk.combo_box_new_text()
         #for host in self.uicore.user_data['hosts']:
+        self.uicore.get_kbfield('hosts').sort()
         for host in self.uicore.get_kbfield('hosts'):
             self.combobox.append_text(host)
 
