@@ -4,9 +4,14 @@
 SHOW_LOG=True
 SHOW_KBTREE=True
 
-# Paths to externmal tools
+# Paths to external tools
 NMAP_PATH = '/usr/bin/nmap'
 W3AF_PATH = '/pentest/web/w3af/w3af_console'
+
+# Relative paths to internal tools
+DBS_PATH=   "dis/navigator/dbs/"
+DIS_PATH=   "dis/dis.py"
+GEN_PATH=   "dis/printblocks.py"
 
 # Tools Availability
 HAS_NMAP = True

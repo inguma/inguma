@@ -21,20 +21,54 @@ import sys, os, shutil
 import cPickle as pickle
 from config import *
 
+def create_kb_file(outfile, poc):
+    """
+    Call dis.py to create .kb file in given 'outfile'
+
+    @param outfile: kdb file to write
+    @type: str
+    @param poc: 
+    @type: str
+    """
+    os.system(DIS_PATH  + " -s=" + outfile + ".kb " + poc)
+
+def create_db_file(outfile, poc):
+    """
+    Call dis.py to create .sqlite file
+
+    @param outfile: sqlite file to write
+    @type: str
+    @param poc: 
+    @type: str
+    """
+    os.system(DIS_PATH + " -sdb=" + outfile + ".sqlite " + poc )
+
 def uploadFile(poc):
     '''Everything starts here...'''
-
-    DIS_PATH="dis/dis.py"
 
     # Clean input file
     theFile = poc.split('/')[-1]
     # Let's call dis.py to generate pickle with disassembly
-    os.system(DIS_PATH  + " -s=" + theFile + ".kb " + poc )
+    create_kb_file(theFile, poc)
     # And also the sqlite one...
-    os.system(DIS_PATH + " -sdb=" + theFile + ".sqlite " + poc )
+    create_db_file(theFile, poc)
     #Move file to data directory
-    shutil.move(theFile + '.kb', 'dis/navigator/dbs/')
-    shutil.move(theFile + '.sqlite', 'dis/navigator/dbs/')
+    try:
+        shutil.move("%s.kb" % theFile, DBS_PATH)
+    except shutil.Error:
+        print "%s.kb already existed it will be overwritten" % theFile
+        os.unlink("%s%s.kb" % (DBS_PATH, theFile))
+        create_kb_file(theFile, poc)
+    finally:
+        shutil.move("%s.kb" % theFile, DBS_PATH)
+    try:
+        shutil.move("%s.sqlite" % theFile, DBS_PATH)
+    except shutil.Error:
+        print "%s.sqlite already existed it will be overwritten" % theFile
+        os.unlink("%s%s.sqlite" % (DBS_PATH, theFile))
+        create_db_file(theFile, poc)
+    finally:
+        shutil.move("%s.sqlite" % theFile, DBS_PATH)
     print "Binary " + poc + " disassembled!"
 
 def generate_graphs(poc):
@@ -43,11 +77,15 @@ def generate_graphs(poc):
     # Add dis/ to sys.path to access asmclasses
     sys.path.append('dis/')
 
-    GEN_PATH = "dis/printblocks.py"
-
     data = _load_dasm(poc)
     theFile = poc.split('/')[-1]
-    os.mkdir('dis/navigator/dbs/' + theFile)
+    try:
+        os.mkdir(DBS_PATH + theFile)
+    except OSError:
+        dir = "%s/%s" % (DBS_PATH, theFile)
+        [os.unlink("%s/%s" % (dir, f)) for f in os.listdir(dir)]
+        os.rmdir(dir)
+        os.mkdir(dir)
     for function in data[1]:
         print "Creating graph for function:", function.name
         os.system(GEN_PATH + " dis/navigator/dbs/" + theFile + ".kb " + function.name)
@@ -81,7 +119,7 @@ def _load_dasm(poc):
     sys.path.append('dis/')
 
     theFile = poc.split('/')[-1]
-    file = open('dis/navigator/dbs/' + theFile + '.kb', 'r')
+    file = open(DBS_PATH + theFile + '.kb', 'r')
     data = pickle.load(file)
     file.close()
 
@@ -91,7 +129,7 @@ def get_dot_code(func, poc):
     ''' Get dotcode for function'''
 
     theFile = poc.split('/')[-1]
-    f = open('dis/navigator/dbs/' + theFile + '/' + func + '.dot', 'r')
+    f = open(DBS_PATH + theFile + '/' + func + '.dot', 'r')
     dotcode = f.read()
     f.close()
 

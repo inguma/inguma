@@ -299,12 +299,19 @@ def readFuzzers():
 def readCommands():
     debugPrint("Reading modules ... ")
     debugPrint()
-    readDiscover()
-    readGather()
-    readRce()
-    readFuzzers()
-    readBrute()
-    readExploits()
+    
+    modules = [
+        'Discover',
+        'Gather',
+        'Rce',
+        'Fuzzers',
+        'Brute',
+        'Exploits'
+    ]
+
+    # load all modules
+    for module in modules:
+        eval("read%s" % module)()
 
 def showHelp():
     print
