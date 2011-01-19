@@ -37,7 +37,7 @@ name = "portscan"
 brief_description = "A port scanner for SYN, ACK, XMAS and SYN+ACK scans"
 type = "gather"
 
-globals = ["sport", ]
+globals = ["sport", "stype"]
 
 class CPortScan(CIngumaModule):
 
@@ -52,7 +52,7 @@ class CPortScan(CIngumaModule):
     closed = {}
     opened = {}
     randomizeWaitTime = False
-    scanType = SYN_SCAN
+    stype = SYN_SCAN
     exploitType = 1
     results = {}
     dict = None
@@ -61,9 +61,10 @@ class CPortScan(CIngumaModule):
         print "target = <target host or network>"
         print "port = <target port>"
         print "sport = <source port>"
+        print "stype = <S,A>"
 
     def report_ports(self, target, ports):
-        ans,unans = sr(IP(dst=target)/TCP(sport=self.sport, dport=ports, flags=self.scanType),timeout=self.timeout, iface=self.iface)
+        ans,unans = sr(IP(dst=target)/TCP(sport=self.sport, dport=ports, flags=self.stype),timeout=self.timeout, iface=self.iface)
 
         for s,r in ans:
             if not r.haslayer(ICMP):
@@ -73,10 +74,16 @@ class CPortScan(CIngumaModule):
                     self.mac[r.src] = "ff:ff:ff:ff:ff"
                 
                 self.addToDict(r.src + "_mac", self.mac[r.src])
-
-                if r.payload.flags == 0x12:
-                    self.opened[r.sport] = r.src
-                    self.addToDict(r.src + "_tcp_ports", r.sport)
+    
+                if self.stype == self.SYN_SCAN:
+                    if r.payload.flags == 0x12:
+                        self.opened[r.sport] = r.src
+                        self.addToDict(r.src + "_tcp_ports", r.sport)
+                elif self.stype == self.ACK_SCAN:
+                    if s[TCP].dport == r[TCP].sport:
+                        #print str(s[TCP].dport) + " is unfiltered"
+                        self.opened[r.sport] = r.src
+                        self.addToDict(r.src + "_tcp_ports", r.sport)
 
         for s,r in ans:
             if r.haslayer(ICMP):
@@ -124,17 +131,17 @@ class CPortScan(CIngumaModule):
 
             if res != "":
                 if res == "1":
-                    self.scanType = self.SYN_SCAN
+                    self.stype = self.SYN_SCAN
                 elif res == "2":
-                    self.scanType = self.TCP_SCAN
+                    self.stype = self.TCP_SCAN
                 elif res == "3":
-                    self.scanType = self.ACK_SCAN
+                    self.stype = self.ACK_SCAN
                 elif res == "4":
-                    self.scanType = self.XMAS_SCAN
+                    self.stype = self.XMAS_SCAN
                 elif res == "5":
-                    self.scanType = self.SA_SCAN
+                    self.stype = self.SA_SCAN
                 else:
-                    self.scanType = self.SYN_SCAN
+                    self.stype = self.SYN_SCAN
 
             res = raw_input("Source port [" + str(self.sport) + "]: ")
 
@@ -156,15 +163,15 @@ class CPortScan(CIngumaModule):
             self.runAsWizard()
 
         for target in mTargets:
-            for port in self.ports:
-                self.report_ports(target.dst, port)
+#            for port in self.ports:
+            self.report_ports(target.dst, self.ports)
 
-                if self.randomizeWaitTime:
-                    mTime = random.randint(0,float(self.waitTime))
-                else:
-                    mTime = float(self.waitTime)
-
-                time.sleep(mTime)
+#                if self.randomizeWaitTime:
+#                    mTime = random.randint(0,float(self.waitTime))
+#                else:
+#                    mTime = float(self.waitTime)
+#
+#                time.sleep(mTime)
 
         return True
 
@@ -174,6 +181,7 @@ class CPortScan(CIngumaModule):
         self.gom.echo( "----------------" )
         self.gom.echo( "" )
 
+        self.addToDict("hosts", self.target)
         for port in self.opened:
             try:
                 port_name = socket.getservbyport(port)
@@ -199,9 +207,9 @@ def main():
         print "Scanning",sys.argv[1],"...\n"
 
     if len(sys.argv) == 2:
-        objScan.scanType = CPortScan.SYN_SCAN
+        objScan.stype = CPortScan.SYN_SCAN
     else:
-        objScan.scanType = sys.argv[2]
+        objScan.stype = sys.argv[2]
 
     if len(sys.argv) == 3:
         objScan.timeout = 0.1
