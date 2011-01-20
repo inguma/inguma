@@ -165,12 +165,12 @@ def graph_weighted(kb, type):
 
     # Add weight ordered nodes
     for weight in weights:
-        dotcode += '"' + weight + '" [style=filled, fillcolor="#5E82C6", fixedsize=1, height=' + str(weights[weight]) + ', width=' + str(weights[weight]) + ', shape=circle]\n'
+        dotcode += '"' + str(weight) + '" [style=filled, fillcolor="#5E82C6", fixedsize=1, height=' + str(weights[weight]) + ', width=' + str(weights[weight]) + ', shape=circle]\n'
 
     # Add edges
     target_pairs = pairs( weights.keys() )
     for pair in target_pairs[0:-1]:
-        dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis", minlen=2]\n'
+        dotcode += '"' + str(pair[0]) + '" -- "' + str(pair[1]) + '" [style="invis", minlen=2]\n'
 
     dotcode += '}'
 
