@@ -38,7 +38,7 @@ class addTargetDialog:
                     'asn',
                     'netcraft']
 
-        self.GATHERS = ['tcpscan']
+        self.GATHERS = ['portscan']
 
         # Core instance for manage the KB
         self.uicore = core
@@ -150,9 +150,9 @@ class addTargetDialog:
             print "Running discover: " + module
             self.uicore.uiRunDiscover(module, join=True)
 
-#        for module in self.GATHERS:
-#            print "Running gather: " + module
-#            self.uicore.uiRunDiscover(module, join=True)
+        for module in self.GATHERS:
+            print "Running gather: " + module
+            self.uicore.uiRunDiscover(module, join=True)
 
     def check_thread(self, thread):
         if thread.isAlive() == True:
