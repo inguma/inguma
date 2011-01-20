@@ -192,11 +192,11 @@ def graph_to_from(kb, type):
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
-            try:
+            if target + '_tcp_ports' in kb:
                 for port in kb[target + '_tcp_ports']:
                     dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
                     dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=1.25, color=azure3];\n'
-            except:
+            else:
                 #print sys.exc_info()
                 pass
 
@@ -220,7 +220,8 @@ def graph_to_from(kb, type):
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
-            try:
+
+            if target + '_tcp_ports' in kb:
                 for port in kb[target + '_tcp_ports']:
                     vuln_id = 0
                     if target + "_" + str(port) + '-web-vulns' in kb:
@@ -228,16 +229,18 @@ def graph_to_from(kb, type):
                     else:
                         dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
                     dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=1.25, color=azure3];\n'
-                    for vuln in kb[target + "_" + str(port) + '-web-vulns']:
-                        dotcode += '"' + vuln[0] + str(vuln_id) + '" [style=filled, fillcolor=indianred4, fixedsize=1, height=0.9, width=0.9, label=\"OSVDB:' + vuln[0] + '\"]\n'
-                        dotcode += '"' + target + '_' + str(port) + '" -- "' + vuln[0] + str(vuln_id) + '" [len=1.25, color=azure3];\n'
-                        vuln_id += 1
-            except:
+                    if target + "_" + str(port) + '-web-vulns' in kb:
+                        for vuln in kb[target + "_" + str(port) + '-web-vulns']:
+                            dotcode += '"' + vuln[0] + str(vuln_id) + '" [style=filled, fillcolor=indianred4, fixedsize=1, height=0.9, width=0.9, label=\"OSVDB:' + vuln[0] + '\"]\n'
+                            dotcode += '"' + target + '_' + str(port) + '" -- "' + vuln[0] + str(vuln_id) + '" [len=1.25, color=azure3];\n'
+                            vuln_id += 1
+
+            else:
                 #print sys.exc_info()
                 pass
 
         target_pairs = pairs(kb['targets'])
-        print target_pairs
+        #print target_pairs
         for pair in target_pairs[0:-1]:
             dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
 
