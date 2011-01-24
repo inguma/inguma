@@ -51,7 +51,7 @@ class CTCPScan(CIngumaModule):
             for port in self.ports:
                 i += 1
                 sys.stdout.write("\b"*80)
-                sys.stdout.write("Scanning port %d (%d/%d)" % (port, i, totalPorts))
+                sys.stdout.write("Scanning port %d (%d/%d)\n" % (port, i, totalPorts))
                 sys.stdout.flush()
 
                 try:
