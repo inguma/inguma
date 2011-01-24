@@ -54,8 +54,8 @@ class CNated(CIngumaModule):
         print "timeout = <timeout>"
 
     def probeICMP(self):
-        p = IP(dst=self.target)/ICMP()
-        res = sr1(p, timeout = self.timeout)
+        p = scapy.IP(dst=self.target)/scapy.ICMP()
+        res = scapy.sr1(p, timeout = self.timeout)
         hops = None
 
         if res:
@@ -65,8 +65,8 @@ class CNated(CIngumaModule):
         return hops
     
     def probeTcpPort(self, port):
-        p = IP(dst=self.target)/TCP(dport=int(port), flags="S")
-        res = sr1(p, timeout = self.timeout)
+        p = scapy.IP(dst=self.target)/scapy.TCP(dport=int(port), flags="S")
+        res = scapy.sr1(p, timeout = self.timeout)
         hops = None
 
         if res:
@@ -133,4 +133,3 @@ class CNated(CIngumaModule):
                     self.gom.echo( "Target refuses ICMP traffic" )
             else:
                 self.gom.echo( "TCP Port " + res + " TTL: " + self.probeResults[res] )
-
