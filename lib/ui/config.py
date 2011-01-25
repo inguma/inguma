@@ -68,6 +68,23 @@ subdiscovers = {
 'WHOIS' : ["asn", "netcraft", "whois"]
 }
 
+# Field descriptions
+descriptions = {
+'target'   : 'target host or network',
+'oport'    : 'Open port on target',
+'cport'    : 'Closed port on target',
+'sport'    : 'Source port',
+'dport'    : 'Destination port',
+'iface'    : 'Network interface to be used',
+'stype'    : 'Scan type. Can be SYN (S) or ACK (A)',
+'dad'      : 'DAD name',
+'hash'     : 'hash of the password',
+'password' : 'original unencrypted password',
+'method'   : 'PL/SQL gateway bypass method',
+'sid'      : 'SID name',
+'timeout'  : 'Timeout in seconds for each probe'
+}
+
 # Discovers
 arping = []
 tcping = []

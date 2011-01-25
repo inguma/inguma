@@ -24,6 +24,7 @@ import sys
 sys.path.append('../..')
 import lib.IPy as IPy
 
+import lib.ui.config as config
 #from . import core
 
 class GatherDialog(gtk.Dialog):
@@ -42,6 +43,8 @@ class GatherDialog(gtk.Dialog):
         self.kblist = self.uicore.get_kbList()
         # Module to be launched after insert the data
         self.module = title
+        # Dict for textentry descriptions
+        self.descs = config.descriptions
 
         # the text entries
         self.entries = []
@@ -62,6 +65,13 @@ class GatherDialog(gtk.Dialog):
                 pass
             table.attach(entry, 1,2,row,row+1)
             self.entries.append(entry)
+
+            if self.descs.has_key(tit):
+                # Let's add tooltips at entries
+                tooltip = gtk.Tooltips()
+                tooltip.set_delay(250)
+                tooltip.set_tip(entry, self.descs[tit])
+
         self.vbox.pack_start(table)
 
         # the cancel button
