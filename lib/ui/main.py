@@ -662,14 +662,15 @@ class MainApp:
                 # Update KB textview
                 self.textview.updateWin()
                 self.treeview.updateTree()
-                # Update Map
-                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-                self.xdotw.zoom_image(1.0)
     
                 # Adding text to Log window
                 self.gom.echo( 'Loaded' , False)
             else:
                 libAutosave.removeKB()
+
+        # Update Map
+        self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdotw.zoom_image(1.0)
 
         gtk.main()
 

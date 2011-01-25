@@ -37,7 +37,7 @@ class propDialog:
         self.config = config
 
         # Dialog
-        self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
+        self.dialog = gtk.Dialog(title=TITLE, parent=None, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
         self.dialog.resize(250, 75)
 
         # Notebook
