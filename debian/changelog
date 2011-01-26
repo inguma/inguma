@@ -1,3 +1,16 @@
+inguma (0.0.7.2-2) unstable; urgency=low
+
+  * Fix scapy configuration (Closes: #526945)
+  * Remove build-dep on python-dev, not needed
+  * Remove alternate dependency on scapy (Closes: #506140)
+  * Bump standards version to 3.9.1
+  * Move python-qt3 to Recommends (Closes: #512464)
+  * Fix use of "with" keyword (Closes: #582024)
+    Thanks to Luca Bruno for the patch
+  * Debian package 0.0.7.2-2
+
+ -- Pierre Chifflier <pollux@debian.org>  Wed, 25 Aug 2010 16:21:38 +0200
+
 inguma (0.0.7.2-1) unstable; urgency=low
 
   * New upstream release
@@ -25,3 +38,4 @@ inguma (0.0.6-1) unstable; urgency=low
   * Initial release (Closes: #456512)
 
  -- Pierre Chifflier <pollux@debian.org>  Fri, 01 Feb 2008 21:25:23 +0100
+

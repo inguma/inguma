@@ -2,6 +2,5 @@
 set -e
 
 cd /usr/share/inguma
-python /usr/share/inguma/ingumagui.py
 
-
+python /usr/share/inguma/ingumagui.py "$@"

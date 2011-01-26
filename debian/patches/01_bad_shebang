@@ -1,0 +1,20 @@
+Index: inguma-0.0.6/modules/fuzz/snmp/fuzzer.py
+===================================================================
+--- inguma-0.0.6.orig/modules/fuzz/snmp/fuzzer.py	2008-02-25 17:44:05.000000000 +0100
++++ inguma-0.0.6/modules/fuzz/snmp/fuzzer.py	2008-02-25 17:44:12.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/lib/python
++#!/usr/bin/python
+ 
+ import sys
+ sys.path.append("../../data")
+Index: inguma-0.0.6/modules/fuzz/sybase/fuzzer.py
+===================================================================
+--- inguma-0.0.6.orig/modules/fuzz/sybase/fuzzer.py	2008-02-25 17:44:30.000000000 +0100
++++ inguma-0.0.6/modules/fuzz/sybase/fuzzer.py	2008-02-25 17:44:39.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python2.4
++#!/usr/bin/python
+ 
+ """
+ MS SQL Server/Sybase Stored Procedures Fuzzing Tool

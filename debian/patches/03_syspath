@@ -1,0 +1,27 @@
+Index: inguma-0.0.7.2/inguma.py
+===================================================================
+--- inguma-0.0.7.2.orig/inguma.py	2008-03-28 19:50:58.000000000 +0100
++++ inguma-0.0.7.2/inguma.py	2008-03-28 19:51:22.000000000 +0100
+@@ -30,6 +30,8 @@
+ from lib.core import isIpAddr4
+ from lib.printwrapper import CPrintWrapper
+ 
++os.chdir("/usr/share/inguma")
++
+ try:
+     if os.name == "nt":
+         import winscapy as scapy
+Index: inguma-0.0.7.2/ingumagui.py
+===================================================================
+--- inguma-0.0.7.2.orig/ingumagui.py	2008-03-28 19:50:58.000000000 +0100
++++ inguma-0.0.7.2/ingumagui.py	2008-03-28 19:51:22.000000000 +0100
+@@ -24,6 +24,9 @@
+ 
+ import sys
+ import thread
++import os
++
++os.chdir("/usr/share/inguma")
+ 
+ from qt import *
+ from gui.fmmain import *

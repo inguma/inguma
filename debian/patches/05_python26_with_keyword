@@ -1,0 +1,48 @@
+Index: inguma/scapext.py
+===================================================================
+--- inguma.orig/scapext.py	2010-08-25 16:15:51.000000000 +0200
++++ inguma/scapext.py	2010-08-25 16:16:07.000000000 +0200
+@@ -101,9 +101,9 @@
+         if loctrace:
+             trt[trace_id] = loctrace
+ 
+-    tr = map(lambda x: Gnuplot.Data(x,with="lines"), trt.values())
++    tr = map(lambda x: Gnuplot.Data(x,with_="lines"), trt.values())
+     g = Gnuplot.Gnuplot()
+-    world = Gnuplot.File(conf.gnuplot_world,with="lines")
++    world = Gnuplot.File(conf.gnuplot_world,with_="lines")
+     g.plot(world,*tr)
+     return g
+ 
+Index: inguma/scapy.py
+===================================================================
+--- inguma.orig/scapy.py	2010-08-25 16:15:45.000000000 +0200
++++ inguma/scapy.py	2010-08-25 16:16:07.000000000 +0200
+@@ -3215,9 +3215,9 @@
+             if loctrace:
+                 trt[trace_id] = loctrace
+ 
+-        tr = map(lambda x: Gnuplot.Data(x,with="lines"), trt.values())
++        tr = map(lambda x: Gnuplot.Data(x,with_="lines"), trt.values())
+         g = Gnuplot.Gnuplot()
+-        world = Gnuplot.File(conf.gnuplot_world,with="lines")
++        world = Gnuplot.File(conf.gnuplot_world,with_="lines")
+         g.plot(world,*tr)
+         return g
+ 
+Index: inguma/winscapy.py
+===================================================================
+--- inguma.orig/winscapy.py	2010-08-25 16:15:54.000000000 +0200
++++ inguma/winscapy.py	2010-08-25 16:16:07.000000000 +0200
+@@ -3638,9 +3638,9 @@
+             if loctrace:
+                 trt[trace_id] = loctrace
+ 
+-        tr = map(lambda x: Gnuplot.Data(x,with="lines"), trt.values())
++        tr = map(lambda x: Gnuplot.Data(x,with_="lines"), trt.values())
+         g = Gnuplot.Gnuplot()
+-        world = Gnuplot.File(conf.gnuplot_world,with="lines")
++        world = Gnuplot.File(conf.gnuplot_world,with_="lines")
+         g.plot(world,*tr)
+         return g
+ 

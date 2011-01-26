@@ -1,0 +1,10 @@
+Index: inguma-0.0.6/gui/dlgabout.py
+===================================================================
+--- inguma-0.0.6.orig/gui/dlgabout.py	2008-01-27 15:39:28.000000000 +0100
++++ inguma-0.0.6/gui/dlgabout.py	2008-01-27 15:40:13.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/sh
++#!/usr/bin/python
+ 
+ """
+ Inguma Penetration Testing Toolkit
