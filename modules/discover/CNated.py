@@ -132,4 +132,4 @@ class CNated(CIngumaModule):
                 else:
                     self.gom.echo( "Target refuses ICMP traffic" )
             else:
-                self.gom.echo( "TCP Port " + res + " TTL: " + self.probeResults[res] )
+                self.gom.echo( "TCP Port " + str(res) + " TTL: " + str(self.probeResults[res]) )
