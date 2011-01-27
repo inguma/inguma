@@ -70,7 +70,7 @@ class CArchanix(CIngumaModule):
                 self.gom.echo( "No ports detected with a portscanner and the value of port is 0." )
                 return False
             else:
-                self.gom.echo( "Port " + self.port )
+                self.gom.echo( "Port %d" % self.port )
 
         return True
 
