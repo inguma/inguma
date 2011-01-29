@@ -154,6 +154,7 @@ class UIcore():
 
     def set_om(self, om):
         self.gom = om
+        setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
         self.gom.set_new_nodes(False)
 
     def get_interfaces(self):
@@ -242,6 +243,8 @@ class UIcore():
 
         if doASN:
             # Get host's ASN
+            if self.SHOW_MODULE_WIN:
+                self.gom.create_module_dialog()
             ASNlist = []
             for ip in targets:
                 if not inguma.user_data.has_key(ip + 'asn'):
@@ -281,7 +284,8 @@ class UIcore():
         '''Runs specified module and returns data'''
 
         vars = inguma.vars
-        self.gom.create_module_dialog()
+        if self.SHOW_MODULE_WIN:
+            self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
@@ -290,7 +294,8 @@ class UIcore():
         '''Runs specified module and returns data'''
 
         vars = inguma.vars
-        self.gom.create_module_dialog()
+        if self.SHOW_MODULE_WIN:
+            self.gom.create_module_dialog()
         t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
@@ -304,7 +309,8 @@ class UIcore():
         id = os.popen(command)
         output = id.read()
         print output
-        gobject.idle_add( self.gom.create_module_dialog )
+        if self.SHOW_MODULE_WIN:
+            gobject.idle_add( self.gom.create_module_dialog )
         gobject.idle_add( self.gom.echo, output )
 
     #####################################

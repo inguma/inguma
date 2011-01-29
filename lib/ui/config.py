@@ -3,6 +3,7 @@
 # Startup preferences
 SHOW_LOG=True
 SHOW_KBTREE=True
+SHOW_MODULE_WIN=True
 
 # Paths to external tools
 NMAP_PATH = '/usr/bin/nmap'
@@ -70,7 +71,7 @@ subdiscovers = {
 
 # Field descriptions
 descriptions = {
-'target'   : 'target host or network',
+'target'   : 'Target host or network',
 'oport'    : 'Open port on target',
 'cport'    : 'Closed port on target',
 'sport'    : 'Source port',
@@ -78,10 +79,11 @@ descriptions = {
 'iface'    : 'Network interface to be used',
 'stype'    : 'Scan type. Can be SYN (S) or ACK (A)',
 'dad'      : 'DAD name',
-'hash'     : 'hash of the password',
-'password' : 'original unencrypted password',
+'hash'     : 'Hash of the password',
+'password' : 'Original unencrypted password',
 'method'   : 'PL/SQL gateway bypass method',
 'sid'      : 'SID name',
+'inter'    : 'Interval between probes',
 'timeout'  : 'Timeout in seconds for each probe'
 }
 

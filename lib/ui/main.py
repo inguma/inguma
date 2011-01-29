@@ -160,8 +160,11 @@ class MainApp:
         splash.push(("Loading KB..."))
         self.uicore = core.UIcore()
         self.uicore.add_local_asn()
-        self.uicore.set_om(self.gom)
         self.gom.set_core(self.uicore)
+
+        # Check module window prefs
+        setattr(self.uicore, 'SHOW_MODULE_WIN', config.SHOW_MODULE_WIN)
+        self.uicore.set_om(self.gom)
 
         #################################################################################################################################
         # Main VBox

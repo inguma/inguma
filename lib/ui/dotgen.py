@@ -246,5 +246,4 @@ def graph_to_from(kb, type):
 
     dotcode += '\n}'
 
-    #print dotcode
     return dotcode

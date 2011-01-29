@@ -33,6 +33,8 @@ class OutputManager:
 
     def echo(self, data, window=True):
 
+        window = self.SHOW_MODULE_WIN
+
         if self.iface == 'gui' and not window:
             #print "GTK UI: ", data
             enditer = self.omwidget.get_end_iter()
