@@ -89,7 +89,7 @@ class ThreadsTv:
         """ Adds a new action to the list """
 
         print "Adding new content for:", module
-        iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.gmtime()), ''])
+        iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.localtime()), ''])
         self.threads[self.counter] = threadid
         self.counter += 1
         gobject.timeout_add(1000, self.check_thread, threadid, iter)
@@ -100,7 +100,7 @@ class ThreadsTv:
             model.set_value(iter, 1, 75)
             return True
         else:
-            model.set_value(iter, 4, time.strftime("%H:%M:%S", time.gmtime()))
+            model.set_value(iter, 4, time.strftime("%H:%M:%S", time.localtime()))
             model.set_value(iter, 1, 100)
             kbpath = libAutosave.getKbPath()
             self.uicore.saveKB(kbpath)
