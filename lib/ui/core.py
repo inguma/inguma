@@ -243,8 +243,6 @@ class UIcore():
 
         if doASN:
             # Get host's ASN
-            if self.SHOW_MODULE_WIN:
-                self.gom.create_module_dialog()
             ASNlist = []
             for ip in targets:
                 if not inguma.user_data.has_key(ip + 'asn'):

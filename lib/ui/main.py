@@ -299,7 +299,7 @@ class MainApp:
         self.xdotw.set_size_request(900,450)
         self.gom.set_map(self.xdotw)
         setattr(self.uicore, 'xdot', self.xdotw)
-        self.uicore.getDot(doASN=True)
+        self.uicore.getDot(doASN=False)
 
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
         self.xdotw.zoom_image(1.0)
