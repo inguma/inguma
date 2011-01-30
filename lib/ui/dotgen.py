@@ -18,6 +18,7 @@
 #       MA 02110-1301, USA.
 
 import sys
+import lib.ui.config as config
 
 def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASDs={}, direction='TD', user_data=None):
 
@@ -79,20 +80,27 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     if len(targets) != 0 or len(locals) != 0:
         for target in targets:
 
-            # I don't like this code...
-            try:
-                # Get OS String
-                target_os = target + '_os'
+            target_data = ''
+            # Get Name String
+            target_name = target + '_name'
+            if target_name in user_data:
+                target_name = user_data[target_name][0]
+                target_data += target_name[0:15]
+            else:
+                target_data += '\\n'
+
+            # Get OS String
+            target_os = target + '_os'
+            if target_os in user_data:
                 target_os = user_data[target_os][0]
-                target_os = target_os.split(' ')
-                # Get just two words if OS name is too large
-                if len(target_os) > 1:
-                    target_os = ' '.join([target_os[0], target_os[1], '...'])
-                else:
-                    target_os = target_os[0]
-                dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '\\n' + target_os + '"];' + "\n"
-            except:
-                dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '"];' + "\n"
+                for os in config.ICONS:
+                    if os.capitalize() in target_os:
+                        icon = 'lib/ui/data/icons/' + os + '.png'
+                        target_data += '", shapefile="' + icon
+            else:
+                target_data += '", shapefile="lib/ui/data/icons/generic.png'
+
+            dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '\\n\\n' + target_data + '"];' + "\n"
 
         dotcode += "\n"
     

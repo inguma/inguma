@@ -14,6 +14,9 @@ DBS_PATH=   "dis/navigator/dbs/"
 DIS_PATH=   "dis/dis.py"
 GEN_PATH=   "dis/printblocks.py"
 
+# Availbale platform icons
+ICONS = ['3com', 'apple', 'bsd', 'cisco', 'hp', 'linux', 'sgi', 'sun', 'unix', 'windows']
+
 # Tools Availability
 HAS_NMAP = True
 HAS_W3AF = True
