@@ -253,9 +253,11 @@ self.showBrute )], user_data=[ip, port] )
         if len(data) == 3:
             port, ip, vuln = data
             open_new('http://' + ip + ':' + port + vuln)
-        else:
+        elif len(data) == 2:
             port, ip = data
             open_new('http://' + ip + ':' + port)
+        else:
+            open_new('http://osvdb.org/show/osvdb/' + data)
 
     def open_terminal(self, action, data):
         if config.HAS_VTE:

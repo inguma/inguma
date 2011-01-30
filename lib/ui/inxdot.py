@@ -39,15 +39,19 @@ class MyDotWidget(xdot.DotWidget):
             url = self.get_url(x, y)
             if url is not None:
                 self.core.set_kbfield('target', url.url)
-
             else:
                 self.graph_menu.popmenu.popup(None, None, None, 1, event.time)
                 
             jump = self.get_jump(x, y)
-            if jump is not None:
+            if jump is not None and url is not None:
                 #Right Click on Node!!
-                self.context.set_data(url.url)
-                self.context.popmenu.popup(None, None, None, 1, event.time)
+                # Check if it's an OSVDB node
+                if url.url.split(':')[0] == 'OSVDB':
+                    self.context.show_browser('action', url.url.split(':')[1])
+                else:
+                    # If not is a target node
+                    self.context.set_data(url.url)
+                    self.context.popmenu.popup(None, None, None, 1, event.time)
 
         else:
             super(MyDotWidget, self).on_area_button_release(area, event)
