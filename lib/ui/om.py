@@ -33,7 +33,7 @@ class OutputManager:
 
     def echo(self, data, window=True):
 
-        if window == True:
+        if window == True and self.isGui:
             window = self.SHOW_MODULE_WIN
 
         if self.iface == 'gui' and not window:

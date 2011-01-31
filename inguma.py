@@ -1102,6 +1102,7 @@ def set_om():
         gom = om.OutputManager('gui')
     else:
         gom = om.OutputManager('console')
+    setattr(gom, 'isGui', isGui)
 
 def setupAutoCompletion():
     global commands

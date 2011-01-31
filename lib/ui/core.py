@@ -155,6 +155,7 @@ class UIcore():
     def set_om(self, om):
         self.gom = om
         setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
+        setattr(self.gom, 'isGui', inguma.isGui)
         self.gom.set_new_nodes(False)
 
     def get_interfaces(self):
