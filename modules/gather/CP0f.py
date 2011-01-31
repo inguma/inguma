@@ -12,6 +12,11 @@ try:
     from scapy.modules.p0f import *
     import scapy.all as scapy
 
+    scapy.conf.p0f_base = 'data/p0f/p0f.fp'
+    scapy.conf.p0fa_base = 'data/p0f/p0fa.fp'
+    scapy.conf.p0fo_base = 'data/p0f/p0fo.fp'
+    scapy.conf.p0fr_base = 'data/p0f/p0fr.fp'
+
     bScapy = True
 except:
     bScapy = False
@@ -35,19 +40,18 @@ class CP0f(CIngumaModule):
 
     def prnp0f(self, pkt):
         try:
-            r = scapy.p0f(pkt)
+            r = p0f(pkt)
         except:
             return
         if r == []:
-            r = ("UNKNOWN", "[" + ":".join(map(str, scapy.packet2p0f(pkt))) + ":?:?]", None)
+            r = ("UNKNOWN", "[" + ":".join(map(str, packet2p0f(pkt)[1])) + ":?:?]", None)
         else:
             r = r[0]
-        
-        self.addToDict(pkt.sprintf("%IP.src%") + "_os", r)
+            self.addToDict(pkt.sprintf("%IP.src%") + "_os", r[0:1])
 
         uptime = None
         try:
-            uptime = scapy.pkt2uptime(pkt)
+            uptime = pkt2uptime(pkt)
         except:
             pass
         if uptime == 0:
