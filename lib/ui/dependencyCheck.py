@@ -94,6 +94,21 @@ def gtkui_dependency_check(config):
         print WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC
         config.HAS_VTE = False
 
+    # Check Graphviz
+    print "\tGraphviz binaries...",
+    if os.environ.has_key('PATH'):
+        for path in os.environ['PATH'].split(os.pathsep):
+            progs = __find_executables(path)
+
+            if progs is not None :
+                #print progs
+                print OKGREEN + "\tOK" + ENDC
+                return
+
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "Graphviz bianries not found, this software is necessary to run the GUI" + ENDC
+        sys.exit( 1 )
+
     # Check Nmap
     try:
         print "\t" + config.NMAP_PATH + "...",
@@ -118,3 +133,50 @@ def gtkui_dependency_check(config):
 #        print WARNING + "\tD'oh!" + ENDC
 #        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
 #        config.HAS_W3AF = False
+
+def __find_executables(path):
+    # Code borrowed from pydot
+    # http://code.google.com/p/pydot/
+    # Thanks to Ero Carrera
+
+    """Used by find_graphviz
+    
+    path - single directory as a string
+    
+    If any of the executables are found, it will return a dictionary
+    containing the program names as keys and their paths as values.
+    
+    Otherwise returns None
+    """
+
+    success = False
+    progs = {'dot': '', 'twopi': '', 'neato': '', 'circo': '', 'fdp': '', 'sfdp': ''}
+    
+    was_quoted = False
+    path = path.strip()
+    if path.startswith('"') and path.endswith('"'):
+        path = path[1:-1]
+        was_quoted =  True
+    
+    if os.path.isdir(path) : 
+
+        for prg in progs.iterkeys():
+
+            #print prg 
+            if progs[prg]:
+                continue
+
+            if os.path.exists( os.path.join(path, prg) ):
+
+                if was_quoted:
+                    progs[prg] = '"' + os.path.join(path, prg) + '"'
+                else:
+                    progs[prg] = os.path.join(path, prg)
+
+                success = True
+
+    if success:
+        return progs
+
+    else:
+        return None
