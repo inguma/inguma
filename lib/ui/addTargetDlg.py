@@ -38,7 +38,7 @@ class addTargetDialog:
                     'asn',
                     'netcraft']
 
-        self.GATHERS = ['portscan']
+        self.GATHERS = ['portscan', 'identify']
 
         # Core instance for manage the KB
         self.uicore = core
