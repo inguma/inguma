@@ -94,6 +94,15 @@ def gtkui_dependency_check(config):
         print WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC
         config.HAS_VTE = False
 
+    # Check Impacket
+    try:
+        print "\tImpacket library...",
+        import impacket
+        print OKGREEN + "\tOK" + ENDC
+    except:
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "Impacket library not found, some modules would not work" + ENDC
+
     # Check Graphviz
     print "\tGraphviz binaries...",
     if os.environ.has_key('PATH'):
