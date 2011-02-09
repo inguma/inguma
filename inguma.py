@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import os
 import sys
-import stat
 import time
 import pickle
 
@@ -195,7 +194,7 @@ def loadModule(path, atype, marray, bLoad = True):
         if bLoad:
             f = f[:f.find(".")]
         else:
-            if not stat.S_ISDIR(os.stat(path + os.sep + f)[stat.ST_MODE]):
+            if not os.path.isdir("%s%s%s" % (path, os.sep, f)):
                 continue
 
         debugPrint("Loading " + atype + " module",f)
