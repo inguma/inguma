@@ -830,8 +830,8 @@ def doAutoScan(guest = "no", fuzz = "no"):
                     if host in user_data["ignore_host"]:
                         continue
 
-                #showLaunch("portscan", "Port scanning target %s\n" % target)
-                showLaunch("tcpscan", "TCP scanning target %s\n" % target)
+                showLaunch("portscan", "Port scanning target %s\n" % target)
+                #showLaunch("tcpscan", "TCP scanning target %s\n" % target)
                 
                 if host not in ["localhost", "127.0.0.1"]:
                     showLaunch("getmac", "MAC Address target %s\n" % target)
