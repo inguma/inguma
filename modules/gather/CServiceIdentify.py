@@ -715,13 +715,18 @@ class CServiceIdentify(CIngumaModule):
         if self.dict.has_key(self.target + "_tcp_ports"):
             mList = self.dict[self.target + "_tcp_ports"]
             for service in mList:
-                self.gom.echo( "Port " + str(service) + ": " + self.identifyService(service).lstrip(" ").rstrip(" ").replace("\n", "") )
+                srv = self.identifyService(service).strip()
+                self.gom.echo( "Port " + str(service) + ": " + srv )
+                self.addToDict(self.target + '_' + str(service) + '-info', srv)
         else:
             if self.port == 0:
                 self.gom.echo( "No ports detected with a portscanner and the value of port is 0." )
                 return False
             else:
-                self.gom.echo( "Port " + str(self.port) + ": " + self.identifyService(self.port) )
+                srv = self.identifyService(self.port).strip()
+                self.gom.echo( "Port " + str(self.port) + ": " + srv )
+                self.addToDict(self.target + '_' + str(service) + '-info', srv)
+                print srv
 
         return True
 
