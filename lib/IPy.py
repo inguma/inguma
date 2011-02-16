@@ -1,14 +1,16 @@
 """ IPy - class and tools for handling of IPv4 and IPv6 Addresses and Networks.
 
-$HeadURL: http://svn.23.nu/svn/repos/IPy/trunk/IPy.py $
+$HeadURL$
 
-$Id: IPy.py 671 2004-08-22 21:02:29Z md $
+$Id$
 
 The IP class allows a comfortable parsing and handling for most
 notations in use for IPv4 and IPv6 Addresses and Networks. It was
 greatly inspired bei RIPE's Perl module NET::IP's interface but
-doesn't share the Implementation. It doesn't share non-CIDR netmasks,
+doesn't share the Implementation. It doesn't support non-CIDR netmasks,
 so funky stuff lixe a netmask 0xffffff0f can't be done here.
+
+Example:
 
     >>> ip = IP('127.0.0.0/30')
     >>> for x in ip:
@@ -94,16 +96,37 @@ WantPrefixLen
     >>> ip.WantPrefixLen = 3
     >>> print ip
     10.0.0.0-10.0.0.0
-                
 
-Further Information might be available at http://c0re.jp/c0de/IPy/
 
-Hacked 2001 by drt@un.bewaff.net
+    Also sorting works as expected.
+    
+    >>> l = [IP('127.0.0.1'), IP('62.63.64.65'), IP('10.11.12.23'), IP('23.23.23.23')]
+    >>> l
+    [IP('127.0.0.1'), IP('62.63.64.65'), IP('10.11.12.23'), IP('23.23.23.23')]
+    >>> l. sort()
+    >>> l
+    [IP('10.11.12.23'), IP('23.23.23.23'), IP('62.63.64.65'), IP('127.0.0.1')]
+
+
+    IPlist is a subclass of the standard python list class but the __contains__()
+    operator is modified to support looking not only into the list itselv nbut also
+    into the networks the list is build of.
+      
+    >>> '172.17.23.5' in IPlist(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'])
+    True
+    >>> '127.0.0.1' in IPlist(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'])
+    False
+
+
+Further Information might be available at http://c0re.23.nu/c0de/IPy/
+
+Hacked 2001-2005 by md@hudora.de
 
 TODO:
       * better comparison (__cmp__ and friends)
       * tests for __cmp__
-      * always write hex values lowercase
+      * tests for IPlist
+      * regression tests for previous fixed
       * interpret 2001:1234:5678:1234/64 as 2001:1234:5678:1234::/64
       * move size in bits into class variables to get rid of some "if self._ipversion ..."
       * support for base85 encoding
@@ -119,13 +142,13 @@ TODO:
       * support for finding common prefix
       * '>>' and '<<' for prefix manipulation
       * add our own exceptions instead ValueError all the time
-      * rename checkPrefix to checkPrefixOk
       * add more documentation and doctests
       * refactor
+      * add the link local type
 """
 
-__rcsid__ = '$Id: IPy.py 671 2004-08-22 21:02:29Z md $'
-__version__ = '0.42'
+__rcsid__ = '$Id$'
+__version__ = '0.5'
 
 import types
 
@@ -296,7 +319,8 @@ class IPint:
             self._prefixlen = int(prefixlen)
 
             if not _checkNetaddrWorksWithPrefixlen(self.ip, self._prefixlen, self._ipversion):
-                raise ValueError, "%s goes not well with prefixlen %d" % (hex(self.ip), self._prefixlen) 
+                raise ValueError, "%s goes not well with prefixlen %d" % (hex(self.ip).lower(),
+                                                                          self._prefixlen) 
                 
 
     def int(self):
@@ -377,7 +401,7 @@ class IPint:
         # strFullsize   127.0.0.1    2001:0658:022a:cafe:0200:c0ff:fe8d:08fa
         # strNormal     127.0.0.1    2001:658:22a:cafe:200:c0ff:fe8d:08fa
         # strCompressed 127.0.0.1    2001:658:22a:cafe::1
-        # strHex        0x7F000001L  0x20010658022ACAFE0200C0FFFE8D08FA
+        # strHex        0x7f000001   0x20010658022ACAFE0200C0FFFE8D08FA
         # strDec        2130706433   42540616829182469433547974687817795834
 
     def strBin(self, wantprefixlen = None): 
@@ -480,16 +504,16 @@ class IPint:
         """Return a string representation in hex format.
 
         >>> print IP('127.0.0.1').strHex()
-        0x7F000001
+        0x7f000001
         >>> print IP('2001:0658:022a:cafe:0200::1').strHex()
-        0x20010658022ACAFE0200000000000001
+        0x20010658022acafe0200000000000001
         """
 
         if self.WantPrefixLen == None and wantprefixlen == None:
             wantprefixlen = 0
 
-        x = hex(self.ip)
-        if x[-1] == 'L':
+        x = hex(self.ip).lower()
+        if x[-1] == 'l':
             x = x[:-1]
         return x + self._printPrefix(wantprefixlen)
 
@@ -646,20 +670,23 @@ class IPint:
         can be other IP-objects, strings or ints.
 
         >>> print IP('195.185.1.1').strHex()
-        0xC3B90101
+        0xc3b90101
         >>> 0xC3B90101L in IP('195.185.1.0/24')
         1
         >>> '127.0.0.1' in IP('127.0.0.0/24')
         1
         >>> IP('127.0.0.0/24') in IP('127.0.0.0/25')
         0
+        >>> print IP('10.11.12.23') in IP('10.0.0.0/8')
+        True
+
         """
 
         item = IP(item)
         if item.ip >= self.ip and item.ip < self.ip + self.len() - item.len() + 1:
-            return 1
+            return True
         else:
-            return 0
+            return False
 
 
     def overlaps(self, item):
@@ -771,13 +798,16 @@ class IPint:
         same hash value
 
         >>> hex(IP('10.0.0.0/24').__hash__())
-        '0xf5ffffe7'
+        '0xF5FFFFE7L'
+        >>> hex(IP('2001:0658:022a:cafe::0/64').__hash__())
+        '0xDDD43319L'
+        
         """
-
-        thehash = int(-1)
+        
+        thehash = int(0xffffffffL)
         ip = self.ip
         while ip > 0:
-            thehash = thehash ^ (ip & 0x7fffffff)
+            thehash = thehash ^ (ip & 0xffffffffL)
             ip = ip >> 32
         thehash = thehash ^ self._prefixlen
         return int(thehash)
@@ -1056,10 +1086,64 @@ def parseAddress(ipstr):
             return (ret, 6)
 
 
+class IPlist(list):
+    """List of IP networks.
+
+       IPlist is a subclass of the standard python list class but the __contains__()
+       operator is modified to support looking not only into the list itselv nbut also
+       into the networks the list is build of.
+      
+       >>> l = IPlist(['10.0.0.0/8', '172.16.0.0/12'])
+       >>> '192.168.255.255' in l
+       False
+       >>> l.append('192.168.0.0/16')
+       >>> '192.168.255.255' in l
+       True
+
+       >>> l = IPlist([IP('127.0.0.1'), '62.63.64.65', '10.11.12.23', IP('23.23.23.23')])
+       >>> l
+       [IP('127.0.0.1'), '62.63.64.65', '10.11.12.23', IP('23.23.23.23')]
+       >>> l. sort()
+       >>> l
+       [IP('10.11.12.23'), IP('23.23.23.23'), IP('62.63.64.65'), IP('127.0.0.1')]
+
+"""
+
+    def __ensureIpObjects(self):
+        """Ensure that all members of self are IP objects."""
+
+        for i in range(len(self)):
+            if not (issubclass(IP, self[i].__class__) or isinstance(IP, self[i].__class__)):
+                self[i] = IP(self[i])
+    
+    def __contains__(self, item):
+        """Called to implement membership test operators.
+
+        Should return true if item is in self, false otherwise. Item
+        can be other IP-objects, strings or ints.
+
+        >>> '127.0.0.1' in IPlist(['127.0.0.0/24', '192.168.0.0/16'])
+        True
+        >>> '10.0.0.1' in IPlist(['127.0.0.0/24', '192.168.0.0/16'])
+        False
+
+        """
+
+        self.__ensureIpObjects()
+        item = IP(item)
+        for x in self:
+            if item in IP(x):
+                return True
+        return False
+
+    def sort(self):
+        self.__ensureIpObjects()
+        list.sort(self)
+        
+        
 def intToIp(ip, version):
     """Transform an integer string into an IP address."""
 
-    # just to be sure and hoping for Python 2.22
     ip = long(ip)
 
     if ip < 0:
@@ -1168,19 +1252,19 @@ def _count0Bits(num):
     return ret 
 
     
-def _checkPrefix(ip, prefixlen, version):
+def _isPrefixOk(ip, prefixlen, version):
     """Check the validity of a prefix
     
     Checks if the variant part of a prefix only has 0s, and the length is
     correct.
 
-    >>> _checkPrefix(0x7f000000L, 24, 4)
+    >>> _isPrefixOk(0x7f000000L, 24, 4)
     1
-    >>> _checkPrefix(0x7f000001L, 24, 4)
+    >>> _isPrefixOk(0x7f000001L, 24, 4)
     0
-    >>> repr(_checkPrefix(0x7f000001L, -1, 4))
+    >>> repr(_isPrefixOk(0x7f000001L, -1, 4))
     'None'
-    >>> repr(_checkPrefix(0x7f000001L, 33, 4))
+    >>> repr(_isPrefixOk(0x7f000001L, 33, 4))
     'None'
     """
 
