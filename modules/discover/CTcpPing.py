@@ -67,20 +67,20 @@ class CTcpPing(CIngumaModule):
         if not self.port:
             self.port = 80
 
-        mTargets = scapy.IP(dst=self.target)
+        target = scapy.IP(dst=self.target)
         
-        for target in mTargets:
-            self.gom.echo( "Sending probe to\t" + str(target.dst) + "\tusing port\t" + str(self.port) )
-            p = scapy.IP(dst=target.dst)/scapy.TCP(dport=self.port,flags="S")
+        self.gom.echo( "Sending probe to\t" + str(target.dst) + "\tusing port\t" + str(self.port) )
+        p = scapy.IP(dst=target.dst)/scapy.TCP(dport=self.port,flags="S")
 
-            ans, unans = scapy.sr(p, timeout=self.timeout, iface=self.iface, retry=0)
+        ans, unans = scapy.sr(p, timeout=self.timeout, iface=self.iface, retry=0)
 
-#            self.gom.echo( ans.summary( lambda(s,r) : r.sprintf("%IP.src% is alive") ) )
+#        self.gom.echo( ans.summary( lambda(s,r) : r.sprintf("%IP.src% is alive") ) )
 
-            if ans:
-                self.up[len(self.up)+1] = ans[0][0].dst
-                self.addToDict("alive", ans[0][0].dst)
-                self.addToDict("hosts", ans[0][0].dst)
+        if ans:
+            for a in ans:
+                self.up[len(self.up)+1] = a[0][0].dst
+                self.addToDict("alive", a[0][0].dst)
+                self.addToDict("hosts", a[0][0].dst)
                 #self.addToDict(ans[0][0].dst + "_trace", ans[0][0].dst)
 #                else:
 #                    self.down[len(self.up)+1] = ans[0][0].dst

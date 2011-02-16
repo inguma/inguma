@@ -105,25 +105,25 @@ class CHostUp(CIngumaModule):
         self.up = {}
         self.down = {}
 
-        mTargets = IP(dst=self.target)
+        target = IP(dst=self.target)
         
         if self.wizard:
             self.runAsWizard()
 
-        for target in mTargets:
-            self.gom.echo( "Sending probe to\t" + str(target.dst) )
-            p = IP(dst=target.dst)/ICMP(type=self.packetType)
-            ans, unans = sr(p, timeout=self.timeout, iface=self.iface, retry=0)
+        self.gom.echo( "Sending probe to\t" + str(target.dst) )
+        p = IP(dst=target.dst)/ICMP(type=self.packetType)
+        ans, unans = sr(p, timeout=self.timeout, iface=self.iface, retry=0)
 
-            if ans:
-                if ans[0][0].type == 8:
-                    self.up[len(self.up)+1] = ans[0][0].dst
-                    self.addToDict("alive", ans[0][0].dst)
-                    self.addToDict("hosts", ans[0][0].dst)
-                    #self.addToDict(ans[0][0].dst + "_trace", ans[0][0].dst)
+        if ans:
+            for a in ans:
+                if a[0][0].type == 8:
+                    self.up[len(self.up)+1] = a[0][0].dst
+                    self.addToDict("alive", a[0][0].dst)
+                    self.addToDict("hosts", a[0][0].dst)
+                    #self.addToDict(ans[0][0].dst + "_trace", a[0][0].dst)
                 else:
-                    self.down[len(self.up)+1] = ans[0][0].dst
-                    self.gom.echo( "Answer of type " + str(icmptypes[ans[0][0].type]) + " from " + str(ans[0][0].dst) )
+                    self.down[len(self.up)+1] = a[0][0].dst
+                    self.gom.echo( "Answer of type " + str(icmptypes[a[0][0].type]) + " from " + str(a[0][0].dst) )
 
         self.results = self.up
         return True
