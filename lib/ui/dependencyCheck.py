@@ -103,6 +103,15 @@ def gtkui_dependency_check(config):
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "Impacket library not found, some modules would not work" + ENDC
 
+    # Check PySNMP
+    try:
+        print "\tPySNMP library...",
+        import pysnmp
+        print OKGREEN + "\tOK" + ENDC
+    except:
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "PySNMP library not found, some modules would not work" + ENDC
+
     # Check Graphviz
     print "\tGraphviz binaries...",
     if os.environ.has_key('PATH'):
