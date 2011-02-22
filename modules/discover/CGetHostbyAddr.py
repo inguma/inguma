@@ -46,7 +46,11 @@ class CGetHostbyAddr(CIngumaModule):
         except:
             host = self.target
 
-        self.results[0] = host
+        if host != self.target:
+            self.results[0] = host
+        else:
+            self.gom.echo( "Could not get host name for target: " + self.target )
+            return False
 
         return True
     
