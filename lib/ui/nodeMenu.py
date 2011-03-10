@@ -26,6 +26,7 @@ from . import targetDialog
 from . import bruteDialog
 from . import gatherDialog
 from . import config
+from . import  reportWin
 
 class UIManager(gtk.UIManager):
 
@@ -202,7 +203,7 @@ self.showBrute )], user_data=[ip, port] )
             # Add target's information
             self.actiongroup2.add_actions( [('Information', gtk.STOCK_INFO, '  Information')] )
             self.target_menu += '<menu action="Information" position="top">'
-   
+
             if kb.__contains__(ip + '_name'):
                 # Host name 
                 self.actiongroup2.add_actions( [('host', None, 'Host Name')] )
@@ -226,6 +227,10 @@ self.showBrute )], user_data=[ip, port] )
     
             self.target_menu += '</menu><separator/>'
     
+            # Add target's report button
+            self.actiongroup2.add_actions( [('Report', gtk.STOCK_INFO, '  Report', None, None, self.showReport )], user_data=[ip] )
+            self.target_menu += '<menuitem action="Report" position="top"/>'
+   
             # Add IP Address
             self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
             self.target_menu += '<menuitem action="' + ip + '" position="top">'
@@ -297,3 +302,6 @@ self.showBrute )], user_data=[ip, port] )
                 defaults.append(input)
             tg = bruteDialog.BruteDialog(module, gtk.STOCK_NEW, defaults, self.uicore, params)
 
+    def showReport(self, action, host):
+        #print "Generating report for host:", host[0]
+        reportWin.reportWin(self.uicore, host[0])

@@ -25,12 +25,13 @@ from reports import generateReport
 class reportWin(gtk.Window):
     ''' Report output window '''
 
-    def __init__(self, core):
+    def __init__(self, core, host=''):
 
         super(reportWin, self).__init__()
 
         self.TITLE = "Report"
         self.uicore = core
+        self.host = host
 
         # Window properties
         self.connect("destroy", self.win_destroy)
@@ -90,7 +91,10 @@ class reportWin(gtk.Window):
 
         # Get KB to parse for report
         self.textbuffer = self.reporttv.get_buffer()
-        self.report_data = generateReport( self.uicore.get_kbList() )
+        if self.host:
+            self.report_data = generateReport( self.uicore.get_kbList(), self.host )
+        else:
+            self.report_data = generateReport( self.uicore.get_kbList() )
         self.textbuffer.set_text(self.report_data)
         # Add Textview to VBox
         self.vbox.pack_start(self.sw, True, True, 0)
