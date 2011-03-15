@@ -671,6 +671,9 @@ class MainApp:
             else:
                 libAutosave.removeKB()
 
+        # To keep record of kb file name
+        self.kbfile = ''
+
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
         self.xdotw.zoom_image(1.0)
@@ -700,23 +703,30 @@ class MainApp:
 
             # Adding text to Log window
             self.gom.echo( 'Loaded' , False)
+            self.kbfile = res
 
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
         chooser.destroy()
 
     def saveKB(self, widget):
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        chooser.set_current_folder('./data/')
-        response = chooser.run()
-        if response == gtk.RESPONSE_OK:
-            filename = chooser.get_filename()
-            self.uicore.saveKB(filename)
-            self.gom.echo( filename + ' selected' , False)
+        if self.kbfile == '':
+            chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            chooser.set_current_folder('./data/')
+            response = chooser.run()
+            if response == gtk.RESPONSE_OK:
+                filename = chooser.get_filename()
+                self.uicore.saveKB(filename)
+                self.gom.echo( filename + ' selected' , False)
+                libAutosave.removeKB()
+                self.kbfile = filename
+            elif response == gtk.RESPONSE_CANCEL:
+                self.gom.echo( 'Closed, no files selected' , False)
+            chooser.destroy()
+        else:
+            self.uicore.saveKB(self.kbfile)
+            self.gom.echo( self.kbfile + ' selected' , False)
             libAutosave.removeKB()
-        elif response == gtk.RESPONSE_CANCEL:
-            self.gom.echo( 'Closed, no files selected' , False)
-        chooser.destroy()
 
     def importScan(self, widget):
         """ Parse and import nmap scan """
