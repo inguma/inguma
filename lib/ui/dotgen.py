@@ -20,7 +20,7 @@
 import sys
 import lib.ui.config as config
 
-def generate_dot(kb, localip, locals, direction='TD'):
+def generate_dot(kb, localip, gw, direction='TD'):
 
     steps = []
     for target in kb['targets']:
@@ -76,17 +76,12 @@ def generate_dot(kb, localip, locals, direction='TD'):
     #
     #######################################
 
-#    print "Targets:", targets
-#    print "Locals:", locals
-#    print "Steps:", steps
-
     for target in targets:
         dotcode += '\t"' + target + '" [URL="' + target + '"]\n'
-    for local in locals:
-        dotcode += '\t"' + local + '" [URL="' + local + '"]\n'
+    dotcode += '\t"' + gw + '" [URL="' + gw + '"]\n'
     for step in steps:
         for node in step:
-            if node not in locals and node not in targets:
+            if node not in targets:
                 dotcode += '\t"' + node + '" [URL="' + node + '"]\n'
 
     #######################################
@@ -94,7 +89,7 @@ def generate_dot(kb, localip, locals, direction='TD'):
     # Targets with diferent color
     #
     #######################################
-    if len(targets) != 0 or len(locals) != 0:
+    if len(targets) != 0:
         for target in targets:
 
             target_data = ''
@@ -121,22 +116,27 @@ def generate_dot(kb, localip, locals, direction='TD'):
 
         dotcode += "\n"
 
-        # Local IP is target and edges at the same time => duplicated edges
-        # O algo...
+        #######################################
+        #
         # Create Edges
-        dotcode += "//Targets\n"
-        for target in targets:
-            try:
-                for step in kb[target + '_trace']:
-                    dotcode += '\t"' + step + '"->' + "\n"
-            except:
-                pass
-            dotcode += '\t"' + target + '" [color="azure3"];' + "\n\n"
+        #
+        #######################################
 
-        dotcode += "//Locals\n"
-        for local in locals:
-            dotcode += '\t"' + localip + '"->' + "\n"
-            dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"
+        # Local IP to Gateway
+        dotcode += '\t"' + localip + '"->' + "\n"
+        dotcode += '\t"' + gw + '" [color="azure3"];' + "\n\n"
+        # Edges for targets trace
+        for target in kb['targets']:
+            if target != localip and target != gw:
+                try:
+                    # If target has a trace:
+                    for step in kb[target + '_trace'][:-1]:
+                        dotcode += '\t"' + step + '"->' + "\n"
+                    dotcode += '\t"' + kb[target + '_trace'][-1] + '" [color="azure3"];' + "\n\n"
+                except:
+                    # If a traceroute has not been done:
+                    dotcode += '\t"' + localip + '"->' + "\n"
+                    dotcode += '\t"' + target + '" [color="azure3"];' + "\n\n"
 
     dotcode += "}"
 
@@ -228,7 +228,7 @@ def graph_to_from(kb, type):
                 pass
 
         target_pairs = pairs(kb['targets'])
-        print target_pairs
+        #print target_pairs
         for pair in target_pairs[0:-1]:
             dotcode += '"' + pair[0] + '" -- "' + pair[1] + '" [style="invis"]\n'
 

@@ -81,6 +81,7 @@ class CTcpPing(CIngumaModule):
                 self.up[len(self.up)+1] = a[0][0].dst
                 self.addToDict("alive", a[0][0].dst)
                 self.addToDict("hosts", a[0][0].dst)
+                self.addToDict("targets", a[0][0].dst)
                 #self.addToDict(ans[0][0].dst + "_trace", ans[0][0].dst)
 #                else:
 #                    self.down[len(self.up)+1] = ans[0][0].dst

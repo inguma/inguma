@@ -91,6 +91,7 @@ class CArping(CIngumaModule):
             ip = y.sprintf("%ARP.psrc%")
             self.gom.echo(  "Adding to discovered hosts " + ip )
             self.addToDict("hosts", ip)
+            self.addToDict("targets", ip)
             self.addToDict(ip + "_mac", y.sprintf("%Ether.src%"))
         print
 

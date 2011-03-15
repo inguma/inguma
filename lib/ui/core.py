@@ -183,37 +183,23 @@ class UIcore():
 
     def getTargetPath(self):
         steps = []
-        targets = []
-        locals = []
-        net = self.getLocalNetwork()
-#        print "Hosts", inguma.user_data['hosts'], "\n"
-        for host in inguma.user_data['hosts']:
+        for target in inguma.user_data['targets']:
             try:
-                if len(inguma.user_data[host + '_trace']) != 1:
-                    # Host has _trace
-                    steps.append(inguma.user_data[host + '_trace'])
-#                    print "Found trace for host:", host, "\nTrace:", inguma.user_data[host + "_trace"]
-                    # Host _trace has only host as content
-                    targets.append(host)
+                steps.append(inguma.user_data[target + '_trace'])
             except:
-                ip = IPy.IP(host)
-                if len(ip) == 1 and ip.strNormal() != self.getLocalIP() and ip.strNormal() in net:
-#                    print "Local IP found on host:", host
-                    locals.append(host)
-
+                pass
 #        print "Steps", steps, "\n"
 
-        targets = inguma.user_data["targets"]
-
-        return targets, steps, locals
+        return steps
 
     def get_asn(self, ip):
-        self.gom.echo( "Getting ASN for: " + ip , False)
-        #scapy.conf.AS_resolver = scapy.AS_resolver_radb()
-        ASres = scapy.conf.AS_resolver
-        asn = ASres.resolve(ip)
+        if IPy.IP(ip).iptype() != 'PRIVATE':
+            self.gom.echo( "Getting ASN for: " + ip , False)
+            #scapy.conf.AS_resolver = scapy.AS_resolver_radb()
+            ASres = scapy.conf.AS_resolver
+            asn = ASres.resolve(ip)
 
-        return asn
+            return asn
 
     def getWeighted(self, type):
         self.xdot.set_filter('dot')
@@ -240,24 +226,26 @@ class UIcore():
         # Get local IP to be used always as first node
         local = self.getLocalIP()
         # Get targets (end points), paths (mid points) and locals (no mid points)
-        targets, paths, locals = self.getTargetPath()
+        paths = self.getTargetPath()
 
         if doASN:
             # Get host's ASN
             ASNlist = []
-            for ip in targets:
+            for ip in inguma.user_data['targets']:
                 if not inguma.user_data.has_key(ip + 'asn'):
                     asn = self.get_asn(ip)
-                    inguma.user_data[ip + 'asn'] = True
-                    inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
-                    ASNlist.append(asn[0])
+                    if asn:
+                        inguma.user_data[ip + 'asn'] = True
+                        inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
+                        ASNlist.append(asn[0])
             for path in paths:
                 for ip in path:
                     if not inguma.user_data.has_key(ip + 'asn'):
                         asn = self.get_asn(ip)
-                        inguma.user_data[ip + 'asn'] = True
-                        inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
-                        ASNlist.append(asn[0])
+                        if asn:
+                            inguma.user_data[ip + 'asn'] = True
+                            inguma.user_data[ip + '_asn'] = [str(asn[0][1]) + " " + asn[0][2]]
+                            ASNlist.append(asn[0])
 
             ASNs = {}
             ASDs = {}
@@ -272,7 +260,7 @@ class UIcore():
             self.add_asns(ASNs)
             self.add_asds(ASDs)
 
-        dotcode = dotgen.generate_dot(inguma.user_data, local, locals, direction)
+        dotcode = dotgen.generate_dot(inguma.user_data, local, gw, direction)
         inguma.user_data['dotcode'] = dotcode
 
     def set_threadtv(self, threadtv):
