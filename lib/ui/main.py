@@ -723,14 +723,21 @@ class MainApp:
 
         # Choose nmap scan file
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        
         filter = gtk.FileFilter()
         filter.set_name('Nmap scan')
         filter.add_pattern('*.xml')
         chooser.add_filter(filter)
+        
+        filter = gtk.FileFilter()
+        filter.set_name('Host list')
+        filter.add_pattern('*.csv')
+        chooser.add_filter(filter)
 
         # Try to parse and import data
         response = chooser.run()
-        if response == gtk.RESPONSE_OK:
+        filter = chooser.get_filter()
+        if response == gtk.RESPONSE_OK and filter.get_name() == 'Nmap scan':
             self.gom.echo( 'Loading Nmap Scan...', False)
             self.gom.echo(  chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
@@ -741,7 +748,6 @@ class MainApp:
                 nmapData = nmapParser.parseNmap(res)
                 self.gom.echo( 'Inserting data in KB...', False)
                 nmapParser.insertData(self.uicore, nmapData)
-
 
                 askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
                 do_asn = askASN.run()
@@ -766,6 +772,27 @@ class MainApp:
                 md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
                 md.run()
                 md.destroy()
+
+        elif response == gtk.RESPONSE_OK and filter.get_name() == 'Host list':
+            self.gom.echo( 'Loading Host list...', False)
+            self.gom.echo(  chooser.get_filename() + ' selected' , False)
+            res = chooser.get_filename()
+            try:
+                hfile = open(res, 'r')
+                hlist = hfile.readlines()
+                hfile.close()
+                hlist = hlist[0].split(',')
+
+                self.gom.echo( 'Inserting data in KB...', False)
+                for host in hlist:
+                    self.uicore.set_kbfield('targets', host.strip())
+                    self.uicore.set_kbfield('hosts', host.strip())
+
+                # Update graph
+                self.uicore.getDot(doASN=False)
+                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            except:
+                print "Your lack of faith on my parsing capabilities is disturbing..."
 
         elif response == gtk.RESPONSE_CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
