@@ -52,7 +52,10 @@ def checkDir():
 
 def removeKB():
     path = os.path.expanduser('~')
-    os.remove(path + '/.inguma/autosaved.kb')
+    try:
+        os.remove(path + '/.inguma/autosaved.kb')
+    except:
+        pass
 
 def getKbPath():
     path = os.path.expanduser('~') + '/.inguma/autosaved.kb'
