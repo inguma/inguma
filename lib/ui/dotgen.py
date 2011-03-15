@@ -20,7 +20,16 @@
 import sys
 import lib.ui.config as config
 
-def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASDs={}, direction='TD', user_data=None):
+def generate_dot(kb, localip, locals, direction='TD'):
+
+    steps = []
+    for target in kb['targets']:
+        try:
+            steps.append(kb[target + '_trace'])
+        except:
+            pass
+
+    targets = kb["targets"]
 
     dotcode = "digraph G {\n\n\t"
 
@@ -40,6 +49,9 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     # Create ASN clusters
     #
     #######################################
+    ASNs = kb['graph']['ASNs']
+    ASDs = kb['graph']['ASDs']
+
     dotcode += "\n#ASN clustering\n"
     for asn in ASNs:
         dotcode += '\tsubgraph cluster_%s {\n' % asn
@@ -63,14 +75,19 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
     # Asign URLs
     #
     #######################################
+
+#    print "Targets:", targets
+#    print "Locals:", locals
+#    print "Steps:", steps
+
     for target in targets:
         dotcode += '\t"' + target + '" [URL="' + target + '"]\n'
     for local in locals:
         dotcode += '\t"' + local + '" [URL="' + local + '"]\n'
     for step in steps:
         for node in step:
-            dotcode += '\t"' + node + '" [URL="' + node + '"]\n'
-
+            if node not in locals and node not in targets:
+                dotcode += '\t"' + node + '" [URL="' + node + '"]\n'
 
     #######################################
     #
@@ -83,16 +100,16 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
             target_data = ''
             # Get Name String
             target_name = target + '_name'
-            if target_name in user_data:
-                target_name = user_data[target_name][0]
+            if target_name in kb:
+                target_name = kb[target_name][0]
                 target_data += target_name[0:15]
             else:
                 target_data += '\\n'
 
             # Get OS String
             target_os = target + '_os'
-            if target_os in user_data:
-                target_os = user_data[target_os][0]
+            if target_os in kb:
+                target_os = kb[target_os][0]
                 for os in config.ICONS:
                     if os.capitalize() in target_os:
                         icon = 'lib/ui/data/icons/' + os + '.png'
@@ -103,18 +120,20 @@ def generate_dot(localip, gateway, targets=[], steps=[], locals=[], ASNs={}, ASD
             dotcode += '\t"' + target +  '"' + ' [shape=record,color=indianred3,fontcolor=indianred1,label="' + target + '\\n\\n' + target_data + '"];' + "\n"
 
         dotcode += "\n"
-    
-        i = 0
+
+        # Local IP is target and edges at the same time => duplicated edges
+        # O algo...
+        # Create Edges
+        dotcode += "//Targets\n"
         for target in targets:
-            # If there are steps for that target
             try:
-                for step in steps[i][0:-1]:
+                for step in kb[target + '_trace']:
                     dotcode += '\t"' + step + '"->' + "\n"
             except:
                 pass
             dotcode += '\t"' + target + '" [color="azure3"];' + "\n\n"
-            i = i + 1
-    
+
+        dotcode += "//Locals\n"
         for local in locals:
             dotcode += '\t"' + localip + '"->' + "\n"
             dotcode += '\t"' + local + '" [color="azure3"];' + "\n\n"

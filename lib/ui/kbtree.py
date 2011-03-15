@@ -85,7 +85,7 @@ class KBtree:
 
         kb = self.uicore.get_kbList()
         # Add all hosts
-        targets, paths, locals = self.uicore.getTargetPath()
+        targets = kb['targets']
         targets.sort()
         for host in targets:
             piter = self.treestore.append(None, [ host ])

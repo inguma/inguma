@@ -272,7 +272,7 @@ class UIcore():
             self.add_asns(ASNs)
             self.add_asds(ASDs)
 
-        dotcode = dotgen.generate_dot(local, gw, targets, paths, locals, inguma.user_data['graph']['ASNs'], inguma.user_data['graph']['ASDs'], direction, inguma.user_data)
+        dotcode = dotgen.generate_dot(inguma.user_data, local, locals, direction)
         inguma.user_data['dotcode'] = dotcode
 
     def set_threadtv(self, threadtv):
