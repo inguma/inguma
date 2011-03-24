@@ -111,6 +111,8 @@ def insertData(uicore, outputs):
                     pass
     
         # Add traceroute
+        localip = uicore.getLocalIP()
+        uicore.set_kbfield( output['hostip'] + '_trace', localip )
         for host in output['hops']:
             uicore.set_kbfield( 'hosts', host[0] )
             if host[1] != '':
