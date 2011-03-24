@@ -26,15 +26,29 @@ import xdot
 class MyDotWidget(xdot.DotWidget):
     '''Working'''
 
-    def __init__(self, cmenu, gmenu, core):
+    def __init__(self, cmenu, gmenu, anmenu, core):
         self.context = cmenu
         self.graph_menu = gmenu
+        self.alt_node = anmenu
         self.core = core
         xdot.DotWidget.__init__(self)
 #        self.set_filter('twopi')
 
     def on_area_button_release(self, area, event):
-        if event.button == 3:
+        if event.button == 3 and event.state & gtk.gdk.CONTROL_MASK:
+            print "Ctrl + Right Click!"
+            x, y = int(event.x), int(event.y)
+            url = self.get_url(x, y)
+            jump = self.get_jump(x, y)
+            targets = self.core.get_kbfield('targets')
+            # Only pop up the menu if node is a target
+            if url.url in targets:
+                if jump is not None and url is not None:
+                    #Ctrl + Right Click on Node!!
+                    self.alt_node.set_data(url.url)
+                    self.alt_node.popmenu.popup(None, None, None, 1, event.time)
+
+        elif event.button == 3:
             x, y = int(event.x), int(event.y)
             url = self.get_url(x, y)
             if url is not None:

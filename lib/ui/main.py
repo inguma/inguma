@@ -65,6 +65,7 @@ import lib.ui.rceTBar as rceTBar
 import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
+import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
 import lib.ui.addTargetDlg as addtargetdlg
 import lib.ui.exploits as exploits
@@ -293,8 +294,15 @@ class MainApp:
         graph_accel = self.graph_uiman.get_accel_group()
         self.window.add_accel_group(graph_accel)
 
-        self.xdotw = inxdot.MyDotWidget(self.uiman, self.graph_uiman, self.uicore)
+        # altNodeMenu initialization stuff
+        self.altnode_uiman = altNodeMenu.UIManager(self.gom, self.uicore)
+        #self.graph_uiman.set_data(None)
+        altnode_accel = self.altnode_uiman.get_accel_group()
+        self.window.add_accel_group(altnode_accel)
+
+        self.xdotw = inxdot.MyDotWidget(self.uiman, self.graph_uiman, self.altnode_uiman, self.uicore)
         setattr(self.graph_uiman, 'xdot', self.xdotw)
+        setattr(self.altnode_uiman, 'xdot', self.xdotw)
 
         self.xdotw.set_size_request(900,450)
         self.gom.set_map(self.xdotw)
@@ -627,6 +635,7 @@ class MainApp:
         # Add threadtv to core
         self.uicore.set_threadtv(self.threadsInst)
         setattr(self.graph_uiman, 'threadtv', self.threadsInst)
+        setattr(self.altnode_uiman, 'threadtv', self.threadsInst)
 
 #        #################################################################################################################################
 #        # Progress Bar

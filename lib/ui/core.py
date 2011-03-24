@@ -336,3 +336,65 @@ class UIcore():
     def set_direction(self, direction):
         self.getDot(False, direction)
         return True
+
+    def remove_node(self, node):
+
+        #print "Removing node from kb..." + node
+        # Get KB elements to remove for target
+        steps = inguma.user_data[node + '_trace'][1:-1]
+        toremove = []
+        astoremove = []
+        for element in inguma.user_data:
+            if type(element) is dict or type(element) is list:
+                pass
+            elif node in element:
+                #print "\tElement " + element + " would be removed"
+                toremove.append(element)
+
+        # Remove them
+        for remove in toremove:
+            del inguma.user_data[remove]
+        inguma.user_data['targets'].remove(node)
+        inguma.user_data['hosts'].remove(node)
+
+        # Collect ASNs to remove
+        for element in inguma.user_data['graph']['ASNs']:
+            if node in inguma.user_data['graph']['ASNs'][element]:
+                astoremove.append([element, node])
+                #print inguma.user_data['graph']['ASNs'][element]
+        # Remove collected ASNs
+        for x in astoremove:
+            inguma.user_data['graph']['ASNs'][x[0]].remove(x[1])
+            # Remove empty ASNs
+            if len( inguma.user_data['graph']['ASNs'][x[0]] ) == 0:
+                del inguma.user_data['graph']['ASNs'][x[0]]
+
+        #print "\n\nSteps!!"
+        # Get KB elements to remove for steps
+        for step in steps:
+            toremove = []
+            astoremove = []
+            for element in inguma.user_data:
+                if step in element:
+                    #print "\tElement " + element + " would be removed"
+                    toremove.append(element)
+
+            # Remove them
+            for remove in toremove:
+                del inguma.user_data[remove]
+            inguma.user_data['hosts'].remove(step)
+
+            # Collect ASNs to remove
+            for element in inguma.user_data['graph']['ASNs']:
+                if step in inguma.user_data['graph']['ASNs'][element]:
+                    astoremove.append([element, step])
+                    #print inguma.user_data['graph']['ASNs'][element]
+
+            # Remove collected ASNs
+            for x in astoremove:
+                inguma.user_data['graph']['ASNs'][x[0]].remove(x[1])
+                # Remove empty ASNs
+                if len( inguma.user_data['graph']['ASNs'][x[0]] ) == 0:
+                    del inguma.user_data['graph']['ASNs'][x[0]]
+
+        #print inguma.user_data['graph']
