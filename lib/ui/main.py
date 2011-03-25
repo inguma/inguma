@@ -17,14 +17,15 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys, time, vte, threading
+import os, sys, time, threading
 
-# Need root for most modules, so...
-if os.geteuid() != 0:
-    print "You must be root to run most of the modules."
-    answer = raw_input("Do you want to continue [y/N]? ")
-    if answer.lower() != 'y':
-        sys.exit(1)
+if sys.platform != "win32":
+    # Need root for most modules, so...
+    if os.geteuid() != 0:
+        print "You must be root to run most of the modules."
+        answer = raw_input("Do you want to continue [y/N]? ")
+        if answer.lower() != 'y':
+            sys.exit(1)
 
 # Perform the GTK UI dependency check here
 from . import dependencyCheck

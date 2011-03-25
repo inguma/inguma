@@ -19,7 +19,10 @@
 
 import pygtk
 import gtk, gobject, pango
-import vte
+import lib.ui.config as config
+
+if config.HAS_VTE:
+    import vte
 
 #global variables
 window = None

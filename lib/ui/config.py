@@ -32,7 +32,7 @@ NMAP_PROFILES = {
 'Quick Services version detection' : 'nmap -T Aggressive -sV -v ',
 'Quick and verbose scan' : 'nmap -d -T Aggressive --packet_trace -v -n ',
 'Regular Scan' : 'nmap -v ',
-'Sneaky Scan' : 'nmap --min_hostgroup 1 -sV -v -v  -T Sneaky --min_parallelism 1 -p21,80,110,139,161,256,389,443,445,500,1080,1433,1723,2001,3389,4001,5631 -n -O -sS --max_parallelism 1 --max_hostgroup 1 -iL "/home/hteso/Proyectos/Hispasec/primera/scans/hosts" -PN --max_retries 2 ',
+'Sneaky Scan' : 'nmap --min_hostgroup 1 -sV -v -v  -T Sneaky --min_parallelism 1 -p21,80,110,139,161,256,389,443,445,500,1080,1433,1723,2001,3389,4001,5631 -n -O -sS --max_parallelism 1 --max_hostgroup 1 -iL "Input file" -PN --max_retries 2 ',
 'UDP Polite Scan' : 'nmap -v -v  -T Polite -n -sU -PN --max_retries 3 '
 }
 
