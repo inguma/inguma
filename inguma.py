@@ -240,14 +240,13 @@ def loadModule(path, atype, marray, bLoad = True):
                     elif eval(f).type == "brute":
                         exec("brutes.append(eval(f))")
 
-                for x in dir(eval(f)):
-                    if x.startswith("C"):
-                        classes.append(f + "." + x)
-                        debugPrint("Registering class",f + "." + x)
-                        debugPrint("Creating a base object ....")
+                for x in filter(lambda x: x.startswith("C"), dir(eval(f))):
+                    classes.append(f + "." + x)
+                    debugPrint("Registering class",f + "." + x)
+                    debugPrint("Creating a base object ....")
 
-                        obj = eval(f + "." + x +"()")
-                        del obj
+                    obj = eval(f + "." + x +"()")
+                    del obj
             except:
                 debugPrint(FAIL + "Error loading module",f,":" + ENDC,sys.exc_info()[1])
                 if f.lower().find("smtp") > -1:
