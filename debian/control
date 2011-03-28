@@ -9,7 +9,7 @@ Standards-Version: 3.9.1
 
 Package: inguma
 Architecture: all
-Depends: python, ${misc:Depends}
+Depends: python, python-gtk2, ${misc:Depends}
 Recommends: python-scapy, tcpdump, python-qt3
 Suggests: python-gnuplot
 Description: Open source penetration testing toolkit
