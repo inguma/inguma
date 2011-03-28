@@ -19,9 +19,6 @@
 
 import sys
 
-import pygtk
-import gtk, gobject
-
 class OutputManager:
 
     def __init__(self, iface):
@@ -30,6 +27,9 @@ class OutputManager:
         if self.iface != 'gui' and self.iface != 'console':
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
+
+        if self.iface != 'console':
+            from lib.ui.ModuleDialog import ModuleDialog
 
     def echo(self, data, window=True):
 
@@ -85,35 +85,3 @@ class OutputManager:
     def get_new_nodes(self):
 
         return self.newNodes
-
-class ModuleDialog(gtk.Dialog):
-    '''Window to popup module output'''
-
-    def __init__(self):
-        super(ModuleDialog,self).__init__('Module output', None, gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
-
-        # the cancel button
-        self.butt_cancel = self.action_area.get_children()[0]
-        self.butt_cancel.connect("clicked", lambda x: self.destroy())
-
-        # Positions
-        self.resize(400, 400)
-        self.set_position(gtk.WIN_POS_CENTER)
-
-        # Log TextView
-        #################################################################
-        self.output_text = gtk.TextView(buffer=None)
-        self.output_text.set_wrap_mode(gtk.WRAP_NONE)
-        self.output_text.set_editable(False)
-        self.output_buffer = self.output_text.get_buffer()
-
-        self.scrolled_window = gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        self.scrolled_window.is_visible = True
-
-        # Add Textview to Scrolled Window
-        self.scrolled_window.add_with_viewport(self.output_text)
-
-        #self.vbox.pack_start(self.output_text)
-        self.vbox.pack_start(self.scrolled_window)
-        self.show_all()
