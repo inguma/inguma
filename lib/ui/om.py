@@ -28,9 +28,6 @@ class OutputManager:
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
 
-        if self.iface != 'console':
-            from lib.ui.ModuleDialog import ModuleDialog
-
     def echo(self, data, window=True):
 
         if window == True and self.isGui:
@@ -58,7 +55,8 @@ class OutputManager:
 
     def create_module_dialog(self):
 
-        self.module_dialog = ModuleDialog()
+        import lib.ui.ModuleDialog as ModuleDialog
+        self.module_dialog = ModuleDialog.ModuleDialog()
 
         return False
 
