@@ -31,7 +31,7 @@ class ThreadsTv:
         self.threads = {}
 
         # create a liststore with one string column to use as the model
-        self.liststore = gtk.ListStore(int, int, str, str, str)
+        self.liststore = gtk.ListStore(int, int, str, str, str, str)
 
         #self.modelfilter = self.liststore.filter_new()
 
@@ -39,7 +39,7 @@ class ThreadsTv:
         self.treeview = gtk.TreeView(self.liststore)
 
         # create the TreeViewColumns to display the data
-        self.treeview.columns = [None]*5
+        self.treeview.columns = [None]*6
         self.treeview.columns[0] = gtk.TreeViewColumn('No.')
         self.treeview.columns[1] = gtk.TreeViewColumn('State')
         self.treeview.columns[1].set_min_width(150)
@@ -49,6 +49,8 @@ class ThreadsTv:
         self.treeview.columns[3].set_min_width(100)
         self.treeview.columns[4] = gtk.TreeViewColumn('End')
         self.treeview.columns[4].set_min_width(100)
+        self.treeview.columns[5] = gtk.TreeViewColumn('Elapsed time')
+        self.treeview.columns[5].set_min_width(100)
 
         # Lets control right click on treeview
         self.treeview.connect('button_press_event', self.on_treeview_button_press_event )
@@ -62,7 +64,7 @@ class ThreadsTv:
         self.vajd = self.scrolledwindow.get_vadjustment()
         self.vajd.connect('changed', lambda a, s=self.scrolledwindow: self.rescroll(a,s))
 
-        for n in [0,2,3,4]:
+        for n in [0,2,3,4,5]:
             # add columns to treeview
             self.treeview.append_column(self.treeview.columns[n])
             # create a CellRenderers to render the data
@@ -84,12 +86,14 @@ class ThreadsTv:
         self.scrolledwindow.add(self.treeview)
 
         self.counter = 0
+        self.stime = 0
 
     def add_action(self, module, target, threadid):
         """ Adds a new action to the list """
 
         print "Adding new content for:", module
-        iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.localtime()), ''])
+        iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.localtime()), '', ''])
+        self.stime = time.time()
         self.threads[self.counter] = threadid
         self.counter += 1
         gobject.timeout_add(1000, self.check_thread, threadid, iter)
@@ -100,7 +104,13 @@ class ThreadsTv:
             model.set_value(iter, 1, 75)
             return True
         else:
+            # Get Elapsed time
+            self.endtime = time.time()
+            self.elapsed = self.endtime - self.stime
+            self.elapsed = "%.2gs" % (self.elapsed)
+
             model.set_value(iter, 4, time.strftime("%H:%M:%S", time.localtime()))
+            model.set_value(iter, 5, self.elapsed)
             model.set_value(iter, 1, 100)
             kbpath = libAutosave.getKbPath()
             self.uicore.saveKB(kbpath)
