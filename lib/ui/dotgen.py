@@ -244,22 +244,38 @@ def graph_to_from(kb, type):
                 pass
 
     elif type == 'ports_vuln':
+        # Add a node for each target and an invisnode to join them
         for target in kb['targets']:
             dotcode += '"' + target + '" [shape="doublecircle", style=filled, fillcolor="#5E82C6", fixedsize=1, height=0.9, width=0.9, URL="' + target + '"]\n'
             dotcode += '"Invisnode" -- "' + target + '" [style=invis]\n'
 
             if target + '_tcp_ports' in kb:
+                # For each port of the target...
                 for port in kb[target + '_tcp_ports']:
-                    vuln_id = 0
+                    # Add a port node
                     if target + "_" + str(port) + '-web-vulns' in kb:
                         dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '", shape=doublecircle]\n'
                     else:
                         dotcode += '"' + target + '_'+ str(port) + '" [label="' + str(port) + '"]\n'
+                    # And join target with port nodes
                     dotcode += '"' + target + '" -- "' + target + '_'+ str(port) + '" [len=1.25, color=azure3];\n'
+
                     if target + "_" + str(port) + '-web-vulns' in kb:
+                        vuln_id = 0
+                        # For each vuln on that port...
                         for vuln in kb[target + "_" + str(port) + '-web-vulns']:
+                            # Add a vuln node and join with the target port
                             dotcode += '"' + vuln[0] + str(vuln_id) + '" [style=filled, fillcolor=indianred4, fixedsize=1, height=0.9, width=0.9, label=\"OSVDB:' + vuln[0] + '\", URL="OSVDB:' + vuln[0] + '"]\n'
                             dotcode += '"' + target + '_' + str(port) + '" -- "' + vuln[0] + str(vuln_id) + '" [len=1.25, color=azure3];\n'
+                            vuln_id += 1
+
+                        # I know, this is stupid but, for some reason graphviz generates different graphs depending on lines order :S
+                        vuln_id = 0
+                        for vuln in kb[target + "_" + str(port) + '-web-vulns']:
+                            # Add a vuln poc node and join with the vuln id
+                            dotcode += '"' + vuln[0] + str(vuln_id) + '_poc" [shape=record, color=azure3, fontcolor=azure3, style="filled,rounded", fillcolor="#373D49" fixedsize=false label="' + vuln[1] + '"]\n'
+                            dotcode += '"' + vuln[0] + str(vuln_id) + '" -- "' + vuln[0] + str(vuln_id) + '_poc"  [len=1.25, color=azure3];\n'
+
                             vuln_id += 1
 
             else:
