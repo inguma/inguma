@@ -273,7 +273,7 @@ def graph_to_from(kb, type):
                         vuln_id = 0
                         for vuln in kb[target + "_" + str(port) + '-web-vulns']:
                             # Add a vuln poc node and join with the vuln id
-                            dotcode += '"' + vuln[0] + str(vuln_id) + '_poc" [shape=record, color=azure3, fontcolor=azure3, style="filled,rounded", fillcolor="#373D49" fixedsize=false label="' + vuln[1] + '"]\n'
+                            dotcode += '"' + vuln[0] + str(vuln_id) + '_poc" [shape=record, color=azure3, fontcolor=azure3, style="filled,rounded", fillcolor="#373D49" fixedsize=false label="' + vuln[1] + '", URL="poc_http://' + target + ':' + port + vuln[1] + '"]\n'
                             dotcode += '"' + vuln[0] + str(vuln_id) + '" -- "' + vuln[0] + str(vuln_id) + '_poc"  [len=1.25, color=azure3];\n'
 
                             vuln_id += 1

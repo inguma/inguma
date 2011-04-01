@@ -36,7 +36,7 @@ class MyDotWidget(xdot.DotWidget):
 
     def on_area_button_release(self, area, event):
         if event.button == 3 and event.state & gtk.gdk.CONTROL_MASK:
-            print "Ctrl + Right Click!"
+            #print "Ctrl + Right Click!"
             x, y = int(event.x), int(event.y)
             url = self.get_url(x, y)
             jump = self.get_jump(x, y)
@@ -62,6 +62,8 @@ class MyDotWidget(xdot.DotWidget):
                 # Check if it's an OSVDB node
                 if url.url.split(':')[0] == 'OSVDB':
                     self.context.show_browser('action', url.url.split(':')[1])
+                elif 'poc_' in url.url:
+                    self.context.show_browser('action', url.url)
                 else:
                     # If not is a target node
                     self.context.set_data(url.url)

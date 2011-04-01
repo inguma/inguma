@@ -255,7 +255,9 @@ self.showBrute )], user_data=[ip, port] )
     def show_browser(self, action, data):
         from webbrowser import open_new
 
-        if len(data) == 3:
+        if 'poc_' in data:
+            open_new(data.split('poc_')[1])
+        elif len(data) == 3:
             port, ip, vuln = data
             open_new('http://' + ip + ':' + port + vuln)
         elif len(data) == 2:
