@@ -98,6 +98,16 @@ class ThreadsTv:
         self.counter += 1
         gobject.timeout_add(1000, self.check_thread, threadid, iter)
 
+    # Convert seconds to HH:MM:SS
+    def GetInHMS(self, seconds):
+        hours = seconds / 3600
+        seconds -= 3600*hours
+        minutes = seconds / 60
+        seconds -= 60*minutes
+        if hours == 0:
+            return "%02d:%02d" % (minutes, seconds)
+        return "%02d:%02d:%02d" % (hours, minutes, seconds)
+
     def check_thread(self, threadid, iter):
         model = self.treeview.get_model()
         if threadid.is_alive():
@@ -106,8 +116,8 @@ class ThreadsTv:
         else:
             # Get Elapsed time
             self.endtime = time.time()
-            self.elapsed = self.endtime - self.stime
-            self.elapsed = "%.2gs" % (self.elapsed)
+            self.elapsed = self.GetInHMS( int(self.elapsed) )
+            print self.elapsed
 
             model.set_value(iter, 4, time.strftime("%H:%M:%S", time.localtime()))
             model.set_value(iter, 5, self.elapsed)
