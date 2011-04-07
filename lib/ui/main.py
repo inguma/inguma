@@ -541,6 +541,7 @@ class MainApp:
 
         self.exploitsInst = exploits.Exploits(config, self.term_notebook)
         exploitsGui = self.exploitsInst.get_widget()
+        setattr(self.exploitsInst, 'gom', self.gom)
         exploitsGui.show_all()
         self.notebook.append_page(exploitsGui, b)
 
@@ -637,6 +638,8 @@ class MainApp:
         self.uicore.set_threadtv(self.threadsInst)
         setattr(self.graph_uiman, 'threadtv', self.threadsInst)
         setattr(self.altnode_uiman, 'threadtv', self.threadsInst)
+        # And to exploit management module
+        setattr(self.exploitsInst, 'threadsInst', self.threadsInst)
 
 #        #################################################################################################################################
 #        # Progress Bar
@@ -888,19 +891,6 @@ class MainApp:
             self.handlebox.show()
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
-
-        #Detect Exploits tab selected to start loading exploits...
-        if more == 3:
-            if self.exploitsInst.check_exploits() == False:
-                opt = self.exploitsInst.show_dialog()
-                if opt == True:
-                    t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
-                    t.start()
-                    self.threadsInst.add_action('Load Exploits', 'local', t)
-            else:
-                t = threading.Thread(target=self.exploitsInst.load_exploits, args=(self.gom,))
-                t.start()
-                self.threadsInst.add_action('Load Exploits', 'local', t)
 
     def newBin(self, widget):
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
