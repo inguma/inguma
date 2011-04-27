@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-Inguma Penetration Testing Toolkit 0.2
+Inguma Penetration Testing Toolkit
 Copyright (c) 2006, 2007, 2008 Joxean Koret, joxeankoret [at] yahoo.es
 Copyright (c) 2009 - 2011 Hugo Teso, hugo.teso [at] gmail.com
 
@@ -127,7 +127,7 @@ global listenPort; global ignore_host;
 """
 
 debug = False
-version = "0.2"
+version = "0.3-WIP"
 prompt = "inguma> "
 
 commands = {}
@@ -143,7 +143,7 @@ exploits = []
 vars = globals()
 
 def printBanner():
-    print "Inguma Version",version
+    print "Inguma v" + version
     print "Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>"
     print "Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>"
     print
