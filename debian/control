@@ -6,6 +6,7 @@ Build-Depends:  debhelper (>= 5.0.37.2),
                 python,
                 quilt (>= 0.40)
 Standards-Version: 3.9.2
+Homepage: http://inguma.eu
 
 Package: inguma
 Architecture: all

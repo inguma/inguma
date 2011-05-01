@@ -11,6 +11,7 @@ inguma (0.3.0~hg20110430-1) unstable; urgency=low
     - Bumped to Standards-Version 3.9.2, no changes.
     - Dropped python-qt3, we are only using pygtk.
     - Added python:Depends.
+    - Added Homepage.
   * debian/rules:
     - Revamped the way everything is done.
     - Removed some LICENSE files in dh_installdocs.
@@ -21,7 +22,7 @@ inguma (0.3.0~hg20110430-1) unstable; urgency=low
     license terms.
   * Created debian/source/format.
 
- -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 11:10:01 -0700
+ -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 11:18:30 -0700
 
 inguma (0.0.7.2-2) unstable; urgency=low
 
