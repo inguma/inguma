@@ -1,15 +1,19 @@
 This package was debianized by Pierre Chifflier <pollux@debian.org> on
 Tue, 25 Dec 2007 19:04:43 +0100.
 
-It was downloaded from http://inguma.sourceforge.net
+The packaging was revamped by David Martínez Moreno <ender@debian.org> on
+Sat, 30 Apr 2011 23:18:59 -0700.
 
-Upstream Author: Joxean Koret <joxeankoret@yahoo.es>
+It was downloaded from http://inguma.eu
+
+Upstream Author: Hugo Teso <hteso@inguma.eu>
 
 Copyright (c) 2006, 2007, 2008 Joxean Koret <joxeankoret@yahoo.es>
+          (c) 2009-2011 Hugo Teso <hteso@inguma.eu>
 
 License:
 
-This library is released under the GPLv2
+The main Inguma program and libraries are released under GPLv2 or later.
 
    This package is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,11 +29,65 @@ This library is released under the GPLv2
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
    MA 02110-1301, USA.
 
+
 On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL-2'.
+Public License can be found in `/usr/share/common-licenses/GPL'.
 
 
-The Debian packaging is (C) 2007, 2008 Pierre Chifflier <pollux@debian.org> and
-is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+Inguma contains other pieces of software:
 
+-------------------------------------------------------------------------------
+PyShellCode library for Inguma Version 0.0.2
+A library to write shellcodes coding in python.
+Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
 
+PyShellCode is licensed under GPLv2 or later.
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL'.
+
+-------------------------------------------------------------------------------
+
+libdisassemble, a Python library for disassembling x86 opcodes.
+
+Licensed under LGPL 2.1 or later.
+
+This code largely copyright Immunity, Inc (2004), parts
+copyright mammon and used under the LGPL by permission
+
+Any question, comments, hate mail: dave@immunitysec.com
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+                                                                               
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+                                                                               
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+
+On Debian GNU/Linux systems, the complete text of the GNU Lesser General
+Public License can be found in `/usr/share/common-licenses/LGPL'.
+
+-------------------------------------------------------------------------------
+
+Scapy, interactive packet manipulation program.
+
+## Copyright (c) Philippe Biondi <phil@secdev.org>
+## This program is published under a GPLv2 license
+## See http://www.secdev.org/projects/scapy for more information.
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License v2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+-------------------------------------------------------------------------------
+
+The Debian packaging is (c) 2007, 2008 Pierre Chifflier <pollux@debian.org> and
+(c) 2011 David Martínez Moreno <ender@debian.org> and it's licensed under the GPL,
+see `/usr/share/common-licenses/GPL'.
