@@ -1,3 +1,20 @@
+inguma (0.3.0~hg20110430-1) unstable; urgency=low
+
+  * New maintainer, taking over Pierre Chifflier.
+  * New release (closes: #610648):
+    - Many, many changes.  Stability, fixes all over the place, GeoIP, even a
+      new logo!
+    - Scapy is again included due to patched sources.  We are in contact with
+      upstream to add those patches and drop it from the source.
+    - Added PyGTK GUI and dropped the QT-based one.
+  * debian/control:
+    - Bumped to Standards-Version 3.9.2, no changes.
+    - Dropped python-qt3, we are only using pygtk.
+  * Dropped debian/patches, none currently needed.
+  * Bumped compatibility version to debhelper v8.
+
+ -- David Martínez Moreno <ender@debian.org>  Sat, 30 Apr 2011 17:56:45 -0700
+
 inguma (0.0.7.2-2) unstable; urgency=low
 
   * Fix scapy configuration (Closes: #526945)
