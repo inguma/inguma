@@ -6,14 +6,22 @@ inguma (0.3.0~hg20110430-1) unstable; urgency=low
       new logo!
     - Scapy is again included due to patched sources.  We are in contact with
       upstream to add those patches and drop it from the source.
-    - Added PyGTK GUI and dropped the QT-based one.
+    - Added PyGTK GUI and dropped the Qt-based one.
   * debian/control:
     - Bumped to Standards-Version 3.9.2, no changes.
     - Dropped python-qt3, we are only using pygtk.
+    - Added python:Depends.
+  * debian/rules:
+    - Revamped the way everything is done.
+    - Removed some LICENSE files in dh_installdocs.
+    - Changed ingumagui to ginguma.
   * Dropped debian/patches, none currently needed.
   * Bumped compatibility version to debhelper v8.
+  * debian/copyright: Added lots of third-party dependencies and updated other
+    license terms.
+  * Created debian/source/format.
 
- -- David Martínez Moreno <ender@debian.org>  Sat, 30 Apr 2011 17:56:45 -0700
+ -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 11:10:01 -0700
 
 inguma (0.0.7.2-2) unstable; urgency=low
 

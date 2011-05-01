@@ -68,10 +68,12 @@ install: build
 		cp -a $$dir $(CURDIR)/debian/inguma/usr/share/inguma/; \
 	done
 
-	# cleanup
-	#rm -rf debian/inguma/usr/share/inguma/dis/RCS
-	#rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/LICENSE
-	#rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/test
+	# Clean up.
+	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/x86/test
+	rm -f debian/inguma/usr/share/inguma/lib/libdisassemble/LICENSE
+	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/LICENSE
+	rm -f debian/inguma/usr/share/inguma/lib/debugger/envi/disassemblers/libdisassemble/license
+	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/test
 	#find debian/inguma/usr/share/inguma/ -mindepth 1 -type f -exec chmod 0644 {} \;
 	#chmod 0755 debian/inguma/usr/share/inguma/gui/make.sh
 
@@ -85,7 +87,7 @@ binary-indep: build install fixperms
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs doc/ChangeLog
-	dh_installdocs
+	dh_installdocs -XLICENSE -XCOPYING
 	dh_installexamples
 #	dh_install
 #	dh_installmenu
