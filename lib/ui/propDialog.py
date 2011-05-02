@@ -20,7 +20,7 @@
 import pygtk
 import gtk, gobject
 
-import os, sys, time, threading
+import os, sys, time, threading, urllib, gzip
 sys.path.append('../..')
 
 class propDialog:
@@ -82,16 +82,21 @@ class propDialog:
         # Add exploits and nikto update buttons
         self.exploit_lbl = gtk.Label('Exploit DB')
         self.nikto_lbl = gtk.Label('Nikto Rules')
+        self.geo_lbl = gtk.Label('GeoIP DB')
         self.exploit_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.exploit_bt.connect('clicked', self.update_exploits)
         self.nikto_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.nikto_bt.connect('clicked', self.update_nikto)
+        self.geo_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.geo_bt.connect('clicked', self.update_geo)
 
         # Add lements to Table
         self.update_table.attach(self.exploit_lbl, 0, 1, 0, 1)
         self.update_table.attach(self.exploit_bt, 1, 2, 0, 1)
         self.update_table.attach(self.nikto_lbl, 0, 1, 1, 2)
         self.update_table.attach(self.nikto_bt, 1, 2, 1, 2)
+        self.update_table.attach(self.geo_lbl, 0, 1, 2, 3)
+        self.update_table.attach(self.geo_bt, 1, 2, 2, 3)
 
         # Add Table to Notebook
         self.prefs_nb.append_page(self.update_table, self.update_lbl)
@@ -136,3 +141,27 @@ class propDialog:
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
         self.threadtv.add_action('Nikto Update', 'Nikto DB', t)
+
+    def update_geo(self, widget):
+        t = threading.Thread(target=self.download_geodb)
+        t.start()
+        self.threadtv.add_action('GeoIP-DB Update', 'GeoIP DB', t)
+
+    def download_geodb(self):
+        self.GEOIP_DIR='data/'        
+        self.INGUMA_DIR = os.getcwd()
+
+        page = "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
+        self.gom.echo( "Downloading " + page, False )
+        urllib.urlretrieve(page, "data/GeoLiteCity.dat.gz")
+
+        # Extract DB and remove original file
+        self.gom.echo( "Extracting files...", False )
+        gz = gzip.open("data/GeoLiteCity.dat.gz")
+        db = gz.read()
+        gz.close()
+        os.remove("data/GeoLiteCity.dat.gz")
+        geodb = open('data/GeoLiteCity.dat', 'w')
+        geodb.write(db)
+        geodb.close()
+        self.gom.echo( "Operation Complete", False )

@@ -127,6 +127,16 @@ def gtkui_dependency_check(config):
         print WARNING + "Graphviz bianries not found, this software is necessary to run the GUI" + ENDC
         sys.exit( 1 )
 
+    # Check GeoIP
+    try:
+        print "\tGeoIP library...",
+        import GeoIP
+        print OKGREEN + "\tOK" + ENDC
+    except:
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "GeoIP library not found, some modules would not work" + ENDC
+        config.HAS_GEOIP = False
+
     # Check Nmap
     try:
         print "\t" + config.NMAP_PATH + "...",

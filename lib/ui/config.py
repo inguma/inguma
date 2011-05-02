@@ -3,7 +3,7 @@
 # Startup preferences
 SHOW_LOG=True
 SHOW_KBTREE=True
-SHOW_MODULE_WIN=True
+SHOW_MODULE_WIN=False
 
 # Paths to external tools
 NMAP_PATH = '/usr/bin/nmap'
@@ -22,6 +22,7 @@ HAS_NMAP = True
 HAS_W3AF = True
 HAS_SOURCEVIEW = True
 HAS_VTE = True
+HAS_GEOIP = True
 
 NMAP_PROFILES = {
 'Intense Scan' : 'nmap -T Aggressive -A -v ',

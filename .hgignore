@@ -4,10 +4,4 @@ inguma_history
 data/exploits/
 data/*.xml
 data/*.kb
-build-stamp
-configure-stamp
-debian/stamp-patched
-debian/files
-debian/inguma/
-debian/*debhelper*
-debian/*substvars
+data/GeoLiteCity.dat

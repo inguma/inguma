@@ -20,7 +20,10 @@
 import pygtk
 import gtk, gobject
 
-import threading
+import os, threading
+
+import lib.ui.geoip as geoip
+import lib.ui.config as config
 
 class UIManager(gtk.UIManager):
 
@@ -40,6 +43,7 @@ class UIManager(gtk.UIManager):
                 <menuitem action="do_asn"/>
                 <separator/>
                 <menuitem action="asn_cluster"/>
+                <menuitem action="geoip"/>
                 <menuitem action="get_to_from"/>
                 <menuitem action="get_from_to"/>
                 <menuitem action="get_vulns_ip"/>
@@ -62,6 +66,7 @@ class UIManager(gtk.UIManager):
         self.actiongroup.add_actions( [('options', None, ' Graph Options ')] )
         self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, ' Get ASN ', None, 'ToolTip', self.doAsn )] )
         self.actiongroup.add_actions( [('asn_cluster', gtk.STOCK_CONVERT, ' ASN Clustered ', None, 'ToolTip', self.doNormal )] )
+        self.actiongroup.add_actions( [('geoip', gtk.STOCK_CONVERT, ' GeoIP Map ', None, 'ToolTip', self.geoIp)] )
         self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_CONVERT, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
         self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_CONVERT, ' IP per Port ', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
         self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_CONVERT, ' Vulns per Port ', None, 'ToolTip', self.doToFrom )], ['ports_vuln'] )
@@ -82,6 +87,15 @@ class UIManager(gtk.UIManager):
     def doNormal(self, widget):
         self.uicore.getDot(False)
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
+
+    def geoIp(self, widget):
+        if os.path.exists('data/GeoLiteCity.dat'):
+            if config.HAS_GEOIP:
+                geoip.Gui(self.uicore)
+        else:
+            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "GeoIP Database not found!\n\nDownload it at the preferences dialog\nunder the Update tab")
+            md.run()
+            md.destroy()
 
     def doAsn(self, widget):
         #self.uicore.getDot(True)
