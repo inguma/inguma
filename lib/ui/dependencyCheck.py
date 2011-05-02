@@ -124,7 +124,7 @@ def gtkui_dependency_check(config):
                 return
 
         print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "Graphviz bianries not found, this software is necessary to run the GUI" + ENDC
+        print WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC
         sys.exit( 1 )
 
     # Check GeoIP
