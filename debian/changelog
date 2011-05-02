@@ -1,4 +1,4 @@
-inguma (0.3.0~hg20110430-1) unstable; urgency=low
+inguma (0.3.0~hg20110501-1) unstable; urgency=low
 
   * New maintainer, taking over Pierre Chifflier.
   * New release (closes: #610648):
@@ -22,7 +22,7 @@ inguma (0.3.0~hg20110430-1) unstable; urgency=low
     license terms.
   * Created debian/source/format.
 
- -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 11:18:30 -0700
+ -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 15:44:38 -0700
 
 inguma (0.0.7.2-2) unstable; urgency=low
 
