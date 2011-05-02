@@ -248,24 +248,24 @@ def manageConn(wrcht1, wrcht2, wait = None):
 ### TCP server -e
 def elistenerTCP(port,cmd):
 	try:
-		as = None
+		act_socket = None
 		s = socket()
 		s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
 		s.bind(("0.0.0.0",int(sys.argv[1])))
 		s.listen(10000)
-		as,addy = s.accept()
-		as.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
-		as.setblocking(False)
-		#### as = active socket, addy = address on the other end
+		act_socket,addy = s.accept()
+		act_socket.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+		act_socket.setblocking(False)
+		#### act_socket = active socket, addy = address on the other end
 		#### let the fun begin
 		
-		manageCommand(sys.argv[2], as, as)
+		manageCommand(sys.argv[2], act_socket, act_socket)
 	
-		as.close()
+		act_socket.close()
 	except:
 		print("Error:  %s"%sys.exc_info()[0])
 		sys.excepthook(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-	as.close()
+	act_socket.close()
 
 ### UDP server -e
 def elisternerUDP(port, cmd):
