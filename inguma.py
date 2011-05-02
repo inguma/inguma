@@ -160,7 +160,7 @@ def checkArgs():
     global debug
 
     for arg in sys.argv:
-        if arg.lower() == "-d" or arg.lower() == "-debug":
+        if arg.lower() == "-d" or arg.lower() == "--debug":
             debug = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
             usage()
@@ -170,92 +170,99 @@ def checkArgs():
 
 def debugPrint(*args):
 
+    # Print debug messages if debug is activated (run with -d)
     global debug
 
     if not debug:
         return
 
     outStr = ""
-    for x in args:
-        outStr += str(x) + " "
+    for arg in args:
+        outStr += str(arg) + " "
 
     print outStr
 
 def loadModule(path, atype, marray, bLoad = True):
+    # path:   module category path (modules/discover)
+    # atype:  module category (discover)
+    # marray: module category list (discovers)
 
     global GLOBAL_VARIABLES
 
     sys.path.append(path)
 
-    for f in os.listdir(path):
-        if f.startswith("_") or f.endswith("pyc"):
+    for file in os.listdir(path):
+        # Load all modules in the path, unless:
+        if file.startswith("_") or file.endswith("pyc"):
             continue
-        
+
         if bLoad:
-            f = f[:f.find(".")]
+            # Get file name
+            file = file[:file.find(".")]
         else:
-            if not os.path.isdir("%s%s%s" % (path, os.sep, f)):
+            if not os.path.isdir("%s%s%s" % (path, os.sep, file)):
                 continue
 
-        debugPrint("Loading " + atype + " module",f)
+        debugPrint("Loading " + atype + " module", file)
 
         if bLoad:
             try:
-                if f.isalnum():
-                    exec("import " + f)
+                if file.isalnum():
+                    exec("import " + file)
                     exec("global " + marray)
                 else:
-                    print "The, supposed, module %s appears to be a non valid module" % f
+                    print "The, supposed, module %s appears to be a non valid module" % file
                     continue
 
                 try:
-                    if "globals" in dir(eval(f)):
-                        moduleGlobals = eval(f).globals
+                    if "globals" in dir(eval(file)):
+                        # Load module global variables
+                        moduleGlobals = eval(file).globals
 
                         for aGlobal in moduleGlobals:
                             if aGlobal.isalnum():
                                 exec ("global " + aGlobal)
                                 GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
-                                print "The, supposed, global variable of the module %s doesn't appears to be a variable..." % f
+                                print "The, supposed, global variable of the module %s doesn't appears to be a variable..." % file
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
                     debugPrint(FAIL + "Error loading global variables" + ENDC)
                     print sys.exc_info()[1]
 
-                exec(marray + ".append(eval(f))")
+                exec(marray + ".append(eval(file))")
 
-                commands[eval(f).name] = eval(f)
+                commands[eval(file).name] = eval(file)
                 
                 if atype == "unknown":
-                    if eval(f).type == "gather":
-                        exec("gathers.append(eval(f))")
-                    elif eval(f).type == "discover":
-                        exec("discovers.append(eval(f))")
-                    elif eval(f).type == "rce":
-                        exec("rces.append(eval(f))")
-                    elif eval(f).type == "fuzzers":
-                        exec("fuzzers.append(eval(f))")
-                    elif eval(f).type == "brute":
-                        exec("brutes.append(eval(f))")
+                    if eval(file).type == "gather":
+                        exec("gathers.append(eval(file))")
+                    elif eval(file).type == "discover":
+                        exec("discovers.append(eval(file))")
+                    elif eval(file).type == "rce":
+                        exec("rces.append(eval(file))")
+                    elif eval(file).type == "fuzzers":
+                        exec("fuzzers.append(eval(file))")
+                    elif eval(file).type == "brute":
+                        exec("brutes.append(eval(file))")
 
-                for x in filter(lambda x: x.startswith("C"), dir(eval(f))):
-                    classes.append(f + "." + x)
-                    debugPrint("Registering class",f + "." + x)
+                for x in filter(lambda x: x.startswith("C"), dir(eval(file))):
+                    classes.append(file + "." + x)
+                    debugPrint("Registering class",file + "." + x)
                     debugPrint("Creating a base object ....")
 
-                    obj = eval(f + "." + x +"()")
+                    obj = eval(file + "." + x +"()")
                     del obj
             except:
-                debugPrint(FAIL + "Error loading module",f,":" + ENDC,sys.exc_info()[1])
-                if f.lower().find("smtp") > -1:
+                debugPrint(FAIL + "Error loading module", file, ":" + ENDC,sys.exc_info()[1])
+                if file.lower().find("smtp") > -1:
                     raise
         else:
-            if f.isalnum():
-                eval(marray).append(f)
+            if file.isalnum():
+                eval(marray).append(file)
             else:
-                print WARNING + "The, supposed, module %s appears to be a non valid module" + ENDC % f
+                print WARNING + "The, supposed, module %s appears to be a non valid module" + ENDC % file
                 continue
 
 def readDiscover():
@@ -1090,6 +1097,7 @@ def saveHistory():
         readline.write_history_file(historyFile)
 
 def loadHistory():
+    # Load history commands
     import readline
     historyPath = os.path.expanduser("~/.inguma")
     historyFile = historyPath + '/history'
@@ -1105,7 +1113,7 @@ def loadHistory():
         open(historyFile, 'w').close()
 
 def set_om():
-    # Set OM type
+    # Set OutputManager to be used by modules
     global gom
     if isGui == True:
         gom = om.OutputManager('gui')
@@ -1121,6 +1129,7 @@ def setupAutoCompletion():
         import readline
         import rlcompleter
 
+        # Add commands to autocompletion
         readline.set_completer(rlcompleter.Completer(commands).complete)
         readline.parse_and_bind("tab: complete")
 
@@ -1131,15 +1140,22 @@ def setupAutoCompletion():
 
 def main():
 
-    if hasScapy:
-        scapy.conf.verb = 0
-
+    # Check Args and enable debug if requested
     if not checkArgs():
         usage()
         sys.exit(0)
 
+    # Remove scapy output messages
+    if hasScapy:
+        if not debug:
+            scapy.conf.verb = 0
+        else:
+            scapy.conf.verb = 1
+
+    # Set OutputManager for modules
     set_om()
     readCommands()
+    # Set autocompletion and load commands history
     setupAutoCompletion()
     mainLoop()
 
