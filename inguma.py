@@ -1083,15 +1083,26 @@ def printPayloads():
 
 def saveHistory():
     import readline
-    historyPath = os.path.expanduser("inguma_history")
-    readline.write_history_file(historyPath)
+    historyPath = os.path.expanduser("~/.inguma")
+    historyFile = historyPath + '/history'
+
+    if os.path.exists(historyFile):
+        readline.write_history_file(historyFile)
 
 def loadHistory():
     import readline
-    historyPath = os.path.expanduser("inguma_history")
+    historyPath = os.path.expanduser("~/.inguma")
+    historyFile = historyPath + '/history'
     
-    if os.path.exists(historyPath):
-        readline.read_history_file(historyPath)
+    if os.path.exists(historyFile):
+        readline.read_history_file(historyFile)
+    else:
+        if not os.path.exists(historyPath):
+            try:
+                os.mkdir(historyPath, 0700)
+            except:
+                print "Cannot create " + historyPath
+        open(historyFile, 'w').close()
 
 def set_om():
     # Set OM type
