@@ -37,6 +37,7 @@ class ThreadsTv:
 
         # create the TreeView
         self.treeview = gtk.TreeView(self.liststore)
+        self.treeview.set_rules_hint(True)
 
         # create the TreeViewColumns to display the data
         self.treeview.columns = [None]*6
@@ -91,7 +92,7 @@ class ThreadsTv:
     def add_action(self, module, target, threadid):
         """ Adds a new action to the list """
 
-        print "Adding new content for:", module
+#        print "Adding new content for:", module
         iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.localtime()), '', ''])
         self.stime = time.time()
         self.threads[self.counter] = threadid

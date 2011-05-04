@@ -18,7 +18,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys
+import os, sys, platform
 
 def gtkui_dependency_check(config):
     '''
@@ -112,21 +112,6 @@ def gtkui_dependency_check(config):
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "PySNMP library not found, some modules would not work" + ENDC
 
-    # Check Graphviz
-    print "\tGraphviz binaries...",
-    if os.environ.has_key('PATH'):
-        for path in os.environ['PATH'].split(os.pathsep):
-            progs = __find_executables(path)
-
-            if progs is not None :
-                #print progs
-                print OKGREEN + "\tOK" + ENDC
-                return
-
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC
-        sys.exit( 1 )
-
     # Check GeoIP
     try:
         print "\tGeoIP library...",
@@ -148,6 +133,21 @@ def gtkui_dependency_check(config):
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC
         config.HAS_NMAP = False
+
+    # Check Graphviz
+    print "\tGraphviz binaries...",
+    if os.environ.has_key('PATH'):
+        for path in os.environ['PATH'].split(os.pathsep):
+            progs = __find_executables(path)
+
+            if progs is not None :
+                #print progs
+                print OKGREEN + "\tOK" + ENDC
+                return
+
+        print WARNING + "\tD'oh!" + ENDC
+        print WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC
+        sys.exit( 1 )
 
 #   Not yey necessary
 #    # Check w3af
@@ -178,7 +178,10 @@ def __find_executables(path):
     """
 
     success = False
-    progs = {'dot': '', 'twopi': '', 'neato': '', 'circo': '', 'fdp': '', 'sfdp': ''}
+    if platform.system() != 'Windows':
+        progs = {'dot': '', 'twopi': '', 'neato': '', 'circo': '', 'fdp': '', 'sfdp': ''}
+    else:
+        progs = {'dot.exe': '', 'twopi.exe': '', 'neato.exe': '', 'circo.exe': '', 'fdp.exe': '', 'sfdp.exe': ''}    
     
     was_quoted = False
     path = path.strip()

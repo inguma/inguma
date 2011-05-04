@@ -50,6 +50,11 @@ if sys.platform == "win32":
 else:
     gtk.gdk.threads_init()
 
+# Load the theme (this fixes bug [ 2022433 ] windows buttons without images)
+# https://sourceforge.net/tracker/index.php?func=detail&aid=2022433&group_id=170274&atid=853652
+if sys.platform == "win32":
+    gtk.rc_add_default_file('%USERPROFILE%/.gtkrc-2.0')
+
 # splash!
 from lib.ui.splash import Splash
 splash = Splash()
@@ -554,6 +559,12 @@ class MainApp:
         # Log Window
         #################################################################
         self.logtext = gtk.TextView(buffer=None)
+
+        # Some eye candy
+        self.logtext.modify_base(gtk.STATE_NORMAL, gtk.gdk.Color(16400, 16400, 16440))
+        self.logtext.modify_text(gtk.STATE_NORMAL, gtk.gdk.Color(60535, 60535, 60535, 0))
+        self.logtext.set_left_margin(10)
+
         self.logtext.set_wrap_mode(gtk.WRAP_NONE)
         self.logtext.set_editable(False)
         #self.logtext.set_size_request(40,40)

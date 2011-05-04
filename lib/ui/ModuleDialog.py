@@ -37,6 +37,12 @@ class ModuleDialog(gtk.Dialog):
         # Log TextView
         #################################################################
         self.output_text = gtk.TextView(buffer=None)
+
+        # Some eye candy
+        self.output_text.modify_base(gtk.STATE_NORMAL, gtk.gdk.Color(16400, 16400, 16440))
+        self.output_text.modify_text(gtk.STATE_NORMAL, gtk.gdk.Color(60535, 60535, 60535, 0))
+        self.output_text.set_left_margin(10)
+
         self.output_text.set_wrap_mode(gtk.WRAP_NONE)
         self.output_text.set_editable(False)
         self.output_buffer = self.output_text.get_buffer()
