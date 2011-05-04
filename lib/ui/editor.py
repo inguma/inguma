@@ -228,12 +228,14 @@ def button_press_cb(view, ev):
 
     return False
 
+def quit(widget, ev):
+    windows[0].destroy()
 
 ######################################################################
 ##### Actions & UI definition
 buffer_actions = [
     ('Open', gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', open_file_cb),
-    ('Quit', gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Exit the application', gtk.main_quit)
+    ('Quit', gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Exit the application', quit)
 ]
 
 view_actions = [
@@ -368,16 +370,14 @@ def create_view_window(buffer, sourceview = None):
             action.set_active(True)
 
     # add source mark pixbufs
-    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR,
-                                                       'pixmaps/apple-green.png'))
+    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR, 'pixmaps/apple-green.png'))
     if pixbuf:
         view.set_mark_category_pixbuf (MARK_TYPE_1, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_1, 1)
     else:
         print 'could not load mark 1 image.  Spurious messages might get triggered'
 
-    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR,
-                                                       'pixmaps/apple-red.png'))
+    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR,'pixmaps/apple-red.png'))
     if pixbuf:
         view.set_mark_category_pixbuf (MARK_TYPE_2, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_2, 2)

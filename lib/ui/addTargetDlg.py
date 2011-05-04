@@ -129,7 +129,7 @@ class addTargetDialog:
             t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
             t.start()
             self.threadtv.add_action('Nmap Scan', ip, t)
-            gobject.timeout_add(1000, self.check_thread, t)
+            gobject.timeout_add(1000, self.check_nmap_thread, t)
         else:
             # Run discover modules
             t = threading.Thread(target=self.runDiscovers, args=(type,))
@@ -139,22 +139,22 @@ class addTargetDialog:
     def runDiscovers(self, type):
 
         if type == 'dom':
-            print "Running ipaddr"
+            self.gom.echo( "Running ipaddr" )
             self.uicore.uiRunDiscover('ipaddr', join=True)
             ipaddr = self.uicore.get_kbfield('hosts')
             ipaddr = ipaddr[-1]
-            print "\tDone, setting target to " + ipaddr
+            self.gom.echo( "\tDone, setting target to " + ipaddr )
             self.uicore.set_kbfield('target', ipaddr)
 
         for module in self.DISCOVERS:
-            print "Running discover: " + module
+            self.gom.echo( "Running discover: " + module )
             self.uicore.uiRunDiscover(module, join=True)
 
         for module in self.GATHERS:
-            print "Running gather: " + module
+            self.gom.echo( "Running gather: " + module )
             self.uicore.uiRunDiscover(module, join=True)
 
-    def check_thread(self, thread):
+    def check_nmap_thread(self, thread):
         if thread.isAlive() == True:
             return True
         else:

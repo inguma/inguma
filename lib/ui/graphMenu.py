@@ -22,7 +22,6 @@ import gtk, gobject
 
 import os, threading
 
-import lib.ui.geoip as geoip
 import lib.ui.config as config
 
 class UIManager(gtk.UIManager):
@@ -91,6 +90,7 @@ class UIManager(gtk.UIManager):
     def geoIp(self, widget):
         if os.path.exists('data/GeoLiteCity.dat'):
             if config.HAS_GEOIP:
+                import lib.ui.geoip as geoip
                 geoip.Gui(self.uicore)
         else:
             md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "GeoIP Database not found!\n\nDownload it at the preferences dialog\nunder the Update tab")
