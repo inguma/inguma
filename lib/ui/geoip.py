@@ -140,7 +140,7 @@ class Gui(gtk.Window):
 
         self.pangolayout = self.drawarea.create_pango_layout("")
         self.pangolayout.set_text(str(self.geodata[-1]['city']) + '/' + str(self.geodata[-1]['country']))
-        self.drawarea.window.draw_layout(self.pointgc, pxlon, pxlat+1, self.pangolayout)
+        self.drawarea.window.draw_layout(self.pointgc, pxlon+8, pxlat-5, self.pangolayout)
 
         # Add the coordinates in pixels to the IP data
         self.geodata[-1]['px_x'] = pxlon
@@ -186,7 +186,7 @@ class Gui(gtk.Window):
                 return True;
         return False
     
-    def destroy(self, widget, data=None):
+    def destroy(self, widget):
             self.destroy()
             return 0
 
@@ -197,6 +197,8 @@ class Gui(gtk.Window):
         self.liststore = self.refreshListstore(self.liststore)
 
         treeview = gtk.TreeView(self.liststore)
+        treeview.set_rules_hint(True)
+
         #create the treeviewcolumn(tvc) object
         tvcIp         = gtk.TreeViewColumn('IP')
         tvcLat        = gtk.TreeViewColumn('Latitude')
