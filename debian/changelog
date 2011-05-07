@@ -1,4 +1,4 @@
-inguma (0.3.0~hg20110501-1) unstable; urgency=low
+inguma (0.3.0~hg20110507-1) unstable; urgency=low
 
   * New maintainer, taking over Pierre Chifflier.
   * New release (closes: #610648):
@@ -12,6 +12,7 @@ inguma (0.3.0~hg20110501-1) unstable; urgency=low
     - Dropped python-qt3, we are only using pygtk.
     - Added python:Depends.
     - Added Homepage.
+    - Recommend python-geoip.
   * debian/rules:
     - Revamped the way everything is done.
     - Removed some LICENSE files in dh_installdocs.
