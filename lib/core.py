@@ -104,9 +104,9 @@ def getMacVendor(mac):
                 if mac.lower().startswith(prefix.lower()):
                     return vendor.replace("\r", "").replace("\n", "")
         
-        return "Unknow"
+        return "Unknown"
     except:
-        return "Unknow"# + str(sys.exc_info()[1])
+        return "Unknown"# + str(sys.exc_info()[1])
 
 def getProtocolName(proto):
     try:
