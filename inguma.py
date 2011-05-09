@@ -27,7 +27,7 @@ import pickle
 
 from reports import generateReport
 
-from lib.core import isIpAddr4
+from lib.core import isIpAddr4, createProfileDir
 from lib.printwrapper import CPrintWrapper
 
 # Import Output Manager
@@ -1090,27 +1090,31 @@ def printPayloads():
 
 def saveHistory():
     import readline
-    historyPath = os.path.expanduser("~/.inguma")
-    historyFile = historyPath + '/history'
+    from lib.core import getProfileFilePath
 
-    if os.path.exists(historyFile):
-        readline.write_history_file(historyFile)
+    historyFile = getProfileFilePath("history")
+
+    try:
+        if os.path.exists(historyFile):
+            readline.write_history_file(historyFile)
+        return True
+    except:
+        return False
 
 def loadHistory():
-    # Load history commands
+    """ Load previous history commands and cerates an empty history file. """
     import readline
-    historyPath = os.path.expanduser("~/.inguma")
-    historyFile = historyPath + '/history'
+    from lib.core import getProfileFilePath
+
+    historyFile = getProfileFilePath("history")
     
     if os.path.exists(historyFile):
         readline.read_history_file(historyFile)
     else:
-        if not os.path.exists(historyPath):
-            try:
-                os.mkdir(historyPath, 0700)
-            except:
-                print "Cannot create " + historyPath
-        open(historyFile, 'w').close()
+        try:
+            open(historyFile, 'w').close()
+        except:
+            print "Cannot create " + historyFile
 
 def set_om():
     # Set OutputManager to be used by modules
@@ -1151,6 +1155,9 @@ def main():
             scapy.conf.verb = 0
         else:
             scapy.conf.verb = 1
+
+    # Create .inguma directory.
+    createProfileDir()
 
     # Set OutputManager for modules
     set_om()

@@ -1,22 +1,26 @@
-#!/usr/bin/python
-"""
-Inguma Penetration Testing Toolkit
-Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
+# -*- coding: utf-8 -*-
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; version 2
-of the License.
+#       
+#       Inguma Penetration Testing Toolkit
+#       Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
+#       
+#       This program is free software; you can redistribute it and/or
+#       modify it under the terms of the GNU General Public License
+#       as published by the Free Software Foundation; version 2
+#       of the License.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+#       02110-1301, USA.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-"""
+""" This library has core functions used in Inguma that don't fit anywhere
+else. """
 
 try:
     import scapy.all as scapy
@@ -25,14 +29,16 @@ try:
 except:
     bHasScapy = False
 
-def int2hex(iNum):
-    sNum = str(hex(iNum))
-    sNum = sNum.replace("0x", "")
-    
-    if len(sNum) == 1:
-        sNum = "0" + sNum
+def int2hex(integer):
+    """ Convert an integer to hex """
 
-    return eval("'\\x" + str(sNum) + "'")
+    string = str(hex(integer))
+    string = string.replace("0x", "")
+    
+    if len(string) == 1:
+        string = "0" + string
+
+    return eval("'\\x" + str(string) + "'")
 
 def str2uni(data):
     """ Convert a python string to unicode. NOT to a python unicode object """
@@ -44,7 +50,8 @@ def str2uni(data):
     return buf
 
 def regexp2pyre(regexp):
-    """ Convert a perl regular expression to a python compatible regular expression """
+    """ Convert a perl regular expression to a python compatible regular
+    expression """
     buf = regexp
     
     # Remove starting slash
@@ -66,6 +73,7 @@ def regexp2pyre(regexp):
     return buf
 
 def isIpAddr4(data):
+    """ Verification function for IPv4 addresses """
     x = data.split("/")
     
     if len(x) == 1:
@@ -86,6 +94,7 @@ def isIpAddr4(data):
         return False
 
 def getMacVendor(mac):
+    """ Extract the card vendor from a MAC address """
     try:
         path = conf.nmap_base.replace('os-fingerprints', 'mac-prefixes')
         mac = mac.replace(":", "")
@@ -117,3 +126,26 @@ def getProtocolName(proto):
         pass
 
     return proto
+
+def getProfileFilePath(item):
+    """ This function returns the proper file path for loading/saving personal
+    data in user's homedir. """
+
+    import os
+
+    return os.path.expanduser('~/.inguma/' + item)
+
+def createProfileDir():
+    """ Tries to create ~/.inguma in the user's homedir. """
+
+    import os
+
+    inguma_homedir = getProfileFilePath('')
+
+    try:
+        if not os.path.exists(inguma_homedir):
+            os.mkdir(inguma_homedir, 0700)
+        return True
+    except:
+        print "Cannot create " + inguma_homedir
+        return False

@@ -137,6 +137,9 @@ class MainApp:
 #        gtk.rc_parse('gtkrc')
 #        os.chdir(ORIGDIR)
 
+        from lib.core import createProfileDir
+        createProfileDir()
+
         # Load Output Manager
         self.gom = om.OutputManager('gui')
 
