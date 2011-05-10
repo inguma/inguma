@@ -149,7 +149,7 @@ class Gui(gtk.Window):
 
     def geopos(self, ip):
         # Load GeoIP database
-        from lib.core import 
+        from lib.core import getProfileFilePath
         # It's a shame that we cannot use the system GeoIP yet.
         geoip_db_path = getProfileFilePath('data/GeoLiteCity.dat');
         gi  = GeoIP.open(geoip_db_path, GeoIP.GEOIP_STANDARD)

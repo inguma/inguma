@@ -22,6 +22,7 @@ import gtk, gobject
 
 import os, sys, time, threading, urllib, gzip
 sys.path.append('../..')
+from lib.core import getProfileFilePath
 
 class propDialog:
     '''Dialog for adding targets and run some modules'''
@@ -153,15 +154,16 @@ class propDialog:
 
         page = "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
         self.gom.echo( "Downloading " + page, False )
-        urllib.urlretrieve(page, "data/GeoLiteCity.dat.gz")
+        geoip_db_path = getProfileFilePath('data/');
+        urllib.urlretrieve(page, geoip_db_path + "GeoLiteCity.dat.gz")
 
         # Extract DB and remove original file
         self.gom.echo( "Extracting files...", False )
-        gz = gzip.open("data/GeoLiteCity.dat.gz")
+        gz = gzip.open(geoip_db_path + "GeoLiteCity.dat.gz")
         db = gz.read()
         gz.close()
-        os.remove("data/GeoLiteCity.dat.gz")
-        geodb = open('data/GeoLiteCity.dat', 'w')
+        os.remove(geoip_db_path + "GeoLiteCity.dat.gz")
+        geodb = open(geoip_db_path + 'GeoLiteCity.dat', 'w')
         geodb.write(db)
         geodb.close()
         self.gom.echo( "Operation Complete", False )
