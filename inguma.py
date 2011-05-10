@@ -127,7 +127,6 @@ global listenPort; global ignore_host;
 """
 
 debug = False
-version = "0.3-WIP"
 prompt = "inguma> "
 
 commands = {}
@@ -143,7 +142,9 @@ exploits = []
 vars = globals()
 
 def printBanner():
-    print "Inguma v" + version
+    from lib.core import get_inguma_version
+
+    print "Inguma v" + get_inguma_version()
     print "Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>"
     print "Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>"
     print

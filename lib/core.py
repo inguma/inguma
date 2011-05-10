@@ -22,6 +22,7 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
+inguma_version = '0.3-dev'
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *
@@ -149,3 +150,8 @@ def createProfileDir():
     except:
         print "Cannot create " + inguma_homedir
         return False
+
+def get_inguma_version():
+    """ Returns the current version. """
+
+    return inguma_version
