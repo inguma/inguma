@@ -128,9 +128,10 @@ def getProtocolName(proto):
 
     return proto
 
-def getProfileFilePath(item):
+def get_profile_file_path(item):
     """ This function returns the proper file path for loading/saving personal
     data in user's homedir. """
+    # TODO: Fix this with os.sep (for Windows).
 
     import os
 
@@ -141,14 +142,16 @@ def createProfileDir():
 
     import os
 
-    inguma_homedir = getProfileFilePath('')
+    inguma_homedir = get_profile_file_path('')
 
     try:
         if not os.path.exists(inguma_homedir):
             os.mkdir(inguma_homedir, 0700)
+        if not os.path.exists(inguma_homedir + 'data'):
+            os.mkdir(inguma_homedir + 'data', 0700)
         return True
     except:
-        print "Cannot create " + inguma_homedir
+        print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
         return False
 
 def get_inguma_version():

@@ -1091,9 +1091,9 @@ def printPayloads():
 
 def saveHistory():
     import readline
-    from lib.core import getProfileFilePath
+    from lib.core import get_profile_file_path
 
-    historyFile = getProfileFilePath("history")
+    historyFile = get_profile_file_path("history")
 
     try:
         if os.path.exists(historyFile):
@@ -1105,9 +1105,9 @@ def saveHistory():
 def loadHistory():
     """ Load previous history commands and cerates an empty history file. """
     import readline
-    from lib.core import getProfileFilePath
+    from lib.core import get_profile_file_path
 
-    historyFile = getProfileFilePath("history")
+    historyFile = get_profile_file_path("history")
     
     if os.path.exists(historyFile):
         readline.read_history_file(historyFile)
