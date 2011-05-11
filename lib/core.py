@@ -137,7 +137,7 @@ def get_profile_file_path(item):
 
     return os.path.expanduser('~/.inguma/' + item)
 
-def createProfileDir():
+def create_profile_dir():
     """ Tries to create ~/.inguma in the user's homedir. """
 
     import os

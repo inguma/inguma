@@ -27,7 +27,7 @@ import pickle
 
 from reports import generateReport
 
-from lib.core import isIpAddr4, createProfileDir
+from lib.core import isIpAddr4, create_profile_dir
 from lib.printwrapper import CPrintWrapper
 
 # Import Output Manager
@@ -1158,7 +1158,7 @@ def main():
             scapy.conf.verb = 1
 
     # Create .inguma directory.
-    createProfileDir()
+    create_profile_dir()
 
     # Set OutputManager for modules
     set_om()
