@@ -1,10 +1,9 @@
 syntax: glob
 *.pyc
-inguma_history
 data/exploits/
 data/*.xml
 data/*.kb
-data/GeoLiteCity.dat
+*.swp
 
 # Debian rules
 build-stamp
