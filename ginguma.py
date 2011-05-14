@@ -24,9 +24,9 @@ import sys, os
 
 # go with GTK, but first check about DISPLAY environment variable
 if sys.platform != "win32":
-    display = os.getenv("DISPLAY").strip()
-    if not display:
-        print "The DISPLAY environment variable is not set! You can not use any graphical program without it..."
+    display = os.getenv("DISPLAY")
+    if display is None or display.strip() is "":
+        print "The DISPLAY environment variable is not set!  Do you have graphical capabilities?"
         sys.exit(1)
 import lib.ui.main
 # lib.ui.main.main(profile)
