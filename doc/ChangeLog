@@ -1,7 +1,70 @@
 Long development on road to 1.0...
 ----------------------------------
 
-AT 17 01 2011
+Version 0.3.0 (released ??-???-2011)
+
+    * Code cleanups.
+    * Fixed typos here and there.
+    * Saves on every module execution.
+    * Added Autosave feature.
+    * Sorted hosts list on targetDialog combo.
+    * Added autofill on targetDialog.
+    * Fixed: #25 Dis: Error when opening a binary when a .kb already exists.
+    * Increased performance and added ACK scan.
+    * Improved portscan module.
+    * By default uses SYN scan.
+    * Added portscan to modules executed when not using nmap.
+    * Sorting IP on kbtree targets list.
+    * Fixed code of 'vulns per port' and 'ports per IP' graphs.
+    * Fixed: #27 Command line exploitdb bug.
+    * Fixed CSV delimiter for exploit list parsing.
+    * Fix output of autoscan command in inguma console.
+    * Fix the isnated: global name 'IP' is not defined message in console.
+    * Fixes bug in propDialog when updating Nikto rules.
+    * Fixed: #26 but issue won't be closed until I understand how.
+    * Applies to gatherDialog text entries.
+    * Fixed: #24 by adding tooltips to confusing parameters.
+    * Updated Debian packaging.
+    * Fixed module output.
+    * Little modification adding and fixing some deps. references #28.
+    * Some minor improvements on config.py.
+    * Updated xdot.py to its latest version.
+    * Instead of OS name, now showing Host name under the icon.
+    * Added pic support on graphs. Actually showing OS icon when possible.
+    * Right click on web vuln (OSVDB) opens info on browser.
+    * Fixed p0f module. Was broken after scapy update to 2.0.
+    * Fixes a bug that broke console UI.
+    * Added dependency check for Graphviz binaries.
+    * Fixed #36 Appending exploit information with empty values.
+    * Added dependency check for Impacket.
+    * Improved autoscan by using portscan instead of tcpscan.
+    * Added identify module to add target.
+    * Fixed identify module to work on the GUI.
+    * Updated IPy.py library.
+    * Improved performance of tcp, udp and icmp ping modules.
+    * Added dependency check for PySNMP.
+    * Improved CGetHostbyAddr module.
+    * Added single host report at nodeMenu.
+    * Comma separated list with csv extension.
+    * Added import list of hosts.
+    * Initial refactoring of graph code generation.
+    * More graph code refactoring.
+    * Fixed nmap traceroute parsing.
+    * Ctrl + Right click over target to launch.
+    * Experimental node remove functionality.
+    * First fixes to add Windows support (Javier Sánchez).
+    * Fixed a legitimate use case: running inguma without pygtk installed.
+    * Added 'Elapsed time' to threads list.
+    * Fixed elapsed time on threadstv.
+    * Fixed dot generation to make graph more compact.
+    * Added more info on vulns per port graph.
+    * Open web vuln poc in browser with right click over poc graph node.
+    * No more popups, the same button loads or search.
+    * Changed exploits load/search behavior.
+    * Sanitize a bit the version management.
+    * Moved downloaded data to user's homedir.
+
+Version 0.2.0 (released 17-Jan-2011)
     * Inguma 0.2 Release!
 
 AT 30 04 2009
