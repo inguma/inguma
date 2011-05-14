@@ -146,7 +146,7 @@ class MainApp:
         #################################################################################################################################
         # Create a new window
         #################################################################
-        splash.push(("Creatin main window..."))
+        splash.push(("Creating main window..."))
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_focus = True
 #        self.window.connect("destroy", lambda w: gtk.main_quit())
@@ -713,8 +713,9 @@ class MainApp:
 #################################################################
 
     def loadKB(self, widget):
+        from lib.core import get_profile_file_path
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        chooser.set_current_folder('./data/')
+        chooser.set_current_folder(get_profile_file_path('data/'))
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.gom.echo( 'Loading KB...', False)
@@ -738,9 +739,10 @@ class MainApp:
         chooser.destroy()
 
     def saveKB(self, widget):
+        from lib.core import get_profile_file_path
         if self.kbfile == '':
             chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-            chooser.set_current_folder('./data/')
+            chooser.set_current_folder(get_profile_file_path('data/'))
             response = chooser.run()
             if response == gtk.RESPONSE_OK:
                 filename = chooser.get_filename()
