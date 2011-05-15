@@ -17,12 +17,19 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+""" Library containing functions related to KB autosave feature. """
+
 import os
 import gtk
+from lib.core import get_profile_file_path
 
-def askDialog():
+_autosave_kb_path = get_profile_file_path('autosaved.kb')
+
+def ask_dialog():
+    """ Prompt the use with a GTK dialog for loading the KB. """
     msg = ("Autosaved KB found. Load it?")
-    dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
+    dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, 
+                            gtk.BUTTONS_YES_NO, msg)
     opt = dlg.run()
     dlg.destroy()
 
@@ -31,32 +38,20 @@ def askDialog():
     else:
         return False
 
-def createDir():
-    path = os.path.expanduser('~')
-    os.mkdir(path + '/.inguma')
-
-def checkKB():
-    path = os.path.expanduser('~')
-    if os.path.exists(path + '/.inguma/autosaved.kb'):
+def check_kb():
+    """ Checks if the KB exists or not. """
+    if os.path.exists(_autosave_kb_path):
         return True
     else:
         return False
 
-def checkDir():
-    path = os.path.expanduser('~')
-    if os.path.exists(path + '/.inguma/'):
-        return True
-    else:
-        createDir()
-        return True
-
-def removeKB():
-    path = os.path.expanduser('~')
+def remove_kb():
+    """ Removes the KB. """
     try:
-        os.remove(path + '/.inguma/autosaved.kb')
+        os.remove(_autosave_kb_path)
     except:
         pass
 
-def getKbPath():
-    path = os.path.expanduser('~') + '/.inguma/autosaved.kb'
-    return path
+def get_kb_path():
+    """ Returns the path for the KB. """
+    return _autosave_kb_path

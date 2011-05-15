@@ -123,7 +123,7 @@ class ThreadsTv:
             model.set_value(iter, 4, time.strftime("%H:%M:%S", time.localtime()))
             model.set_value(iter, 5, self.elapsed)
             model.set_value(iter, 1, 100)
-            kbpath = libAutosave.getKbPath()
+            kbpath = libAutosave.get_kb_path()
             self.uicore.saveKB(kbpath)
             return False
 

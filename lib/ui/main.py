@@ -680,15 +680,14 @@ class MainApp:
         splash.destroy()
 
         # Check for autosaved KB and ask for loading
-        libAutosave.checkDir()
-        if not libAutosave.checkKB():
+        if not libAutosave.check_kb():
             print "Autosaved KB not found, skipping..."
         else:
-            toload = libAutosave.askDialog()
+            toload = libAutosave.ask_dialog()
             if toload:
-                kbpath = libAutosave.getKbPath()
+                kbpath = libAutosave.get_kb_path()
                 self.uicore.loadKB(kbpath)
-                libAutosave.removeKB()
+                libAutosave.remove_kb()
                 
                 # Update KB textview
                 self.textview.updateWin()
@@ -697,7 +696,7 @@ class MainApp:
                 # Adding text to Log window
                 self.gom.echo( 'Loaded' , False)
             else:
-                libAutosave.removeKB()
+                libAutosave.remove_kb()
 
         # To keep record of kb file name
         self.kbfile = ''
@@ -748,7 +747,7 @@ class MainApp:
                 filename = chooser.get_filename()
                 self.uicore.saveKB(filename)
                 self.gom.echo( filename + ' selected' , False)
-                libAutosave.removeKB()
+                libAutosave.remove_kb()
                 self.kbfile = filename
             elif response == gtk.RESPONSE_CANCEL:
                 self.gom.echo( 'Closed, no files selected' , False)
@@ -756,7 +755,7 @@ class MainApp:
         else:
             self.uicore.saveKB(self.kbfile)
             self.gom.echo( self.kbfile + ' selected' , False)
-            libAutosave.removeKB()
+            libAutosave.remove_kb()
 
     def importScan(self, widget):
         """ Parse and import nmap scan """
