@@ -8,6 +8,7 @@ http://ragestorm.net/distorm/
 Python binding for diStorm64 written by Victor Stinner
 """
 
+import os
 import platform
 from ctypes import cdll, c_long, c_ulong, c_int, c_uint, c_char, c_char_p, POINTER, c_byte, Structure, addressof, byref, c_void_p, create_string_buffer, sizeof, cast
 
@@ -30,11 +31,13 @@ if SUPPORT_64BIT_OFFSET:
 else:
     _OffsetType = uint32_t
 
+lib_path = os.getcwd() + os.sep + 'extlib' + os.sep + 'pyew' + os.sep + 'lib' + os.sep
+print lib_path + 'libdistorm64.so'
 osVer = platform.system()
 if osVer == "Windows":
-    LIB_FILENAME = "distorm64.dll"
+    LIB_FILENAME = lib_path + "distorm64.dll"
 else:
-    LIB_FILENAME = 'libdistorm64.so'
+    LIB_FILENAME = lib_path + 'libdistorm64.so'
 
 distorm = cdll.LoadLibrary(LIB_FILENAME)
 Decode16Bits = 0
