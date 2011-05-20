@@ -26,6 +26,7 @@ import sqlite3
 from hashlib import md5, sha1, sha256
 from extlib.pyew.config import DATABASE_PATH
 
+sys.path.append( os.getcwd() + os.sep + 'extlib' + os.sep + 'pyew' + os.sep)
 from extlib.pyew.pyew_core import CPyew
 
 class Core():
@@ -108,7 +109,7 @@ class Core():
         self.pyew.seek(0)
 
     def is_url(self, file):
-        print "Checking if is URL..."
+        #print "Checking if is URL..."
         self.filename = file
         if self.filename.lower().startswith("http://") or \
            self.filename.lower().startswith("https://") or \
