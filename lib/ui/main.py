@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys, time, threading
+import os, sys, threading
 
 if sys.platform != "win32":
     # Need root for most modules, so...
@@ -33,7 +33,6 @@ import lib.ui.config as config
 dependencyCheck.gtkui_dependency_check(config)
 
 # Now that I know that I have them, import them!
-import pygtk
 import gtk, gobject, pango
 
 # This is just general info, to help people knowing their system
@@ -64,7 +63,7 @@ splash.push(("Loading UI modules"))
 import lib.ui.core as core
 import lib.ui.propDialog as propDialog
 import lib.ui.kbwin as kbwin
-import lib.ui.pbar as pbar
+#import lib.ui.pbar as pbar
 import lib.ui.om as om
 import lib.ui.graphTBar as graphTBar
 import lib.ui.rceTBar as rceTBar
