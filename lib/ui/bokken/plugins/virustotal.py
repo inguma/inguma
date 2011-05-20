@@ -21,7 +21,7 @@
 
 import hashlib
 
-import plugins.virustotal as vt
+import extlib.pyew.plugins.virustotal as vt
 
 def search_vt(pyew):
     """ Search the sample in Virus Total """
@@ -32,6 +32,4 @@ def search_vt(pyew):
     scanner.printResults = False
     matches = scanner.scan(pyew.filename, argmd5=x)
 
-    print matches
     return matches
-

@@ -802,7 +802,7 @@ class MainApp:
             self.bottom_nb.hide()
             self.bottom_nb.is_visible = False
             self.statusbar.hide()
-            self.bokken = bokken.MainApp('ginguma.py')
+            self.bokken = bokken.MainApp('')
             self.rcevb = self.bokken.get_supervb()
             self.frame.add(self.rcevb)
             self.frame.show_all()

@@ -22,7 +22,7 @@
 import re
 import urllib
 
-from plugins.pdfid_PL import PDFiD2String, PDFiD
+from extlib.pyew.plugins.pdfid_PL import PDFiD2String, PDFiD
 
 FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
 

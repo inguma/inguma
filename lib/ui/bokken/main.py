@@ -28,7 +28,6 @@ import core
 import textviews
 import statusbar
 import buttons
-import file_dialog
 
 # Threading initializer
 if sys.platform == "win32":
@@ -50,28 +49,27 @@ class MainApp:
     def __init__(self, file):
 
         self.file = file
-
-        # File select dialog in case no file parameter was pased
-        if not self.file:
-            dialog = file_dialog.FileDialog()
-            dialog.run()
-            self.file = dialog.file
+        self.empty_gui = False
 
         self.uicore = core.Core()
 
         # Check if file name is an URL, pyew stores it as 'raw'
         self.uicore.is_url(self.file)
 
-#        # Just open the file if path is correct or an url
-#        if self.uicore.pyew.format != 'URL' and not os.path.isfile(file):
-#            print "Incorrect file argument:", FAIL, self.file, ENDC
-#            sys.exit(1)
+        if self.file:
+            # Just open the file if path is correct or an url
+            if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.file):
+                print "Incorrect file argument:", FAIL, self.file, ENDC
+                sys.exit(1)
+    
+            # Use threads to avoid freezing the GUI load
+            t = threading.Thread(target=self.load_file, args=(self.file,))
+            t.start()
+            # This call must not depend on load_file data
+            gobject.timeout_add(500, self.show_file_data, t)
+        else:
+            self.empty_gui = True
 
-        # Use threads to avoid freezing the GUI load
-        t = threading.Thread(target=self.load_file, args=(self.file,))
-        t.start()
-        # This call must not depend on load_file data
-        gobject.timeout_add(500, self.show_file_data, t)
 
         gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
 
@@ -121,6 +119,10 @@ class MainApp:
         if self.uicore.pyew.format in ['PE', 'Elf']:
             self.uicore.get_sections()
         print 'File successfully loaded' + OKGREEN + "\tOK" + ENDC
+
+    def show_empty_gui(self):
+        self.topbuttons.throbber.running('')
+        pass
 
     # Once we have the file info, let's create the GUI
     def show_file_data(self, thread):
@@ -173,11 +175,12 @@ class MainApp:
 
     def disable_all(self):
         self.sbar.add_text({'Please wait while loading file':self.uicore.pyew.filename}, VERSION)
-        self.topbuttons.set_sensitive(False)
+        self.topbuttons.disable_all()
         self.tviews.set_sensitive(False)
 
     def enable_all(self):
         self.topbuttons.set_sensitive(True)
+        self.topbuttons.enable_all()
         self.tviews.set_sensitive(True)
 
     def quit(self, widget, event, data=None):

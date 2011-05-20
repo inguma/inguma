@@ -4,6 +4,7 @@ data/exploits/
 data/*.xml
 data/*.kb
 *.swp
+extlib/pyew/*
 
 # Debian rules
 build-stamp

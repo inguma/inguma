@@ -19,9 +19,7 @@
 #       foundation, inc., 51 franklin street, fifth floor, boston,
 #       ma 02110-1301, usa.
 
-import hashlib
-
-import plugins.packer as packer
+import extlib.pyew.plugins.packer as packer
 
 def search_packer(pyew):
     """ Search the sample for packer """
