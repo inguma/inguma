@@ -33,7 +33,7 @@ import lib.ui.config as config
 dependencyCheck.gtkui_dependency_check(config)
 
 # Now that I know that I have them, import them!
-import gtk, gobject, pango
+import gtk, gobject
 
 # This is just general info, to help people knowing their system
 print "Starting Inguma, running on:"
@@ -66,8 +66,8 @@ import lib.ui.kbwin as kbwin
 #import lib.ui.pbar as pbar
 import lib.ui.om as om
 import lib.ui.graphTBar as graphTBar
-import lib.ui.rceTBar as rceTBar
-import lib.ui.rcecore as rcecore
+#import lib.ui.rceTBar as rceTBar
+#import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
 import lib.ui.altNodeMenu as altNodeMenu
@@ -78,6 +78,7 @@ import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
 import lib.ui.reportWin as reportWin
 import lib.ui.libAutosave as libAutosave
+import lib.ui.bokken.main as bokken
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -101,22 +102,6 @@ ui_menu = """
     <toolitem action="Show KB"/>
     <separator name="s5"/>
     <toolitem action="Report"/>
-    <toolitem action="Quit"/>
-  </toolbar>
-</ui>
-"""
-
-rce_menu = """
-<ui>
-  <toolbar name="RceToolbar">
-    <toolitem action="New"/>
-    <toolitem action="Load"/>
-    <separator name="s1"/>
-    <separator name="s2"/>
-    <toolitem action="Show Log"/>
-    <separator name="s3"/>
-    <toolitem action="Debugger"/>
-    <separator name="s4"/>
     <toolitem action="Quit"/>
   </toolbar>
 </ui>
@@ -422,16 +407,10 @@ class MainApp:
         #################################################################################################################################
         # RCE Iface
         #################################################################
-        # xdot rce
-        import xdot
-        self.xdotr = xdot.DotWidget()
-        self.xdotr.set_size_request(600,512)
-        self.xdotr.show()
-
         bufferf = "RCE"
-        frame = gtk.Frame(bufferf)
-        frame.set_border_width(5)
-        frame.set_size_request(400, 400)
+        self.frame = gtk.Frame(bufferf)
+        self.frame.set_border_width(5)
+        self.frame.set_size_request(400, 400)
 
         label = gtk.Label('RCE')
         label.set_angle(90)
@@ -442,89 +421,11 @@ class MainApp:
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
-        self.notebook.append_page(frame, b)
+        self.notebook.append_page(self.frame, b)
 
-        # RCE graph menu
-        self.rmenu = rceTBar.RceMenu(self.xdotr, rcecore)
-        self.dasmenu = rceTBar.DasmMenu()
-
-        #################################################################################################################################
-        # UIManager for RCE Toolbar
-        #################################################################
-        # to make it nice we'll put the toolbar into the handle box,
-        # so that it can be detached from the main window
-        self.rcehb = gtk.HandleBox()
-        tbhbox.pack_start(self.rcehb, True, True, 1)
-
-        # Create a UIManager instance
-        rceuiman = gtk.UIManager()
-        rceaccelgroup = rceuiman.get_accel_group()
-        self.window.add_accel_group(rceaccelgroup)
-        self._actiongroup = actiongroup = gtk.ActionGroup('UIManager')
-
-        # Create actions
-        actiongroup.add_actions([
-            # xml_name, icon, real_menu_text, accelerator, tooltip, callback
-
-            ('New', gtk.STOCK_NEW, ('New'), None, (''), self.newBin),
-            ('Load', gtk.STOCK_OPEN, ('Load'), None, (''), self.loadBin),
-            ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
-            #('Debugger', gtk.STOCK_EXECUTE, ('Debugger'), None, (''), gtk.main_quit),
-            ('Debugger', gtk.STOCK_EXECUTE, ('Debugger'), None, (''), self.run_debugger),
-            #('Report', gtk.STOCK_DND, ('Report'), None, (''), gtk.main_quit),
-            ('Quit', gtk.STOCK_QUIT, ('Quit'), None, (''), gtk.main_quit),
-        ])
-
-        # Add the actiongroup to the rceuiman
-        rceuiman.insert_action_group(actiongroup, 0)
-        rceuiman.add_ui_from_string(rce_menu)
-
-        # Toolbar
-        rcetoolbar = rceuiman.get_widget('/RceToolbar')
-        self.rcehb.add(rcetoolbar)
-        self.rcehb.hide()
-
-        #################################################################
-        # RCE HBox and VBoxes
-        #################################################################
-        rcepaned = gtk.HPaned()
-        lrcevb = gtk.VBox(False, 1)
-        rrcevb = gtk.VBox(False, 1)
-
-        rcepaned.add1(lrcevb)
-        rcepaned.add2(rrcevb)
-
-        lrcevb.pack_start(self.rmenu, False, False, 1)
-        rrcevb.pack_start(self.dasmenu, False, False, 1)
-
-        rcepaned.show_all()
-
-        #################################################################
-        # Textview RCE
-        #################################################################
-        rcetv = gtk.TextView(buffer=None)
-        rcetv.set_wrap_mode(gtk.WRAP_NONE)
-        rcetv.set_editable(False)
-        fontdesc = pango.FontDescription("MonoSpace 10")
-        #fontdesc = pango.FontDescription("Purisa 10")
-        rcetv.modify_font(fontdesc)
-        rcetv.show()
-        self.textbuffer = rcetv.get_buffer()
-
-        # Scrolled Window
-        rce_scrolled_window = gtk.ScrolledWindow()
-        rce_scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        rce_scrolled_window.show()
-        # Add Textview to Scrolled Window
-        rce_scrolled_window.add_with_viewport(rcetv)
-
-        # Add xdotr and textview to rcehbox
-        lrcevb.pack_start(self.xdotr, True, True, 2)
-        rrcevb.pack_start(rce_scrolled_window, True, True, 2)
-
-        frame.add(rcepaned)
-        frame.show()
-        rcepaned.show()
+#        frame.add(rcepaned)
+        self.frame.show()
+#        rcepaned.show()
 
         #################################################################################################################################
         # Xploit Iface
@@ -665,11 +566,11 @@ class MainApp:
         #StatusBar
         #################################################################
         from lib.core import get_inguma_version
-        statusbar = gtk.Statusbar() 
-        mainvbox.pack_end(statusbar, False, False, 1)
-        context_id = statusbar.get_context_id('Inguma ' + get_inguma_version())
-        message_id = statusbar.push(context_id, 'Inguma ' + get_inguma_version())
-        statusbar.show()
+        self.statusbar = gtk.Statusbar() 
+        mainvbox.pack_end(self.statusbar, False, False, 1)
+        context_id = self.statusbar.get_context_id('Inguma ' + get_inguma_version())
+        message_id = self.statusbar.push(context_id, 'Inguma ' + get_inguma_version())
+        self.statusbar.show()
 
         #################################################################################################################################
         # finish it
@@ -898,72 +799,19 @@ class MainApp:
     def onSwitch(self, widget, data, more):
         if more == 2:
             self.handlebox.hide()
-            self.rcehb.show()
             self.bottom_nb.hide()
             self.bottom_nb.is_visible = False
+            self.statusbar.hide()
+            self.bokken = bokken.MainApp('ginguma.py')
+            self.rcevb = self.bokken.get_supervb()
+            self.frame.add(self.rcevb)
+            self.frame.show_all()
         else:
-            self.rcehb.hide()
+            #self.rcehb.hide()
             self.handlebox.show()
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
-
-    def newBin(self, widget):
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        response = chooser.run()
-        if response == gtk.RESPONSE_OK:
-            self.gom.echo( 'Loading Binary...', False)
-            self.gom.echo( chooser.get_filename(), False )
-            res = chooser.get_filename()
-            rcecore.uploadFile(res)
-            rcecore.generate_graphs(res)
-            dasm, func = rcecore.get_complete_dasm(res)
-            self.textbuffer.set_text(dasm)
-            dotcode = rcecore.get_dot_code(func[0].name, res)
-            self.xdotr.set_dotcode(dotcode)
-
-            self.rmenu.set_poc(res)
-            self.rmenu.set_functions(func)
-            self.dasmenu.set_options()
-
-            # Adding text to Log window
-            self.gom.echo( 'Loaded!' , False)
-            chooser.destroy()
-
-        elif response == gtk.RESPONSE_CANCEL:
-            self.gom.echo( 'Closed, no files selected', False)
-        chooser.destroy()
-
-    def loadBin(self, widget):
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        chooser.set_current_folder('dis/navigator/dbs/')
-
-        filter = gtk.FileFilter()
-        filter.set_name("KB files")
-        filter.add_pattern("*.kb")
-        chooser.add_filter(filter)
-
-        response = chooser.run()
-        if response == gtk.RESPONSE_OK:
-            self.gom.echo( 'Loading Database...', False)
-            self.gom.echo( chooser.get_filename() , False)
-            res = chooser.get_filename()
-            kb = res.split('.')[0]
-            dasm, func = rcecore.get_complete_dasm(kb)
-            self.textbuffer.set_text(dasm)
-            dotcode = rcecore.get_dot_code(func[0].name, kb)
-            self.xdotr.set_dotcode(dotcode)
-
-            self.rmenu.set_poc(res)
-            self.rmenu.set_functions(func)
-            self.dasmenu.set_options()
-
-            # Adding text to Log window
-            self.gom.echo( 'Loaded!' , False)
-            chooser.destroy()
-        
-        elif response == gtk.RESPONSE_CANCEL:
-            self.gom.echo( 'Closed, no files selected', False)
-        chooser.destroy()
+            self.statusbar.show()
 
     def addTarget(self, event):
 

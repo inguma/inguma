@@ -21,20 +21,8 @@
 
 import os, sys, threading
 
-## Perform the GTK UI dependency check here
-#import dependency_check
-#dependency_check.check_all()
-
 # Now that I know that I have them, import them!
 import gtk, gobject
-
-# This is just general info, to help people knowing their system
-print "Starting gyew, running on:"
-print "  Python version:"
-print "\n".join("    "+x for x in sys.version.split("\n"))
-print "  GTK version:", ".".join(str(x) for x in gtk.gtk_version)
-print "  PyGTK version:", ".".join(str(x) for x in gtk.pygtk_version)
-print
 
 import core
 import textviews
@@ -74,10 +62,10 @@ class MainApp:
         # Check if file name is an URL, pyew stores it as 'raw'
         self.uicore.is_url(self.file)
 
-        # Just open the file if path is correct or an url
-        if self.uicore.pyew.format != 'URL' and not os.path.isfile(file):
-            print "Incorrect file argument:", FAIL, self.file, ENDC
-            sys.exit(1)
+#        # Just open the file if path is correct or an url
+#        if self.uicore.pyew.format != 'URL' and not os.path.isfile(file):
+#            print "Incorrect file argument:", FAIL, self.file, ENDC
+#            sys.exit(1)
 
         # Use threads to avoid freezing the GUI load
         t = threading.Thread(target=self.load_file, args=(self.file,))
@@ -85,19 +73,7 @@ class MainApp:
         # This call must not depend on load_file data
         gobject.timeout_add(500, self.show_file_data, t)
 
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_focus = True
-        self.window.connect("delete_event", self.quit)
         gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
-
-        # Title
-        self.window.set_title(MAINTITLE)
-
-        # Positions
-        self.window.resize(800, 600)
-        self.window.move(25, 25)
-        # Maximize window
-        self.window.maximize()
 
         # Create VBox to contain top buttons and other VBox
         self.supervb = gtk.VBox(False, 1)
@@ -121,17 +97,20 @@ class MainApp:
         self.mainvb.pack_start(self.tviews, True, True, 1)
         self.mainvb.pack_start(self.sbar, False, True, 1)
 
-        self.window.add(self.supervb)
+#        self.window.add(self.supervb)
 
         # Start the throbber while the thread is running...
         self.topbuttons.throbber.running(True)
 
         # Disable all until file loads
         self.disable_all()
+#
+#        self.window.show_all()
+#
+#        gtk.main()
 
-        self.window.show_all()
-
-        gtk.main()
+    def get_supervb(self):
+        return self.supervb
 
     # Do all the core stuff of parsing file
     def load_file(self, file):
