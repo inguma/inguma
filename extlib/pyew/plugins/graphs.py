@@ -79,7 +79,7 @@ class CCallGraphGenerator(object):
 def showDotInXDot(buf):
     try:    
         import gtk, thread
-        from xdot import DotWindow
+        from lib.ui.xdot import DotWindow
         
         win = DotWindow()
         win.connect('destroy', gtk.main_quit)
