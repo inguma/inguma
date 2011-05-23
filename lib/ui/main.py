@@ -80,6 +80,7 @@ import lib.ui.reportWin as reportWin
 import lib.ui.libAutosave as libAutosave
 import lib.ui.bokken.main as bokken
 
+import platform
 from lib.core import get_profile_file_path, check_distorm_lib
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
@@ -801,12 +802,14 @@ class MainApp:
     def on_switch(self, widget, data, more):
         if more == 2:
             # Check if the disassembly library is present
-            path = get_profile_file_path('data' + os.sep)
-            has_distorm = check_distorm_lib(path)
-            if not has_distorm:
-                md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='distorm64 library not found.\nDownload it at the preferences dialog, on the "Update" tab.')
-                md.run()
-                md.destroy()
+            # Check only for Linux platform
+            if platform.system() == 'Linux':
+                path = get_profile_file_path('data' + os.sep)
+                has_distorm = check_distorm_lib(path)
+                if not has_distorm:
+                    md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='distorm64 library not found.\nDownload it at the preferences dialog, on the "Update" tab.')
+                    md.run()
+                    md.destroy()
 
             self.handlebox.hide()
             self.bottom_nb.hide()

@@ -177,7 +177,12 @@ class propDialog:
         import platform
         path = get_profile_file_path('data' + os.sep)
 
-        if platform.machine() == 'x86_64':
+        if platform.system() != 'Linux':
+            md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='Download distorm library installer for Windows at this site:\nhttp://breakingcode.wordpress.com/2009/08/31/using-distorm-with-python-2-6-and-python-3-x-revisited/')
+            md.run()
+            md.destroy()
+            return False
+        elif platform.machine() == 'x86_64':
             page = "http://inguma.eu/attachments/download/68/libdistorm64-64.so"
         else:
             page = "http://inguma.eu/attachments/download/68/libdistorm64-32.so"
