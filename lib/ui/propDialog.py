@@ -17,10 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
-import gtk, gobject
+import gtk
 
-import os, sys, time, threading, urllib, gzip
+import os, sys, threading, urllib, gzip
 sys.path.append('../..')
 from lib.core import get_profile_file_path
 
@@ -73,7 +72,7 @@ class propDialog:
 
         #########################################################
         # Update Table
-        self.update_table = gtk.Table(rows=3, columns=2, homogeneous=True)
+        self.update_table = gtk.Table(rows=4, columns=2, homogeneous=True)
         self.update_table.set_row_spacings(2)
         self.update_table.set_col_spacings(2)
 
@@ -84,12 +83,15 @@ class propDialog:
         self.exploit_lbl = gtk.Label('Exploit DB')
         self.nikto_lbl = gtk.Label('Nikto Rules')
         self.geo_lbl = gtk.Label('GeoIP DB')
+        self.dis_lbl = gtk.Label('distorm64')
         self.exploit_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.exploit_bt.connect('clicked', self.update_exploits)
         self.nikto_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.nikto_bt.connect('clicked', self.update_nikto)
         self.geo_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.geo_bt.connect('clicked', self.update_geo)
+        self.dis_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.dis_bt.connect('clicked', self.download_distorm)
 
         # Add lements to Table
         self.update_table.attach(self.exploit_lbl, 0, 1, 0, 1)
@@ -98,6 +100,8 @@ class propDialog:
         self.update_table.attach(self.nikto_bt, 1, 2, 1, 2)
         self.update_table.attach(self.geo_lbl, 0, 1, 2, 3)
         self.update_table.attach(self.geo_bt, 1, 2, 2, 3)
+        self.update_table.attach(self.dis_lbl, 0, 1, 3, 4)
+        self.update_table.attach(self.dis_bt, 1, 2, 3, 4)
 
         # Add Table to Notebook
         self.prefs_nb.append_page(self.update_table, self.update_lbl)
@@ -166,4 +170,17 @@ class propDialog:
         geodb = open(geoip_db_path + 'GeoLiteCity.dat', 'w')
         geodb.write(db)
         geodb.close()
+        self.gom.echo( "Operation Complete", False )
+
+    def download_distorm(self, widget):
+
+        import platform
+        path = get_profile_file_path('data' + os.sep)
+
+        if platform.machine() == 'x86_64':
+            page = "http://inguma.eu/attachments/download/68/libdistorm64-64.so"
+        else:
+            page = "http://inguma.eu/attachments/download/68/libdistorm64-32.so"
+        self.gom.echo( "Downloading " + page, False )
+        urllib.urlretrieve(page, path + "libdistorm64.so")
         self.gom.echo( "Operation Complete", False )

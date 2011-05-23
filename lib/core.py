@@ -154,6 +154,9 @@ def create_profile_dir():
         print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
         return False
 
+def check_distorm_lib(path):
+    return os.path.isfile(path + 'libdistorm64.so')
+
 def get_inguma_version():
     """ Returns the current version. """
 

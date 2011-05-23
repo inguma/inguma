@@ -31,8 +31,7 @@ if SUPPORT_64BIT_OFFSET:
 else:
     _OffsetType = uint32_t
 
-lib_path = os.getcwd() + os.sep + 'extlib' + os.sep + 'pyew' + os.sep + 'lib' + os.sep
-print lib_path + 'libdistorm64.so'
+lib_path = os.path.expanduser('~/.inguma/') + os.sep + 'data' + os.sep
 osVer = platform.system()
 if osVer == "Windows":
     LIB_FILENAME = lib_path + "distorm64.dll"

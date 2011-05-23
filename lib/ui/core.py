@@ -23,7 +23,7 @@ import gobject
 import pickle, os, platform
 import inguma
 
-import threading, time
+import threading
 import scapy.all as scapy
 scapy.conf.verb = 0
 import dotgen
