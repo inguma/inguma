@@ -185,7 +185,7 @@ class propDialog:
         elif platform.machine() == 'x86_64':
             page = "http://inguma.eu/attachments/download/68/libdistorm64-64.so"
         else:
-            page = "http://inguma.eu/attachments/download/68/libdistorm64-32.so"
+            page = "http://inguma.eu/attachments/download/69/libdistorm64-32.so"
         self.gom.echo( "Downloading " + page, False )
         urllib.urlretrieve(page, path + "libdistorm64.so")
         self.gom.echo( "Operation Complete", False )
