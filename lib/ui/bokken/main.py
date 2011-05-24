@@ -102,6 +102,9 @@ class MainApp:
 
         # Disable all until file loads
         self.disable_all()
+        if self.empty_gui:
+            self.show_empty_gui()
+
 #
 #        self.window.show_all()
 #
@@ -122,7 +125,6 @@ class MainApp:
 
     def show_empty_gui(self):
         self.topbuttons.throbber.running('')
-        pass
 
     # Once we have the file info, let's create the GUI
     def show_file_data(self, thread):
