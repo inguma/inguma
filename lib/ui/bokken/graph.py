@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from xdot import DotWidget
+from lib.ui.xdot import DotWidget
 
 class MyDotWidget(DotWidget):
     '''Working'''
