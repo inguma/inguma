@@ -17,12 +17,13 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
 import gtk, gobject
 
 import os, threading
 
 import lib.ui.config as config
+
+from lib.core import get_profile_file_path
 
 class UIManager(gtk.UIManager):
 
@@ -88,7 +89,8 @@ class UIManager(gtk.UIManager):
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
     def geoIp(self, widget):
-        if os.path.exists('data/GeoLiteCity.dat'):
+        geodb_path = get_profile_file_path( os.sep + 'data' + os.sep + 'GeoLiteCity.dat')
+        if os.path.exists(geodb_path):
             if config.HAS_GEOIP:
                 import lib.ui.geoip as geoip
                 geoip.Gui(self.uicore)
