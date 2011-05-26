@@ -49,6 +49,8 @@ class Core():
         self.parsed_links = {'remotes':[], 'locals':[]}
         self.links_struct = []
         self.http_dot = ''
+        self.checked_urls = []
+        self.bad_urls = []
 
         self.pyew = CPyew()
         if os.getenv("PYEW_DEBUG"):
@@ -78,6 +80,8 @@ class Core():
         self.parsed_links = {'remotes':[], 'locals':[]}
         self.links_struct = []
         self.http_dot = ''
+        self.checked_urls = []
+        self.bad_urls = []
 
     def load_file(self, file):
         # Set default file format to raw
@@ -282,12 +286,12 @@ class Core():
     def check_urls(self):
         import plugins.url as url
         checked_urls = url.check(self.pyew)
-        return checked_urls
+        self.checked_urls = checked_urls
 
     def bad_urls(self):
         import plugins.url as url
         bad_urls = url.check_bad(self.pyew)
-        return bad_urls
+        self.bad_urls = bad_urls
 
     def sendto_vt(self):
         import plugins.virustotal as virustotal
