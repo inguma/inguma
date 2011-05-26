@@ -17,9 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
-import pygtk
-import gobject, cairo
+import os
+import gtk, cairo
+
 import GeoIP
 
 class Gui(gtk.Window):
@@ -151,7 +151,7 @@ class Gui(gtk.Window):
         # Load GeoIP database
         from lib.core import get_profile_file_path
         # It's a shame that we cannot use the system GeoIP yet.
-        geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
+        geoip_db_path = get_profile_file_path('data' + os.sep + 'GeoLiteCity.dat')
         gi  = GeoIP.open(geoip_db_path, GeoIP.GEOIP_STANDARD)
         gir = gi.record_by_addr(ip)
         if gir:

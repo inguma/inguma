@@ -89,7 +89,8 @@ class UIManager(gtk.UIManager):
         self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
 
     def geoIp(self, widget):
-        geodb_path = get_profile_file_path( os.sep + 'data' + os.sep + 'GeoLiteCity.dat')
+        geodb_path = get_profile_file_path( 'data' + os.sep + 'GeoLiteCity.dat')
+        print geodb_path
         if os.path.exists(geodb_path):
             if config.HAS_GEOIP:
                 import lib.ui.geoip as geoip
