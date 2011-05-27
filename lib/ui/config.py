@@ -14,7 +14,7 @@ DBS_PATH=   "dis/navigator/dbs/"
 DIS_PATH=   "dis/dis.py"
 GEN_PATH=   "dis/printblocks.py"
 
-# Availbale platform icons
+# Available platform icons
 ICONS = ['3com', 'apple', 'bsd', 'cisco', 'hp', 'linux', 'sgi', 'sun', 'unix', 'windows']
 
 # Tools Availability
@@ -44,12 +44,12 @@ theme = "oblivion"
 # Categories
 categories = ["discovers", "gathers"]
 
-# Clases
+# Classes
 discovers = [ "arping", "tcping", "udping", "asn", "bluetooth", "db2discover", "externip", "hostname", "ipaddr", "getmac", "icmping", "isnated", "netcraft", "ispromisc", "tcptrace", "whois", "wifi" ]
 gathers = [ "apps11i", "archanix", "arppoison", "anticrypt", "dnsspoof", "dtspc", "fakearp", "firetest", "nids", "ikescan", "ifxinfo", "rainbowmd5", "nikto", "nmapfp", "nmapscan", "nmbstat", "oascheck", "oratool", "oracrack11g", "oratt70info", "osifuzz", "p0f", "portscan", "protoscan", "rainbow", "rpcdump", "samrdump", "identify", "smbclient", "smbgold", "sniffer", "snmpwalk", "mssqlcrack", "tcpproxy", "tcpscan", "tnscmd", "unicornscan", "webserver", "winspdetect", "xmlrpc" ]
 brutes = ["bruteftp", "brutehttp", "bruteimap", "bruteifx", "bruteora", "brutepop", "brutesmb", "brutesmtp", "brutessh", "brutesyb"]
 
-# Subclases Gather
+# Subclasses Gather
 subgathers = {
 'arp' : ["arppoison", "fakearp"],
 'databases' : [ "apps11i", "dtspc", "ifxinfo", "oascheck", "oratool", "oracrack11g", "oratt70info", "mssqlcrack", "tnscmd" ],
@@ -64,7 +64,7 @@ subgathers = {
 'web' : ["nikto"]
 }
 
-# Subclases Discover
+# Subclasses Discover
 subdiscovers = {
 'dns' : ["hostname", "ipaddr"],
 'pings' : ["arping", "icmping", "tcping", "udping"],

@@ -53,14 +53,14 @@ class propDialog:
         self.main_lbl = gtk.Label('Main')
 
         # Choose network iface
-        self.iface_lbl = gtk.Label('Interface')
+        self.iface_lbl = gtk.Label('Network interface')
         self.iface_combo = gtk.combo_box_new_text()
 
         for iface in self.uicore.get_interfaces():
             self.iface_combo.append_text(iface)
         #self.iface_combo.set_active(0)
 
-        # Add lements to Table
+        # Add elements to Table
         self.main_table.attach(self.iface_lbl, 0, 1, 0, 1)
         self.main_table.attach(self.iface_combo, 1, 2, 0, 1)
 
@@ -77,7 +77,7 @@ class propDialog:
         self.update_table.set_col_spacings(2)
 
         # Label to add table to Notebook
-        self.update_lbl = gtk.Label('Update')
+        self.update_lbl = gtk.Label('Updates')
 
         # Add exploits and nikto update buttons
         self.exploit_lbl = gtk.Label('Exploit DB')
@@ -93,7 +93,7 @@ class propDialog:
         self.dis_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
         self.dis_bt.connect('clicked', self.download_distorm)
 
-        # Add lements to Table
+        # Add elements to Table
         self.update_table.attach(self.exploit_lbl, 0, 1, 0, 1)
         self.update_table.attach(self.exploit_bt, 1, 2, 0, 1)
         self.update_table.attach(self.nikto_lbl, 0, 1, 1, 2)
