@@ -49,10 +49,9 @@ if sys.platform == "win32":
 else:
     gtk.gdk.threads_init()
 
-# Load the theme (this fixes bug [ 2022433 ] windows buttons without images)
-# https://sourceforge.net/tracker/index.php?func=detail&aid=2022433&group_id=170274&atid=853652
+# Load the theme (this fixes a bug on windows)
 if sys.platform == "win32":
-    gtk.rc_add_default_file('%USERPROFILE%/.gtkrc-2.0')
+    gtk.rc_add_default_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'inguma_gtkrc')
 
 # splash!
 from lib.ui.splash import Splash
