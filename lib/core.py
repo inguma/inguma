@@ -22,7 +22,7 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
-inguma_version = '0.3-dev'
+inguma_version = '0.3'
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *
