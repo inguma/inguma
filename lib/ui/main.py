@@ -134,6 +134,7 @@ class MainApp:
         #################################################################
         splash.push(("Creating main window..."))
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.set_icon_from_file('logo' + os.sep + 'icon.png')
         self.window.set_focus = True
 #        self.window.connect("destroy", lambda w: gtk.main_quit())
         self.window.connect("delete_event", self.quit)
