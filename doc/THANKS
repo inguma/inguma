@@ -1,3 +1,5 @@
  * Thanks to Gerardo Richarte of Core Security Technologies!
  * Thanks to Ibermatica (I want to break free!)
  * Thanks to Ero Carrera for pydot code used on dependencyCheck
+ * Thanks to Andres Riancho and the w3af team for code used on the GUI
+ * Thanks to Fred Brockstedt for mapstat code used on the GeoIP module
