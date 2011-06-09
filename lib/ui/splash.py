@@ -41,7 +41,7 @@ class Splash(gtk.Window):
         color = gtk.gdk.color_parse('#f2f2ff')
         self.modify_bg(gtk.STATE_NORMAL, color)
         self.set_position(gtk.WIN_POS_CENTER)
-        self.set_size_request(600,335)
+        self.set_size_request(600,295)
 
         # ensure it is rendered immediately
         self.show_all()
