@@ -24,6 +24,7 @@ import os
 import sys
 import time
 import pickle
+import readline
 
 from reports import generateReport
 
@@ -263,7 +264,7 @@ def loadModule(path, atype, marray, bLoad = True):
             if file.isalnum():
                 eval(marray).append(file)
             else:
-                print WARNING + "The, supposed, module %s appears to be a non valid module" + ENDC % file
+                print WARNING + "The module %s appears to be a non-valid module" + ENDC % file
                 continue
 
 def readDiscover():
@@ -1093,7 +1094,6 @@ def printPayloads():
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
-    import readline
     from lib.core import get_profile_file_path
 
     historyFile = get_profile_file_path("history")
@@ -1107,7 +1107,6 @@ def saveHistory():
 
 def loadHistory():
     """ Loads previous history commands and creates an empty history file. """
-    import readline
     from lib.core import get_profile_file_path
 
     historyFile = get_profile_file_path("history")
@@ -1136,7 +1135,6 @@ def setup_auto_completion():
 
     try:
         import atexit
-        import readline
         import rlcompleter
 
         # Add commands to autocompletion
