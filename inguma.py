@@ -141,7 +141,7 @@ exploits = []
 
 vars = globals()
 
-def printBanner():
+def print_banner():
     from lib.core import get_inguma_version
 
     print "Inguma v" + get_inguma_version()
@@ -156,7 +156,7 @@ def usage():
     print "-h      Show this help and exit"
     print
 
-def checkArgs():
+def check_args():
 
     global debug
 
@@ -347,9 +347,9 @@ def showHelp():
     print "| ! <command>             | Run an operating system command                  |"
     print "| exit | quit             | Exit from Inguma                                 |"
     print "| help | h | ?            | Show this help                                   |"
-    print "|----------------------------------------------------------------------------|"
 
     if hasScapy:
+        print "|----------------------------------------------------------------------------|"
         print "|                                                                            |"
         print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
         print "|----------------------------------------------------------------------------|"
@@ -370,10 +370,11 @@ def showHelp():
         print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
         print "+----------------------------------------------------------------------------+"
     else:
+        print "+----------------------------------------------------------------------------+"
         print
 
     print
-    print "Any other typed text will be evaled as a Python expression."
+    print "Any other typed text will be evaluated - with eval() - as a Python expression."
     print
 
 def exploitWizard():
@@ -954,7 +955,8 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
     sys.stdout = oldfile
 
-def mainLoop():
+def main_loop():
+    """ Main execution loop after initialization. """
 
     global prompt
     global target
@@ -1090,6 +1092,7 @@ def printPayloads():
     print
 
 def saveHistory():
+    """ Saves previous history commands in the history file. """
     import readline
     from lib.core import get_profile_file_path
 
@@ -1103,7 +1106,7 @@ def saveHistory():
         return False
 
 def loadHistory():
-    """ Load previous history commands and cerates an empty history file. """
+    """ Loads previous history commands and creates an empty history file. """
     import readline
     from lib.core import get_profile_file_path
 
@@ -1118,6 +1121,7 @@ def loadHistory():
             print "Cannot create " + historyFile
 
 def set_om():
+    """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
     if isGui == True:
@@ -1126,7 +1130,8 @@ def set_om():
         gom = om.OutputManager('console')
     setattr(gom, 'isGui', isGui)
 
-def setupAutoCompletion():
+def setup_auto_completion():
+    """ Checks dependencies for autocompletion and sets it up. """
     global commands
 
     try:
@@ -1144,9 +1149,10 @@ def setupAutoCompletion():
         print sys.exc_info()[1]
 
 def main():
+    """ Main program loop. """
 
-    # Check Args and enable debug if requested
-    if not checkArgs():
+    # Check args and enable debug if requested
+    if not check_args():
         usage()
         sys.exit(0)
 
@@ -1169,9 +1175,9 @@ def main():
     print "Type 'help' for a short usage guide."
 
     # Set autocompletion and load commands history
-    setupAutoCompletion()
-    mainLoop()
+    setup_auto_completion()
+    main_loop()
 
 if __name__ == "__main__":
-    printBanner()
+    print_banner()
     main()
