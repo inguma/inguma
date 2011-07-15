@@ -294,11 +294,3 @@ class Gui(gtk.Window):
             self.liststore.append([str(ip['ip']), str(ip['lat']), str(ip['lon']), str(ip['city']), str(ip['region']), str(ip['regname']),  \
                                    str(ip['country']), str(ip['countryc']), str(ip['timezone'])])
         return self.liststore
-
-#def main():
-#    gtk.main()
-#    return 0
-#
-#if __name__ == "__main__":
-#    gui = Gui()
-#    main()
