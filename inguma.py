@@ -346,7 +346,7 @@ def showHelp():
     print "| use <mod>               | Load all modules from a directory                |"
     print "| ! <command>             | Run an operating system command                  |"
     print "| exit | quit             | Exit from Inguma                                 |"
-    print "| help                    | Show this help                                   |"
+    print "| help | h | ?            | Show this help                                   |"
     print "|----------------------------------------------------------------------------|"
 
     if hasScapy:
@@ -997,17 +997,17 @@ def runInterfaceCommand(res):
     global waittime
     global debug
 
-    if res.lower() == "help":
+    if res.lower() in ['help', 'h', '?']:
         showHelp()
     elif res == "" and prevRes == "":
         pass
-    elif res == "save kb":
+    elif res.lower() == "save kb":
         saveKb()
-    elif res == "clear kb":
+    elif res.lower() == "clear kb":
         clearKb()
-    elif res == "load kb":
+    elif res.lower() == "load kb":
         loadKb()
-    elif res == "show kb":
+    elif res.lower() == "show kb":
         showKb()
     elif res.lower() == "show discover":
         showDiscover()
@@ -1163,6 +1163,11 @@ def main():
     # Set OutputManager for modules
     set_om()
     readCommands()
+
+    # Display banner.
+    print
+    print "Type 'help' for a short usage guide."
+
     # Set autocompletion and load commands history
     setupAutoCompletion()
     mainLoop()
