@@ -44,7 +44,7 @@ def gtkui_dependency_check(config):
     except:
         print FAIL + "D'oh!" + ENDC
         msg = 'You have to install GTK and PyGTK versions >=2.12 to be able to run the GTK user interface.\n'
-        msg += '    - On Debian based distributions: apt-get install python-gtk2\n'
+        msg += '    - On Debian-based distributions: apt-get install python-gtk2\n'
         msg += '    - On Mac: sudo port install py25-gtk'        
         print msg
         sys.exit( 1 )
