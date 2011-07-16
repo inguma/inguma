@@ -1139,7 +1139,10 @@ def setup_auto_completion():
 
         # Add commands to autocompletion
         readline.set_completer(rlcompleter.Completer(commands).complete)
-        readline.parse_and_bind("tab: complete")
+        if(sys.platform == 'darwin'):
+            readline.parse_and_bind ("bind ^I rl_complete")
+        else:
+            readline.parse_and_bind("tab: complete")
 
         loadHistory()
         atexit.register(saveHistory)
