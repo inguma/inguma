@@ -60,8 +60,8 @@ class CTraceroute(CIngumaModule):
     def help(self):
         print "target = <target host or network>"
         print "timeout = <timeout>"
-        print "minttl = <minimun ttl>"
-        print "maxttl = <maximun ttl>"
+        print "minttl = <minimum ttl>"
+        print "maxttl = <maximum ttl>"
         print "sport = <source port>"
         print "dport = <destination port>"
         print "iface = <interface to use>"
