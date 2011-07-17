@@ -143,56 +143,48 @@ class CIds(CIngumaModule):
         print "Running Intrusion Detection System ... "
         scapy.sniff(iface = self.iface, filter = self.filter, prn= self.checkRule)
 
-    def showHelp(self):
+    def show_help(self):
         print 
         print "Inguma's Intrusion Detection System Help"
         print "----------------------------------------"
         print
         print "run                          Run the Intrusion Detection System"
-        print "help                         Show this help"
-        print "exit                         Exit from the IDS interface"
+        print "help | h | ?                 Show this help"
+        print "exit | quit | ..             Exit from the IDS interface"
         print "filter <pcap filter>         Specify a valid pcap filter"
         print "iface <iface>                Specify which iface will be used"
         print
 
     def runIdsLoop(self):
+        import lib.ui.cli.core as CLIcore
         while 1:
-            try:
-                res = raw_input("IDS> ")
-                words = res.split(" ")
-
-                if len(words) == 1 and words[0] == "":
-                    continue
-                elif words[0].lower() == "help":
-                    self.showHelp()
-                elif words[0].lower() == "run":
-                    self.runIds()
-                elif words[0].lower() == "filter":
-                    buf = ""
-                    for word in words[1:]:
-                        buf += word + " "
-    
-                    self.filter = buf
-                    print "Filter is:", buf
-                elif words[0].lower() == "iface":
-                    if len(words) > 1:
-                        self.iface = words[1]
-                        
-                        if self.iface == "":
-                            self.iface = None
-    
-                        print "Interface is:", self.iface
-                elif words[0].lower() == "exit" or words[0].lower() == "quit":
-                    break
-                else:
-                    print "Unknow command or option '" + str(res) + "'"
-
-            except KeyboardInterrupt:
+            res = CLIcore.unified_input_prompt(self, "nids")
+            if res == None:
                 break
-            except EOFError:
-                break
-            except:
-                print "IDS Error.", sys.exc_info()[1]
+
+            words = res.split(" ")
+
+            if len(words) == 1 and words[0] == "":
+                continue
+            elif words[0].lower() == "run":
+                self.runIds()
+            elif words[0].lower() == "filter":
+                buf = ""
+                for word in words[1:]:
+                    buf += word + " "
+
+                self.filter = buf
+                print "Filter is:", buf
+            elif words[0].lower() == "iface":
+                if len(words) > 1:
+                    self.iface = words[1]
+
+                    if self.iface == "":
+                        self.iface = None
+
+                    print "Interface is:", self.iface
+            else:
+                print "Unknown command or option '" + str(res) + "'"
 
     def run(self):
         self.runIdsLoop()
