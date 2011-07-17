@@ -24,24 +24,30 @@ MA 02110-1301, USA.
 This library offers functions for the CLI version of Inguma.
 """
 
-def unified_input_prompt(prompt, caller):
+def unified_input_prompt(caller, prompt = ''):
     """
     Helper for common input loops.
     It needs a method show_help() in the caller object.
     Returns the string, or None if the loop should stop.
     """
 
+    default_prompt = 'inguma'
+    if prompt:
+        prompt = default_prompt + "/" + prompt
+    else:
+        prompt = default_prompt
+
     try:
         input = raw_input(prompt + '> ')
     except KeyboardInterrupt:
         print
-        return None
+        input = ""
     except EOFError:
         print
         return None
     except:
         # Uh-oh, what happened?
-        print "raw_input:", sys.exc_info()[1]
+        print "Internal error:", sys.exc_info()[1]
 
     if input.lower() in ['help', 'h', '?']:
         caller.show_help()

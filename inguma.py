@@ -128,7 +128,6 @@ global listenPort; global ignore_host;
 """
 
 debug = False
-prompt = "inguma"
 
 commands = {}
 discovers = []
@@ -985,7 +984,7 @@ def main_loop():
     inguma = Inguma(hasScapy)
 
     while 1:
-        res = CLIcore.unified_input_prompt(prompt, inguma)
+        res = CLIcore.unified_input_prompt(inguma)
         if res == None:
             print "Exit."
             sys.exit(0)
