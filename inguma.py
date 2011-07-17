@@ -346,7 +346,7 @@ def showHelp():
     print "|----------------------------------------------------------------------------|"
     print "| use <mod>               | Load all modules from a directory                |"
     print "| ! <command>             | Run an operating system command                  |"
-    print "| exit | quit             | Exit from Inguma                                 |"
+    print "| exit | quit             | Exit Inguma                                      |"
     print "| help | h | ?            | Show this help                                   |"
 
     if hasScapy:
@@ -494,7 +494,7 @@ def showInfo(cmd):
 
             return
 
-    print "Exploit does not exists"
+    print "Exploit does not exist"
 
 def execute(command, index):
 
@@ -975,15 +975,15 @@ def main_loop():
         try:
             res = raw_input(prompt)
         except KeyboardInterrupt:
-            print "Aborted."
+            print "\nAborted."
             sys.exit(0)
         except EOFError:
-            print "Exit."
+            print "\nExit."
             sys.exit(0)
         except:
             print "INTERNAL ERROR:",sys.exc_info()[1]
 
-        if res.lower() == "quit" or res.lower() == "exit" or res.lower() == "urten": # :P
+        if res.lower() in ['quit', 'exit', '..', 'urten']: # urten is exit in Basque.
             break
         else:
             runInterfaceCommand(res)
