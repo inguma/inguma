@@ -128,7 +128,7 @@ global listenPort; global ignore_host;
 """
 
 debug = False
-prompt = "inguma> "
+prompt = "inguma"
 
 commands = {}
 discovers = []
@@ -141,6 +141,74 @@ others = []
 exploits = []
 
 vars = globals()
+
+# ------------------------------ Start of Inguma class ------------------------------
+
+class Inguma:
+    """ Master class for an Inguma CLI instance. """
+
+    def __init__(self, has_scapy = False):
+        self.has_scapy = has_scapy
+
+    def show_help(self):
+        print
+        print "+----------------------------------------------------------------------------+"
+        print "| load kb                 | Load the knowledge base                          |"
+        print "| save kb                 | Save the knowledge base                          |"
+        print "| clear kb                | Clear the knowledge base's data                  |"
+        print "| show kb                 | Shows the knowledge base's data (very verbose)   |"
+        print "| report                  | Generate a report                                |"
+        print "|----------------------------------------------------------------------------|"
+        print "| show discover           | Show discover modules                            |"
+        print "| show gather             | Show gather modules                              |"
+        print "| show rce                | Show RCE modules                                 |"
+        print "| show fuzzers            | Show fuzzing modules                             |"
+        print "| show exploits           | Show available exploits                          |"
+        print "| show brute              | Show brute force modules                         |"
+        print "| show options            | Show options                                     |"
+        print "| payload                 | Show the supported OS types and payloads         |"
+        print "| info <exploit>          | Show additional information about an exploit     |"
+        print "|----------------------------------------------------------------------------|"
+        print "| autoscan                | Perform an automatic scan                        |"
+        print "| autoexploit             | Exploit wizard                                   |"
+        #print "fuzz                     Fuzz a target (Unavailable)"
+        print "| exploit                 | Run an exploit against a target or targets       |"
+        print "|----------------------------------------------------------------------------|"
+        print "| use <mod>               | Load all modules from a directory                |"
+        print "| ! <command>             | Run an operating system command                  |"
+        print "| exit | quit             | Exit Inguma                                      |"
+        print "| help | h | ?            | Show this help                                   |"
+
+        if self.has_scapy:
+            print "|----------------------------------------------------------------------------|"
+            print "|                                                                            |"
+            print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
+            print "|----------------------------------------------------------------------------|"
+            print "|                                                                            |"
+            
+            """
+            try:
+                exec("scapy.lsc()")
+                print
+            except:
+                print "Error getting scapy commands :( No scapy support?"
+                print sys.exc_info()[1]
+            """
+
+            print "| NOTE: Remember to use 'scapy.<function>' to use.                           |"
+            print "|                                                                            |"
+            print "| Type 'scapy.interact()' to start an scapy session.                         |"
+            print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
+            print "+----------------------------------------------------------------------------+"
+        else:
+            print "+----------------------------------------------------------------------------+"
+            print
+
+        print
+        print "Any other typed text will be evaluated - with eval() - as a Python expression."
+        print
+
+# ------------------------------ End of Inguma class ------------------------------
 
 def print_banner():
     from lib.core import get_inguma_version
@@ -319,64 +387,6 @@ def readCommands():
     # load all modules
     for module in modules:
         eval("read%s" % module)()
-
-def showHelp():
-    print
-    print "+----------------------------------------------------------------------------+"
-    print "| load kb                 | Load the knowledge base                          |"
-    print "| save kb                 | Save the knowledge base                          |"
-    print "| clear kb                | Clear the knowledge base's data                  |"
-    print "| show kb                 | Shows the knowledge base's data (very verbose)   |"
-    print "| report                  | Generate a report                                |"
-    print "|----------------------------------------------------------------------------|"
-    print "| show discover           | Show discover modules                            |"
-    print "| show gather             | Show gather modules                              |"
-    print "| show rce                | Show RCE modules                                 |"
-    print "| show fuzzers            | Show fuzzing modules                             |"
-    print "| show exploits           | Show available exploits                          |"
-    print "| show brute              | Show brute force modules                         |"
-    print "| show options            | Show options                                     |"
-    print "| payload                 | Show the supported OS types and payloads         |"
-    print "| info <exploit>          | Show additional information about an exploit     |"
-    print "|----------------------------------------------------------------------------|"
-    print "| autoscan                | Perform an automatic scan                        |"
-    print "| autoexploit             | Exploit wizard                                   |"
-    #print "fuzz                     Fuzz a target (Unavailable)"
-    print "| exploit                 | Run an exploit against a target or targets       |"
-    print "|----------------------------------------------------------------------------|"
-    print "| use <mod>               | Load all modules from a directory                |"
-    print "| ! <command>             | Run an operating system command                  |"
-    print "| exit | quit             | Exit Inguma                                      |"
-    print "| help | h | ?            | Show this help                                   |"
-
-    if hasScapy:
-        print "|----------------------------------------------------------------------------|"
-        print "|                                                                            |"
-        print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
-        print "|----------------------------------------------------------------------------|"
-        print "|                                                                            |"
-        
-        """
-        try:
-            exec("scapy.lsc()")
-            print
-        except:
-            print "Error getting scapy commands :( No scapy support?"
-            print sys.exc_info()[1]
-        """
-
-        print "| NOTE: Remember to use 'scapy.<function>' to use.                           |"
-        print "|                                                                            |"
-        print "| Type 'scapy.interact()' to start an scapy session.                         |"
-        print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
-        print "+----------------------------------------------------------------------------+"
-    else:
-        print "+----------------------------------------------------------------------------+"
-        print
-
-    print
-    print "Any other typed text will be evaluated - with eval() - as a Python expression."
-    print
 
 def exploitWizard():
 
@@ -959,37 +969,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
 def main_loop():
     """ Main execution loop after initialization. """
 
-    global prompt
-    global target
-    global port
-    global covert
-    global timeout
-    global waittime
-    global oldPrompt
-    global prevRes
-
-    oldPrompt = ""
-    prevRes = ""
-
-    while 1:
-        try:
-            res = raw_input(prompt)
-        except KeyboardInterrupt:
-            print "\nAborted."
-            sys.exit(0)
-        except EOFError:
-            print "\nExit."
-            sys.exit(0)
-        except:
-            print "INTERNAL ERROR:",sys.exc_info()[1]
-
-        if res.lower() in ['quit', 'exit', '..', 'urten']: # urten is exit in Basque.
-            break
-        else:
-            runInterfaceCommand(res)
-
-def runInterfaceCommand(res):
-
+    import lib.ui.cli.core as CLIcore
     global prompt
     global oldPrompt
     global prevRes
@@ -1000,65 +980,73 @@ def runInterfaceCommand(res):
     global waittime
     global debug
 
-    if res.lower() in ['help', 'h', '?']:
-        showHelp()
-    elif res == "" and prevRes == "":
-        pass
-    elif res.lower() == "save kb":
-        saveKb()
-    elif res.lower() == "clear kb":
-        clearKb()
-    elif res.lower() == "load kb":
-        loadKb()
-    elif res.lower() == "show kb":
-        showKb()
-    elif res.lower() == "show discover":
-        showDiscover()
-    elif res.lower() == "show gather":
-        showGather()
-    elif res.lower() == "show rce":
-        showRce()
-    elif res.lower() == "show fuzzers":
-        showFuzzers()
-    elif res.lower() == "show brute":
-        showBrutes()
-    elif res.lower() == "autoscan":
-        doAutoScan()
-    elif res.lower() == "report":
-        generateReport(user_data)
-    elif res.lower() == "payload":
-        printPayloads()
-    elif res != "" and prevRes != "":
-        prevRes += "\n" + res
-    elif res == "" and prevRes != "":
-        try:
-            if prevRes != "":
-                prevRes += "\n" + res
-                res = prevRes
+    oldPrompt = ""
+    prevRes = ""
+    inguma = Inguma(hasScapy)
 
-            exec(GLOBAL_VARIABLES + res)
+    while 1:
+        res = CLIcore.unified_input_prompt(prompt, inguma)
+        if res == None:
+            print "Exit."
+            sys.exit(0)
 
-        except:
-            print "Exec error:",sys.exc_info()[1]
-
-        prevRes = ""
-        if oldPrompt != "":
-            prompt = oldPrompt
-            oldPrompt = ""
-    elif res[len(res)-1] == ":":
-        oldPrompt = prompt
-        prompt = ">>>>>>> "
-        prevRes = res
-    else:
-        try:
-            if not runCommand(res, locals()):
+        if res == "" and prevRes == "":
+            pass
+        elif res.lower() == "save kb":
+            saveKb()
+        elif res.lower() == "clear kb":
+            clearKb()
+        elif res.lower() == "load kb":
+            loadKb()
+        elif res.lower() == "show kb":
+            showKb()
+        elif res.lower() == "show discover":
+            showDiscover()
+        elif res.lower() == "show gather":
+            showGather()
+        elif res.lower() == "show rce":
+            showRce()
+        elif res.lower() == "show fuzzers":
+            showFuzzers()
+        elif res.lower() == "show brute":
+            showBrutes()
+        elif res.lower() == "autoscan":
+            doAutoScan()
+        elif res.lower() == "report":
+            generateReport(user_data)
+        elif res.lower() == "payload":
+            printPayloads()
+        elif res != "" and prevRes != "":
+            prevRes += "\n" + res
+        elif res == "" and prevRes != "":
+            try:
+                if prevRes != "":
+                    prevRes += "\n" + res
+                    res = prevRes
+    
                 exec(GLOBAL_VARIABLES + res)
-        except:
-            print "Internal error.",sys.exc_info()[1]
-            
-            if debug:
-                raise
-
+    
+            except:
+                print "Exec error:",sys.exc_info()[1]
+    
+            prevRes = ""
+            if oldPrompt != "":
+                prompt = oldPrompt
+                oldPrompt = ""
+        elif res[len(res)-1] == ":":
+            oldPrompt = prompt
+            prompt = ">>>>>>> "
+            prevRes = res
+        else:
+            try:
+                if not runCommand(res, locals()):
+                    exec(GLOBAL_VARIABLES + res)
+            except:
+                print "Internal error.",sys.exc_info()[1]
+                
+                if debug:
+                    raise
+    
 def printPayloads():
     global payload
 
