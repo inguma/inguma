@@ -46,7 +46,7 @@ def unified_input_prompt(prompt, caller):
     if input.lower() in ['help', 'h', '?']:
         caller.show_help()
         input = ""
-    elif input == "..":
+    elif input.lower() in ['quit', 'exit', '..', 'urten']:
         return None
 
     return input
