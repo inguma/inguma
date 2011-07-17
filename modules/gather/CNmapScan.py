@@ -34,7 +34,7 @@ class CNmapScan(CIngumaModule):
     def help(self):
         print "A module for port scanning using Nmap"
 
-    def showHelp(self):
+    def show_help(self):
         print 
         print "Inguma's Nmap Interface Help"
         print "------------------------------"
@@ -94,15 +94,11 @@ class CNmapScan(CIngumaModule):
                 self.addToDict( output['hostip'] + '_trace', host[0] )
 
     def runLoop(self):
+        import lib.ui.cli.core as CLIcore
         while 1:
-            try:
-                res = raw_input("NMAP> ")
-            except KeyboardInterrupt:
+            res = CLIcore.unified_input_prompt(self, 'nmapscan')
+            if res == None:
                 break
-            except EOFError:
-                break
-            except:
-                print "raw_input:", sys.exc_info()[1]
             
             words = res.split(" ")
 
@@ -113,12 +109,8 @@ class CNmapScan(CIngumaModule):
                 self.runNmap(mystring)
             elif words[0].lower() == "nmaphelp":
                 self.HelpNmap()
-            elif words[0].lower() == "help":
-                self.showHelp()
-            elif words[0].lower() in ["exit", "quit"]:
-                break
             else:
-                print "Unknow option or command '%s'" % res
+                print "Unknown option or command '%s'" % res
 
     def run(self):
 
