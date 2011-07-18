@@ -45,7 +45,7 @@ theme = "oblivion"
 categories = ["discovers", "gathers"]
 
 # Classes
-discovers = [ "arping", "tcping", "udping", "asn", "bluetooth", "db2discover", "externip", "hostname", "ipaddr", "getmac", "icmping", "isnated", "netcraft", "ispromisc", "tcptrace", "whois", "wifi" ]
+discovers = [ "arping", "tcping", "udping", "asn", "bluetooth", "db2discover", "externip", "hostname", "ipaddr", "getmac", "icmping", "isnated", "netcraft", "ispromisc", "tcptrace", "whois", "wifi", "subdomainer" ]
 gathers = [ "apps11i", "archanix", "arppoison", "anticrypt", "dnsspoof", "dtspc", "fakearp", "firetest", "nids", "ikescan", "ifxinfo", "rainbowmd5", "nikto", "nmapfp", "nmapscan", "nmbstat", "oascheck", "oratool", "oracrack11g", "oratt70info", "osifuzz", "p0f", "portscan", "protoscan", "rainbow", "rpcdump", "samrdump", "identify", "smbclient", "smbgold", "sniffer", "snmpwalk", "mssqlcrack", "tcpproxy", "tcpscan", "tnscmd", "unicornscan", "webserver", "winspdetect", "xmlrpc" ]
 brutes = ["bruteftp", "brutehttp", "bruteimap", "bruteifx", "bruteora", "brutepop", "brutesmb", "brutesmtp", "brutessh", "brutesyb"]
 
@@ -66,7 +66,7 @@ subgathers = {
 
 # Subclasses Discover
 subdiscovers = {
-'dns' : ["hostname", "ipaddr"],
+'dns' : ["hostname", "ipaddr", "subdomainer"],
 'pings' : ["arping", "icmping", "tcping", "udping"],
 'routes' : ["tcptrace"],
 'misc' : ["externip", "getmac", "isnated", "ispromisc"],
@@ -110,6 +110,7 @@ ispromisc = []
 tcptrace = []
 whois = []
 wifi = []
+subdomainer = []
 
 # Gathers
 apps11i = ["dad"]
