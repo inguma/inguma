@@ -184,25 +184,12 @@ class Inguma:
             print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
             print "|----------------------------------------------------------------------------|"
             print "|                                                                            |"
-            
-            """
-            try:
-                exec("scapy.lsc()")
-                print
-            except:
-                print "Error getting scapy commands :( No scapy support?"
-                print sys.exc_info()[1]
-            """
-
             print "| NOTE: Remember to use 'scapy.<function>' to use.                           |"
             print "|                                                                            |"
             print "| Type 'scapy.interact()' to start an scapy session.                         |"
             print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
-            print "+----------------------------------------------------------------------------+"
-        else:
-            print "+----------------------------------------------------------------------------+"
-            print
 
+        print "+----------------------------------------------------------------------------+"
         print
         print "Any other typed text will be evaluated - with eval() - as a Python expression."
         print
