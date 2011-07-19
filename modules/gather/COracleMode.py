@@ -67,13 +67,13 @@ class COracleMode(CIngumaModule):
         print
         print 'Use dad="?" to autoresolve DAD'
 
-    def showHelp(self):
+    def show_help(self):
         print
         print "Inguma's Oracle mode help"
         print "-------------------------"
         print
-        print "help                         Show this help"
-        print "exit                         Exit from oracle mode"
+        print "help | h | ?                 Show this help"
+        print "exit | quit | ..             Exit from oracle mode"
         print "sql                          Opens an interactive SQL terminal"
         print "sid=<sid>                    Specify the database's SID"
         print "dad=<dad>                    Specify the server's DAD name"
@@ -140,56 +140,50 @@ class COracleMode(CIngumaModule):
             print "Statement executed."
 
     def sqlLoop(self):
+        import lib.ui.cli.core as CLIcore
+
         self.connect()
         buf = ""
+        i = 1
+        prompt = 'oratool/sql'
 
         print "Type ';' or '/' in a single line to run a command. Exit to quit."
 
-        i = 1
-        prompt = "SQL> "
-
         while 1:
-            try:
-                res = raw_input(prompt)
-                tmp = buf + res
+            res = CLIcore.unified_input_prompt(self, prompt)
+            if res == None:
+                break
 
-                if res.lower().startswith("set colsize"):
-                    x = res.split(" ")
-                    self.colSize = int(x[len(x)-1])
+            tmp = buf + res
+
+            if res.lower().startswith("set colsize"):
+                x = res.split(" ")
+                self.colSize = int(x[len(x)-1])
+                continue
+            elif res in [";", "r", "/"]:
+                if buf == "":
+                    print "No data in buffer"
                     continue
-                elif res.lower() in ["exit", "quit", "disconn", "disconnect", "agur", "urten"]: # :P
-                    break
-                elif res in [";", "r", "/"]:
-                    if buf == "":
-                        print "No data in buffer"
-                        continue
 
-                    prompt = "SQL> "
-                    i = 1
-                    self.runSQLCommand(buf, True)
-                    buf = ""
-                elif res.endswith(";") and tmp[0:5].upper() not in ["BEGIN", "DECLA"]:
-                    buf += res[:len(res)-1] + "\n"
-                    prompt = "SQL> "
-                    self.runSQLCommand(buf, True)
-                    buf = ""
-                else:
-                    buf += res + "\n"
-                    i += 1
-                    prompt = " %d   " % i
-
-            except KeyboardInterrupt:
-                break
-            except EOFError:
-                break
-            except:
-                print "SQL Error:", sys.exc_info()[1]
+                prompt = "oratool/sql"
+                i = 1
+                self.runSQLCommand(buf, True)
                 buf = ""
+            elif res.endswith(";") and tmp[0:5].upper() not in ["BEGIN", "DECLA"]:
+                buf += res[:len(res)-1] + "\n"
+                prompt = "oratool/sql"
+                self.runSQLCommand(buf, True)
+                buf = ""
+            else:
+                buf += res + "\n"
+                i += 1
+                prompt = " %d   " % i
 
     def showExploits(self):
         pass
 
     def runOracleModeLoop(self):
+        import lib.ui.cli.core as CLIcore
 
         dad = self.dad
         sid = self.sid
@@ -199,30 +193,21 @@ class COracleMode(CIngumaModule):
         password = self.password
 
         while 1:
-            try:
-                self.dad = dad
-                self.sid = sid
-                self.target = target
-                self.port = port
-                self.user = user
-                self.password = password
+            res = CLIcore.unified_input_prompt(self, "oratool")
+            if res == None:
+                break
 
-                res = raw_input("ORAMODE> ")
-            except KeyboardInterrupt:
-                break
-            except EOFError:
-                break
-            except:
-                print "raw_input:", sys.exc_info()[1]
-            
+            self.dad = dad
+            self.sid = sid
+            self.target = target
+            self.port = port
+            self.user = user
+            self.password = password
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
                 continue
-            elif words[0].lower() == "exit" or words[0].lower() == "quit":
-                break
-            elif words[0].lower() == "help":
-                self.showHelp()
             elif words[0].lower() == "sql":
                 self.sqlLoop()
             elif words[0].lower() == "show" and words[1].lower() == "exploits":
