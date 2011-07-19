@@ -157,8 +157,9 @@ class CIds(CIngumaModule):
 
     def runIdsLoop(self):
         import lib.ui.cli.core as CLIcore
+
         while 1:
-            res = CLIcore.unified_input_prompt(self, "nids")
+            res = CLIcore.unified_input_prompt(self, 'nids')
             if res == None:
                 break
 

@@ -193,7 +193,7 @@ class COracleMode(CIngumaModule):
         password = self.password
 
         while 1:
-            res = CLIcore.unified_input_prompt(self, "oratool")
+            res = CLIcore.unified_input_prompt(self, 'oratool')
             if res == None:
                 break
 

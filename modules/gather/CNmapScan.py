@@ -95,6 +95,7 @@ class CNmapScan(CIngumaModule):
 
     def runLoop(self):
         import lib.ui.cli.core as CLIcore
+
         while 1:
             res = CLIcore.unified_input_prompt(self, 'nmapscan')
             if res == None:
