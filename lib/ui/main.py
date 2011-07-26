@@ -300,7 +300,7 @@ class MainApp:
         setattr(self.graph_uiman, 'xdot', self.xdotw)
         setattr(self.altnode_uiman, 'xdot', self.xdotw)
 
-        self.xdotw.set_size_request(900,450)
+        self.xdotw.set_size_request(999,475)
         self.gom.set_map(self.xdotw)
         setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=False)
@@ -336,14 +336,10 @@ class MainApp:
         #################################################################
         # Map Iface
         #################################################################
-        bufferf = "Map"
-        frame = gtk.Frame(bufferf)
-        frame.set_border_width(5)
-        frame.show()
         label = gtk.Label('Map')
 
         # Test XDOT MAP
-        frame.add(self.hpaned)
+        self.hpaned.show()
         #self.hpaned.add1(self.xdotw)
         self.hpaned.add1(menubox)
         self.hpaned.add2(self.scrolled_window)
@@ -374,8 +370,7 @@ class MainApp:
         #################################################################
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(gtk.POS_LEFT)
-        #notebook.append_page(frame, label)
-        self.notebook.append_page(frame, b)
+        self.notebook.append_page(self.hpaned, b)
         self.notebook.connect("switch_page", self.on_switch)
 
         #################################################################################################################################
@@ -410,10 +405,6 @@ class MainApp:
         #################################################################################################################################
         # RCE Iface
         #################################################################
-        bufferf = "RCE"
-        self.frame = gtk.Frame(bufferf)
-        self.frame.set_border_width(5)
-        self.frame.set_size_request(400, 400)
 
         label = gtk.Label(' RCE')
         label.set_angle(90)
@@ -424,22 +415,18 @@ class MainApp:
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
-        self.notebook.append_page(self.frame, b)
 
-#        frame.add(rcepaned)
-        self.frame.show()
+        # Create bokken UI and add to the Notebook
+        self.bokken = bokken.MainApp('')
+        self.rcevb = self.bokken.get_supervb()
+        self.rcevb.show_all()
+        self.notebook.append_page(self.rcevb, b)
+
 #        rcepaned.show()
 
         #################################################################################################################################
         # Xploit Iface
         #################################################################
-        bufferf = "Exploit"
-        frame = gtk.Frame(bufferf)
-        frame.set_border_width(5)
-        frame.show()
-        label = gtk.Label('Exploit')
-        frame.add(label)
-        label.show()
         label = gtk.Label(' Exploit')
         label.set_angle(90)
         b_factory = gtk.VBox
@@ -815,10 +802,8 @@ class MainApp:
             self.bottom_nb.hide()
             self.bottom_nb.is_visible = False
             self.statusbar.hide()
-            self.bokken = bokken.MainApp('')
-            self.rcevb = self.bokken.get_supervb()
-            self.frame.add(self.rcevb)
-            self.frame.show_all()
+#            self.frame.add(self.rcevb)
+#            self.frame.show_all()
         else:
             #self.rcehb.hide()
             self.handlebox.show()
