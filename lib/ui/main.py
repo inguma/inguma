@@ -104,6 +104,7 @@ ui_menu = """
     <toolitem action="Show KB"/>
     <separator name="s5"/>
     <toolitem action="Report"/>
+    <separator name="s6"/>
     <toolitem action="Quit"/>
   </toolbar>
 </ui>
@@ -197,22 +198,21 @@ class MainApp:
         actiongroup.add_actions([
             # xml_name, icon, real_menu_text, accelerator, tooltip, callback
 
-            ('Load', gtk.STOCK_OPEN, ('Load'), None, (''), self.loadKB),
-            ('Save', gtk.STOCK_SAVE, ('Save'), None, (''), self.saveKB),
-            ('Import', gtk.STOCK_CONVERT, ('Import'), None, (''), self.importScan),
-            ('Edit', gtk.STOCK_EDIT, ('Edit'), None, (''), self.loadEditor),
+            ('Load', gtk.STOCK_OPEN, ('Load'), None, ('Load new KB'), self.loadKB),
+            ('Save', gtk.STOCK_SAVE, ('Save'), None, ('Save curren KB'), self.saveKB),
+            ('Import', gtk.STOCK_CONVERT, ('Import'), None, ('Import Nmap/CSV file'), self.importScan),
+            ('Edit', gtk.STOCK_EDIT, ('Edit'), None, ('Open editor'), self.loadEditor),
             ('Proxy', gtk.STOCK_CONNECT, ('Proxy'), None, (''), gtk.main_quit),
             ('Web Server', gtk.STOCK_EXECUTE, ('Web'), None, ('Web'), gtk.main_quit),
 
-            #('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), gtk.main_quit),
-            ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, (''), self.run_sniffer),
-            ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, (''), self.show_term),
-            ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, (''), self.addTarget),
-            ('Preferences', gtk.STOCK_PREFERENCES, ('Preferences'), None, (''), self.showPref),
-            ('Show Log', gtk.STOCK_DND, ('Show Log'), None, (''), self.show_log),
-            ('Show KB', gtk.STOCK_DND, ('Show KB'), None, (''), self.show_kb),
-            ('Report', gtk.STOCK_DND, ('Report'), None, (''), self.report),
-            ('Quit', gtk.STOCK_QUIT, ('Quit'), None, (''), gtk.main_quit),
+            ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, ('Open network sniffer'), self.run_sniffer),
+            ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, ('Start Scapy'), self.show_term),
+            ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, ('Add a new target'), self.addTarget),
+            ('Preferences', gtk.STOCK_PREFERENCES, ('Preferences'), None, ('Open preferences dialog'), self.showPref),
+            ('Show Log', gtk.STOCK_DND, ('Show Log'), None, ('Show/Hide Log panel'), self.show_log),
+            ('Show KB', gtk.STOCK_DND, ('Show KB'), None, ('Show/Hide KB panel'), self.show_kb),
+            ('Report', gtk.STOCK_INDEX, ('Report'), None, ('Show KB report'), self.report),
+            ('Quit', gtk.STOCK_QUIT, ('Quit'), None, ('Quit Inguma'), gtk.main_quit),
         ])
 
         # Add the actiongroup to the uimanager
@@ -221,7 +221,7 @@ class MainApp:
 
         # Toolbar
         toolbar = uimanager.get_widget('/Toolbar')
-        toolbar.set_style(gtk.TOOLBAR_BOTH)
+        toolbar.set_style(gtk.TOOLBAR_ICONS)
 
         # Disabled until I get them working
         button_proxy = uimanager.get_widget('/Toolbar/Proxy')
@@ -359,12 +359,12 @@ class MainApp:
         self.hpaned.show()
         self.xdotw.show()
 
-        label = gtk.Label('Map')
+        label = gtk.Label(' Map')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -381,12 +381,12 @@ class MainApp:
         #################################################################################################################################
         # Consoles Tab
         #################################################################
-        label = gtk.Label('Term')
+        label = gtk.Label(' Term')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -415,12 +415,12 @@ class MainApp:
         self.frame.set_border_width(5)
         self.frame.set_size_request(400, 400)
 
-        label = gtk.Label('RCE')
+        label = gtk.Label(' RCE')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -440,12 +440,12 @@ class MainApp:
         label = gtk.Label('Exploit')
         frame.add(label)
         label.show()
-        label = gtk.Label('Exploit')
+        label = gtk.Label(' Exploit')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -506,12 +506,12 @@ class MainApp:
         self.bottom_nb.set_tab_pos(gtk.POS_LEFT)
 
         # Icon and label for Logs tab
-        label = gtk.Label('Logs')
+        label = gtk.Label(' Logs')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -519,12 +519,12 @@ class MainApp:
         self.bottom_nb.append_page(self.log_scrolled_window, b)
 
         # Icon and label for Actions tab
-        label = gtk.Label('Actions')
+        label = gtk.Label(' Actions')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
