@@ -89,7 +89,7 @@ class CP0f(CIngumaModule):
         import lib.ui.cli.core as CLIcore
 
         while 1:
-            res = CLIcore.unified_input_prompt(self, 'P0F')
+            res = CLIcore.unified_input_prompt(self, 'p0f')
             if res == None:
                 break
 
