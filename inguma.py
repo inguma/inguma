@@ -175,7 +175,7 @@ class Inguma:
         print "|----------------------------------------------------------------------------|"
         print "| use <mod>               | Load all modules from a directory                |"
         print "| ! <command>             | Run an operating system command                  |"
-        print "| exit | quit             | Exit Inguma                                      |"
+        print "| exit | quit | ..        | Exit Inguma                                      |"
         print "| help | h | ?            | Show this help                                   |"
 
         if self.has_scapy:
