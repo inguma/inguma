@@ -73,29 +73,26 @@ class CP0f(CIngumaModule):
         print "P0F: " + str(res)
         print 
 
-    def showHelp(self):
+    def show_help(self):
         print
-        print "Inguma's p0f Interfaces Help"
-        print "----------------------------"
+        print "Inguma's p0f Interface Help"
+        print "---------------------------"
         print
         print "filter <pcap filter>         Specify a valid pcap filter"
-        print "iface <iface>                Specify which iface will be used"
-        print "run                          Start p0f-ing"
-        print "help                         Show this help"
-        print "exit                         Exit from the p0f interface"
+        print "iface <iface>                Specify which interface will be used"
+        print "run | p0f                    Start p0f-ing"
+        print "help | h | ?                 Show this help"
+        print "exit | quit | ..             Exit from the p0f interface"
         print
 
     def p0fLoop(self):
+        import lib.ui.cli.core as CLIcore
+
         while 1:
-            try:
-                res = raw_input("P0F> ")
-            except KeyboardInterrupt:
+            res = CLIcore.unified_input_prompt(self, 'P0F')
+            if res == None:
                 break
-            except EOFError:
-                break
-            except:
-                print "raw_input:", sys.exc_info()[1]
-                
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
@@ -107,7 +104,7 @@ class CP0f(CIngumaModule):
 
                 self.filter = buf
                 print "Filter is:", buf
-            elif words[0].lower() == "p0f" or words[0] == "run":
+            elif words[0].lower()  in ["p0f", "run"]:
                 try:
                     print "Sniffing in iface", self.iface, "..."
                     if bScapy:
@@ -122,16 +119,7 @@ class CP0f(CIngumaModule):
                 if len(words) > 1:
                     self.iface = words[1]
                     
-                    if self.iface == "":
-                        self.iface = None
-
-                    print "Interface is:", self.iface
-            elif words[0].lower() == "help":
-                self.showHelp()
-            elif words[0].lower() == "quit" or words[0].lower() == "exit":
-                break
-            elif words[0].lower() == "packets":
-                self.runPacketListCommand(words[1:])
+                print "Interface is:", self.iface
             else:
                 print "Unknown command or options '" + str(res) + "'"
 
