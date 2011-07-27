@@ -239,25 +239,32 @@ def debugPrint(*args):
     print outStr
 
 def loadModule(path, atype, marray, bLoad = True):
-    # path:   module category path (modules/discover)
-    # atype:  module category (discover)
-    # marray: module category list (discovers)
+    """ Module loader for Inguma.
+    Arguments:
+    path:   module category path (modules/discover)
+    atype:  module category (discover)
+    marray: module category list (discovers)
+    """
 
     global GLOBAL_VARIABLES
 
     sys.path.append(path)
 
-    for file in os.listdir(path):
+    for complete_filename in os.listdir(path):
         # Load all modules in the path, unless:
-        if file.startswith("_") or file.endswith("pyc"):
+        if complete_filename.startswith("_") or complete_filename.startswith(".") or complete_filename.endswith("pyc"):
             continue
 
         if bLoad:
             # Get file name
-            file = file[:file.find(".")]
+            file = complete_filename[:complete_filename.find(".py")]
         else:
-            if not os.path.isdir("%s%s%s" % (path, os.sep, file)):
+            if not os.path.isdir("%s%s%s" % (path, os.sep, complete_filename)):
                 continue
+
+        # Protect ourselves against weird filenames.
+        if not file:
+            continue
 
         debugPrint("Loading " + atype + " module", file)
 
@@ -267,7 +274,7 @@ def loadModule(path, atype, marray, bLoad = True):
                     exec("import " + file)
                     exec("global " + marray)
                 else:
-                    print "The, supposed, module %s appears to be a non valid module" % file
+                    print "The module %s%s%s has errors or a non-alphanumeric name." % (path, os.sep, complete_filename)
                     continue
 
                 try:
@@ -280,7 +287,7 @@ def loadModule(path, atype, marray, bLoad = True):
                                 exec ("global " + aGlobal)
                                 GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
-                                print "The, supposed, global variable of the module %s doesn't appears to be a variable..." % file
+                                print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename) 
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
