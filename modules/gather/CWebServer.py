@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys, os, urllib2, SimpleHTTPServer, SocketServer, re
+import os, urllib2, SimpleHTTPServer, SocketServer, re
 
 from lib.libexploit import CIngumaModule
 
@@ -62,7 +62,7 @@ class CWebServer(CIngumaModule):
             text = objRe.sub('<img src=' + self.target, text)
             #Parse href links
             print "Parsing href links..."
-            objRe = re.compile(src, re.IGNORECASE)
+            objRe = re.compile(href, re.IGNORECASE)
             text = objRe.sub('<a href=' + self.target, text)
             
             #FIXME: Hugo Fixme!!!

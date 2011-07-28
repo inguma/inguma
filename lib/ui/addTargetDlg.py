@@ -143,6 +143,8 @@ class addTargetDialog:
             self.uicore.uiRunDiscover('ipaddr', join=True)
             ipaddr = self.uicore.get_kbfield('hosts')
             ipaddr = ipaddr[-1]
+            self.gom.echo( "Running subdomainer" )
+            self.uicore.uiRunDiscover('subdomainer', join=True)
             self.gom.echo( "\tDone, setting target to " + ipaddr )
             self.uicore.set_kbfield('target', ipaddr)
 

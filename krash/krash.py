@@ -7,7 +7,6 @@ import urllib
 import socket
 import thread
 import pexpect
-import tokenize
 import StringIO
 
 verbose = False
