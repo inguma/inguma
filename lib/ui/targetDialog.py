@@ -17,14 +17,11 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
-import gtk, gobject
+import gtk
 
 import sys
 sys.path.append('../..')
 import lib.IPy as IPy
-
-from . import core
 
 class TargetDialog:
     '''Dialog for add targets to the KB'''

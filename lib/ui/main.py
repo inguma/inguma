@@ -78,6 +78,10 @@ import lib.ui.threadstv as threadstv
 import lib.ui.reportWin as reportWin
 import lib.ui.libAutosave as libAutosave
 import lib.ui.bokken.main as bokken
+# Fuzzers
+import lib.ui.fuzzing.fuzz_frame as fuzz_frame
+#import lib.ui.fuzzing.krashui as krashui
+#import lib.ui.fuzzing.scapyui as scapyui
 
 import platform
 from lib.core import get_profile_file_path, check_distorm_lib
@@ -88,6 +92,8 @@ ui_menu = """
 <ui>
   <toolbar name="Toolbar">
     <toolitem action="Load"/>
+    <placeholder name="miau">
+    </placeholder>
     <toolitem action="Save"/>
     <toolitem action="Import"/>
     <toolitem action="Edit"/>
@@ -427,7 +433,15 @@ class MainApp:
         #################################################################################################################################
         # Xploit Iface
         #################################################################
-        label = gtk.Label(' Exploit')
+        # Exploits Notebook for Exploit DB, Fuzzing and Exploit Dev
+        self.exploits_nb = gtk.Notebook()
+        self.exploits_nb.set_tab_pos(gtk.POS_LEFT)
+
+        #
+        # Exploits DB
+        #
+
+        label = gtk.Label(' Exploits DB')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
@@ -441,10 +455,42 @@ class MainApp:
         exploitsGui = self.exploitsInst.get_widget()
         setattr(self.exploitsInst, 'gom', self.gom)
         exploitsGui.show_all()
-        self.notebook.append_page(exploitsGui, b)
+        self.exploits_nb.append_page(exploitsGui, b)
+
+        #
+        # Fuzzers
+        #
+
+        label = gtk.Label(' Fuzzing')
+        label.set_angle(90)
+        b_factory = gtk.VBox
+        b = b_factory(spacing=1)
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
+        b.pack_start(label)
+        b.pack_start(i)
+        b.show_all()
+
+        # Fuzzers Box to contain krash and scapy fuzzers
+        self.fuzz_frame = fuzz_frame.FuzzFrame()
+        self.exploits_nb.append_page(self.fuzz_frame, b)
+
+        # Add exploits notebook and text/label to main notebook
+        label = gtk.Label(' Exploit')
+        label.set_angle(90)
+        b_factory = gtk.VBox
+        b = b_factory(spacing=1)
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
+        b.pack_start(label)
+        b.pack_start(i)
+        b.show_all()
+
+        self.notebook.append_page(self.exploits_nb, b)
 
         #mainvbox.pack_start(notebook, True, True, 1)
         self.vpaned.add1(self.notebook)
+        self.exploits_nb.show_all()
         self.notebook.show()
 
 
@@ -605,6 +651,7 @@ class MainApp:
         from lib.core import get_profile_file_path
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         chooser.set_current_folder(get_profile_file_path('data/'))
+        chooser.resize(100,100)
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.gom.echo( 'Loading KB...', False)
@@ -800,10 +847,15 @@ class MainApp:
 
             self.handlebox.hide()
             self.bottom_nb.hide()
-            self.bottom_nb.is_visible = False
+#            self.bottom_nb.is_visible = False
             self.statusbar.hide()
 #            self.frame.add(self.rcevb)
 #            self.frame.show_all()
+        elif more == 1:
+            self.handlebox.show()
+            self.bottom_nb.hide()
+#            self.bottom_nb.is_visible = False
+            self.statusbar.show()
         else:
             #self.rcehb.hide()
             self.handlebox.show()

@@ -17,20 +17,16 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
-import pygtk
+import gtk
 
 import sys
 sys.path.append('../..')
-import lib.IPy as IPy
 
 import lib.ui.config as config
 #from . import core
 
 class GatherDialog(gtk.Dialog):
     '''Dialog for adding gather modules required data'''
-    import gtk, gobject
-    import pygtk
 
     def __init__(self, title, stockok, options, core):
         super(GatherDialog,self).__init__(title, None, gtk.DIALOG_MODAL,
