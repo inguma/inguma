@@ -45,6 +45,11 @@ class CFtpFuzzer(CIngumaModule):
     password = ""
     ssl = False
 
+    def help(self):
+        print "target  = <IP address>"
+        print "port    = <port>"
+        print "timeout = <timeout>"
+
     def fuzzCallback(self, data, idx):
         try:
             if self.ssl:

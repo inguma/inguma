@@ -19,8 +19,6 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys
-
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from lib.libexploit import CIngumaModule
 
@@ -31,7 +29,7 @@ type = "fuzzer"
 class JsHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        data = file("modules/fuzz/web/fuzz.html", "r").read()
+        data = file("tools/fuzz/web/fuzz.html", "r").read()
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")

@@ -9,7 +9,6 @@ Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 NOTE: Many fuzzers *ARE NOT* implemented
 """
 
-import os
 import sys
 from lib.libexploit import CIngumaModule
 
@@ -22,7 +21,7 @@ except:
 
 name = "osifuzz"
 brief_description = "Fuzzing interface for IP, ICMP and ARP protocols (Random)"
-type = "gather"
+type = "fuzzer"
 
 global src
 global dst
@@ -73,7 +72,6 @@ class COsiFuzz(CIngumaModule):
         print "TCP                          Send fuzzed TCP frames"
         print "UDP                          Send fuzzed UDP frames"
         print "ARP                          Send fuzzed ARP frames"
-        print "TCP                          Send fuzzed TCP frames"
         print "ICMP                         Send fuzzed ICMP frames"
         print "help                         Show this help"
         print "exit                         Exit from the OSI fuzz interface"
@@ -118,7 +116,7 @@ class COsiFuzz(CIngumaModule):
                 #print "Sended %d packets" % idx
 
                 if ans:
-                    print "-----> Sended"
+                    print "-----> Sent"
                     print p.summary()
                     hexdump(str(p))
 
