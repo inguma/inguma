@@ -27,23 +27,28 @@ class FuzzFrame(gtk.VBox):
         super(FuzzFrame,self).__init__(False, 0)
 
         # Description label
-        self.desc_label = gtk.Label('Fill in Target and Port here, and use one of the panels below to start fuzzing!')
-        self.desc_label.set_padding(5, 11)
+        self.info = gtk.Image()
+        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.desc_label = gtk.Label('Step 1: Fill in Target IP and Port here, and use one of the panels below to start fuzzing!')
+        self.desc_label.set_padding(0, 11)
 
         # IP and Port fields
-        self.ip_label = gtk.Label('Target:')
+        self.ip_label = gtk.Label('Target IP:')
         self.ip_entry = gtk.Entry(max=15)
+        self.ip_entry.set_width_chars(15)
         self.port_label = gtk.Label('Port:')
         self.port_entry = gtk.Entry(max=5)
+        self.port_entry.set_width_chars(5)
 
         # HBox to add IP/Port stuff
         self.top_hbox = gtk.HBox(False, 5)
 
+        self.top_hbox.pack_start(self.info, False, False, 2)
         self.top_hbox.pack_start(self.desc_label, False, False, 3)
         self.top_hbox.pack_start(self.ip_label, False, False, 1)
-        self.top_hbox.pack_start(self.ip_entry, True, True, 1)
+        self.top_hbox.pack_start(self.ip_entry, False, False, 1)
         self.top_hbox.pack_start(self.port_label, False, False, 1)
-        self.top_hbox.pack_start(self.port_entry, True, True, 1)
+        self.top_hbox.pack_start(self.port_entry, False, False, 1)
 
         self.pack_start(self.top_hbox, False, False, 1)
 

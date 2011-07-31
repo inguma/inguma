@@ -28,7 +28,7 @@ class ScapyUI(gtk.Frame):
         self.label.set_markup(quote)
         self.set_label_widget(self.label)
 
-        # VBox to add pannels and buttons
+        # VBox to add panels and buttons
         self.vbox = gtk.VBox(False, 2)
 
         # HBox to add panels
@@ -38,7 +38,7 @@ class ScapyUI(gtk.Frame):
         self.info_hbox = gtk.HBox(False, 2)
         self.info = gtk.Image()
         self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.desc_label = gtk.Label('Step 1: Add the layers that you want to fuzz on to the right column:')
+        self.desc_label = gtk.Label('Step 2: Add the layers that you want to fuzz on to the right column:')
         self.desc_label.set_padding(0, 4)
         self.info_hbox.pack_start(self.info, False, False, 2)
         self.info_hbox.pack_start(self.desc_label, False, False, 2)
@@ -46,7 +46,7 @@ class ScapyUI(gtk.Frame):
         # Panels
         #
 
-        # Scapy layers pannel
+        # Scapy layers panel
         self.layers_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.layers_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
@@ -84,9 +84,19 @@ class ScapyUI(gtk.Frame):
         #
         # Start/stop buttons and HBox
 
-        # HBox for buttons
-        self.buttons_hbox = gtk.HBox(True, 3)
+        # HBoxes for buttons
+        self.buttons_hbox = gtk.HBox(False, 3)
+        self.buttons_left_hbox = gtk.HBox(False, 3)
+        self.buttons_right_hbox = gtk.HBox(True, 1)
 
+        self.info = gtk.Image()
+        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.desc_label = gtk.Label('Step 3: Start fuzzing!')
+        self.desc_label.set_padding(0, 4)
+        self.buttons_left_hbox.pack_start(self.info, False, False, 2)
+        self.buttons_left_hbox.pack_start(self.desc_label, False, False, 2)
+
+        # Start/stop buttons
         self.start = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_PLAY)
         self.start.set_size_request(60, 30)
         self.stop = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_STOP)
@@ -100,10 +110,13 @@ class ScapyUI(gtk.Frame):
         label = label.get_children()[0].get_children()[1]
         label = label.set_label('')
 
-        self.buttons_hbox.add(self.start)
-        self.buttons_hbox.add(self.stop)
+        self.buttons_right_hbox.add(self.start)
+        self.buttons_right_hbox.add(self.stop)
         self.halign = gtk.Alignment(0.97, 0, 0, 0)
-        self.halign.add(self.buttons_hbox)
+        self.halign.add(self.buttons_right_hbox)
+
+        self.buttons_hbox.pack_start(self.buttons_left_hbox)
+        self.buttons_hbox.pack_start(self.halign)
 
         # Add panels and buttons
         self.panels_hbox.pack_start(self.layers_sw, True, True, 1)
@@ -112,6 +125,6 @@ class ScapyUI(gtk.Frame):
         self.vbox.pack_start(self.info_hbox, False, False, 2)
         self.vbox.pack_start(self.panels_hbox, True, True, 1)
         self.vbox.pack_start(self.hseparator, False, False, 3)
-        self.vbox.pack_start(self.halign, False, False, 3)
+        self.vbox.pack_start(self.buttons_hbox, False, False, 3)
 
         self.add(self.vbox)

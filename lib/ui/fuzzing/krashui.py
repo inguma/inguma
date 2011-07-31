@@ -38,14 +38,14 @@ class KrashUI(gtk.Frame):
         self.info_hbox = gtk.HBox(False, 2)
         self.info = gtk.Image()
         self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.file_label = gtk.Label('Step 1: Select a file:')
+        self.file_label = gtk.Label('Step 2: Select a file:')
         self.file_label.set_padding(0, 3)
         self.info_hbox.pack_start(self.info, False, False, 2)
         self.info_hbox.pack_start(self.file_label, False, False, 2)
 
         self.vbox.pack_start(self.info_hbox, False, False, 2)
 
-        self.filechooserbutton = gtk.FileChooserButton('Select a File', backend=None)
+        self.filechooserbutton = gtk.FileChooserButton('Select a file', backend=None)
         self.filechooserbutton.set_current_folder('krash/audits/')
 
         self.vbox.pack_start(self.filechooserbutton, False, False, 2)
@@ -54,7 +54,7 @@ class KrashUI(gtk.Frame):
         self.info2_hbox = gtk.HBox(False, 2)
         self.info2 = gtk.Image()
         self.info2.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.edit_label = gtk.Label('Step 2: If necessary, edit the selected file:')
+        self.edit_label = gtk.Label('Step 3: If necessary, edit the selected file:')
         self.edit_label.set_alignment(0.01, 0.5)
         self.info2_hbox.pack_start(self.info2, False, False, 2)
         self.info2_hbox.pack_start(self.edit_label, False, False, 2)
@@ -128,7 +128,7 @@ class KrashUI(gtk.Frame):
         self.fourth_hbox.pack_start(self.url_check, True, True, 0)
         self.fourth_hbox.pack_start(self.health_check, True, True, 0)
 
-        # Pack VBoxes into Flgas HBox
+        # Pack VBoxes into Flags HBox
         self.flags_hbox.pack_start(self.first_hbox, False, False, 5)
         self.flags_hbox.pack_start(self.second_hbox, False, False, 5)
         self.flags_hbox.pack_start(self.third_hbox, False, False, 5)
@@ -141,8 +141,17 @@ class KrashUI(gtk.Frame):
         self.hseparator = gtk.HSeparator()
         self.vbox.pack_start(self.hseparator, False, False, 2)
 
-        # HBox for buttons
-        self.buttons_hbox = gtk.HBox(True, 1)
+        # HBoxes for buttons
+        self.buttons_hbox = gtk.HBox(False, 3)
+        self.buttons_left_hbox = gtk.HBox(False, 3)
+        self.buttons_right_hbox = gtk.HBox(True, 1)
+
+        self.info = gtk.Image()
+        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.desc_label = gtk.Label('Step 4: Start fuzzing!')
+        self.desc_label.set_padding(0, 4)
+        self.buttons_left_hbox.pack_start(self.info, False, False, 2)
+        self.buttons_left_hbox.pack_start(self.desc_label, False, False, 2)
 
         # Start/stop buttons
         self.start = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_PLAY)
@@ -158,15 +167,14 @@ class KrashUI(gtk.Frame):
         label = label.get_children()[0].get_children()[1]
         label = label.set_label('')
 
-        self.buttons_hbox.add(self.start)
-        self.buttons_hbox.add(self.stop)
-
-        self.valign = gtk.Alignment(0, 1, 0, 0)
-        self.vbox.pack_start(self.valign, False, False, 1)
-
+        self.buttons_right_hbox.add(self.start)
+        self.buttons_right_hbox.add(self.stop)
         self.halign = gtk.Alignment(0.97, 0, 0, 0)
-        self.halign.add(self.buttons_hbox)
+        self.halign.add(self.buttons_right_hbox)
 
-        self.vbox.pack_start(self.halign, False, False, 3)
+        self.buttons_hbox.pack_start(self.buttons_left_hbox)
+        self.buttons_hbox.pack_start(self.halign)
+
+        self.vbox.pack_start(self.buttons_hbox, False, False, 3)
 
         self.add(self.vbox)
