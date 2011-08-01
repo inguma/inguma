@@ -17,7 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+import gtk, gobject
+
+from scapy.all import *
 
 class ScapyUI(gtk.Frame):
     def __init__(self):
@@ -51,15 +53,17 @@ class ScapyUI(gtk.Frame):
         self.layers_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
         # Scapy layers Treeview
-        self.store = gtk.ListStore(str, str)
-        self.layers_tv = gtk.TreeView(self.store)
+        self.layers_store = gtk.ListStore(str)
+        self.layers_tv = gtk.TreeView(self.layers_store)
         self.layers_tv.set_rules_hint(True)
+        #self.layers_tv.set_hover_selection(True)
 
         rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Layers", rendererText, text=0)
+        column = gtk.TreeViewColumn("Name", rendererText, text=0)
         column.set_sort_column_id(0)
+        column.set_resizable(True)
         self.layers_tv.append_column(column)
-        self.layers_tv.set_model(self.store)
+        self.layers_tv.set_model(self.layers_store)
 
         self.layers_sw.add_with_viewport(self.layers_tv)
 
@@ -67,17 +71,31 @@ class ScapyUI(gtk.Frame):
         self.selected_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.selected_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        self.store = gtk.ListStore(str)
-        self.selected_tv = gtk.TreeView(self.store)
+        self.selected_store = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN)
+        self.selected_tv = gtk.TreeView(self.selected_store)
         self.selected_tv.set_rules_hint(True)
 
         rendererText = gtk.CellRendererText()
         column = gtk.TreeViewColumn("Selected Layers", rendererText, text=0)
         column.set_sort_column_id(0)
         self.selected_tv.append_column(column)
-        self.selected_tv.set_model(self.store)
+
+        self.toggle = gtk.CellRendererToggle()
+        self.toggle.set_property('activatable', True)
+        self.toggle.connect( 'toggled', self.activate, self.selected_store )
+        self.toggle_column = gtk.TreeViewColumn("Fuzz", self.toggle)
+        self.toggle_column.add_attribute( self.toggle, "active", 1)
+        self.selected_tv.append_column(self.toggle_column)
+
+        self.selected_tv.set_model(self.selected_store)
 
         self.selected_sw.add_with_viewport(self.selected_tv)
+
+        # Drag and Drop stuff
+        self.layers_tv.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [("text/plain", gtk.TARGET_SAME_APP, 80)], gtk.gdk.ACTION_COPY)
+        self.layers_tv.connect("drag-data-get", self.drag_data_get_cb)
+        self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], gtk.gdk.ACTION_COPY)
+        self.selected_tv.connect("drag-data-received", self.drag_data_received_cb)
 
         self.hseparator = gtk.HSeparator()
 
@@ -128,3 +146,44 @@ class ScapyUI(gtk.Frame):
         self.vbox.pack_start(self.buttons_hbox, False, False, 3)
 
         self.add(self.vbox)
+
+        self.get_layers()
+
+    def activate(self, cell, path, model):
+        model[path][1] = not model[path][1]
+        return
+
+    def drag_data_get_cb(self, treeview, context, selection, info, timestamp):
+        treeselection = treeview.get_selection()
+        model, iter = treeselection.get_selected()
+        text = model.get_value(iter, 0)
+        selection.set('text/plain', 8, text)
+        return
+
+    def drag_data_received_cb(self, treeview, context, x, y, selection, info, timestamp):
+        obj = eval(selection.data)
+
+        layers = {}
+        layers[selection.data] = []
+
+        if isinstance(obj, type) and issubclass(obj, Packet):
+            for f in obj.fields_desc:
+                layers[selection.data].append(str(f.name))
+            self.add_layer(layers)
+
+    def add_layer(self, layers):
+        for layer in layers.keys():
+            parent = self.selected_store.append( None, (layer, None) )
+            for element in layers[layer]:
+                self.selected_store.append( parent, (element, None) )
+
+    def get_layers(self):
+
+        import __builtin__
+        all = __builtin__.__dict__.copy()
+        all.update(globals())
+        objlst = sorted(conf.layers, key=lambda x:x.__name__)
+        for o in objlst:
+            short = "%-10s" % (o.__name__)
+            #long = "%s" % (o.name)
+            iter = self.layers_store.append([short])
