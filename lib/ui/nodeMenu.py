@@ -17,16 +17,13 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
-import gtk, gobject
+import gtk
 
-from . import core
-
-from . import targetDialog
+from . import discover_dialog
 from . import bruteDialog
-from . import gatherDialog
+from . import gather_dialog
 from . import config
-from . import  reportWin
+from . import reportWin
 
 class UIManager(gtk.UIManager):
 
@@ -275,7 +272,7 @@ self.showBrute )], user_data=[ip, port] )
 
     def showDialog(self, action):
         module = action.get_name()
-        tg = targetDialog.TargetDialog(module, self.uicore)
+        tg = discover_dialog.DiscoverDialog(module, self.uicore)
 
     def showGather(self, action):
         module = action.get_name()
@@ -288,9 +285,9 @@ self.showBrute )], user_data=[ip, port] )
             setattr(dialog, 'gom', self.gom)
             setattr(dialog, 'module', module)
         elif not inputs:
-            tg = gatherDialog.GatherDialog(module, gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)
+            tg = gather_dialog.GatherDialog(module, gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)
         else:
-            tg = gatherDialog.GatherDialog(module, gtk.STOCK_NEW, inputs, self.uicore)
+            tg = gather_dialog.GatherDialog(module, gtk.STOCK_NEW, inputs, self.uicore)
 
     def showBrute(self, action, params):
         module = action.get_name().split('_')[-1]

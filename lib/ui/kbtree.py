@@ -44,6 +44,8 @@ class KBtree:
         # create the TreeView using treestore
         self.treeview = gtk.TreeView(self.treestore)
 
+        self.treeview.set_rules_hint(True)
+
         # create the TreeViewColumn to display the data
         self.tvcolumn = gtk.TreeViewColumn('Hosts')
 

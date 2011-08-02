@@ -23,7 +23,6 @@ import sys
 sys.path.append('../..')
 
 import lib.ui.config as config
-#from . import core
 
 class GatherDialog(gtk.Dialog):
     '''Dialog for adding gather modules required data'''
@@ -32,6 +31,7 @@ class GatherDialog(gtk.Dialog):
         super(GatherDialog,self).__init__(title, None, gtk.DIALOG_MODAL,
                       (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,stockok,gtk.RESPONSE_OK))
 
+        self.set_resizable(False)
         TITLE = "Specify data for " + title
 
         # Core instance for manage the KB
@@ -46,9 +46,10 @@ class GatherDialog(gtk.Dialog):
         self.entries = []
         # kb fields
         self.titles = []
-        # Numeric fields
-        self.numerics = ['port', 'timeout', 'oport', 'cport']
         table = gtk.Table(len(options), 2)
+        table.set_row_spacings(5)
+        table.set_col_spacings(5)
+
         for row,tit in enumerate(options):
             self.titles.append(tit)
             titlab = gtk.Label(tit.capitalize() + ":\t")
@@ -62,11 +63,13 @@ class GatherDialog(gtk.Dialog):
             table.attach(entry, 1,2,row,row+1)
             self.entries.append(entry)
 
+            # Let's add tooltips at entries
             if self.descs.has_key(tit):
-                # Let's add tooltips at entries
-                tooltip = gtk.Tooltips()
-                tooltip.set_delay(250)
-                tooltip.set_tip(entry, self.descs[tit])
+                entry.set_has_tooltip(True)
+                entry.connect('query-tooltip', self.add_tooltip, self.descs[tit])
+            # Let's add autocompletion
+            if tit == 'target':
+                self.set_completion(entry)
 
         self.vbox.pack_start(table)
 
@@ -82,6 +85,24 @@ class GatherDialog(gtk.Dialog):
         self.inputtexts = None
         self.show_all()
 
+    def add_tooltip(self, widget, x, y, keyboard_mode, tooltip, text):
+        
+        tooltip.set_text(text)
+        tooltip.set_icon_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        return True
+
+    def set_completion(self, entry):
+        # Seek entry EntryCompletion
+        self.completion = gtk.EntryCompletion()
+        self.liststore = gtk.ListStore(str)
+        # Add function names to the list
+        for target in self.kblist['hosts']:
+            self.liststore.append([target])
+
+        self.completion.set_model(self.liststore)
+        entry.set_completion(self.completion)
+        self.completion.set_text_column(0)
+
     def _setInputText(self, widget, close=False):
         '''Checks the entry to see if it has text.
         
@@ -92,8 +113,7 @@ class GatherDialog(gtk.Dialog):
         self.inputtexts = [x.get_text() for x in self.entries]
         count = 0
         for tit in self.titles:
-            # FIXME horrible, horrible FIXME
-            if self.numerics.__contains__(tit):
+            if self.inputtexts[count].isdigit():
                 self.uicore.set_kbfield(tit, int(self.inputtexts[count]))
             else:
                 self.uicore.set_kbfield(tit, self.inputtexts[count])

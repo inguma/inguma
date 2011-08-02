@@ -17,10 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
 import gtk, gobject
 
-import os, sys, time, threading
+import os, sys, threading
 sys.path.append('../..')
 import lib.IPy as IPy
 

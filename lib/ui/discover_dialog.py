@@ -1,4 +1,4 @@
-##      targetDialog.py
+##      discover_dialog.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -23,7 +23,7 @@ import sys
 sys.path.append('../..')
 import lib.IPy as IPy
 
-class TargetDialog:
+class DiscoverDialog:
     '''Dialog for add targets to the KB'''
 
     def __init__(self, module, core):
@@ -37,7 +37,7 @@ class TargetDialog:
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
-        self.dialog.resize(250, 75)
+        self.dialog.set_resizable(False)
 
         # Radio buttons
         self.ip_rbutton= gtk.RadioButton(group=None, label='Single IP')
@@ -71,7 +71,7 @@ class TargetDialog:
 
         # Label and textextry for port
         self.portlab = gtk.Label('Port:\t')
-        self.portlab.set_alignment(0.0, 0.5)
+        self.portlab.set_alignment(0.21, 0.5)
 
         self.portentry = gtk.Entry(max=5)
         self.portentry.set_text( str(self.uicore.user_data['port']) )
@@ -85,9 +85,9 @@ class TargetDialog:
 
         #########################################################
         # Table
-        table = gtk.Table(rows=6, columns=2, homogeneous=True)
-        table.set_row_spacings(2)
-        table.set_col_spacings(2)
+        table = gtk.Table(rows=6, columns=2, homogeneous=False)
+        table.set_row_spacings(3)
+        table.set_col_spacings(3)
 
         # Add lements to Table
         table.attach(self.ip_rbutton, 0, 1, 0, 1)
