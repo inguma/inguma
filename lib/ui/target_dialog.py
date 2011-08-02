@@ -1,4 +1,4 @@
-##      addTargetDlg.py
+##      target_dialog.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -23,12 +23,10 @@ import os, sys, threading
 sys.path.append('../..')
 import lib.IPy as IPy
 
-#from . import core
-
-class addTargetDialog:
+class TargetDialog:
     '''Dialog for adding targets and running some modules'''
 
-    def __init__(self, core, gom, threadtv, config):
+    def __init__(self, core, gom, threadtv, config, xdotw):
 
         TITLE = "Specify target"
 
@@ -44,10 +42,11 @@ class addTargetDialog:
         self.gom = gom
         self.threadtv = threadtv
         self.config = config
+        self.xdotw = xdotw
 
         # Dialog
         self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
-        self.dialog.resize(250, 75)
+        self.dialog.set_resizable(False)
 
         # Radio buttons
         self.ip_rbutton= gtk.RadioButton(group=None, label='Single IP')
@@ -62,9 +61,13 @@ class addTargetDialog:
         self.tgentry.set_focus = True
 
         # Checkbox to use nmap
-        self.nmap = button = gtk.CheckButton("Use Nmap")
+        self.nmap = gtk.CheckButton("Use Nmap")
         if not self.config.HAS_NMAP:
             self.nmap.set_sensitive(False)
+
+        # Checkbox to audit host
+        self.audit = gtk.CheckButton("Audit host")
+        self.audit.set_active(True)
 
         #########################################################
         # Table
@@ -76,6 +79,7 @@ class addTargetDialog:
         table.attach(self.ip_rbutton, 0, 1, 0, 1)
         table.attach(self.dom_rbutton, 1, 2, 0, 1)
         table.attach(self.tgentry, 0, 2, 1, 2)
+        table.attach(self.audit, 0, 1, 2, 3)
         table.attach(self.nmap, 1, 2, 2, 3)
 
         # Add HBox to VBox
@@ -88,31 +92,31 @@ class addTargetDialog:
 
         # The save button
         self.butt_save = self.dialog.action_area.get_children()[0]
-        self.butt_save.connect("clicked", self.validateData)
+        self.butt_save.connect("clicked", self.validate_data)
 
         # Finish
         self.dialog.show_all()
         self.dialog.show()
 
-    def validateData(self, widget):
-        '''Validate user input and call insertData when done'''
+    def validate_data(self, widget):
+        '''Validate user input and call insert_data when done'''
 
         if self.active == 'IP':
             try:
                 if self.tgentry.get_text():
                     ip = IPy.IP( self.tgentry.get_text() )
                 self.dialog.destroy()
-                self.insertData('ip', ip)
+                self.insert_data('ip', ip)
             except:
                 self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
         elif self.active == 'DOM':
-                self.insertData('dom', self.tgentry.get_text())
+                self.insert_data('dom', self.tgentry.get_text())
                 self.dialog.destroy()
 
     def rbcallback(self, widget, data=None):
         self.active = data
 
-    def insertData(self, type, ip):
+    def insert_data(self, type, ip):
         if type == 'ip':
             #print "Adding IP target: " + ip.strNormal()
             ip = ip.strNormal()
@@ -122,20 +126,34 @@ class addTargetDialog:
             #print "Adding Domain target: " + ip
             self.uicore.set_kbfield( 'target', ip )
 
-        if self.nmap.get_active():
-            command = 'nmap -P0 -sS -F -A ' + ip + ' -oX /tmp/nmapxml.xml'
-            #print "Will use Nmap:", command
-            t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
-            t.start()
-            self.threadtv.add_action('Nmap Scan', ip, t)
-            gobject.timeout_add(1000, self.check_nmap_thread, t)
+        if self.audit.get_active():
+            if self.nmap.get_active():
+                command = 'nmap -P0 -sS -F -A ' + ip + ' -oX /tmp/nmapxml.xml'
+                #print "Will use Nmap:", command
+                t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
+                t.start()
+                self.threadtv.add_action('Nmap Scan', ip, t)
+                gobject.timeout_add(1000, self.check_nmap_thread, t)
+            else:
+                # Run discover modules
+                t = threading.Thread(target=self.run_modules, args=(type,))
+                t.start()
         else:
-            # Run discover modules
-            t = threading.Thread(target=self.runDiscovers, args=(type,))
-            t.start()
-            #self.runDiscovers(type)
+            if type == 'dom':
+                self.gom.echo( "Running ipaddr" )
+                self.uicore.uiRunDiscover('ipaddr', join=True)
+                ip = self.uicore.get_kbfield('hosts')
+                ip = ip[-1]
 
-    def runDiscovers(self, type):
+            self.uicore.set_kbfield('targets', ip)
+            self.uicore.set_kbfield('hosts', ip)
+
+            # Update graph
+            self.uicore.getDot(doASN=False)
+            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            
+
+    def run_modules(self, type):
 
         if type == 'dom':
             self.gom.echo( "Running ipaddr" )
@@ -170,7 +188,7 @@ class addTargetDialog:
             nmapData = nmapParser.parseNmap('/tmp/nmapxml.xml')
             os.remove('/tmp/nmapxml.xml')
             self.gom.echo( 'Inserting data in KB...', False)
-            nmapParser.insertData(self.uicore, nmapData)
+            nmapParser.insert_data(self.uicore, nmapData)
 
             self.gom.echo( 'Loaded\nUpdating Graph', False)
 

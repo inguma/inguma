@@ -71,7 +71,7 @@ import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
 import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
-import lib.ui.addTargetDlg as addtargetdlg
+import lib.ui.target_dialog as target_dialog
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
@@ -865,7 +865,7 @@ class MainApp:
 
     def addTarget(self, event):
 
-        addtgt = addtargetdlg.addTargetDialog(self.uicore, self.gom, self.threadsInst, config)
+        addtgt = target_dialog.TargetDialog(self.uicore, self.gom, self.threadsInst, config, self.xdotw)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
