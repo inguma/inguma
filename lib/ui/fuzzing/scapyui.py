@@ -56,7 +56,6 @@ class ScapyUI(gtk.Frame):
         self.layers_store = gtk.ListStore(str)
         self.layers_tv = gtk.TreeView(self.layers_store)
         self.layers_tv.set_rules_hint(True)
-        #self.layers_tv.set_hover_selection(True)
 
         rendererText = gtk.CellRendererText()
         column = gtk.TreeViewColumn("Name", rendererText, text=0)
@@ -71,7 +70,7 @@ class ScapyUI(gtk.Frame):
         self.selected_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.selected_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        self.selected_store = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN)
+        self.selected_store = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_BOOLEAN)
         self.selected_tv = gtk.TreeView(self.selected_store)
         self.selected_tv.set_rules_hint(True)
 
@@ -80,11 +79,14 @@ class ScapyUI(gtk.Frame):
         column.set_sort_column_id(0)
         self.selected_tv.append_column(column)
 
+        self.toggle_column = gtk.TreeViewColumn("Fuzz")
         self.toggle = gtk.CellRendererToggle()
         self.toggle.set_property('activatable', True)
-        self.toggle.connect( 'toggled', self.activate, self.selected_store )
-        self.toggle_column = gtk.TreeViewColumn("Fuzz", self.toggle)
-        self.toggle_column.add_attribute( self.toggle, "active", 1)
+        self.toggle.connect('toggled', self.activatePlugin)
+        #self.toggle.connect( 'toggled', self.activate, self.selected_store )
+        self.toggle_column.pack_start(self.toggle, False)
+        self.toggle_column.add_attribute(self.toggle, "active", 1)
+        self.toggle_column.add_attribute(self.toggle, "inconsistent", 2)
         self.selected_tv.append_column(self.toggle_column)
 
         self.selected_tv.set_model(self.selected_store)
@@ -117,6 +119,7 @@ class ScapyUI(gtk.Frame):
         # Start/stop buttons
         self.start = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_PLAY)
         self.start.set_size_request(60, 30)
+        self.start.connect('clicked', self.get_active_plugins)
         self.stop = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_STOP)
         self.stop.set_size_request(60, 30)
 
@@ -153,6 +156,95 @@ class ScapyUI(gtk.Frame):
         model[path][1] = not model[path][1]
         return
 
+    def activatePlugin(self, cell, path):
+        '''Handles the plugin activation/deactivation.
+
+        @param cell: the cell that generated the signal.
+        @param path: the path that clicked the user.
+
+        When a child gets activated/deactivated, the father is also refreshed
+        to show if it's full/partially/not activated. 
+
+        If the father gets activated/deactivated, all the children follow the
+        same fate.
+        '''
+
+        treerow = self.selected_store[path]
+
+        # invert the active state and make it consistant
+        newvalue = not treerow[1]
+        treerow[1] = newvalue
+        treerow[2] = False
+
+        # path can be "?" if it's a father or "?:?" if it's a child
+        if ":" not in path:
+            # father: let's change the value of all children
+            for childtreerow in self.get_children(path):
+                if childtreerow[0] == "gtkOutput":
+                    childtreerow[1] = True
+                    if newvalue is False:
+                        # we're putting everything in false, except this plugin
+                        # so the father is inconsistant
+                        treerow[2] = True
+                else:
+                    childtreerow[1] = newvalue
+        else:
+            # child: let's change the father status
+            pathfather = path.split(":")[0]
+            father = self.selected_store[pathfather]
+            vals = []
+            for treerow in self.get_children(pathfather):
+                vals.append(treerow[1])
+            if all(vals):
+                father[1] = True
+                father[2] = False
+            elif not any(vals):
+                father[1] = False
+                father[2] = False
+            else:
+                father[2] = True
+
+    def get_children(self, path):
+        '''Finds the children of a path.
+
+        @param path: the path to find the children.
+        @return Yields the childrens.
+        '''
+
+        father = self.selected_store.get_iter(path)
+        howmanychilds = self.selected_store.iter_n_children(father)
+        for i in range(howmanychilds):
+            child = self.selected_store.iter_nth_child(father, i)
+            treerow = self.selected_store[child]
+            yield treerow
+
+    def get_active_plugins(self, widget):
+        '''Return the activated plugins.
+
+        @return: all the plugins that are active.
+        '''
+        result = {}
+        for row in self.selected_store:
+            father = self.selected_store.get_iter(row.path)
+            layer = self.selected_store[father][0].strip()
+            result[layer] = []
+            for childrow in self.get_children(row.path):
+                if childrow[1]:
+                    result[layer].append(childrow[0])
+
+        self.compose_packet(result)
+        return result
+
+    def compose_packet(self, fuzzeables):
+        packet = ''
+
+        for layer in fuzzeables.keys():
+            packet += 'fuzz(' + layer + '())/'
+#            for option in fuzzeables[layer]:
+#                packet += 'fuzz(' + option + '),'
+        packet = eval(packet[:-1])
+        packet.show()
+
     def drag_data_get_cb(self, treeview, context, selection, info, timestamp):
         treeselection = treeview.get_selection()
         model, iter = treeselection.get_selected()
@@ -173,9 +265,9 @@ class ScapyUI(gtk.Frame):
 
     def add_layer(self, layers):
         for layer in layers.keys():
-            parent = self.selected_store.append( None, (layer, None) )
+            parent = self.selected_store.append( None, (layer, None, None) )
             for element in layers[layer]:
-                self.selected_store.append( parent, (element, None) )
+                self.selected_store.append( parent, (element, None, None) )
 
     def get_layers(self):
 
