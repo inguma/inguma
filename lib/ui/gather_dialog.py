@@ -46,13 +46,12 @@ class GatherDialog(gtk.Dialog):
         self.entries = []
         # kb fields
         self.titles = []
-        table = gtk.Table(len(options), 2)
-        table.set_row_spacings(5)
-        table.set_col_spacings(5)
+        table = gtk.Table(len(options), 3)
 
         for row,tit in enumerate(options):
             self.titles.append(tit)
             titlab = gtk.Label(tit.capitalize() + ":\t")
+            titlab.set_padding(5, 0)
             titlab.set_alignment(0.0, 0.5)
             table.attach(titlab, 0,1,row,row+1)
             entry = gtk.Entry()
@@ -65,8 +64,11 @@ class GatherDialog(gtk.Dialog):
 
             # Let's add tooltips at entries
             if self.descs.has_key(tit):
-                entry.set_has_tooltip(True)
-                entry.connect('query-tooltip', self.add_tooltip, self.descs[tit])
+                info = gtk.Image()
+                info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+                info.set_tooltip_text(self.descs[tit])
+                info.set_padding(5, 0)
+                table.attach(info, 2,3,row,row+1)
             # Let's add autocompletion
             if tit == 'target':
                 self.set_completion(entry)
@@ -80,16 +82,10 @@ class GatherDialog(gtk.Dialog):
         # the saveas button
         self.butt_saveas = self.action_area.get_children()[0]
         #self.butt_saveas.set_sensitive(False)
-        self.butt_saveas.connect("clicked", self._setInputText)
+        self.butt_saveas.connect("clicked", self.set_input_text)
 
         self.inputtexts = None
         self.show_all()
-
-    def add_tooltip(self, widget, x, y, keyboard_mode, tooltip, text):
-        
-        tooltip.set_text(text)
-        tooltip.set_icon_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        return True
 
     def set_completion(self, entry):
         # Seek entry EntryCompletion
@@ -103,13 +99,11 @@ class GatherDialog(gtk.Dialog):
         entry.set_completion(self.completion)
         self.completion.set_text_column(0)
 
-    def _setInputText(self, widget, close=False):
+    def set_input_text(self, widget, close=False):
         '''Checks the entry to see if it has text.
         
         @param close: If True, the Dialog will be closed.
         '''
-#        if not self._allWithText():
-#            return
         self.inputtexts = [x.get_text() for x in self.entries]
         count = 0
         for tit in self.titles:
@@ -121,16 +115,6 @@ class GatherDialog(gtk.Dialog):
         self._run_module()
         if close:
             self.response(gtk.RESPONSE_OK)
-
-    def _allWithText(self):
-        '''Checks if the entries has text.
-
-        @return: True if all have text.
-        '''
-        for e in self.entries:
-            if not e.get_text():
-                return False
-        return True
 
     def _run_module(self):
         self.destroy()
