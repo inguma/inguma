@@ -137,6 +137,3 @@ class COraTt70Info(CIngumaModule):
             self.updateDict()
 
         return res
-
-    def printSummary(self):
-        pass

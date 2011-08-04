@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 class CIngumaModule:
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma module. """
 
     target = ""
     ports = []
@@ -39,6 +41,27 @@ class CIngumaModule:
     listenPort = 4444
     ostype = 1
     payload = "bindshell"
+
+    def printSummary(self):
+        """ Method called when run() has returned True.  It's used for showing
+        a summary of the execution to the user. """
+        pass
+
+    def run(self):
+        """ Method called when the module is invoked.
+        If it returns False, execution is stopped there.
+        If it returns True, then printSummary() is called after run().
+        """
+        pass
+
+    def show_help(self):
+        """ Method called when 'help <module> is executed from the command line. """
+        pass
+
+    def show_help(self):
+        """ Method called when the module is interactive and 'help' is executed
+        from the command line. """
+        pass
 
     def addToDict(self, element, value):
         """ It's used to add data to the knowledge base to be used, i.e., by other modules """
@@ -65,5 +88,4 @@ class CIngumaModule:
 
         f = file(fname, "r")
         return f.readlines()
-
 

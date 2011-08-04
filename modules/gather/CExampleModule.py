@@ -40,7 +40,3 @@ class CExampleModule(CIngumaModule):
         """ This is the main entry point of the module """
         print "Honexek ez dau ezebe eitten, aldatu zeozer ein daian ostixe!"
         return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

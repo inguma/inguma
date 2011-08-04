@@ -73,6 +73,3 @@ class CRainbow(CIngumaModule):
             self.findHash(self.hash)
 
         return True
-
-    def printSummary(self):
-        pass

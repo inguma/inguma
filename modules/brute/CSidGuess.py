@@ -156,6 +156,3 @@ class CSidGuess(CIngumaModule):
             self.bruteForce()
 
         return True
-
-    def printSummary(self):
-        pass

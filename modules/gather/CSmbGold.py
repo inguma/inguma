@@ -168,6 +168,3 @@ class CSmbGold(CIngumaModule):
                 self.gom.echo( "Type:" + share.get_type() )
                 self.gom.echo( "" )
                 self.scanShare(share.get_name())
-
-    def printSummary(self):
-        pass

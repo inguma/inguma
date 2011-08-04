@@ -83,6 +83,3 @@ class CDebugger(CIngumaModule):
                     traceback.print_exc()
         
                 return False
-
-    def printSummary(self):
-        pass

@@ -44,7 +44,3 @@ class CHexEdit(CIngumaModule):
         d.SetClear()
         d.lines = 40
         d.Process()
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

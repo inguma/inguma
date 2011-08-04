@@ -58,6 +58,3 @@ class CJsFuzzer(CIngumaModule):
             server.socket.close()
 
         return False
-
-    def printSummary(self):
-        pass

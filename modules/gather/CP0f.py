@@ -27,7 +27,6 @@ type = "gather"
 
 class CP0f(CIngumaModule):
 
-    target = ""  # Main target
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
     timeout = 1 # Default timeout
@@ -127,6 +126,3 @@ class CP0f(CIngumaModule):
 
     def run(self):
         return self.p0fLoop()
-
-    def printSummary(self):
-        pass

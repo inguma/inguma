@@ -43,7 +43,6 @@ seq=None
 
 class COsiFuzz(CIngumaModule):
 
-    target = ""  # Main target
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
     timeout = 1 # Default timeout
@@ -203,6 +202,3 @@ class COsiFuzz(CIngumaModule):
             sport = self.port
 
         return self.osiFuzzLoop()
-
-    def printSummary(self):
-        pass

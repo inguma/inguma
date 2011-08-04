@@ -89,9 +89,6 @@ class CSmbClient(CIngumaModule):
 
         return True
 
-    def printSummary(self):
-        pass
-
     def runLoop(self):
         while self.interactive:
             s = raw_input('SMB> ')

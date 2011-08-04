@@ -707,7 +707,7 @@ class CServiceIdentify(CIngumaModule):
         try:
             data = socket.getservbyport(port)
         except:
-            data = "Unknow"
+            data = "Unknown"
 
         return data
 
@@ -729,7 +729,3 @@ class CServiceIdentify(CIngumaModule):
                 print srv
 
         return True
-
-    def printSummary(self):
-        pass
-

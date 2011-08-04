@@ -31,7 +31,6 @@ type = "gather"
 
 class CDtspcGather(CIngumaModule):
 
-    target = None
     port = 6112
     result = None
 

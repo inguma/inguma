@@ -397,6 +397,3 @@ class CTnsCmd(CIngumaModule):
             print "TNSCMD Error.", sys.exc_info()[1]
     
         return True
-
-    def printSummary(self):
-        pass

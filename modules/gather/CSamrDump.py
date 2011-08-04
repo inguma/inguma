@@ -270,9 +270,6 @@ class CSamrDump:
 
         return True
 
-    def printSummary(self):
-        pass
-
 # Process command-line arguments.
 if __name__ == '__main__':
     if len(sys.argv) <= 1:

@@ -24,7 +24,6 @@ brief_description = "Snmp walk module for Inguma"
 type = "gather"
 
 class CSnmpWalk(CIngumaModule):
-    target = ""  # Main target
     port = 161
     waitTime = 0
     timeout = 1
@@ -200,6 +199,3 @@ class CSnmpWalk(CIngumaModule):
                 req = nextReq
 
         return True
-
-    def printSummary(self):
-        pass

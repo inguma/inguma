@@ -56,6 +56,3 @@ class CDnsSpoof(CIngumaModule):
         self.gom.echo( "[+] Using " + str(self.address) )
         dns_spoof(joker=self.address, match={"any":self.target})
         return True
-    
-    def printSummary(self):
-        pass

@@ -155,7 +155,3 @@ class CXmlRpc(CIngumaModule):
             self.listMethods()
 
         return True
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

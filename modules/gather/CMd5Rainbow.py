@@ -60,6 +60,3 @@ class CMd5Rainbow(CIngumaModule):
             self.findHash(self.hash)
 
         return True
-
-    def printSummary(self):
-        pass

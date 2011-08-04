@@ -231,6 +231,3 @@ class COracleMode(CIngumaModule):
             self.runOracleModeLoop()
 
         return True
-
-    def printSummary(self):
-        pass

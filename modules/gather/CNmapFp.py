@@ -43,7 +43,6 @@ globals = ["oport", "cport"]
 
 class CNmapFp(CIngumaModule):
 
-    target = ""  # Main target
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
     timeout = 1 # Default timeout

@@ -31,7 +31,6 @@ brief_description = "Check an Oracle App. Server for the most common vulnerable 
 type = "gather"
 
 class COracleApps(CIngumaModule):
-    target = ""  # Main target
     port = 80
     waitTime = 0
     timeout = 1

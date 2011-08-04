@@ -62,7 +62,3 @@ class CPromisc(CIngumaModule):
             #print "No scapy support :("
             self.gom.echo( "No scapy support :(" )
             return False
-
-    def printSummary(self):
-        pass
-

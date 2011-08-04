@@ -65,8 +65,3 @@ class CDb2DiscoverModule(CIngumaModule):
         self.gom.echo( "Total of " + str(len(ret)) + " IBM DB2 Server(s) found." )
         
         return len(ret) > 0
-
-    def printSummary(self):
-        pass
-
-

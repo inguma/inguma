@@ -52,6 +52,3 @@ class CFakeArpServer(CIngumaModule):
         self.gom.echo( "[+] Using " + str(self.address) )
         farpd()
         return True
-    
-    def printSummary(self):
-        pass

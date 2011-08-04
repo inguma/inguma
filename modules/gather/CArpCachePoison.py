@@ -60,8 +60,3 @@ class CArpCachePoison(CIngumaModule):
             self.gom.echo( "Press Ctrl+C to cancel" )
         arpcachepoison(self.address, self.target, self.interval)
         return True
-    
-    def printSummary(self):
-        pass
-
-

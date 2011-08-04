@@ -88,6 +88,3 @@ class COraCrack11g(CIngumaModule):
             self.findHash(self.hash)
 
         return True
-
-    def printSummary(self):
-        pass

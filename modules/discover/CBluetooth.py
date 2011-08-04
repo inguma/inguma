@@ -88,7 +88,3 @@ class CBluetooth(CIngumaModule):
         else:
             self.gom.echo( "Mode " + srt(self.mode) + " not valid" )
             return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

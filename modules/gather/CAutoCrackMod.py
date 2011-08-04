@@ -62,6 +62,3 @@ class CAutoCrackMod(CIngumaModule):
             print "  --> Algorigthm:", objCrack.algorithm
         
         return ret
-
-    def printSummary(self):
-        pass

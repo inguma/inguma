@@ -189,7 +189,3 @@ class CIds(CIngumaModule):
     def run(self):
         self.runIdsLoop()
         return True
-
-    def printSummary(self):
-        pass
-        #print "Not yet implemented"

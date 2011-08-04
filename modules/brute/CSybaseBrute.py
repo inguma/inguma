@@ -110,6 +110,3 @@ class CSybaseBrute(CIngumaModule):
         self.doBruteForce()
 
         return False
-    
-    def printSummary(self):
-        pass
