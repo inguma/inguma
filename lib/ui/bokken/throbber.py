@@ -26,7 +26,7 @@ import gtk
 class Throbber(gtk.ToolButton):
     '''Creates the throbber widget'''
     def __init__(self):
-        self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep
+        self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'data' + os.sep
         self.img_static = gtk.Image()
         self.img_static.set_from_file(self.img_path + 'throbber_static.gif')
         self.img_static.show()

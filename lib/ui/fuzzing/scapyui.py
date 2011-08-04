@@ -64,7 +64,7 @@ class ScapyUI(gtk.Frame):
         self.layers_tv.append_column(column)
         self.layers_tv.set_model(self.layers_store)
 
-        self.layers_sw.add_with_viewport(self.layers_tv)
+        self.layers_sw.add(self.layers_tv)
 
         # Selected layers Treeview
         self.selected_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
@@ -77,9 +77,11 @@ class ScapyUI(gtk.Frame):
         rendererText = gtk.CellRendererText()
         column = gtk.TreeViewColumn("Selected Layers", rendererText, text=0)
         column.set_sort_column_id(0)
+        column.set_clickable(False)
         self.selected_tv.append_column(column)
 
         self.toggle_column = gtk.TreeViewColumn("Fuzz")
+        self.toggle_column.set_expand(False)
         self.toggle = gtk.CellRendererToggle()
         self.toggle.set_property('activatable', True)
         self.toggle.connect('toggled', self.activatePlugin)
@@ -118,10 +120,13 @@ class ScapyUI(gtk.Frame):
 
         # Start/stop buttons
         self.start = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_PLAY)
+        self.start_image = gtk.Image()
+        self.start_image.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
         self.start.set_size_request(60, 30)
         self.start.connect('clicked', self.get_active_plugins)
         self.stop = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_STOP)
         self.stop.set_size_request(60, 30)
+        self.stop.connect('clicked', self.stop_fuzzing)
 
         # Remove labels from buttons... sigh
         label = self.start.get_children()[0]
@@ -139,6 +144,11 @@ class ScapyUI(gtk.Frame):
         self.buttons_hbox.pack_start(self.buttons_left_hbox)
         self.buttons_hbox.pack_start(self.halign)
 
+        # Throbber image
+        self.throbber = gtk.Image()
+        self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'data' + os.sep
+        self.throbber.set_from_file(self.img_path + 'throbber_animat_small.gif')
+
         # Add panels and buttons
         self.panels_hbox.pack_start(self.layers_sw, True, True, 1)
         self.panels_hbox.pack_start(self.selected_sw, True, True, 1)
@@ -155,6 +165,15 @@ class ScapyUI(gtk.Frame):
     def activate(self, cell, path, model):
         model[path][1] = not model[path][1]
         return
+
+    def stop_fuzzing(self, widget):
+
+        # Change start button image
+        self.start.set_image(self.start_image)
+        self.start.set_use_stock(True)
+        label = self.start.get_children()[0]
+        label = label.get_children()[0].get_children()[1]
+        label = label.set_label('')
 
     def activatePlugin(self, cell, path):
         '''Handles the plugin activation/deactivation.
@@ -223,6 +242,13 @@ class ScapyUI(gtk.Frame):
 
         @return: all the plugins that are active.
         '''
+
+        # Change start button image
+        self.start.set_image(self.throbber)
+        label = self.start.get_children()[0]
+        label = label.get_children()[0].get_children()[1]
+        label = label.set_label('')
+
         result = {}
         for row in self.selected_store:
             father = self.selected_store.get_iter(row.path)
@@ -236,14 +262,36 @@ class ScapyUI(gtk.Frame):
         return result
 
     def compose_packet(self, fuzzeables):
+        # create the packet object
         packet = ''
+        self.fields = []
 
         for layer in fuzzeables.keys():
-            packet += 'fuzz(' + layer + '())/'
-#            for option in fuzzeables[layer]:
-#                packet += 'fuzz(' + option + '),'
+            packet += layer + '()/'
+            self.fields.extend(fuzzeables[layer])
         packet = eval(packet[:-1])
+        packet = self.fuzz_packet(packet)
         packet.show()
+
+    def fuzz_packet(self, packet, _inplace=0):
+        # add fuzz values to selected fields 
+        if not _inplace:
+            packet = packet.copy()
+        q = packet
+        while not isinstance(q, NoPayload):
+            for field in q.fields_desc:
+                # Just fuzz selected fields
+                if field.name in self.fields:
+                    if isinstance(field, PacketListField):
+                        for attribute in getattr(q, field.name):
+                            print "fuzzing", repr(attribute)
+                            fuzz(attribute, _inplace=1)
+                    elif field.default is not None:
+                        rnd = field.randval()
+                        if rnd is not None:
+                            q.default_fields[field.name] = rnd
+            q = q.payload
+        return packet
 
     def drag_data_get_cb(self, treeview, context, selection, info, timestamp):
         treeselection = treeview.get_selection()
