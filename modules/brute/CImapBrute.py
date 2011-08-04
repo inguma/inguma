@@ -26,7 +26,7 @@ import string
 import socket
 import imaplib
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "bruteimap"
 brief_description = "A simple IMAP brute force tool"

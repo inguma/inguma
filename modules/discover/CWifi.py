@@ -21,7 +21,7 @@
 
 import sys
 #from scapy.all import *
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libwifi import *
 
 name = "wifi"

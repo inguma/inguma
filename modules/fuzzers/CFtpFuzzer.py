@@ -25,7 +25,7 @@ import socket
 
 from lib import libfuzz
 from lib.libftp import FTP_COMMANDS
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "ftpfuzz"
 brief_description = "A simple FTP fuzzer"

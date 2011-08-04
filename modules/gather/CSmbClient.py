@@ -36,7 +36,7 @@ import sys
 import time
 import string
 from impacket import smb
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "smbclient"
 brief_description = "A simple SMB Client"

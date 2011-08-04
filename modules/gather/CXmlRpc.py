@@ -25,7 +25,7 @@ NOTE: Should be enhanced with an XMLRPC fuzzer
 
 import sys
 import xmlrpclib
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "xmlrpc"
 brief_description = "Interact with an XMLRPC server"

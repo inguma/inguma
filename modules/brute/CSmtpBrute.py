@@ -26,7 +26,7 @@ import string
 import socket
 import smtplib
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "brutesmtp"
 brief_description = "A simple SMTP brute force tool"

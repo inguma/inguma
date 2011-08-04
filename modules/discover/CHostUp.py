@@ -22,7 +22,7 @@
 
 import os
 import time
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes

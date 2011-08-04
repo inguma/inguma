@@ -23,7 +23,7 @@ import sys
 import urllib
 import urllib2
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "rainbow"
 brief_description = "Get the password for a hash using public rainbow tables"

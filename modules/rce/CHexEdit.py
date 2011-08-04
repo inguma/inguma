@@ -20,7 +20,7 @@
 #       MA 02110-1301, USA.
 
 import sys
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libhexdump import Display
 
 name = "hexedit"

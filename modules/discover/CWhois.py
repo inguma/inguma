@@ -25,7 +25,7 @@ import sys
 import time
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "whois"
 brief_description = "Query multiple whois databases"

@@ -31,7 +31,7 @@ import socket
 import urllib2
 
 from lib import libnikto
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "nikto"
 brief_description = "Nikto web server scanner module for Inguma"

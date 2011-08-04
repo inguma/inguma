@@ -21,7 +21,7 @@
 
 import sys, os
 import urllib, gzip
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.core import get_profile_file_path
 
 name = "geoip"

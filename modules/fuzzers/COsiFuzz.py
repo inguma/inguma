@@ -10,7 +10,7 @@ NOTE: Many fuzzers *ARE NOT* implemented
 """
 
 import sys
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import *

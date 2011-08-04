@@ -23,7 +23,7 @@ import sys
 import urllib
 import urllib2
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libautocrack import CAutoCrack
 
 name = "anticrypt"

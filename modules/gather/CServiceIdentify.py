@@ -31,7 +31,7 @@ import socket
 from impacket import smb
 
 from lib.libtns import *
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "identify"
 brief_description = "Identify services using discovered ports"

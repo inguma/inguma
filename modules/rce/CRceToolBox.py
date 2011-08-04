@@ -22,7 +22,7 @@
 import sys, os, string
 from lib.libasciienc import *
 from lib.librcetools import *
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "toolbox"
 brief_description = "A module with many RCE tools"

@@ -24,7 +24,7 @@ import sys
 import hashlib
 import binascii
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "oracrack11g"
 brief_description = "Crack an Oracle 11g password"

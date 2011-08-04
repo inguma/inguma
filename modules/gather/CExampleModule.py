@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "example"
 brief_description = "An example module"

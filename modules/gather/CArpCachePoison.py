@@ -26,7 +26,7 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "arppoison"
 brief_description = "Poison target's ARP cache"

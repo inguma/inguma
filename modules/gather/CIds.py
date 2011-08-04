@@ -27,7 +27,7 @@ import os
 import re
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from libsnort import *

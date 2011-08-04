@@ -25,7 +25,7 @@ try:
 except:
     print "module bluetooth (pybluez) not found"
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "bluetooth"
 brief_description = "A simple bluetooth scanner"

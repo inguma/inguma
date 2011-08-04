@@ -24,7 +24,7 @@ import sys
 import re
 import os
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "unicornscan"
 brief_description = "A wrapper for the unicornscan tool"

@@ -17,7 +17,7 @@ from pysnmp import asn1, v1, v2c
 from pysnmp import role
 
 from lib.libsnmp import oidToHuman, rootMibs
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "snmpwalk"
 brief_description = "Snmp walk module for Inguma"

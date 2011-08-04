@@ -6,7 +6,7 @@ Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 """
 import os
 import sys
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.modules.p0f import *

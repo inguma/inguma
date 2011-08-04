@@ -25,7 +25,7 @@ import sys,  os
 import binascii
 import random
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import *

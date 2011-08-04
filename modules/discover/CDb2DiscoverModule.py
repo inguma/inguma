@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libdb2 import CDb2Discover
 
 name = "db2discover"

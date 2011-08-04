@@ -23,7 +23,7 @@ import sys
 import time
 import string
 from impacket import smb
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "smbgold"
 brief_description = "Search for 'gold' in shared SMB directories"

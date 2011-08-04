@@ -21,7 +21,7 @@
 
 import os, urllib2, SimpleHTTPServer, SocketServer, re
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "webserver"
 brief_description = "A simple Web Server and Crawler, usefull if used with DnsSpoof module"

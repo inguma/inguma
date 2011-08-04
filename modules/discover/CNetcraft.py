@@ -25,7 +25,7 @@ import time
 import urllib
 
 from HTMLParser import HTMLParser
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "netcraft"
 brief_description = "Query netcraft database"

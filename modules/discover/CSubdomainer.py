@@ -28,7 +28,7 @@ import socket
 import pprint
 import httplib
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "subdomainer"
 brief_description = "Find subdomains for a given domain"

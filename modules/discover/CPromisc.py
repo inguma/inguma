@@ -23,7 +23,7 @@ import os
 import sys
 import time
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     import scapy.all as scapy

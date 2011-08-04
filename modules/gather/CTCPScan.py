@@ -26,7 +26,7 @@ import sys
 import time
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "tcpscan"
 brief_description = "Simple TCP port scanner"

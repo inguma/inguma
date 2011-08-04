@@ -25,7 +25,7 @@ import time
 import socket
 import threading
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 from lib.core import int2hex
 from lib.libsybase import *

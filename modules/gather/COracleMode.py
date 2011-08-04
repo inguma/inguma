@@ -22,7 +22,7 @@
 import sys
 import urllib
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libhttp import CIngumaHTMLParser, CIngumaHttp
 from lib.libvulnoas import getVulnerableDad
 

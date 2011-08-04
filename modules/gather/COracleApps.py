@@ -24,7 +24,7 @@ import socket
 import urllib2
 
 from lib.libvulnoas import VULNERABLE_PAGES
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "oascheck"
 brief_description = "Check an Oracle App. Server for the most common vulnerable URLs."

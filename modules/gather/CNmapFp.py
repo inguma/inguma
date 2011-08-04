@@ -26,7 +26,7 @@ NOTE: It works depending on the moon.
 import os
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.modules.nmap import *

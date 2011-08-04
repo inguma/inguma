@@ -26,7 +26,7 @@ import string
 import urllib2
 
 from lib.libhttp import CIngumaHttp
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "brutehttp"
 brief_description = "A simple HTTP brute force tool"

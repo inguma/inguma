@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libinformix import simpleFuzzer
 
 name = "ifxfuzz"

@@ -27,7 +27,7 @@ import string
 
 import cx_Oracle
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.liboracleexploit import STANDARD_SIDS
 
 name = "sidguess"

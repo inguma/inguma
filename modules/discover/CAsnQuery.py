@@ -26,7 +26,7 @@ import time
 import socket
 
 import scapy.all as scapy
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "asn"
 brief_description = "ASN whois database query"

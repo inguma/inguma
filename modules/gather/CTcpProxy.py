@@ -25,7 +25,7 @@ from socket import *
 from threading import Thread
 import time
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "tcpproxy"
 brief_description = "A simple TCP proxy for port forwarding"

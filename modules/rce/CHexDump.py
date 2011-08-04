@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "hexdump"
 brief_description = "A simple HexDump utility"

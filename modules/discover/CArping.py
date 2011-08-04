@@ -25,7 +25,7 @@ import sys
 import time
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     import scapy.all as scapy

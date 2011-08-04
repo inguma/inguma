@@ -21,7 +21,7 @@
 
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "ipaddr"
 brief_description = "Get the host's ip address"
