@@ -54,7 +54,6 @@ class SimpleHTMLParser(HTMLParser):
             self.data.append(data)
 
 class CNetcraft(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

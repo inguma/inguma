@@ -28,7 +28,6 @@ type = "discover"
 
 class CGetHostbyAddr(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     exploitType = 0

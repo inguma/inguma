@@ -54,7 +54,6 @@ class CHostUp(CIngumaModule):
     ADDRESS_MASK_REQUEST = 17
     ADDRESS_MASK_REPPLY = 18
 
-    target = ""
     waitTime = 0
     up = {}
     down = {}

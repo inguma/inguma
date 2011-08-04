@@ -35,7 +35,6 @@ type = "discover"
 
 class CUdpPing(CIngumaModule):
 
-    target = ""
     port = 135
     waitTime = 0
     up = {}

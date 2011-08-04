@@ -32,7 +32,6 @@ brief_description = "A simple FTP fuzzer"
 type = "fuzzer"
 
 class CFtpFuzzer(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

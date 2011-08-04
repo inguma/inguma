@@ -1,7 +1,3 @@
-#!/usr/bin/python
-
-#
-# Modified version of the Core's "smbclient" script adapted for Inguma.
 #
 # Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 # Copyright (c) 2002, Core SDI S.A., Argentina
@@ -44,7 +40,6 @@ type = "gather"
 
 class CSmbClient(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

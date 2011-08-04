@@ -47,7 +47,6 @@ type = "gather"
 
 class CIds(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

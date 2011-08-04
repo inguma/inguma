@@ -32,7 +32,6 @@ brief_description = "Interact with an XMLRPC server"
 type = "gather"
 
 class CXmlRpc(CIngumaModule):
-    target = ""
     port = 8000
     waitTime = 0
     timeout = 1

@@ -33,7 +33,6 @@ brief_description = "ASN whois database query"
 type = "discover"
 
 class CAsnQuery(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

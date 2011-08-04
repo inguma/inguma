@@ -30,7 +30,6 @@ type = "discover"
 
 class CExtIp(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     exploitType = 0

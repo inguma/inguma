@@ -36,7 +36,6 @@ globals = ["interval", ]
 
 class CDnsSpoof(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False

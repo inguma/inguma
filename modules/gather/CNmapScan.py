@@ -28,7 +28,6 @@ brief_description = "A module for port scanning using Nmap"
 type = "gather"
 
 class CNmapScan(CIngumaModule):
-    target = ""
     interactive = True
 
     def help(self):

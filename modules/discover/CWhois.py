@@ -34,7 +34,6 @@ type = "discover"
 globals = ['db', ]
 
 class CWhois(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

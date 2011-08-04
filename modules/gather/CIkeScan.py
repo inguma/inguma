@@ -40,7 +40,6 @@ type = "gather"
 
 class CIkeScan(CIngumaModule):
 
-    target = ""
     sport = random.randint(1024, 65535)
     port = 500
     ntransforms = 8

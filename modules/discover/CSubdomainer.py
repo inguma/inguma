@@ -36,7 +36,6 @@ type = "discover"
 
 class CSubdomainer(CIngumaModule):
 
-    target = ""
     exploitType = 0
     results = {}
     wizard = False

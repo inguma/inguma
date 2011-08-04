@@ -30,7 +30,6 @@ brief_description = "Gather NetBIOS information for target"
 type = "gather"
 
 class CNmbStat(CIngumaModule):
-    target = ""
     port = 8000
     waitTime = 0
     timeout = 1

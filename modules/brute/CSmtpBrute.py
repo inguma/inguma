@@ -36,7 +36,6 @@ class CSmtpBrute(CIngumaModule):
 
 	host = ""
 	port = 0
-	target = ""
 	waitTime = 0
 	timeout = 1
 	exploitType = 3

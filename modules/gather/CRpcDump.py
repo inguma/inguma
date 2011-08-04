@@ -156,7 +156,6 @@ class RPCDump(CIngumaModule):
 
 class CRpcDump:
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

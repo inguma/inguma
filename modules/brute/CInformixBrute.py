@@ -37,7 +37,6 @@ brief_description = "Brute force tool for Informix"
 type = "brute"
 
 class CInformixBrute(CIngumaModule):
-    target = ""
     host = ""
     port = 5000
     user = "sa"

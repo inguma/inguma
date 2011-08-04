@@ -34,7 +34,6 @@ type = "discover"
 
 class CGetMac(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False

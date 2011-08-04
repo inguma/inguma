@@ -37,7 +37,6 @@ brief_description = "Brute force tool for Sybase & MS SQL Servers"
 type = "brute"
 
 class CSybaseBrute(CIngumaModule):
-    target = ""
     host = ""
     port = 5000
     user = "sa"

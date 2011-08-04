@@ -34,7 +34,6 @@ type = "gather"
 
 class CPopBrute(CIngumaModule):
 
-	target = ""
 	waitTime = 0
 	timeout = 1
 	exploitType = 3

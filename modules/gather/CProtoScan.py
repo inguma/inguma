@@ -41,7 +41,6 @@ type = "gather"
 
 class CProtoScan(CIngumaModule):
 
-    target = ""
     exploitType = 1
     results = {}
     protocols = []

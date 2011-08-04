@@ -47,7 +47,6 @@ class CPortScan(CIngumaModule):
     XMAS_SCAN = "SAFRC"
     SA_SCAN = "SA"
 
-    target = ""
     sport = random.randint(1024, 65535)
     closed = {}
     opened = {}

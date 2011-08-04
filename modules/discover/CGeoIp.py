@@ -31,8 +31,6 @@ type = "discover" # The type of a module, currently, can only be 'gather', 'expl
 class CGeoIp(CIngumaModule):
     """ Get geographic data of an IP address using GeoIp """
 
-    target = ""
-
     def help(self):
         self.gom.echo("target = <target IP>")
         self.gom.echo("         <if set to \"all\", all IP stored on KB will be used>")

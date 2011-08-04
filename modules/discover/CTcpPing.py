@@ -37,7 +37,6 @@ type = "discover"
 
 class CTcpPing(CIngumaModule):
 
-    target = ""
     port = 80
     waitTime = 0
     up = {}

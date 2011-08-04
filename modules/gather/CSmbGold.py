@@ -33,7 +33,6 @@ INTERESTING = ["pass", "priv", "conf", "secr", ".mdb", "id_dsa", "id_rsa"]
 
 class CSmbGold(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

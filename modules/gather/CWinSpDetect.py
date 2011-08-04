@@ -38,7 +38,6 @@ type = "gather"
 
 class CWinSpDetect(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

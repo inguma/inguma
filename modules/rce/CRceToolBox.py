@@ -29,7 +29,6 @@ brief_description = "A module with many RCE tools"
 type = "rce"
 
 class CRceToolBox(CIngumaModule):
-    target = ""
     interactive = True
 
     def help(self):

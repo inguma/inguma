@@ -33,7 +33,6 @@ class CWebServer(CIngumaModule):
     """ The example module. The main class will always starts with the character "C". Any other class will be ignored """
 
     crawl = False
-    target = ""
     port = 80
     path = "data/web/"
 
