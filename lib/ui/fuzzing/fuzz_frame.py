@@ -58,7 +58,7 @@ class FuzzFrame(gtk.VBox):
         # Add krash and scapy fuzzers stuff
 
         self.krashui = krashui.KrashUI()
-        self.scapyui = scapyui.ScapyUI()
+        self.scapyui = scapyui.ScapyUI(self.ip_entry, self.port_entry)
 
         self.hbox.pack_start(self.krashui, True, True, 1)
         self.hbox.pack_start(self.scapyui, True, True, 1)

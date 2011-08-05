@@ -28,7 +28,7 @@ class OutputManager:
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
 
-    def echo(self, data, window=True):
+    def echo(self, data, window=True, newline=True):
 
         if window == True and self.isGui:
             window = self.SHOW_MODULE_WIN
@@ -36,12 +36,18 @@ class OutputManager:
         if self.iface == 'gui' and not window:
             #print "GTK UI: ", data
             enditer = self.omwidget.get_end_iter()
-            self.omwidget.insert(enditer, data + '\n')
+            if newline:
+                self.omwidget.insert(enditer, data + '\n')
+            else:
+                self.omwidget.insert(enditer, data)
             #self.omwidget.set_text(data + '\n')
 
         elif self.iface == 'gui' and window:
             enditer = self.module_dialog.output_buffer.get_end_iter()
-            self.module_dialog.output_buffer.insert(enditer, data + '\n')
+            if newline:
+                self.module_dialog.output_buffer.insert(enditer, data + '\n')
+            else:
+                self.module_dialog.output_buffer.insert(enditer, data)
             #self.omwidget.set_text(data + '\n')
 
         elif self.iface == 'console':

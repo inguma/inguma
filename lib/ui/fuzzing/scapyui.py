@@ -17,13 +17,19 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+import gtk
+import gobject
+import threading
 
 from scapy.all import *
 
 class ScapyUI(gtk.Frame):
-    def __init__(self):
+    def __init__(self, ip_entry, port_entry):
         super(ScapyUI,self).__init__()
+
+        self.send = True
+        self.ip_entry = ip_entry
+        self.port_entry = port_entry
 
         self.label = gtk.Label()
         quote = "<b>Scapy Fuzzer</b>"
@@ -36,11 +42,27 @@ class ScapyUI(gtk.Frame):
         # HBox to add panels
         self.panels_hbox = gtk.HBox(False, 10)
 
+        # File selector
+        self.info_hbox = gtk.HBox(False, 2)
+        self.info = gtk.Image()
+        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.file_label = gtk.Label('Step 2: Select the directory to save sent packages:')
+        self.file_label.set_padding(0, 3)
+        self.info_hbox.pack_start(self.info, False, False, 2)
+        self.info_hbox.pack_start(self.file_label, False, False, 2)
+
+        self.vbox.pack_start(self.info_hbox, False, False, 2)
+
+        self.filechooserbutton = gtk.FileChooserButton('Select a directory', backend=None)
+        self.filechooserbutton.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+
+        self.vbox.pack_start(self.filechooserbutton, False, False, 2)
+
         # Information label, icon and HBox
         self.info_hbox = gtk.HBox(False, 2)
         self.info = gtk.Image()
         self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.desc_label = gtk.Label('Step 2: Add the layers that you want to fuzz on to the right column:')
+        self.desc_label = gtk.Label('Step 3: Add the layers that you want to fuzz on to the right column:')
         self.desc_label.set_padding(0, 4)
         self.info_hbox.pack_start(self.info, False, False, 2)
         self.info_hbox.pack_start(self.desc_label, False, False, 2)
@@ -85,7 +107,6 @@ class ScapyUI(gtk.Frame):
         self.toggle = gtk.CellRendererToggle()
         self.toggle.set_property('activatable', True)
         self.toggle.connect('toggled', self.activatePlugin)
-        #self.toggle.connect( 'toggled', self.activate, self.selected_store )
         self.toggle_column.pack_start(self.toggle, False)
         self.toggle_column.add_attribute(self.toggle, "active", 1)
         self.toggle_column.add_attribute(self.toggle, "inconsistent", 2)
@@ -113,7 +134,7 @@ class ScapyUI(gtk.Frame):
 
         self.info = gtk.Image()
         self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.desc_label = gtk.Label('Step 3: Start fuzzing!')
+        self.desc_label = gtk.Label('Step 4: Start fuzzing!')
         self.desc_label.set_padding(0, 4)
         self.buttons_left_hbox.pack_start(self.info, False, False, 2)
         self.buttons_left_hbox.pack_start(self.desc_label, False, False, 2)
@@ -167,6 +188,8 @@ class ScapyUI(gtk.Frame):
         return
 
     def stop_fuzzing(self, widget):
+
+        self.send = False
 
         # Change start button image
         self.start.set_image(self.start_image)
@@ -243,23 +266,34 @@ class ScapyUI(gtk.Frame):
         @return: all the plugins that are active.
         '''
 
-        # Change start button image
-        self.start.set_image(self.throbber)
-        label = self.start.get_children()[0]
-        label = label.get_children()[0].get_children()[1]
-        label = label.set_label('')
+        self.target = self.ip_entry.get_text()
+        self.port = self.port_entry.get_text()
 
-        result = {}
-        for row in self.selected_store:
-            father = self.selected_store.get_iter(row.path)
-            layer = self.selected_store[father][0].strip()
-            result[layer] = []
-            for childrow in self.get_children(row.path):
-                if childrow[1]:
-                    result[layer].append(childrow[0])
+        if not self.target or not self.port:
+            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "Fill IP address and Port entries")
+            md.run()
+            md.destroy()
+        else:
+            self.bottom_nb.set_current_page(0)
+            self.dest_dir = self.filechooserbutton.get_filename()
 
-        self.compose_packet(result)
-        return result
+            self.send = True
+            # Change start button image
+            self.start.set_image(self.throbber)
+            label = self.start.get_children()[0]
+            label = label.get_children()[0].get_children()[1]
+            label = label.set_label('')
+    
+            result = {}
+            for row in self.selected_store:
+                father = self.selected_store.get_iter(row.path)
+                layer = self.selected_store[father][0].strip()
+                result[layer] = []
+                for childrow in self.get_children(row.path):
+                    if childrow[1]:
+                        result[layer].append(childrow[0])
+    
+            self.compose_packet(result)
 
     def compose_packet(self, fuzzeables):
         # create the packet object
@@ -267,11 +301,19 @@ class ScapyUI(gtk.Frame):
         self.fields = []
 
         for layer in fuzzeables.keys():
-            packet += layer + '()/'
+            # Add destination
+            if layer == 'IP':
+                packet += layer + '(dst="' + self.target + '")/'
+            # Add port
+            elif layer == 'TCP':
+                packet += layer + '(dport=' + self.port + ')/'
+            else:
+                packet += layer + '()/'
+
             self.fields.extend(fuzzeables[layer])
         packet = eval(packet[:-1])
         packet = self.fuzz_packet(packet)
-        packet.show()
+        self.srloop(packet)
 
     def fuzz_packet(self, packet, _inplace=0):
         # add fuzz values to selected fields 
@@ -327,3 +369,78 @@ class ScapyUI(gtk.Frame):
             short = "%-10s" % (o.__name__)
             #long = "%s" % (o.name)
             iter = self.layers_store.append([short])
+
+    def srloop(self, pkts, *args, **kargs):
+        """Send a packet at layer 3 in loop and print the answer each time
+    srloop(pkts, [prn], [inter], [count], ...) --> None"""
+
+        if not self.gom:
+            self.gom = gom
+
+        t = threading.Thread(target=self.__sr_loop, args=(sr, pkts))
+        t.start()
+        #return self.__sr_loop(sr, pkts, *args, **kargs)
+
+    def __sr_loop(self, srfunc, pkts, prn=lambda x:x[1].summary(), prnfail=lambda x:x.summary(), inter=1, timeout=None, count=None, verbose=None, store=1, *args, **kargs):
+        verbose = 2
+        count = None
+        n = 0
+        r = 0
+        ct = conf.color_theme
+        if verbose is None:
+            verbose = conf.verb
+        parity = 0
+        ans=[]
+        unans=[]
+        if timeout is None:
+            timeout = min(2*inter, 5)
+        try:
+            while self.send:
+                parity ^= 1
+                col = [ct.even,ct.odd][parity]
+                if count is not None:
+                    if count == 0:
+                        break
+                    count -= 1
+                start = time.time()
+                res = srfunc(pkts, timeout=timeout, verbose=0, chainCC=1, *args, **kargs)
+                n += len(res[0])+len(res[1])
+                r += len(res[0])
+                if verbose > 1 and prn and len(res[0]) > 0:
+                    msg = "RECV %i:\t" % len(res[0])
+                    self.gom.echo(  ct.success(msg), newline=False )
+                    for p in res[0]:
+                        self.gom.echo( col(prn(p)) )
+                        self.gom.echo( " "*len(msg) )
+                if verbose > 1 and prnfail and len(res[1]) > 0:
+                    msg = "Fail %i:\t" % len(res[1])
+                    self.gom.echo( ct.fail(msg), newline=False )
+                    for p in res[1]:
+                        self.gom.echo( col(prnfail(p)) )
+                        self.gom.echo( " "*len(msg) )
+                if verbose > 1 and not (prn or prnfail):
+                    self.gom.echo( "recv:%i  fail:%i" % tuple(map(len, res[:2])) )
+                if store:
+                    ans += res[0]
+                    unans += res[1]
+                end=time.time()
+                if end-start < inter:
+                    time.sleep(inter+start-end)
+        except KeyboardInterrupt:
+            pass
+     
+        if verbose and n>0:
+            self.gom.echo( ct.normal("\nSent %i packets, received %i packets. %3.1f%% hits." % (n,r,100.0*r/n)) )
+
+        # Convert tuples to list to write to pcap
+        list_ans = []
+        for x in ans:
+            for y in x:
+                list_ans.append(y)
+
+        if unans:
+            wrpcap(self.dest_dir + os.sep + self.target + '-' + self.port + '-unans.pcap', unans)
+            self.gom.echo("\nUnanswered packets saved as:\t" + self.dest_dir + os.sep + self.target + '-' + self.port + '-unans.pcap')
+        if ans:
+            wrpcap(self.dest_dir + os.sep + self.target + '-' + self.port + '-ans.pcap', list_ans)
+            self.gom.echo("Answered packets saved as:\t\t" + self.dest_dir + os.sep + self.target + '-' + self.port + '-ans.pcap')

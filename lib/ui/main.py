@@ -457,6 +457,7 @@ class MainApp:
 
         # Fuzzers Box to contain krash and scapy fuzzers
         self.fuzz_frame = fuzz_frame.FuzzFrame()
+        setattr(self.fuzz_frame.scapyui, 'gom', self.gom)
         self.exploits_nb.append_page(self.fuzz_frame, b)
 
         # Add exploits notebook and text/label to main notebook
@@ -550,8 +551,7 @@ class MainApp:
 
         self.bottom_nb.append_page(threadsGui, b)
 
-        # FIXME: It doesn't work :'(
-        self.bottom_nb.set_current_page(0)
+        setattr(self.fuzz_frame.scapyui, 'bottom_nb', self.bottom_nb)
 
         # Check visibility on config preferences
         if config.SHOW_LOG:
@@ -563,6 +563,8 @@ class MainApp:
         self.vpaned.pack2(self.bottom_nb, False, False)
         mainvbox.pack_start(self.vpaned, True, True, 1)
         self.log_scrolled_window.show()
+
+        self.bottom_nb.set_current_page(0)
 
         # Add threadtv to core
         self.uicore.set_threadtv(self.threadsInst)
