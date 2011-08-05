@@ -62,7 +62,6 @@ class KrashUI(gtk.Frame):
 
         self.file_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.file_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-#        self.file_sw.set_size_request(75,225)
 
         self.file_text = gtk.TextView()
         self.file_text.set_editable(True)

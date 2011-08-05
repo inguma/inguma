@@ -17,7 +17,10 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys, threading
+import os
+import sys
+import platform
+import threading
 
 if sys.platform != "win32":
     # Need root for most modules, so...
@@ -62,11 +65,8 @@ splash.push(("Loading UI modules"))
 import lib.ui.core as core
 import lib.ui.propDialog as propDialog
 import lib.ui.kbwin as kbwin
-#import lib.ui.pbar as pbar
 import lib.ui.om as om
 import lib.ui.graphTBar as graphTBar
-#import lib.ui.rceTBar as rceTBar
-#import lib.ui.rcecore as rcecore
 import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
 import lib.ui.altNodeMenu as altNodeMenu
@@ -80,10 +80,7 @@ import lib.ui.libAutosave as libAutosave
 import lib.ui.bokken.main as bokken
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
-#import lib.ui.fuzzing.krashui as krashui
-#import lib.ui.fuzzing.scapyui as scapyui
 
-import platform
 from lib.core import get_profile_file_path, check_distorm_lib
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
@@ -279,11 +276,6 @@ class MainApp:
         #################################################################
         from . import inxdot
 
-#        self.context = cmenu.contextMenu()
-#        self.context.createMenus(self.textview, self.gom)
-#
-#        self.xdotw = inxdot.MyDotWidget(self.context, self.uicore)
-
         # nodeMenu initialization stuff
         self.uiman = nodeMenu.UIManager(self.gom, self.uicore, config)
         self.uiman.set_data(None)
@@ -292,13 +284,11 @@ class MainApp:
 
         # graphMenu initialization stuff
         self.graph_uiman = graphMenu.UIManager(self.gom, self.uicore)
-        #self.graph_uiman.set_data(None)
         graph_accel = self.graph_uiman.get_accel_group()
         self.window.add_accel_group(graph_accel)
 
         # altNodeMenu initialization stuff
         self.altnode_uiman = altNodeMenu.UIManager(self.gom, self.uicore)
-        #self.graph_uiman.set_data(None)
         altnode_accel = self.altnode_uiman.get_accel_group()
         self.window.add_accel_group(altnode_accel)
 
@@ -306,7 +296,6 @@ class MainApp:
         setattr(self.graph_uiman, 'xdot', self.xdotw)
         setattr(self.altnode_uiman, 'xdot', self.xdotw)
 
-        self.xdotw.set_size_request(999,475)
         self.gom.set_map(self.xdotw)
         setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=False)
@@ -333,10 +322,9 @@ class MainApp:
         #################################################################
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolled_window.set_size_request(100,100)
+        self.scrolled_window.set_size_request(250,-1)
 
         # Add Textview to Scrolled Window
-        #self.scrolled_window.add_with_viewport(self.textview)
         self.scrolled_window.add_with_viewport(self.tree)
 
         #################################################################
@@ -346,9 +334,8 @@ class MainApp:
 
         # Test XDOT MAP
         self.hpaned.show()
-        #self.hpaned.add1(self.xdotw)
-        self.hpaned.add1(menubox)
-        self.hpaned.add2(self.scrolled_window)
+        self.hpaned.pack1(menubox, True, True)
+        self.hpaned.pack2(self.scrolled_window, False, False)
         self.textview.show()
 
         # Check visibility on config preferences
@@ -399,7 +386,6 @@ class MainApp:
             term_button.set_sensitive(False)
         term_box.pack_start(term_button,False)
         self.term_notebook = libTerminal.TerminalNotebook()
-        #term_button.connect("clicked", term_notebook.new_tab)
         term_button.connect("clicked", self.new_tab)
         term_box.pack_start(self.term_notebook)
         setattr(self.uiman, 'termnb', self.term_notebook)
@@ -427,8 +413,6 @@ class MainApp:
         self.rcevb = self.bokken.get_supervb()
         self.rcevb.show_all()
         self.notebook.append_page(self.rcevb, b)
-
-#        rcepaned.show()
 
         #################################################################################################################################
         # Xploit Iface
@@ -488,7 +472,6 @@ class MainApp:
 
         self.notebook.append_page(self.exploits_nb, b)
 
-        #mainvbox.pack_start(notebook, True, True, 1)
         self.vpaned.add1(self.notebook)
         self.exploits_nb.show_all()
         self.notebook.show()
@@ -506,7 +489,6 @@ class MainApp:
 
         self.logtext.set_wrap_mode(gtk.WRAP_NONE)
         self.logtext.set_editable(False)
-        #self.logtext.set_size_request(40,40)
         self.logbuffer = self.logtext.get_buffer()
         self.logbuffer.set_text('Loading Inguma...\n')
         self.logtext.show()
@@ -522,9 +504,6 @@ class MainApp:
         self.vajd = self.log_scrolled_window.get_vadjustment()
         self.vajd.connect('changed', lambda a, s=self.log_scrolled_window: self.rescroll(a,s))
         
-        #self.log_scrolled_window.set_size_request(40,40)
-        #self.logtext.set_size_request(20,20)
-
         # Add Textview to Scrolled Window
         self.log_scrolled_window.add_with_viewport(self.logtext)
 
@@ -536,6 +515,7 @@ class MainApp:
 
         # Notebook for bottom panel
         self.bottom_nb = gtk.Notebook()
+        self.bottom_nb.set_size_request(-1, 110)
         self.bottom_nb.set_tab_pos(gtk.POS_LEFT)
 
         # Icon and label for Logs tab
@@ -570,7 +550,7 @@ class MainApp:
 
         self.bottom_nb.append_page(threadsGui, b)
 
-        #self.bottom_nb.set_scrollable(True)
+        # FIXME: It doesn't work :'(
         self.bottom_nb.set_current_page(0)
 
         # Check visibility on config preferences
@@ -580,7 +560,7 @@ class MainApp:
         else:
             self.bottom_nb.is_visible = False
 
-        self.vpaned.add2(self.bottom_nb)
+        self.vpaned.pack2(self.bottom_nb, False, False)
         mainvbox.pack_start(self.vpaned, True, True, 1)
         self.log_scrolled_window.show()
 
@@ -590,13 +570,6 @@ class MainApp:
         setattr(self.altnode_uiman, 'threadtv', self.threadsInst)
         # And to exploit management module
         setattr(self.exploitsInst, 'threadsInst', self.threadsInst)
-
-#        #################################################################################################################################
-#        # Progress Bar
-#        #################################################################
-#        self.progressbar = pbar.PBar()
-#        self.progressbar.set_stopped()
-#        mainvbox.pack_start(self.progressbar, False, False, 1)
 
         #################################################################################################################################
         #StatusBar
@@ -741,8 +714,6 @@ class MainApp:
                 askASN.destroy()
 
                 gobject.timeout_add(1000, self.update_graph, t)
-#                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-#                self.gom.kbwin.updateTree()
 
             except:
                 md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
@@ -847,17 +818,12 @@ class MainApp:
 
             self.handlebox.hide()
             self.bottom_nb.hide()
-#            self.bottom_nb.is_visible = False
             self.statusbar.hide()
-#            self.frame.add(self.rcevb)
-#            self.frame.show_all()
         elif more == 1:
             self.handlebox.show()
             self.bottom_nb.hide()
-#            self.bottom_nb.is_visible = False
             self.statusbar.show()
         else:
-            #self.rcehb.hide()
             self.handlebox.show()
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
@@ -896,7 +862,6 @@ class MainApp:
         import threading
         t = threading.Thread( target=os.popen('lib/debugger/vdbbin -G') )
         t.start()
-#        os.popen('lib/debugger/vdbbin -G')
 
 def main():
     MainApp()
