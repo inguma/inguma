@@ -25,7 +25,7 @@ import time
 import socket
 import threading
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 from lib.core import int2hex
 from lib.libsybase import *
@@ -37,7 +37,6 @@ brief_description = "Brute force tool for Sybase & MS SQL Servers"
 type = "brute"
 
 class CSybaseBrute(CIngumaModule):
-    target = ""
     host = ""
     port = 5000
     user = "sa"
@@ -111,6 +110,3 @@ class CSybaseBrute(CIngumaModule):
         self.doBruteForce()
 
         return False
-    
-    def printSummary(self):
-        pass

@@ -23,7 +23,7 @@ import sys
 import time
 import string
 from impacket import smb
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "smbgold"
 brief_description = "Search for 'gold' in shared SMB directories"
@@ -33,7 +33,6 @@ INTERESTING = ["pass", "priv", "conf", "secr", ".mdb", "id_dsa", "id_rsa"]
 
 class CSmbGold(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1
@@ -169,6 +168,3 @@ class CSmbGold(CIngumaModule):
                 self.gom.echo( "Type:" + share.get_type() )
                 self.gom.echo( "" )
                 self.scanShare(share.get_name())
-
-    def printSummary(self):
-        pass

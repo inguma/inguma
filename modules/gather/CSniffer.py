@@ -25,7 +25,7 @@ NOTE: Can it be enhanced with an automatic fuzzer and traffic's graphics generat
 
 import os
 import sys
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.modules.p0f import *
@@ -47,7 +47,6 @@ type = "gather"
 
 class CSniffer(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

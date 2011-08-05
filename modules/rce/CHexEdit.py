@@ -20,7 +20,7 @@
 #       MA 02110-1301, USA.
 
 import sys
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libhexdump import Display
 
 name = "hexedit"
@@ -44,7 +44,3 @@ class CHexEdit(CIngumaModule):
         d.SetClear()
         d.lines = 40
         d.Process()
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

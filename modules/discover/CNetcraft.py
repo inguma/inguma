@@ -25,7 +25,7 @@ import time
 import urllib
 
 from HTMLParser import HTMLParser
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "netcraft"
 brief_description = "Query netcraft database"
@@ -54,7 +54,6 @@ class SimpleHTMLParser(HTMLParser):
             self.data.append(data)
 
 class CNetcraft(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

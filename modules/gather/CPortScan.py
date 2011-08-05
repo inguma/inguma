@@ -24,7 +24,7 @@ import sys
 import time
 import socket
 import random
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
@@ -47,7 +47,6 @@ class CPortScan(CIngumaModule):
     XMAS_SCAN = "SAFRC"
     SA_SCAN = "SA"
 
-    target = ""
     sport = random.randint(1024, 65535)
     closed = {}
     opened = {}

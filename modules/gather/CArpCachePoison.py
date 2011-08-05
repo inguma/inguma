@@ -26,7 +26,7 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "arppoison"
 brief_description = "Poison target's ARP cache"
@@ -36,7 +36,6 @@ globals = ["interval", ]
 
 class CArpCachePoison(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False
@@ -61,8 +60,3 @@ class CArpCachePoison(CIngumaModule):
             self.gom.echo( "Press Ctrl+C to cancel" )
         arpcachepoison(self.address, self.target, self.interval)
         return True
-    
-    def printSummary(self):
-        pass
-
-

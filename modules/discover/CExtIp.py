@@ -22,7 +22,7 @@
 import urllib
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "externip"
 brief_description = "Get your external ip address (even when using proxies)"
@@ -30,7 +30,6 @@ type = "discover"
 
 class CExtIp(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     exploitType = 0

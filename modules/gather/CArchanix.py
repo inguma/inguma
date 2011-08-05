@@ -22,7 +22,7 @@
 import sys
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "archanix"
 brief_description = "Gather information from archaic Unix systems"

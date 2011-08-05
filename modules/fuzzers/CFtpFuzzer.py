@@ -25,14 +25,13 @@ import socket
 
 from lib import libfuzz
 from lib.libftp import FTP_COMMANDS
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "ftpfuzz"
 brief_description = "A simple FTP fuzzer"
 type = "fuzzer"
 
 class CFtpFuzzer(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1
@@ -131,7 +130,3 @@ class CFtpFuzzer(CIngumaModule):
 
         self.fuzz()
         return True
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

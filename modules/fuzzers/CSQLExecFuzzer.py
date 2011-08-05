@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libinformix import simpleFuzzer
 
 name = "ifxfuzz"
@@ -46,7 +46,3 @@ class CSQLExecFuzzer(CIngumaModule):
             self.port = 9088
         
         return simpleFuzzer(self.target,  self.port,  self.timeout)
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

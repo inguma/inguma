@@ -21,14 +21,13 @@
 
 import sys, os, string
 import lib.ui.nmapParser as nmapParser
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "nmapscan"
 brief_description = "A module for port scanning using Nmap"
 type = "gather"
 
 class CNmapScan(CIngumaModule):
-    target = ""
     interactive = True
 
     def help(self):
@@ -118,7 +117,3 @@ class CNmapScan(CIngumaModule):
         self.runLoop()
 
         return True
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

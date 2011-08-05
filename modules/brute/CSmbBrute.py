@@ -25,7 +25,7 @@ import time
 import string
 from impacket import smb
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "brutesmb"
 brief_description = "A simple SMB brute force tool"
@@ -33,7 +33,6 @@ type = "gather"
 
 class CSmbBrute(CIngumaModule):
 
-	target = ""
 	waitTime = 0
 	timeout = 1
 	exploitType = 3

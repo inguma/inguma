@@ -23,7 +23,7 @@ import os
 import sys
 import time
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     import scapy.all as scapy
@@ -62,7 +62,3 @@ class CPromisc(CIngumaModule):
             #print "No scapy support :("
             self.gom.echo( "No scapy support :(" )
             return False
-
-    def printSummary(self):
-        pass
-

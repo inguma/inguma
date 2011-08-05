@@ -22,7 +22,7 @@
 import sys
 import urllib
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "rainbowmd5"
 brief_description = "Get the password for a MD5 hash using public rainbow tables"
@@ -60,6 +60,3 @@ class CMd5Rainbow(CIngumaModule):
             self.findHash(self.hash)
 
         return True
-
-    def printSummary(self):
-        pass

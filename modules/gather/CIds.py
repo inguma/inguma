@@ -27,7 +27,7 @@ import os
 import re
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from libsnort import *
@@ -47,7 +47,6 @@ type = "gather"
 
 class CIds(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1
@@ -190,7 +189,3 @@ class CIds(CIngumaModule):
     def run(self):
         self.runIdsLoop()
         return True
-
-    def printSummary(self):
-        pass
-        #print "Not yet implemented"

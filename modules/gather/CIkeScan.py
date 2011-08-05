@@ -25,7 +25,7 @@ import sys,  os
 import binascii
 import random
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import *
@@ -40,7 +40,6 @@ type = "gather"
 
 class CIkeScan(CIngumaModule):
 
-    target = ""
     sport = random.randint(1024, 65535)
     port = 500
     ntransforms = 8

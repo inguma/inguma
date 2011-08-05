@@ -17,14 +17,13 @@ from pysnmp import asn1, v1, v2c
 from pysnmp import role
 
 from lib.libsnmp import oidToHuman, rootMibs
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "snmpwalk"
 brief_description = "Snmp walk module for Inguma"
 type = "gather"
 
 class CSnmpWalk(CIngumaModule):
-    target = ""  # Main target
     port = 161
     waitTime = 0
     timeout = 1
@@ -200,6 +199,3 @@ class CSnmpWalk(CIngumaModule):
                 req = nextReq
 
         return True
-
-    def printSummary(self):
-        pass

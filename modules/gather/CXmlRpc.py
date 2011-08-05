@@ -25,14 +25,13 @@ NOTE: Should be enhanced with an XMLRPC fuzzer
 
 import sys
 import xmlrpclib
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "xmlrpc"
 brief_description = "Interact with an XMLRPC server"
 type = "gather"
 
 class CXmlRpc(CIngumaModule):
-    target = ""
     port = 8000
     waitTime = 0
     timeout = 1
@@ -156,7 +155,3 @@ class CXmlRpc(CIngumaModule):
             self.listMethods()
 
         return True
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

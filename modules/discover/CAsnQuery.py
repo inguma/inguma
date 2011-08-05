@@ -26,14 +26,13 @@ import time
 import socket
 
 import scapy.all as scapy
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "asn"
 brief_description = "ASN whois database query"
 type = "discover"
 
 class CAsnQuery(CIngumaModule):
-    target = ""
     port = 0
     waitTime = 0
     timeout = 1

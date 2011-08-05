@@ -20,7 +20,7 @@
 #       MA 02110-1301, USA.
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "jsfuzz"
 brief_description = "A Javascript object's fuzzer"
@@ -58,6 +58,3 @@ class CJsFuzzer(CIngumaModule):
             server.socket.close()
 
         return False
-
-    def printSummary(self):
-        pass

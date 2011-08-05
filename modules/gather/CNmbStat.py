@@ -23,14 +23,13 @@ import sys
 
 from lib.core import getMacVendor
 from impacket import smb, nmb
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "nmbstat"
 brief_description = "Gather NetBIOS information for target"
 type = "gather"
 
 class CNmbStat(CIngumaModule):
-    target = ""
     port = 8000
     waitTime = 0
     timeout = 1

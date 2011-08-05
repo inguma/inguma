@@ -21,7 +21,7 @@
 
 import sys
 import urllib
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "oratt70info"
 brief_description = "Gather information from Oracle Times Ten 70"
@@ -137,6 +137,3 @@ class COraTt70Info(CIngumaModule):
             self.updateDict()
 
         return res
-
-    def printSummary(self):
-        pass

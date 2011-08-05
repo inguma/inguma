@@ -21,7 +21,7 @@
 
 import os
 import time
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     import scapy.all as scapy
@@ -37,7 +37,6 @@ type = "discover"
 
 class CTcpPing(CIngumaModule):
 
-    target = ""
     port = 80
     waitTime = 0
     up = {}

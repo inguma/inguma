@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "hexdump"
 brief_description = "A simple HexDump utility"
@@ -123,7 +123,3 @@ class CHexDump(CIngumaModule):
             currByteOffset += bytesRead
 
         file.close()
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

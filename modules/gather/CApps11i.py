@@ -25,7 +25,7 @@ NOTE: Sucks but works. It may fail if the server is behind a Web Cache.
 
 import socket
 import time
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "apps11i"
 brief_description = "Get information from Oracle E-Business Suite 11i"

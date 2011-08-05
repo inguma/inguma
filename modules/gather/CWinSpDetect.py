@@ -24,7 +24,7 @@ NOTE: If the module works the Administrator's password is blank.
 """
 
 import os
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     if os.name == "nt":
@@ -38,7 +38,6 @@ type = "gather"
 
 class CWinSpDetect(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

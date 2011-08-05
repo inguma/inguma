@@ -26,7 +26,7 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "fakearp"
 brief_description = "Fake ARP server"
@@ -36,7 +36,6 @@ globals = ["interval", ]
 
 class CFakeArpServer(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False
@@ -53,6 +52,3 @@ class CFakeArpServer(CIngumaModule):
         self.gom.echo( "[+] Using " + str(self.address) )
         farpd()
         return True
-    
-    def printSummary(self):
-        pass

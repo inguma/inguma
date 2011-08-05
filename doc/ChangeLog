@@ -1,7 +1,13 @@
 Long development on road to 1.0...
 ----------------------------------
 
-Version 0.3.0 (released ??-???-2011)
+Version 0.4 (released ??-Sep-2011)
+	* Fixed tab completion on OS X.
+	* Lots of cleanups in the CLI code.
+	* Added new 'subdomain' discover module.
+	* Added fuzzer UI.
+
+Version 0.3 (released 13-Jun-2011)
 
     * Code cleanups.
     * Fixed typos here and there.

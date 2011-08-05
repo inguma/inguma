@@ -21,7 +21,7 @@
 
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libdb2 import CDb2Discover
 
 name = "db2discover"
@@ -65,8 +65,3 @@ class CDb2DiscoverModule(CIngumaModule):
         self.gom.echo( "Total of " + str(len(ret)) + " IBM DB2 Server(s) found." )
         
         return len(ret) > 0
-
-    def printSummary(self):
-        pass
-
-

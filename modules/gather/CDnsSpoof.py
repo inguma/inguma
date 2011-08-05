@@ -26,7 +26,7 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "dnsspoof"
 brief_description = "DNS spoofing tool"
@@ -36,7 +36,6 @@ globals = ["interval", ]
 
 class CDnsSpoof(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False
@@ -57,6 +56,3 @@ class CDnsSpoof(CIngumaModule):
         self.gom.echo( "[+] Using " + str(self.address) )
         dns_spoof(joker=self.address, match={"any":self.target})
         return True
-    
-    def printSummary(self):
-        pass

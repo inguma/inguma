@@ -26,7 +26,7 @@ import string
 import poplib
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "brutepop"
 brief_description = "A simple POP3 brute force tool"
@@ -34,7 +34,6 @@ type = "gather"
 
 class CPopBrute(CIngumaModule):
 
-	target = ""
 	waitTime = 0
 	timeout = 1
 	exploitType = 3

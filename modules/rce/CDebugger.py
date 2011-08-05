@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "debugger"
 brief_description = "Userland Debugger"
@@ -83,6 +83,3 @@ class CDebugger(CIngumaModule):
                     traceback.print_exc()
         
                 return False
-
-    def printSummary(self):
-        pass

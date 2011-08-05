@@ -21,7 +21,7 @@
 
 import os, urllib2, SimpleHTTPServer, SocketServer, re
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "webserver"
 brief_description = "A simple Web Server and Crawler, usefull if used with DnsSpoof module"
@@ -33,7 +33,6 @@ class CWebServer(CIngumaModule):
     """ The example module. The main class will always starts with the character "C". Any other class will be ignored """
 
     crawl = False
-    target = ""
     port = 80
     path = "data/web/"
 
@@ -81,7 +80,3 @@ class CWebServer(CIngumaModule):
         os.chdir('../../')
         
         return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

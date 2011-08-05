@@ -25,7 +25,7 @@ try:
 except:
     print "module bluetooth (pybluez) not found"
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "bluetooth"
 brief_description = "A simple bluetooth scanner"
@@ -88,7 +88,3 @@ class CBluetooth(CIngumaModule):
         else:
             self.gom.echo( "Mode " + srt(self.mode) + " not valid" )
             return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

@@ -20,7 +20,7 @@
 #       MA 02110-1301, USA.
 
 import socket
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "hostname"
 brief_description = "Get the host's name"
@@ -28,7 +28,6 @@ type = "discover"
 
 class CGetHostbyAddr(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     exploitType = 0

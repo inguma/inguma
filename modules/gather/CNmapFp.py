@@ -26,7 +26,7 @@ NOTE: It works depending on the moon.
 import os
 import sys
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.modules.nmap import *
@@ -43,7 +43,6 @@ globals = ["oport", "cport"]
 
 class CNmapFp(CIngumaModule):
 
-    target = ""  # Main target
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
     timeout = 1 # Default timeout

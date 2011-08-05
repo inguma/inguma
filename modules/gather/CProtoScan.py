@@ -26,7 +26,7 @@ import socket
 import random
 
 from lib.core import getProtocolName
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 try:
     from scapy.all import sr, IP
@@ -41,7 +41,6 @@ type = "gather"
 
 class CProtoScan(CIngumaModule):
 
-    target = ""
     exploitType = 1
     results = {}
     protocols = []

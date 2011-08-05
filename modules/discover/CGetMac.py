@@ -26,7 +26,7 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "getmac"
 brief_description = "Get the host's MAC address"
@@ -34,7 +34,6 @@ type = "discover"
 
 class CGetMac(CIngumaModule):
 
-    target = ""
     waitTime = 0
     timeout = 2
     wizard = False

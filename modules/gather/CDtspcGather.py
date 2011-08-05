@@ -22,7 +22,7 @@
 import sys
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libdtspc import getDtspcInformation
 
 name = "dtspc"
@@ -31,7 +31,6 @@ type = "gather"
 
 class CDtspcGather(CIngumaModule):
 
-    target = None
     port = 6112
     result = None
 

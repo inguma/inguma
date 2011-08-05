@@ -26,7 +26,7 @@ NOTE: Check for bugs!
 import sys
 import socket
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libtns import *
 
 from lib import libfuzz
@@ -397,6 +397,3 @@ class CTnsCmd(CIngumaModule):
             print "TNSCMD Error.", sys.exc_info()[1]
     
         return True
-
-    def printSummary(self):
-        pass

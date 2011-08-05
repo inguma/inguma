@@ -21,7 +21,7 @@
 
 import sys
 #from scapy.all import *
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.libwifi import *
 
 name = "wifi"
@@ -61,7 +61,3 @@ class CWifi(CIngumaModule):
         else:
             print "Mode %s non valid" % (self.mode)
         return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True printSummary will called after """
-        pass

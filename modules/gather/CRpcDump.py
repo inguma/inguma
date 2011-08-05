@@ -26,7 +26,7 @@ import types
 
 from impacket import uuid
 from impacket.dcerpc import dcerpc_v4, dcerpc, transport, epm
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "rpcdump"
 brief_description = "DCE/RPC endpoint mapper dumper"
@@ -156,7 +156,6 @@ class RPCDump(CIngumaModule):
 
 class CRpcDump:
 
-    target = ""
     waitTime = 0
     timeout = 1
     exploitType = 1

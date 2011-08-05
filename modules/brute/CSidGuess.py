@@ -27,7 +27,7 @@ import string
 
 import cx_Oracle
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.liboracleexploit import STANDARD_SIDS
 
 name = "sidguess"
@@ -156,6 +156,3 @@ class CSidGuess(CIngumaModule):
             self.bruteForce()
 
         return True
-
-    def printSummary(self):
-        pass

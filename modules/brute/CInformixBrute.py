@@ -25,7 +25,7 @@ import time
 import socket
 import threading
 
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 from lib.core import int2hex
 from lib.libinformix import *
@@ -37,7 +37,6 @@ brief_description = "Brute force tool for Informix"
 type = "brute"
 
 class CInformixBrute(CIngumaModule):
-    target = ""
     host = ""
     port = 5000
     user = "sa"
@@ -103,6 +102,3 @@ class CInformixBrute(CIngumaModule):
         self.doBruteForce()
 
         return False
-
-    def printSummary(self):
-        pass

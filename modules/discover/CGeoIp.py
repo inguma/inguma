@@ -21,7 +21,7 @@
 
 import sys, os
 import urllib, gzip
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 from lib.core import get_profile_file_path
 
 name = "geoip"
@@ -30,8 +30,6 @@ type = "discover" # The type of a module, currently, can only be 'gather', 'expl
 
 class CGeoIp(CIngumaModule):
     """ Get geographic data of an IP address using GeoIp """
-
-    target = ""
 
     def help(self):
         self.gom.echo("target = <target IP>")
@@ -106,7 +104,3 @@ class CGeoIp(CIngumaModule):
             return True
         else:
             return False
-
-    def printSummary(self):
-        """ If the method run of the module returns True, printSummary will called after """
-        pass

@@ -26,7 +26,7 @@ import types
 
 from impacket import uuid
 from impacket.dcerpc import dcerpc_v4, dcerpc, transport, samr
-from lib.libexploit import CIngumaModule
+from lib.module import CIngumaModule
 
 name = "samrdump"
 brief_description = "Dump the SAM database"
@@ -269,9 +269,6 @@ class CSamrDump:
         self.dict = self._dumper.dict
 
         return True
-
-    def printSummary(self):
-        pass
 
 # Process command-line arguments.
 if __name__ == '__main__':
