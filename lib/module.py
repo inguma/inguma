@@ -42,10 +42,14 @@ class CIngumaModule:
     ostype = 1
     payload = "bindshell"
 
-    def printSummary(self):
-        """ Method called when run() has returned True.  It's used for showing
-        a summary of the execution to the user. """
+    def help(self):
+        """ Method called when 'help <module> is executed from the command line. """
         pass
+
+    #def print_summary(self):
+    #    """ Method called when run() has returned True.  It's used for showing
+    #    a summary of the execution to the user. """
+    #    pass
 
     def run(self):
         """ Method called when the module is invoked.
@@ -55,13 +59,11 @@ class CIngumaModule:
         pass
 
     def show_help(self):
-        """ Method called when 'help <module> is executed from the command line. """
-        pass
-
-    def show_help(self):
         """ Method called when the module is interactive and 'help' is executed
         from the command line. """
         pass
+
+    # Legacy methods follow.
 
     def addToDict(self, element, value):
         """ It's used to add data to the knowledge base to be used, i.e., by other modules """
@@ -88,4 +90,17 @@ class CIngumaModule:
 
         f = file(fname, "r")
         return f.readlines()
+
+    def printSummary(self):
+        """ Method called when run() has returned True.  It's used for showing
+        a summary of the execution to the user. """
+        pass
+
+class CIngumaDiscoverModule(CIngumaModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma discover module. """
+
+class CIngumaGatherModule(CIngumaModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma gather module. """
 
