@@ -491,6 +491,7 @@ def showInfo(cmd):
                 module = commands[command]
                 if module.__name__.isalnum():
                     obj = eval("module."+module.__name__ +"()")
+                    obj.gom = gom
                     obj.help()
             except AttributeError:
                 print "Module has no help information"
