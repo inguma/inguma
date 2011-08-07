@@ -492,8 +492,10 @@ def showInfo(cmd):
                 if module.__name__.isalnum():
                     obj = eval("module."+module.__name__ +"()")
                     obj.help()
-            except:
+            except AttributeError:
                 print "Module has no help information"
+            except:
+                print "Internal error:", sys.exc_info()[1]
 
             return
 
