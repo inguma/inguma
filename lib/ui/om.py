@@ -28,7 +28,7 @@ class OutputManager:
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
 
-    def echo(self, data, window=True, newline=True):
+    def echo(self, data = "", window=True, newline=True):
 
         if window == True and self.isGui:
             window = self.SHOW_MODULE_WIN
