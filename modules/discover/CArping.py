@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CArping.py
 #       
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
@@ -20,12 +18,10 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
 import sys
-import time
 
 from lib.core import getMacVendor
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 try:
     import scapy.all as scapy
@@ -35,23 +31,15 @@ except:
     hasScapy = False
 
 name = "arping"
-brief_description = "Send an arp who has message to discover hosts"
+brief_description = "Send an ARP who-has message to discover hosts."
 type = "discover"
 
-class CArping(CIngumaModule):
+class CArping(CIngumaDiscoverModule):
     target = "192.168.1.0/24"
-    port = 0
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    services = {}
-    results = {}
-    dict = None
-    ans = []
 
     def help(self):
-        print "target = <target host or network>"
-        print "timeout = <timeout>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("timeout = <timeout>")
 
     def getMacVendor(self, mac):
         try:
@@ -74,9 +62,9 @@ class CArping(CIngumaModule):
                     if mac.lower().startswith(prefix.lower()):
                         return vendor.replace("\r", "").replace("\n", "")
             
-            return "Unknow"
+            return "Unknown vendor."
         except:
-            return "Unknow"# + str(sys.exc_info()[1])
+            return "Internal error: " + str(sys.exc_info()[1])
 
     def arping(self, net):
         scapy.conf.verb = 0
@@ -89,11 +77,10 @@ class CArping(CIngumaModule):
         for x, y in ret:
             flag += 1
             ip = y.sprintf("%ARP.psrc%")
-            self.gom.echo(  "Adding to discovered hosts " + ip )
-            self.addToDict("hosts", ip)
-            self.addToDict("targets", ip)
-            self.addToDict(ip + "_mac", y.sprintf("%Ether.src%"))
-        print
+            self.gom.echo("Adding to discovered hosts " + ip )
+            self.add_data_to_kb("hosts", ip)
+            self.add_data_to_kb("targets", ip)
+            self.add_data_to_kb(ip + "_mac", y.sprintf("%Ether.src%"))
 
         self.ans = ret
         return True
@@ -102,20 +89,17 @@ class CArping(CIngumaModule):
         if hasScapy:
             return self.arping(self.target)
         else:
-            self.gom.echo( "No scapy support :(" )
+            self.gom.echo("No scapy support :(")
             return False
 
-    def printSummary(self):
-        self.gom.echo( "" )
-        self.gom.echo( "List of discovered hosts" )
-        self.gom.echo( "------------------------" )
-        self.gom.echo( "" )
+    def print_summary(self):
+        self.gom.echo("List of discovered hosts")
+        self.gom.echo("------------------------")
+        self.gom.echo()
 
         for x, y in self.ans:
             ip = y.sprintf("%ARP.psrc%")
             mac = y.sprintf("%Ether.src%")
             vendor = getMacVendor(mac)
             self.gom.echo( str(mac) + " " + str(ip).ljust(15) + "(" + str(vendor) + ")" )
-        self.gom.echo( "" )
-
-
+        self.gom.echo()
