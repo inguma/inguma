@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CNetcraft.py
 #       
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
@@ -19,16 +17,14 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
 import sys
-import time
 import urllib
 
 from HTMLParser import HTMLParser
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "netcraft"
-brief_description = "Query netcraft database"
+brief_description = "Query Netcraft database"
 type = "discover"
 
 class SimpleHTMLParser(HTMLParser):
@@ -53,28 +49,17 @@ class SimpleHTMLParser(HTMLParser):
 
             self.data.append(data)
 
-class CNetcraft(CIngumaModule):
-    port = 0
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    services = {}
-    results = {}
-    dict = None
-    ret = False
+class CNetcraft(CIngumaDiscoverModule):
 
-    def help(self):
-        print "target = <target host or network>"
-
-    def netCraftHtmlParser(self, data):
+    def NetcraftHtmlParser(self, data):
         
-        htmParser = SimpleHTMLParser()
-        htmParser.feed(data)
-        htmParser.close()
+        html_parser = SimpleHTMLParser()
+        html_parser.feed(data)
+        html_parser.close()
 
-        return htmParser.data
+        return html_parser.data
 
-    def parseNetcraftData(self, data):
+    def parse_netcraft_data(self, data):
         baseStr = "<h1>site report for "
         pos = data.lower().find(baseStr)
 
@@ -82,27 +67,31 @@ class CNetcraft(CIngumaModule):
             data = data[pos+len(baseStr):]
             data = data[:data.lower().find("</table>")]
 
-            return self.netCraftHtmlParser(data)
+            return self.NetcraftHtmlParser(data)
         else:
-            return "Error parsing netcraft data"
+            return "Error parsing Netcraft data."
+
+    def help(self):
+        """ Method called when 'help <module> is executed from the command line. """
+        self.gom.echo("target = \"<target host or network>\"")
 
     def run(self):
         try:
             data = urllib.urlopen("http://toolbar.netcraft.com/site_report?url=http://" + self.target)
             tmp = data.read()
-            self.data = self.parseNetcraftData(tmp)
+            self.data = self.parse_netcraft_data(tmp)
 
             return True
         except:
-            print sys.exc_info()[1]
+            self.gom.echo("Internal error: " + str(sys.exc_info()[1]))
             return False
 
         return True
 
-    def printSummary(self):
-        self.gom.echo( "Netcraft database information" )
-        self.gom.echo( "-----------------------------" )
-        self.gom.echo( "" )
+    def print_summary(self):
+        self.gom.echo("Netcraft database information")
+        self.gom.echo("-----------------------------")
+        self.gom.echo()
 
         start = self.data.index('Site')
         end = len(self.data)
@@ -113,4 +102,4 @@ class CNetcraft(CIngumaModule):
                 start = start + 2
             except:
                 return False
-        
+
