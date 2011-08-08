@@ -342,13 +342,6 @@ class ScapyUI(gtk.Frame):
             self.bottom_nb.set_current_page(0)
             self.dest_dir = self.filechooserbutton.get_filename()
 
-            self.send = True
-            # Change start button image
-            self.start.set_image(self.throbber)
-            label = self.start.get_children()[0]
-            label = label.get_children()[0].get_children()[1]
-            label = label.set_label('')
-    
             result = {}
             for row in self.selected_store:
                 father = self.selected_store.get_iter(row.path)
@@ -357,8 +350,19 @@ class ScapyUI(gtk.Frame):
                 for childrow in self.get_children(row.path):
                     if childrow[1]:
                         result[layer].append(childrow[0])
+            if result:
+                self.send = True
+                # Change start button image
+                self.start.set_image(self.throbber)
+                label = self.start.get_children()[0]
+                label = label.get_children()[0].get_children()[1]
+                label = label.set_label('')
     
-            self.compose_packet(result)
+                self.compose_packet(result)
+            else:
+                md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "First drag some layers to the right tree")
+                md.run()
+                md.destroy()
 
     def compose_packet(self, fuzzeables):
         # create the packet object
