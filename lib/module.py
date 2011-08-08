@@ -20,7 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class CIngumaModule:
     """ This module contains the common methods (mostly stubs) and variables
-    for creating an Inguma module. """
+    for creating an Inguma module. 
+    This class is deprecated, all the new additions should be done to temporary
+    class CIngumaNewModule. """
 
     target = ""
     ports = []
@@ -96,11 +98,109 @@ class CIngumaModule:
         a summary of the execution to the user. """
         pass
 
-class CIngumaDiscoverModule(CIngumaModule):
+class CIngumaNewModule:
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma module.
+    This class will supersede CIngumaModule in the future. """
+
+    target = ""
+    timeout = 1
+
+    # Legacy properties follow.
+
+    #ports = []
+    #sport = 1025
+    #closed = {}
+    #opened = {}
+    #mac = {}
+    #services = {}
+    #waitTime = 0
+    #randomizeWaitTime = False
+    #iface = "eth0"
+    #results = {}
+    #dict = None
+    #interactive = True
+
+    def add_data_to_kb(self, element, value):
+        """ Method used to add data to the current knowledge base. """
+        if value == None:
+            return
+
+        if self.dict is not None:
+            if self.dict.has_key(element):
+            
+                for x in self.dict[element]:
+                    if x == value:
+                        return
+
+                self.dict[element] += [value]
+            else:
+                self.dict[element] = [value]
+
+
+    def help(self):
+        """ Method called when 'help <module> is executed from the command line. """
+        pass
+
+    def print_summary(self):
+        """ Method called when run() has returned True.  It's used for showing
+        a summary of the execution to the user. """
+        pass
+
+    def run(self):
+        """ Method called when the module is invoked.
+        If it returns False, execution is stopped there.
+        If it returns True, then printSummary() is called after run().
+        """
+        pass
+
+    def show_help(self):
+        """ Method called when the module is interactive and 'help' is executed
+        from the command line. """
+        pass
+
+    # Legacy methods follow.
+
+    def addToDict(self, element, value):
+        """ Legacy method for adding data to the current KB.  Superseded by add_data_to_kb(). """
+        self.add_data_to_kb(element,value)
+
+    def printSummary(self):
+        """ Method called when run() has returned True.  It's used for showing
+        a summary of the execution to the user. Superseded by print_summary(). """
+        self.print_summary()
+
+class CIngumaBruteModule(CIngumaNewModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma brute-force module. """
+
+class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma discover module. """
 
-class CIngumaGatherModule(CIngumaModule):
+    def help(self):
+        """ Method called when 'help <module> is executed from the command line. """
+        self.gom.echo("target = \"<target host or network>\"")
+
+class CIngumaExploitModule(CIngumaNewModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma exploit module. """
+
+    """ The following are used ONLY for exploits (shellcode) """
+    command = ""
+    listenPort = 4444
+    ostype = 1
+    payload = "bindshell"
+
+class CIngumaFuzzerModule(CIngumaNewModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma fuzzer module. """
+
+class CIngumaGatherModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma gather module. """
+
+class CIngumaRCEModule(CIngumaNewModule):
+    """ This module contains the common methods (mostly stubs) and variables
+    for creating an Inguma RCE module. """
 
