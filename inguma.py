@@ -494,13 +494,13 @@ def showInfo(cmd):
                     obj.gom = gom
                     obj.help()
             except AttributeError:
-                print "Module has no help information"
+                gom.echo("Module has no help information.")
             except:
-                print "Internal error:", sys.exc_info()[1]
+                gom.echo("Internal error: " + str(sys.exc_info()[1]))
 
             return
 
-    print "Exploit does not exist"
+    gom.echo("Exploit does not exist.")
 
 def execute(command, index):
 

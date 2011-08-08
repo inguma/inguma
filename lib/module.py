@@ -180,7 +180,7 @@ class CIngumaDiscoverModule(CIngumaNewModule):
 
     def help(self):
         """ Method called when 'help <module> is executed from the command line. """
-        self.gom.echo("target = \"<target host or network>\"")
+        self.gom.echo("Module has no help information.")
 
 class CIngumaExploitModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
