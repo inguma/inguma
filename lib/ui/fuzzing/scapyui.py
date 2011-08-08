@@ -116,11 +116,16 @@ class ScapyUI(gtk.Frame):
 
         self.selected_sw.add_with_viewport(self.selected_tv)
 
-        # Drag and Drop stuff
+        # Treeviews Drag and Drop stuff
         self.layers_tv.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [("text/plain", gtk.TARGET_SAME_APP, 80)], gtk.gdk.ACTION_COPY)
         self.layers_tv.connect("drag-data-get", self.drag_data_get_cb)
+
         self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], gtk.gdk.ACTION_COPY)
+        self.selected_tv.drag_source_set(gtk.gdk.BUTTON1_MASK, [("text/plain", gtk.TARGET_SAME_APP, 80)], gtk.gdk.ACTION_MOVE)
+        #self.selected_tv.connect("drag-begin", self.drag_selected_begin_cb)
+        #self.selected_tv.connect("drag-end", self.drag_selected_end_cb)
         self.selected_tv.connect("drag-data-received", self.drag_data_received_cb)
+
 
         self.hseparator = gtk.HSeparator()
 
@@ -170,9 +175,30 @@ class ScapyUI(gtk.Frame):
         self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'data' + os.sep
         self.throbber.set_from_file(self.img_path + 'throbber_animat_small.gif')
 
+        # Delete button
+        self.del_icon = gtk.Image()
+        self.del_icon.set_padding(5, 5)
+        self.del_icon.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+
+        # Delete button drag and drop stuff
+        self.del_icon.drag_dest_set(gtk.DEST_DEFAULT_MOTION | gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP, [ ( "text/plain", gtk.TARGET_SAME_APP, 80) ], gtk.gdk.ACTION_MOVE)
+        self.del_icon.connect("drag_drop", self.drag_drop_cb)
+        #self.del_icon.set_no_show_all(True)
+        #self.del_icon.hide()
+
+        self.eb = gtk.EventBox()
+        #self.eb.set_no_show_all(True)
+        #self.eb.hide()
+        self.eb.add(self.del_icon)
+        self.eb.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color('#d9e4f2'))
+
+        self.right_vbox = gtk.VBox(False, 0)
+        self.right_vbox.pack_start(self.selected_sw, True, True, 1)
+        self.right_vbox.pack_start(self.eb, False, False, 1)
+
         # Add panels and buttons
         self.panels_hbox.pack_start(self.layers_sw, True, True, 1)
-        self.panels_hbox.pack_start(self.selected_sw, True, True, 1)
+        self.panels_hbox.pack_start(self.right_vbox, True, True, 1)
 
         self.vbox.pack_start(self.info_hbox, False, False, 2)
         self.vbox.pack_start(self.panels_hbox, True, True, 1)
@@ -182,6 +208,45 @@ class ScapyUI(gtk.Frame):
         self.add(self.vbox)
 
         self.get_layers()
+
+    ###############################
+    # Drag and drop related methods
+
+    def drag_drop_cb(self, button, context, x, y, timestamp):
+        selection = self.selected_tv.get_selection()
+        model, iter = selection.get_selected()
+        if iter:
+            model.remove(iter)
+        return
+
+#    def drag_selected_begin_cb(self, treeview, context):
+#        self.eb.show()
+#        self.del_button.show()
+#
+#    def drag_selected_end_cb(self, treeview, context):
+#        self.eb.hide()
+#        self.del_button.hide()
+
+    def drag_data_get_cb(self, treeview, context, selection, info, timestamp):
+        treeselection = treeview.get_selection()
+        model, iter = treeselection.get_selected()
+        text = model.get_value(iter, 0)
+        selection.set('text/plain', 8, text)
+        return
+
+    def drag_data_received_cb(self, treeview, context, x, y, selection, info, timestamp):
+        obj = eval(selection.data)
+
+        layers = {}
+        layers[selection.data] = []
+
+        if isinstance(obj, type) and issubclass(obj, Packet):
+            for f in obj.fields_desc:
+                layers[selection.data].append(str(f.name))
+            self.add_layer(layers)
+
+    ##################################
+    # Packet creation and send methods
 
     def activate(self, cell, path, model):
         model[path][1] = not model[path][1]
@@ -334,24 +399,6 @@ class ScapyUI(gtk.Frame):
                             q.default_fields[field.name] = rnd
             q = q.payload
         return packet
-
-    def drag_data_get_cb(self, treeview, context, selection, info, timestamp):
-        treeselection = treeview.get_selection()
-        model, iter = treeselection.get_selected()
-        text = model.get_value(iter, 0)
-        selection.set('text/plain', 8, text)
-        return
-
-    def drag_data_received_cb(self, treeview, context, x, y, selection, info, timestamp):
-        obj = eval(selection.data)
-
-        layers = {}
-        layers[selection.data] = []
-
-        if isinstance(obj, type) and issubclass(obj, Packet):
-            for f in obj.fields_desc:
-                layers[selection.data].append(str(f.name))
-            self.add_layer(layers)
 
     def add_layer(self, layers):
         for layer in layers.keys():
