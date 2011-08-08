@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CAsnQuery.py
 #       
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
@@ -20,40 +18,27 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
-import sys
-import time
-import socket
-
 import scapy.all as scapy
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "asn"
 brief_description = "ASN whois database query"
 type = "discover"
 
-class CAsnQuery(CIngumaModule):
-    port = 0
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    services = {}
-    results = {}
-    dict = None
-    ret = False
+class CAsnQuery(CIngumaDiscoverModule):
 
     def help(self):
-        print "target = <target host or coma separated list of hosts>"
+        self.gom.echo("target = <target host or comma-separated list of hosts>")
 
     def run(self):
         if self.timeout < 5:
             self.timeout = 5
 
         targets = []
-        targets.append(self.target)
+        for i in self.target:
+            targets.append(i)
 
         ips = {}
-        #for x in self.target:
         for x in targets:
             ips[x] = None
 
@@ -64,13 +49,12 @@ class CAsnQuery(CIngumaModule):
 
         return True
 
-    def printSummary(self):
-        self.gom.echo( "" )
-        self.gom.echo( "------------------------" )
-        self.gom.echo( "ASN database information" )
-        self.gom.echo( "------------------------" )
-        self.gom.echo( "" )
+    def print_summary(self):
+        self.gom.echo("------------------------")
+        self.gom.echo("ASN database information")
+        self.gom.echo("------------------------")
+        self.gom.echo()
         for x in self.data:
             self.gom.echo( str(x[0]) + "\t" + str(x[1]) + "\t" + str(x[2]) )
             self.addToDict(str(x[0]) + "_asn", str(x[1]) + " " + str(x[2]))
-    	self.gom.echo( "" )
+    	self.gom.echo()
