@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+
 class CIngumaModule:
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma module. 
@@ -47,11 +49,6 @@ class CIngumaModule:
     def help(self):
         """ Method called when 'help <module> is executed from the command line. """
         pass
-
-    #def print_summary(self):
-    #    """ Method called when run() has returned True.  It's used for showing
-    #    a summary of the execution to the user. """
-    #    pass
 
     def run(self):
         """ Method called when the module is invoked.
@@ -137,10 +134,9 @@ class CIngumaNewModule:
             else:
                 self.dict[element] = [value]
 
-
     def help(self):
         """ Method called when 'help <module> is executed from the command line. """
-        pass
+        self.gom.echo("Module has no help information.")
 
     def print_summary(self):
         """ Method called when run() has returned True.  It's used for showing
@@ -178,10 +174,6 @@ class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma discover module. """
 
-    def help(self):
-        """ Method called when 'help <module> is executed from the command line. """
-        self.gom.echo("Module has no help information.")
-
 class CIngumaExploitModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma exploit module. """
@@ -203,4 +195,3 @@ class CIngumaGatherModule(CIngumaNewModule):
 class CIngumaRCEModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma RCE module. """
-
