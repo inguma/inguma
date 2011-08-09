@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CGetIpbyName.py
 #       
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
@@ -21,23 +19,25 @@
 
 import socket
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "ipaddr"
-brief_description = "Get the host's ip address"
+brief_description = "Get the host's IP address"
 type = "discover"
 
-class CGetIpbyName(CIngumaModule):
-
-    waitTime = 0
-    timeout = 2
-    exploitType = 0
-    results = {}
-    wizard = False
-    dict = None
+class CGetIpbyName(CIngumaDiscoverModule):
 
     def help(self):
-        print "target = <target host or network>"
+        self.gom.echo("target = <target host or network>")
+
+    def print_summary(self):
+        self.gom.echo("Target: " + self.target + " IP Address: " + self.results[0])
+        self.gom.echo("Adding to discovered hosts " + self.results[0])
+        self.add_data_to_kb("hosts", self.results[0])
+        self.add_data_to_kb(self.results[0] + "_name", self.target)
+        self.add_data_to_kb("targets", self.results[0])
+        #self.add_data_to_kb(self.results[0] + "_trace", self.results[0])
+        #self.gom.echo(self.results[0])
 
     def run(self):
         self.results = {}
@@ -45,13 +45,3 @@ class CGetIpbyName(CIngumaModule):
         self.results[0] = host
 
         return True
-
-    def printSummary(self):
-        i = 0
-        self.gom.echo( "Target: " + self.target + " IP Address: " + self.results[0] )
-        self.gom.echo( "Adding to discovered hosts " + self.results[0] )
-        self.addToDict("hosts", self.results[0])
-        self.addToDict(self.results[0] + "_name", self.target)
-        self.addToDict("targets", self.results[0])
-        #self.addToDict(self.results[0] + "_trace", self.results[0])
-        #print self.results[0]
