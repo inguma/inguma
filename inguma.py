@@ -500,7 +500,7 @@ def showInfo(cmd):
 
             return
 
-    gom.echo("Exploit does not exist.")
+    gom.echo("Module does not exist.")
 
 def execute(command, index):
 
