@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      GeoIp.py
 #       
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
@@ -21,20 +19,49 @@
 
 import sys, os
 import urllib, gzip
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 from lib.core import get_profile_file_path
 
 name = "geoip"
 brief_description = "Get geographic information of an IP address"
 type = "discover" # The type of a module, currently, can only be 'gather', 'exploit', 'discover', 'fuzz' or 'brute'
 
-class CGeoIp(CIngumaModule):
+class CGeoIp(CIngumaDiscoverModule):
     """ Get geographic data of an IP address using GeoIp """
+
+    def check_db(self):
+        """ Checks if the Maxmind GeoIP is already downloaded. """
+        geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
+        if os.path.isfile(geoip_db_path):
+            return True
+        else:
+            return False
 
     def help(self):
         self.gom.echo("target = <target IP>")
         self.gom.echo("         <if set to \"all\", all IP stored on KB will be used>")
         self.gom.echo("         <if set to \"download\", GeoIP database will be downloaded>")
+
+    def download_db(self):
+        """ Download the Maxmind DB. """
+        geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
+    
+        page = "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
+        self.gom.echo("Downloading " + page, False )
+        urllib.urlretrieve(page, geoip_db_path + '.gz')
+    
+        # Extract DB and remove original file
+        self.gom.echo("Extracting files...", False)
+        gz = gzip.open(geoip_db_path + '.gz')
+        db = gz.read()
+        gz.close()
+        os.remove(geoip_db_path + '.gz')
+        geodb = open(geoip_db_path, 'w')
+        geodb.write(db)
+        geodb.close()
+        self.gom.echo("Operation complete", False)
+
+        return True
 
     def run(self):
         try:
@@ -44,14 +71,14 @@ class CGeoIp(CIngumaModule):
             sys.exit(0)
 
         if self.target == "download":
-            self.downloadDB()
+            self.download_db()
             return False
         elif self.target == "all":
             targets = self.user_data['hosts']
         else:
             targets = [self.target]
 
-        if self.checkDB() == False:
+        if self.check_db() == False:
             self.gom.echo('GeoIP database not found, install it setting target = \"download\" and running geoip again')
         else:
             geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
@@ -74,33 +101,4 @@ class CGeoIp(CIngumaModule):
                     #pass
             self.gom.echo('+-------------------------------------------------------------------------------------------------+')
             
-            return False
-
-    def downloadDB(self):
-        """ Download the Maxmind DB. """
-        geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
-    
-        page = "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
-        self.gom.echo("Downloading " + page, False )
-        urllib.urlretrieve(page, geoip_db_path + '.gz')
-    
-        # Extract DB and remove original file
-        self.gom.echo("Extracting files...", False)
-        gz = gzip.open(geoip_db_path + '.gz')
-        db = gz.read()
-        gz.close()
-        os.remove(geoip_db_path + '.gz')
-        geodb = open(geoip_db_path, 'w')
-        geodb.write(db)
-        geodb.close()
-        self.gom.echo("Operation Complete", False)
-
-        return True
-
-    def checkDB(self):
-        """ Checks if the Maxmind GeoIP is already downloaded. """
-        geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
-        if os.path.isfile(geoip_db_path):
-            return True
-        else:
             return False
