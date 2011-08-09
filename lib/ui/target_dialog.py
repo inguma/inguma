@@ -188,7 +188,7 @@ class TargetDialog:
             nmapData = nmapParser.parseNmap('/tmp/nmapxml.xml')
             os.remove('/tmp/nmapxml.xml')
             self.gom.echo( 'Inserting data in KB...', False)
-            nmapParser.insert_data(self.uicore, nmapData)
+            nmapParser.insertData(self.uicore, nmapData)
 
             self.gom.echo( 'Loaded\nUpdating Graph', False)
 
