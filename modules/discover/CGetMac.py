@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CGetMac.py
 #       
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
@@ -26,32 +24,26 @@ except:
     bHasScapy = False
 
 from lib.core import getMacVendor
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "getmac"
 brief_description = "Get the host's MAC address"
 type = "discover"
 
-class CGetMac(CIngumaModule):
-
-    waitTime = 0
-    timeout = 2
-    wizard = False
-    mac = ""
-    dict = None
+class CGetMac(CIngumaDiscoverModule):
 
     def help(self):
-        print "target = <target host or network>"
+        self.gom.echo("target = <target host or network>")
+    
+    def print_summary(self):
+        self.gom.echo(self.target + " MAC: " + self.mac +" " + getMacVendor(self.mac))
 
     def run(self):
         if self.target == "":
-            self.gom.echo( "No target specified" )
+            self.gom.echo("No target specified")
             return False
 
         self.mac = getmacbyip(self.target)
-        self.addToDict(self.target + "_mac", self.mac)
-        self.addToDict(self.target + "_mac_vendor", getMacVendor(self.mac))
+        self.add_data_to_kb(self.target + "_mac", self.mac)
+        self.add_data_to_kb(self.target + "_mac_vendor", getMacVendor(self.mac))
         return True
-    
-    def printSummary(self):
-        self.gom.echo( self.target + " MAC: " + self.mac +" " + getMacVendor(self.mac) )
