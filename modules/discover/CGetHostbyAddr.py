@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CGetHostbyAddr.py
 #       
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
@@ -20,23 +18,20 @@
 #       MA 02110-1301, USA.
 
 import socket
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "hostname"
 brief_description = "Get the host's name"
 type = "discover"
 
-class CGetHostbyAddr(CIngumaModule):
-
-    waitTime = 0
-    timeout = 2
-    exploitType = 0
-    results = {}
-    wizard = False
-    dict = None
+class CGetHostbyAddr(CIngumaDiscoverModule):
 
     def help(self):
-        print "target = <target host or network>"
+        self.gom.echo("target = <target host or network>")
+    
+    def print_summary(self):
+        self.add_data_to_kb(self.target + "_name", self.results[0][0] )
+        self.gom.echo(self.target + " name: " + str(self.results[0][0]))
 
     def run(self):
         self.results = {}
@@ -48,11 +43,7 @@ class CGetHostbyAddr(CIngumaModule):
         if host != self.target:
             self.results[0] = host
         else:
-            self.gom.echo( "Could not get host name for target: " + self.target )
+            self.gom.echo("Could not get host name for target: " + self.target)
             return False
 
         return True
-    
-    def printSummary(self):
-        self.addToDict(self.target + "_name", self.results[0][0] )
-        self.gom.echo( self.target + " name: " + str(self.results[0][0]) )
