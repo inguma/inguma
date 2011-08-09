@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CExtIp.py
 #       
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
@@ -20,35 +18,23 @@
 #       MA 02110-1301, USA.
 
 import urllib
-import socket
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "externip"
-brief_description = "Get your external ip address (even when using proxies)"
+brief_description = "Get your external IP address (even when using proxies)"
 type = "discover"
 
-class CExtIp(CIngumaModule):
+class CExtIp(CIngumaDiscoverModule):
 
-    waitTime = 0
-    timeout = 2
-    exploitType = 0
-    results = {}
-    wizard = False
-    dict = None
-
-    def help(self):
-        pass
+    def print_summary(self):
+        self.gom.echo(str(self.results[0]))
 
     def run(self):
         self.results = {}
         host = urllib.urlopen("http://inguma.sourceforge.net/php/ip.php").read()
         self.results[0] = host
-        self.addToDict("external_ip", [self.target, host])
-        self.addToDict("hosts", host)
+        self.add_data_to_kb("external_ip", [self.target, host])
+        self.add_data_to_kb("hosts", host)
 
         return True
-
-    def printSummary(self):
-        i = 0
-        self.gom.echo( str(self.results[0]) )
