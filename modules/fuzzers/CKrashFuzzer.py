@@ -21,22 +21,20 @@ from lib.krash import KrashLib
 from lib.module import CIngumaFuzzerModule
 
 name = "krash"
-brief_description = "Krash, a block based fuzzer"
+brief_description = "Krash, a block-based fuzzer"
 type = "fuzzer"
 
 class CKrashFuzzer(CIngumaFuzzerModule):
-    """ Block based fuzzer """
+    """ Block-based fuzzer. """
 
     def __init__(self):
 
         self.file = ''
         self.sindex = 0
-        self.file = ''
     
         self.line = False
         self.ssl = False
         self.url = False
-        self.health = False
         self.health = True
     
         self.wait_time = 0
@@ -47,7 +45,7 @@ class CKrashFuzzer(CIngumaFuzzerModule):
         self.gom.echo("file   = <file with packet dump>")
         self.gom.echo("sindex = <start index>")
         self.gom.echo()
-        self.gom.echo("Optional Flags:")
+        self.gom.echo("Optional flags:")
         self.gom.echo()
         self.gom.echo("line   = <Line mode: True/False>")
         self.gom.echo("         Send one line at a time")
@@ -63,7 +61,7 @@ class CKrashFuzzer(CIngumaFuzzerModule):
         if self.file and self.target and self.port:
             self.krash.fuzz(file(self.file, "r").read(), self.target, self.port, self.sindex)
         else:
-            self.gom.echo("Target, port and file parameters are mandatory")
+            self.gom.echo("Target, port and file parameters are mandatory.")
             return False
 
     def stop(self):
