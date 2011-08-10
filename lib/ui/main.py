@@ -89,8 +89,6 @@ ui_menu = """
 <ui>
   <toolbar name="Toolbar">
     <toolitem action="Load"/>
-    <placeholder name="miau">
-    </placeholder>
     <toolitem action="Save"/>
     <toolitem action="Import"/>
     <toolitem action="Edit"/>
