@@ -1,4 +1,4 @@
-##      GeoIp.py
+##      CGeoIp.py
 #       
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
 #       

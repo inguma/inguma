@@ -55,6 +55,15 @@ class KrashLib:
         self.wait_time = 0
         self.threads = 0
 
+        self.stop = False
+    def token2str(self, token):
+        buffer = ""
+    
+        for character in token:
+            buffer += str(character)
+    
+        return buffer
+
     def sendssl(self, packet, host, port):
 
         self.numthreads += 1
@@ -299,76 +308,91 @@ class KrashLib:
     
         # Go over the tokens starting at idx
         for index in range(int(idx), len(mtokens)):
-            tokens = self.tokenize_packet(base_packet)
-            buffer = ""
-    
-            # Skip separators and characters to ignore
-            if tokens[index] in self.separators:
-                if tokens[index] in self.ignorechars:
-                    continue
-    
-            # Used to mark a token as URL parameter
-            is_var = False
-    
-            if self.url_mode:
-                if tokens[index-1] == "&":
-                    is_var = True
-                    continue
-                else:
-                    is_var = False
-    
-            counter = 0
-    
-            # Fuzz with numbers
-            for num in numbers:
-                counter+= 1
-                if counter < 0:
-                    continue
-                    
-                if self.verbose:
-                    self.om.echo("Fuzzing var %d:%d" % (index, counter))
-                buffer = tokens
-                buffer[index] = num
-    
-                self.send_wrapper(self.token2str(buffer), host, port)
-                global_counter += 1
-    
-            # Fuzz with different sizes
-            for size in sizes:
-    
-                # Fuzz using defined strings
-                for fuzz_str in strings:
-                    counter += 1
-                    if counter < 0:
+            if not self.stop:
+                tokens = self.tokenize_packet(base_packet)
+                buffer = ""
+        
+                # Skip separators and characters to ignore
+                if tokens[index] in self.separators:
+                    if tokens[index] in self.ignorechars:
                         continue
-                    
-                    if self.verbose:
-                        self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
-                    buffer = tokens
-                    buffer[index] = fuzz_str*size
-                    if not is_var:
-                        self.end_wrapper(self.token2str(buffer), host, port)
+        
+                # Used to mark a token as URL parameter
+                is_var = False
+        
+                if self.url_mode:
+                    if tokens[index-1] == "&":
+                        is_var = True
+                        continue
                     else:
-                        self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
-    
-                    global_counter += 1
-    
-                # Fuzz using all caracters
-                for char in range(0, 255):
-                
-                    if chr(char) in ["&", "="]:
-                        continue
-                    counter += 1
-                    if counter < 0:
-                        continue
-    
-                    if self.verbose:
-                        self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
-    
-                    buffer = tokens
-                    buffer[index] = chr(char)*size
-                    if not is_var:
+                        is_var = False
+        
+                counter = 0
+        
+                # Fuzz with numbers
+                for num in numbers:
+                    if not self.stop:
+                        counter+= 1
+                        if counter < 0:
+                            continue
+                            
+                        if self.verbose:
+                            self.om.echo("Fuzzing var %d:%d" % (index, counter))
+                        buffer = tokens
+                        buffer[index] = num
+            
                         self.send_wrapper(self.token2str(buffer), host, port)
+                        global_counter += 1
                     else:
-                        self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
-                    global_counter += 1
+                        break
+        
+                # Fuzz with different sizes
+                for size in sizes:
+                    if not self.stop:
+        
+                        # Fuzz using defined strings
+                        for fuzz_str in strings:
+                            if not self.stop:
+                                counter += 1
+                                if counter < 0:
+                                    continue
+                                
+                                if self.verbose:
+                                    self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
+                                buffer = tokens
+                                buffer[index] = fuzz_str*size
+                                if not is_var:
+                                    self.send_wrapper(self.token2str(buffer), host, port)
+                                else:
+                                    self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
+                
+                                global_counter += 1
+                            else:
+                                break
+            
+                        # Fuzz using all caracters
+                        for char in range(0, 255):
+                            if not self.stop:
+                        
+                                if chr(char) in ["&", "="]:
+                                    continue
+                                counter += 1
+                                if counter < 0:
+                                    continue
+                
+                                if self.verbose:
+                                    self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
+                
+                                buffer = tokens
+                                buffer[index] = chr(char)*size
+                                if not is_var:
+                                    self.send_wrapper(self.token2str(buffer), host, port)
+                                else:
+                                    self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
+                                global_counter += 1
+                            else:
+                                break
+                else:
+                    break
+            else:
+                break
