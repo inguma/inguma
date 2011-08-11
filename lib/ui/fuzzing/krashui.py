@@ -248,7 +248,6 @@ class KrashUI(gtk.Frame):
                 self.sindex = self.index_spin.get_digits()
                 self.krashlib.line_mode = self.line_check.get_active()
                 self.krashlib.url_mode = self.url_check.get_active()
-                #self.krashlib.web_mode = False
                 self.krashlib.ssl_mode = self.ssl_check.get_active()
                 self.krashlib.verbose = self.verbose_check.get_active()
 
