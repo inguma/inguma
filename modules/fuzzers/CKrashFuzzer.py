@@ -35,7 +35,7 @@ class CKrashFuzzer(CIngumaFuzzerModule):
         self.line = False
         self.ssl = False
         self.url = False
-        self.health = True
+        self.health = False
     
         self.wait_time = 0
 

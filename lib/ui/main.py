@@ -456,6 +456,7 @@ class MainApp:
         # Fuzzers Box to contain krash and scapy fuzzers
         self.fuzz_frame = fuzz_frame.FuzzFrame()
         setattr(self.fuzz_frame.scapyui, 'gom', self.gom)
+        setattr(self.fuzz_frame.krashui, 'gom', self.gom)
         self.exploits_nb.append_page(self.fuzz_frame, b)
 
         # Add exploits notebook and text/label to main notebook
@@ -550,6 +551,7 @@ class MainApp:
         self.bottom_nb.append_page(threadsGui, b)
 
         setattr(self.fuzz_frame.scapyui, 'bottom_nb', self.bottom_nb)
+        setattr(self.fuzz_frame.krashui, 'bottom_nb', self.bottom_nb)
 
         # Check visibility on config preferences
         if config.SHOW_LOG:
