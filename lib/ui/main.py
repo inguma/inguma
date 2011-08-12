@@ -81,7 +81,7 @@ import lib.ui.bokken.main as bokken
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
-from lib.core import get_profile_file_path, check_distorm_lib
+from lib.core import check_distorm_lib
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -805,6 +805,7 @@ class MainApp:
             self.scrolled_window.is_visible = True
 
     def on_switch(self, widget, data, more):
+        from lib.core import get_profile_file_path
         if more == 2:
             # Check if the disassembly library is present
             # Check only for Linux platform
