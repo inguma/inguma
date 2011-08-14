@@ -53,8 +53,6 @@ class UIManager(gtk.UIManager):
             self.menu_base += '<menu action="' + category.capitalize() + '">'
             self.actiongroup.add_actions( [(category.capitalize(), gtk.STOCK_EXECUTE, '  ' + category.capitalize())] )
 
-            # NEW NEW NEW NEW NEW NEW NEW NEW
-
             #print category
             subcategories = getattr(config, 'sub' + category)
             for subcat in subcategories.keys():
@@ -73,8 +71,6 @@ class UIManager(gtk.UIManager):
                     self.menu_base += '</menuitem>'
                     #print '\t\t' + element
                 self.menu_base += '</menu>'
-
-            # NEW NEW NEW NEW NEW NEW NEW NEW
 
             self.menu_base += '</menu>'
 
@@ -197,6 +193,9 @@ self.showBrute )], user_data=[ip, port] )
                         
             self.target_menu += '</menu><separator/>'
 
+            self.target_menu += '<menuitem action="Fuzz"/>'
+            self.actiongroup2.add_actions([('Fuzz', gtk.STOCK_EXECUTE, '  Fuzz target', None, 'Fuzz target', self._fuzz_target)], user_data=[ip])
+
             # Add target's information
             self.actiongroup2.add_actions( [('Information', gtk.STOCK_INFO, '  Information')] )
             self.target_menu += '<menu action="Information" position="top">'
@@ -222,7 +221,7 @@ self.showBrute )], user_data=[ip, port] )
                 self.actiongroup2.add_actions( [('tos', None, kb[ip + '_os'][-1] )] )
                 self.target_menu += '<menuitem action="tos"/><separator/>'
     
-            self.target_menu += '</menu><separator/>'
+            self.target_menu += '</menu>'
     
             # Add target's report button
             self.actiongroup2.add_actions( [('Report', gtk.STOCK_INFO, '  Report', None, None, self.showReport )], user_data=[ip] )
@@ -231,7 +230,7 @@ self.showBrute )], user_data=[ip, port] )
             # Add IP Address
             self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
             self.target_menu += '<menuitem action="' + ip + '" position="top">'
-            self.target_menu += '</menuitem><separator/>'
+            self.target_menu += '</menuitem>'
     
             self.target_menu += self.menu_base
 
@@ -242,6 +241,12 @@ self.showBrute )], user_data=[ip, port] )
         ui_id = self.add_ui_from_string(self.target_menu)
         self.set_uiID(ui_id)
         self.popmenu = self.get_widget('/Popup')
+
+    def _fuzz_target(self, widget, data):
+        self.notebook.set_current_page(3)
+        exploits_nb = self.notebook.get_children()[3]
+        exploits_nb.set_current_page(1)
+        self.fuzz_frame.ip_entry.set_text(data[0])
 
     def set_uiID(self, id):
         self.ui_id = id

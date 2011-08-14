@@ -374,7 +374,7 @@ class ScapyUI(gtk.Frame):
             if layer == 'IP':
                 packet += layer + '(dst="' + self.target + '")/'
             # Add port
-            elif layer == 'TCP':
+            elif layer in ['TCP', 'UDP']:
                 packet += layer + '(dport=' + self.port + ')/'
             else:
                 packet += layer + '()/'
