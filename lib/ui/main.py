@@ -63,7 +63,6 @@ splash = Splash()
 # Import ui modules
 splash.push(("Loading UI modules"))
 import lib.ui.core as core
-import lib.ui.propDialog as propDialog
 import lib.ui.kbwin as kbwin
 import lib.ui.om as om
 import lib.ui.graphTBar as graphTBar
@@ -71,45 +70,18 @@ import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
 import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
-import lib.ui.target_dialog as target_dialog
 import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
-import lib.ui.reportWin as reportWin
 import lib.ui.libAutosave as libAutosave
 import lib.ui.bokken.main as bokken
+import lib.ui.toolbar as toolbar
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
 from lib.core import check_distorm_lib
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
-
-ui_menu = """
-<ui>
-  <toolbar name="Toolbar">
-    <toolitem action="Load"/>
-    <toolitem action="Save"/>
-    <toolitem action="Import"/>
-    <toolitem action="Edit"/>
-    <separator name="s1"/>
-    <toolitem action="Proxy"/>
-    <toolitem action="Web Server"/>
-    <toolitem action="Sniffer"/>
-    <separator name="s3"/>
-    <toolitem action="Scapy"/>
-    <separator name="s4"/>
-    <toolitem action="Add Target"/>
-    <toolitem action="Preferences"/>
-    <toolitem action="Show Log"/>
-    <toolitem action="Show KB"/>
-    <separator name="s5"/>
-    <toolitem action="Report"/>
-    <separator name="s6"/>
-    <toolitem action="Quit"/>
-  </toolbar>
-</ui>
-"""
 
 class MainApp:
     '''Main GTK application'''
@@ -131,6 +103,9 @@ class MainApp:
         # Load Output Manager
         self.gom = om.OutputManager('gui')
 
+        # Create config
+        self.config = config
+
         #################################################################################################################################
         # Create a new window
         #################################################################
@@ -138,7 +113,6 @@ class MainApp:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_icon_from_file('logo' + os.sep + 'icon.png')
         self.window.set_focus = True
-#        self.window.connect("destroy", lambda w: gtk.main_quit())
         self.window.connect("delete_event", self.quit)
         splash.push(("Loading..."))
         gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
@@ -162,8 +136,10 @@ class MainApp:
         self.gom.set_core(self.uicore)
 
         # Check module window prefs
-        setattr(self.uicore, 'SHOW_MODULE_WIN', config.SHOW_MODULE_WIN)
+        setattr(self.uicore, 'SHOW_MODULE_WIN', self.config.SHOW_MODULE_WIN)
         self.uicore.set_om(self.gom)
+
+        self.ing = self
 
         #################################################################################################################################
         # Main VBox
@@ -174,77 +150,20 @@ class MainApp:
         mainvbox.show()
 
         #################################################################################################################################
-        # Tool Bars HBox
+        # ToolBar
         #################################################################
-        tbhbox = gtk.HBox(False, 1)
-        mainvbox.pack_start(tbhbox, False, False, 1)
-        tbhbox.show()
-
-        #################################################################################################################################
-        # UIManager for MAP Toolbar
-        #################################################################
-        # to make it nice we'll put the toolbar into the handle box,
-        # so that it can be detached from the main window
-        self.handlebox = gtk.HandleBox()
-        tbhbox.pack_start(self.handlebox, True, True, 1)
-
-        # Create a UIManager instance
         splash.push(("Creating menu and toolbar..."))
-        uimanager = gtk.UIManager()
-        accelgroup = uimanager.get_accel_group()
-        self.window.add_accel_group(accelgroup)
-        self._actiongroup = actiongroup = gtk.ActionGroup('UIManager')
-
-        # Create actions
-        actiongroup.add_actions([
-            # xml_name, icon, real_menu_text, accelerator, tooltip, callback
-
-            ('Load', gtk.STOCK_OPEN, ('Load'), None, ('Load new KB'), self.loadKB),
-            ('Save', gtk.STOCK_SAVE, ('Save'), None, ('Save curren KB'), self.saveKB),
-            ('Import', gtk.STOCK_CONVERT, ('Import'), None, ('Import Nmap/CSV file'), self.importScan),
-            ('Edit', gtk.STOCK_EDIT, ('Edit'), None, ('Open editor'), self.loadEditor),
-            ('Proxy', gtk.STOCK_CONNECT, ('Proxy'), None, (''), gtk.main_quit),
-            ('Web Server', gtk.STOCK_EXECUTE, ('Web'), None, ('Web'), gtk.main_quit),
-
-            ('Sniffer', gtk.STOCK_NETWORK, ('Sniffer'), None, ('Open network sniffer'), self.run_sniffer),
-            ('Scapy', gtk.STOCK_HELP, ('Scapy'), None, ('Start Scapy'), self.show_term),
-            ('Add Target', gtk.STOCK_ADD, ('Add Target'), None, ('Add a new target'), self.addTarget),
-            ('Preferences', gtk.STOCK_PREFERENCES, ('Preferences'), None, ('Open preferences dialog'), self.showPref),
-            ('Show Log', gtk.STOCK_DND, ('Show Log'), None, ('Show/Hide Log panel'), self.show_log),
-            ('Show KB', gtk.STOCK_DND, ('Show KB'), None, ('Show/Hide KB panel'), self.show_kb),
-            ('Report', gtk.STOCK_INDEX, ('Report'), None, ('Show KB report'), self.report),
-            ('Quit', gtk.STOCK_QUIT, ('Quit'), None, ('Quit Inguma'), gtk.main_quit),
-        ])
-
-        # Add the actiongroup to the uimanager
-        uimanager.insert_action_group(actiongroup, 0)
-        uimanager.add_ui_from_string(ui_menu)
-
-        # Toolbar
-        toolbar = uimanager.get_widget('/Toolbar')
-        toolbar.set_style(gtk.TOOLBAR_ICONS)
-
-        # Disabled until I get them working
-        button_proxy = uimanager.get_widget('/Toolbar/Proxy')
-        button_proxy.set_sensitive(False)
-        button_web = uimanager.get_widget('/Toolbar/Web Server')
-        button_web.set_sensitive(False)
+        self.toolbar = toolbar.Toolbar(self.ing)
+        mainvbox.pack_start(self.toolbar, False, False, 1)
 
         # Disable if not GtkSourceView2
-        if not config.HAS_SOURCEVIEW:
-            button_edit = uimanager.get_widget('/Toolbar/Edit')
-            button_edit.set_sensitive(False)
+        if not self.config.HAS_SOURCEVIEW:
+            self.toolbar.edit_tb.set_sensitive(False)
 
         # Disable if not Vte
-        if not config.HAS_VTE:
-            button_sniffer = uimanager.get_widget('/Toolbar/Sniffer')
-            button_sniffer.set_sensitive(False)
-            button_scapy = uimanager.get_widget('/Toolbar/Scapy')
-            button_scapy.set_sensitive(False)
-
-        self.handlebox.add(toolbar)
-        toolbar.show()
-        self.handlebox.show()
+        if not self.config.HAS_VTE:
+            self.toolbar.sniffer_tb.set_sensitive(False)
+            self.toolbar.scapy_tb.set_sensitive(False)
 
         #################################################################################################################################
         # Map tab
@@ -275,7 +194,7 @@ class MainApp:
         from . import inxdot
 
         # nodeMenu initialization stuff
-        self.uiman = nodeMenu.UIManager(self.gom, self.uicore, config)
+        self.uiman = nodeMenu.UIManager(self.gom, self.uicore, self.config)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
         self.window.add_accel_group(accel)
@@ -337,7 +256,7 @@ class MainApp:
         self.textview.show()
 
         # Check visibility on config preferences
-        if config.SHOW_KBTREE:
+        if self.config.SHOW_KBTREE:
             self.scrolled_window.show()
             self.scrolled_window.is_visible = True
         else:
@@ -380,7 +299,7 @@ class MainApp:
         term_box = gtk.VBox()
         term_button = gtk.Button("New Tab")
         # Disable if VTE not available
-        if not config.HAS_VTE:
+        if not self.config.HAS_VTE:
             term_button.set_sensitive(False)
         term_box.pack_start(term_button,False)
         self.term_notebook = libTerminal.TerminalNotebook()
@@ -433,7 +352,7 @@ class MainApp:
         b.pack_start(i)
         b.show_all()
 
-        self.exploitsInst = exploits.Exploits(config, self.term_notebook)
+        self.exploitsInst = exploits.Exploits(self.config, self.term_notebook)
         exploitsGui = self.exploitsInst.get_widget()
         setattr(self.exploitsInst, 'gom', self.gom)
         exploitsGui.show_all()
@@ -556,7 +475,7 @@ class MainApp:
         setattr(self.fuzz_frame.krashui, 'bottom_nb', self.bottom_nb)
 
         # Check visibility on config preferences
-        if config.SHOW_LOG:
+        if self.config.SHOW_LOG:
             self.bottom_nb.is_visible = True
             self.bottom_nb.show()
         else:
@@ -624,189 +543,9 @@ class MainApp:
 # Functions
 #################################################################
 
-    def loadKB(self, widget):
-        from lib.core import get_profile_file_path
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        chooser.set_current_folder(get_profile_file_path('data/'))
-        chooser.resize(100,100)
-        response = chooser.run()
-        if response == gtk.RESPONSE_OK:
-            self.gom.echo( 'Loading KB...', False)
-            self.gom.echo(  chooser.get_filename() + ' selected' , False)
-            res = chooser.get_filename()
-            self.uicore.loadKB(res)
-
-            # Update KB textview
-            self.textview.updateWin()
-            self.treeview.updateTree()
-            # Update Map
-            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.xdotw.zoom_image(1.0)
-
-            # Adding text to Log window
-            self.gom.echo( 'Loaded' , False)
-            self.kbfile = res
-
-        elif response == gtk.RESPONSE_CANCEL:
-            self.gom.echo( 'Closed, no files selected', False)
-        chooser.destroy()
-
-    def saveKB(self, widget):
-        from lib.core import get_profile_file_path
-        if self.kbfile == '':
-            chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-            chooser.set_current_folder(get_profile_file_path('data/'))
-            response = chooser.run()
-            if response == gtk.RESPONSE_OK:
-                filename = chooser.get_filename()
-                self.uicore.saveKB(filename)
-                self.gom.echo( filename + ' selected' , False)
-                libAutosave.remove_kb()
-                self.kbfile = filename
-            elif response == gtk.RESPONSE_CANCEL:
-                self.gom.echo( 'Closed, no files selected' , False)
-            chooser.destroy()
-        else:
-            self.uicore.saveKB(self.kbfile)
-            self.gom.echo( self.kbfile + ' selected' , False)
-            libAutosave.remove_kb()
-
-    def importScan(self, widget):
-        """ Parse and import nmap scan """
-
-        # Choose nmap scan file
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        
-        filter = gtk.FileFilter()
-        filter.set_name('Nmap scan')
-        filter.add_pattern('*.xml')
-        chooser.add_filter(filter)
-        
-        filter = gtk.FileFilter()
-        filter.set_name('Host list')
-        filter.add_pattern('*.csv')
-        chooser.add_filter(filter)
-
-        # Try to parse and import data
-        response = chooser.run()
-        filter = chooser.get_filter()
-        if response == gtk.RESPONSE_OK and filter.get_name() == 'Nmap scan':
-            self.gom.echo( 'Loading Nmap Scan...', False)
-            self.gom.echo(  chooser.get_filename() + ' selected' , False)
-            res = chooser.get_filename()
-
-            import lib.ui.nmapParser as nmapParser
-            try:
-                self.gom.echo( 'Parsing scan results...', False)
-                nmapData = nmapParser.parseNmap(res)
-                self.gom.echo( 'Inserting data in KB...', False)
-                nmapParser.insertData(self.uicore, nmapData)
-
-                askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
-                do_asn = askASN.run()
-
-                self.gom.echo( 'Loaded\nUpdating Graph', False)
-
-                if do_asn == gtk.RESPONSE_YES:
-                    doASN=True
-                else:
-                    doASN=False
-
-                t = threading.Thread(target=self.uicore.getDot, args=(doASN,))
-                t.start()
-
-                askASN.destroy()
-
-                gobject.timeout_add(1000, self.update_graph, t)
-
-            except:
-                md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
-                md.run()
-                md.destroy()
-
-        elif response == gtk.RESPONSE_OK and filter.get_name() == 'Host list':
-            self.gom.echo( 'Loading Host list...', False)
-            self.gom.echo(  chooser.get_filename() + ' selected' , False)
-            res = chooser.get_filename()
-            try:
-                hfile = open(res, 'r')
-                hlist = hfile.readlines()
-                hfile.close()
-                hlist = hlist[0].split(',')
-
-                self.gom.echo( 'Inserting data in KB...', False)
-                for host in hlist:
-                    self.uicore.set_kbfield('targets', host.strip())
-                    self.uicore.set_kbfield('hosts', host.strip())
-
-                # Update graph
-                self.uicore.getDot(doASN=False)
-                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            except:
-                print "Your lack of faith on my parsing capabilities is disturbing..."
-
-        elif response == gtk.RESPONSE_CANCEL:
-            self.gom.echo( 'Closed, no files selected', False)
-
-        chooser.destroy()
-
-    def update_graph(self, thread):
-
-        if thread.isAlive() == True:
-            return True
-        else:
-            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.updateTree()
-            return False
-
-
-    def loadEditor(self, widget):
-        """ Loads module editor """
-
-        import lib.ui.editor as editor
-        editor.main()
-
-    def showPref(self, widget):
-        # FIXME: Change propWhatever to prefWhatever.
-        propDialog.propDialog(self.uicore, self.gom, self.threadsInst, config)
-
-    def show_term(self, widget):
-        self.new_tab('scapy', 'scapy')
-
-    def run_sniffer(self, widget):
-        self.new_tab('sniffer', 'tools/sniffer')
-
     def new_tab(self, widget, command=''):
         self.term_notebook.new_tab(command)
         self.notebook.set_current_page(1)
-
-    def report(self, widget):
-
-        reportWin.reportWin(self.uicore)
-
-    def show_log(self, widget):
-        ''' Show/hide log panel'''
-
-        if self.bottom_nb.is_visible == True:
-            self.bottom_nb.hide()
-            self.bottom_nb.is_visible = False
-
-        else:
-            self.bottom_nb.show()
-            self.bottom_nb.is_visible = True
-
-    def show_kb(self, widget):
-        ''' Show/hide KB panel'''
-
-        if self.scrolled_window.is_visible == True:
-            self.scrolled_window.hide()
-            self.scrolled_window.is_visible = False
-
-        else:
-            self.scrolled_window.show()
-            self.textview.updateWin()
-            self.treeview.updateTree()
-            self.scrolled_window.is_visible = True
 
     def on_switch(self, widget, data, more):
         from lib.core import get_profile_file_path
@@ -821,22 +560,18 @@ class MainApp:
                     md.run()
                     md.destroy()
 
-            self.handlebox.hide()
+            self.toolbar.hide()
             self.bottom_nb.hide()
             self.statusbar.hide()
         elif more == 1:
-            self.handlebox.show()
+            self.toolbar.show()
             self.bottom_nb.hide()
             self.statusbar.show()
         else:
-            self.handlebox.show()
+            self.toolbar.show()
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
             self.statusbar.show()
-
-    def addTarget(self, event):
-
-        addtgt = target_dialog.TargetDialog(self.uicore, self.gom, self.threadsInst, config, self.xdotw)
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
@@ -864,7 +599,6 @@ class MainApp:
     def run_debugger(self, widget):
         '''run vdbbin GUI'''
 
-        import threading
         t = threading.Thread( target=os.popen('lib/debugger/vdbbin -G') )
         t.start()
 
