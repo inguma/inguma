@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+# -*- coding: utf-8 -*-
 #       toolbar.py
 #       
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
@@ -461,13 +460,17 @@ class Toolbar(gtk.HBox):
         reportWin.reportWin(self.main.uicore)
 
     def create_about_dialog(self, widget):
+        from lib.core import get_inguma_version
+
         about = gtk.AboutDialog()
+        # Make the About window a real modal/transient one (no click outside allowed).
+        about.set_transient_for(widget.parent.parent.parent.parent)
         about.set_program_name("Inguma")
-        about.set_version("0.4-dev")
+        about.set_version(get_inguma_version())
         about.set_copyright("(c) Hugo Teso <hteso@inguma.eu>")
         about.set_comments("A penetration testing and vulnerability research toolkit")
-        about.set_website("http://www.inguma.eu")
-        about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martinez <ender@inguma.eu>'])
+        about.set_website("http://inguma.eu")
+        about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martínez Moreno <ender@inguma.eu>'])
         about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>'])
         about.set_logo(gtk.gdk.pixbuf_new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
         about.run()
