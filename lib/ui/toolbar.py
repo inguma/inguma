@@ -464,10 +464,11 @@ class Toolbar(gtk.HBox):
 
         about = gtk.AboutDialog()
         # Make the About window a real modal/transient one (no click outside allowed).
-        about.set_transient_for(widget.parent.parent.parent.parent)
+        about.set_transient_for(self.main.window)
         about.set_program_name("Inguma")
         about.set_version(get_inguma_version())
-        about.set_copyright("(c) Hugo Teso <hteso@inguma.eu>")
+        about.set_copyright("(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"+
+                "(c) 2009-2011 Hugo Teso <hteso@inguma.eu>")
         about.set_comments("A penetration testing and vulnerability research toolkit")
         about.set_website("http://inguma.eu")
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martínez Moreno <ender@inguma.eu>'])
