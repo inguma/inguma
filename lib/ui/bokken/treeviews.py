@@ -189,10 +189,13 @@ class TreeViews(gtk.TreeView):
 
             # Detect if search string is from URL or PE/ELF
             link_name = link_name.split("\t")
+            # Elf/PE (function)
             if len( link_name ) == 1:
-                link_name = link_name[0]
+                link_name = 'FUNCTION ' + link_name[0]
+            # Elf/PE (import/export)
             elif len( link_name ) == 2 and link_name[1] != '':
                 link_name = link_name[1]
+            # URL
             else:
                 link_name = link_name[0]
 
@@ -201,7 +204,7 @@ class TreeViews(gtk.TreeView):
             gm = gtk.Menu()
 
             # And the items
-            e = gtk.MenuItem("Search this link")
+            e = gtk.MenuItem("Search")
             e.connect('activate', self.textviews.search, link_name)
             gm.append( e )
             gm.show_all()
@@ -220,10 +223,13 @@ class TreeViews(gtk.TreeView):
 
             # Detect if search string is from URL or PE/ELF
             link_name = link_name.split("\t")
+            # Elf/PE (function)
             if len( link_name ) == 1:
-                link_name = link_name[0]
+                link_name = 'FUNCTION ' + link_name[0]
+            # Elf/PE (import/export)
             elif len( link_name ) == 2 and link_name[1] != '':
                 link_name = link_name[1]
+            # URL
             else:
                 link_name = link_name[0]
 

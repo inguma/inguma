@@ -29,6 +29,7 @@ import rightcombo
 import treeviews
 import rightnotebook
 import right_textview
+import interactive_textview
 
 class TextViews(gtk.HBox):
     '''Main TextView elements'''
@@ -93,9 +94,18 @@ class TextViews(gtk.HBox):
         self.right_combo = rightcombo.RightCombo(self, self.uicore)
 
         #################################################################
+        # Right Interactive Textview
+        #################################################################
+
+        self.interactive_textview = interactive_textview.InteractiveTextView(self.uicore)
+        self.interactive_buffer = self.interactive_textview.buffer
+        self.interactive_view = self.interactive_textview.view
+        self.interactive_mgr = self.interactive_textview.mgr
+
+        #################################################################
         # Right NoteBook
         #################################################################
-        self.right_notebook = rightnotebook.RightNotebook(self, self.right_textview, self.uicore)
+        self.right_notebook = rightnotebook.RightNotebook(self, self.right_textview, self.interactive_textview, self.uicore)
         #self.right_notebook = rightnotebook.RightNotebook(self, self.right_scrolled_window, self.uicore)
 
         # Add combo and textview to rightvb
@@ -111,6 +121,7 @@ class TextViews(gtk.HBox):
         theme = theme.lower()
         style_scheme = self.mgr.get_scheme(theme)
         self.buffer.set_style_scheme(style_scheme)
+        self.interactive_buffer.set_style_scheme(style_scheme)
 
     def update_righttext(self, option):
         # Fill right textview with selected content
@@ -132,18 +143,21 @@ class TextViews(gtk.HBox):
             self.repr = self.uicore.get_repr()
             self.buffer.set_text(self.repr)
         elif option == 'Hexdump':
-            self.hexdump = self.uicore.get_hexdump()
+            self.hexdump = self.uicore.get_full_hexdump()
             self.buffer.set_text(self.hexdump)
         elif option == 'Strings':
             self.strings = self.uicore.get_strings()
             self.buffer.set_text(self.strings)
         elif option == 'URL':
+            self.uicore.pyew.bsize = self.uicore.pyew.maxsize
+            self.uicore.pyew.seek(0)
             language = 'http'
             try:
                 code = "%s" % ( self.format_html(self.uicore.pyew.buf) )
             except:
                 code = unicode(self.uicore.pyew.buf, 'iso8859-15')
                 #code = self.uicore.pyew.buf
+            self.uicore.pyew.bsize = 512
             self.buffer.set_text(code)
             self.right_notebook.xdot_widget.set_dot(self.uicore.http_dot)
         elif option == 'Plain Text':
@@ -151,15 +165,19 @@ class TextViews(gtk.HBox):
             data = self.uicore.get_file_text()
 
             if language:
+                self.buffer.set_language(language)
                 self.buffer.set_text(data)
             else:
-                self.buffer.set_highlight_syntax(False)
+                self.dasm = self.uicore.get_fulldasm()
+                self.buffer.set_text(self.dasm)
+#                self.buffer.set_highlight_syntax(False)
                 #self.buffer.set_text('This is not a plain text file, could not show :(')
-                self.uicore.format = 'Hexdump'
-                option = 'Hexdump'
-                self.buffer.set_highlight_syntax(False)
-                self.hexdump = self.uicore.get_hexdump()
-                self.buffer.set_text(self.hexdump)
+                self.uicore.pyew.format = 'Hexdump'
+                option = 'Disassembly'
+#                self.buffer.set_highlight_syntax(False)
+#                self.hexdump = self.uicore.get_full_hexdump()
+#                self.buffer.set_text(self.hexdump)
+                self.update_right_combo()
 
         # Highlight syntax just for 'Disassembly', 'URL' and 'Plain text'
         if option in ['Disassembly', 'URL', 'Plain Text', 'Python']:
@@ -174,12 +192,20 @@ class TextViews(gtk.HBox):
             self.view.set_wrap_mode(gtk.WRAP_WORD)
 
         # Hide left content for 'Plain Text'
-        if option != 'Plain Text':
+        if self.uicore.pyew.format not in ['Plain Text', 'Hexdump']:
             self.leftvb.show()
         else:
             self.leftvb.hide()
 
         self.update_tabs(option)
+
+    def update_interactive(self):
+        self.uicore.pyew.offset = 0
+        dump = self.uicore.pyew.hexdump(self.uicore.pyew.buf, self.uicore.pyew.hexcolumns)
+        self.interactive_buffer.set_text(dump)
+
+    def create_completion(self):
+        self.interactive_textview.interactive_buttons.set_completion()
 
     def update_right_combo(self):
         self.right_combo.create_options()
@@ -275,7 +301,12 @@ class TextViews(gtk.HBox):
             self.search_string = search_string 
             res = start.forward_search(self.search_string, gtk.TEXT_SEARCH_TEXT_ONLY)
 
-            if not res:
+            # Search 'function_name' instead of 'FUNCTION function_name'
+            if not res and 'FUNCTION' in self.search_string:
+                self.search_function_name = self.search_string.split()[1]
+                res = start.forward_search(self.search_function_name, gtk.TEXT_SEARCH_TEXT_ONLY)
+            # Try lowercase search
+            elif not res:
                 self.search_lower_string = self.search_string.lower()
                 res = start.forward_search(self.search_lower_string, gtk.TEXT_SEARCH_TEXT_ONLY)
 
@@ -317,7 +348,7 @@ class TextViews(gtk.HBox):
             else:
                 print 'Couldn\'t get mime type for file "%s"' % self.uicore.pyew.filename
     
-            self.buffer.set_language(language)
+            #self.buffer.set_language(language)
 
         return language
 

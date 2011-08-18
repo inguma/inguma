@@ -26,8 +26,6 @@ import gtk, gobject
 
 import core
 import textviews
-import statusbar
-import buttons
 
 # Threading initializer
 if sys.platform == "win32":
@@ -36,7 +34,7 @@ else:
     gtk.gdk.threads_init()
 
 MAINTITLE = "Bokken, a GUI for pyew and (soon) radare2!"
-VERSION="1.0-dev"
+VERSION = "1.0"
 
 FAIL = '\033[91m'
 OKGREEN = '\033[92m'
@@ -45,28 +43,29 @@ ENDC = '\033[0m'
 class MainApp:
     '''Main GTK application'''
 
-    # FIXME: Avoid using uicore data for GUI creation
-    def __init__(self, file):
+    def __init__(self, target, ing):
 
-        self.file = file
+        self.target = target
         self.empty_gui = False
+        self.version = VERSION
+        self.ing = ing
 
         self.uicore = core.Core()
 
-        # Check if file name is an URL, pyew stores it as 'raw'
-        self.uicore.is_url(self.file)
+        # Check if target name is an URL, pyew stores it as 'raw'
+        self.uicore.is_url(self.target)
 
-        if self.file:
-            # Just open the file if path is correct or an url
-            if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.file):
-                print "Incorrect file argument:", FAIL, self.file, ENDC
+        if self.target:
+            # Just open the target if path is correct or an url
+            if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.target):
+                print "Incorrect file argument:", FAIL, self.target, ENDC
                 sys.exit(1)
     
             # Use threads to avoid freezing the GUI load
-            t = threading.Thread(target=self.load_file, args=(self.file,))
-            t.start()
+            thread = threading.Thread(target=self.load_file, args=(self.target,))
+            thread.start()
             # This call must not depend on load_file data
-            gobject.timeout_add(500, self.show_file_data, t)
+            gobject.timeout_add(500, self.show_file_data, thread)
         else:
             self.empty_gui = True
 
@@ -77,48 +76,37 @@ class MainApp:
         self.supervb = gtk.VBox(False, 1)
 
         # Create top buttons and add to VBox
-        self.topbuttons = buttons.TopButtons(self.uicore, self)
-        self.supervb.pack_start(self.topbuttons, False, True, 1)
+        self.topbuttons = self.ing.bokken_tb
 
         # Create VBox to contain textviews and statusbar
         self.mainvb = gtk.VBox(False, 1)
         self.supervb.pack_start(self.mainvb, True, True, 1)
 
         # Initialize and add TextViews
-        # FIXME: Modify to avoid depending on core load_file to finish
         self.tviews = textviews.TextViews(self.uicore)
-
-        # Initialize and add Statusbar
-        self.sbar = statusbar.Statusbar(self.uicore)
 
         # Add textviews and statusbar to the VBox
         self.mainvb.pack_start(self.tviews, True, True, 1)
-        self.mainvb.pack_start(self.sbar, False, True, 1)
-
-#        self.window.add(self.supervb)
 
         # Start the throbber while the thread is running...
         self.topbuttons.throbber.running(True)
 
         # Disable all until file loads
         self.disable_all()
+
         if self.empty_gui:
             self.show_empty_gui()
 
-#
-#        self.window.show_all()
-#
-#        gtk.main()
 
     def get_supervb(self):
         return self.supervb
 
     # Do all the core stuff of parsing file
-    def load_file(self, file):
+    def load_file(self, target):
 
-        print "Loading file: %s..." % (file)
-        self.uicore.load_file(file)
-        # FIXME
+        self.ing.gom.insert_bokken_text({'Please wait while loading file':target}, '')
+        print "Loading file: %s..." % (target)
+        self.uicore.load_file(target)
         if self.uicore.pyew.format in ['PE', 'Elf']:
             self.uicore.get_sections()
         print 'File successfully loaded' + OKGREEN + "\tOK" + ENDC
@@ -131,6 +119,7 @@ class MainApp:
         if thread.isAlive() == True:
             return True
         else:
+            #print "File format detected: %s" % (self.uicore.pyew.format)
             # Create left combo depending on file format
             self.tviews.update_left_combo()
             # Right combo content
@@ -148,35 +137,32 @@ class MainApp:
             else:
                 self.tviews.update_righttext('Hexdump')
 
+            # Add data to INTERACTIVE TextView
+            self.tviews.update_interactive()
+
             # Load data to LEFT Tree
             if self.uicore.pyew.format in ["PE", "ELF"]:
                 self.tviews.create_model('Functions')
                 self.tviews.left_combo.set_active(0)
-        
-                # Add file information to the StatusBar
-#                info = self.uicore.get_file_info()
-#                self.sbar.add_text(info, VERSION)
             elif self.uicore.pyew.format in ["PDF"]:
                 # Why?! Oh why in the name of God....!!
                 self.tviews.create_model('PDF')
                 #self.tviews.left_combo.set_active(0)
-        
-                # Add file information to the StatusBar
-#                info = self.uicore.get_file_info()
-#                self.sbar.add_text(info, VERSION)
             elif self.uicore.pyew.format in ["URL"]:
                 self.tviews.create_model('URL')
 
             # Update statusbar with file info
             info = self.uicore.get_file_info()
-            self.sbar.add_text(info, '')
+            self.ing.gom.insert_bokken_text(info, '')
+
+            # Create seek entry autocompletion of function names...
+            self.tviews.create_completion()
 
             # Enable GUI
             self.enable_all()
             self.topbuttons.throbber.running('')
 
     def disable_all(self):
-        self.sbar.add_text({'Please wait while loading file':self.uicore.pyew.filename}, VERSION)
         self.topbuttons.disable_all()
         self.tviews.set_sensitive(False)
 
@@ -203,5 +189,5 @@ class MainApp:
         gtk.main_quit()
         return False
 
-def main(file):
-    MainApp(file)
+def main(target):
+    MainApp(target)

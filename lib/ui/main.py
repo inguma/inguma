@@ -76,6 +76,8 @@ import lib.ui.threadstv as threadstv
 import lib.ui.libAutosave as libAutosave
 import lib.ui.bokken.main as bokken
 import lib.ui.toolbar as toolbar
+import lib.ui.bokken.toolbar as bokken_toolbar
+import lib.ui.statusbar as statusbar
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
@@ -100,8 +102,10 @@ class MainApp:
         from lib.core import create_profile_dir
         create_profile_dir()
 
+        self.ing = self
+
         # Load Output Manager
-        self.gom = om.OutputManager('gui')
+        self.gom = om.OutputManager('gui', self.ing)
 
         # Create config
         self.config = config
@@ -139,8 +143,6 @@ class MainApp:
         setattr(self.uicore, 'SHOW_MODULE_WIN', self.config.SHOW_MODULE_WIN)
         self.uicore.set_om(self.gom)
 
-        self.ing = self
-
         #################################################################################################################################
         # Main VBox
         #################################################################
@@ -154,7 +156,9 @@ class MainApp:
         #################################################################
         splash.push(("Creating menu and toolbar..."))
         self.toolbar = toolbar.Toolbar(self.ing)
+        self.bokken_tb = bokken_toolbar.TopButtons(self.ing)
         mainvbox.pack_start(self.toolbar, False, False, 1)
+        mainvbox.pack_start(self.bokken_tb, False, False, 1)
 
         # Disable if not GtkSourceView2
         if not self.config.HAS_SOURCEVIEW:
@@ -326,10 +330,12 @@ class MainApp:
         b.show_all()
 
         # Create bokken UI and add to the Notebook
-        self.bokken = bokken.MainApp('')
+        self.bokken = bokken.MainApp('', self.ing)
         self.rcevb = self.bokken.get_supervb()
         self.rcevb.show_all()
         self.notebook.append_page(self.rcevb, b)
+        self.bokken_tb.init_core()
+        self.bokken_tb.hide()
 
         #################################################################################################################################
         # Xploit Iface
@@ -497,12 +503,14 @@ class MainApp:
         #################################################################################################################################
         #StatusBar
         #################################################################
-        from lib.core import get_inguma_version
-        self.statusbar = gtk.Statusbar() 
+        self.statusbar = statusbar.Statusbar() 
+        self.bokken_sb = statusbar.Statusbar() 
         mainvbox.pack_end(self.statusbar, False, False, 1)
-        context_id = self.statusbar.get_context_id('Inguma ' + get_inguma_version())
-        message_id = self.statusbar.push(context_id, 'Inguma ' + get_inguma_version())
-        self.statusbar.show()
+        mainvbox.pack_end(self.bokken_sb, False, False, 1)
+        from lib.core import get_inguma_version
+        self.gom.insert_sb_text('Inguma ' + get_inguma_version())
+        self.gom.insert_bokken_text({'Open a new file to start':''}, self.bokken.version)
+        self.statusbar.show_all()
 
         #################################################################################################################################
         # finish it
@@ -561,17 +569,24 @@ class MainApp:
                     md.destroy()
 
             self.toolbar.hide()
+            self.bokken_tb.show()
             self.bottom_nb.hide()
             self.statusbar.hide()
+            self.bokken_sb.show_all()
         elif more == 1:
             self.toolbar.show()
+            self.bokken_tb.hide()
             self.bottom_nb.hide()
             self.statusbar.show()
+            self.bokken_sb.hide()
         else:
             self.toolbar.show()
+            self.bokken_tb.hide()
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
+            self.gom.clear_sb_text()
             self.statusbar.show()
+            self.bokken_sb.hide()
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)

@@ -474,5 +474,6 @@ class Toolbar(gtk.HBox):
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martínez Moreno <ender@inguma.eu>'])
         about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>'])
         about.set_logo(gtk.gdk.pixbuf_new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
+        about.set_modal(True)
         about.run()
         about.destroy()

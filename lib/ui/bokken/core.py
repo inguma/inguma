@@ -51,6 +51,8 @@ class Core():
         self.http_dot = ''
         self.checked_urls = []
         self.bad_urls = []
+        self.cmd = ''
+        self.last_cmd = ''
 
         self.pyew = CPyew()
         if os.getenv("PYEW_DEBUG"):
@@ -60,6 +62,7 @@ class Core():
 
         self.pyew.offset = 0
         self.pyew.previousoffset = []
+        #self.pyew.deepcodeanalysis = True
 
         self.pyew.case = 'low'
 
@@ -82,6 +85,8 @@ class Core():
         self.http_dot = ''
         self.checked_urls = []
         self.bad_urls = []
+        self.cmd = ''
+        self.last_cmd = ''
 
     def load_file(self, file):
         # Set default file format to raw
@@ -109,7 +114,7 @@ class Core():
             #print "We've got RAW!"
             self.pyew.format = 'Plain Text'
 
-        self.pyew.bsize = self.pyew.maxsize
+        #self.pyew.bsize = self.pyew.maxsize
         self.pyew.seek(0)
 
     def is_url(self, file):
@@ -134,33 +139,150 @@ class Core():
     def get_functions(self):
         if not self.allfuncs:
             for func in self.pyew.functions:
+                 #print "0x%08x" % (func)
                  self.allfuncs.append(self.pyew.names[func])
         return self.allfuncs
 
     def get_hexdump(self):
+        hexdump = self.pyew.hexdump(self.pyew.buf, self.pyew.hexcolumns, baseoffset=self.pyew.offset, bsize=self.pyew.bsize)
+        return hexdump
+
+    def get_full_hexdump(self):
+        self.pyew.bsize = self.pyew.maxsize
+        self.pyew.seek(0)
         if self.fullhex == '':
             hexdump = self.pyew.hexdump(self.pyew.buf, self.pyew.hexcolumns, baseoffset=0, bsize=self.pyew.bsize)
             self.fullhex = hexdump
+        self.pyew.bsize = 512
         return self.fullhex
 
+    def get_dasm(self):
+        dis = self.pyew.disassemble(self.pyew.buf, self.pyew.processor, self.pyew.type, self.pyew.lines, self.pyew.bsize, baseoffset=self.pyew.offset)
+        return dis
+
     def get_text_dasm(self):
+        self.pyew.bsize = self.pyew.maxsize
+        #self.seek(0)
         if not self.text_dasm:
             self.pyew.lines = 100*100
-            for section in self.pe.sections:
-                # Let's store text section information
-                if 'text' in section.Name:
-                    self.text_rsize = section.SizeOfRawData
-                    break
-            dis = self.pyew.disassemble(self.pyew.buf, self.pyew.processor, self.pyew.type, self.pyew.lines, self.text_rsize, baseoffset=self.pyew.ep)
+            if self.pyew.format == 'PE':
+                for section in self.pe.sections:
+                    # Let's store text section information
+                    if 'text' in section.Name:
+                        self.text_rsize = section.SizeOfRawData
+                        self.text_address = section.VirtualAddress
+                        break
+            elif self.pyew.format == 'ELF':
+                for section in self.elf.sections:
+                    # Let's store text section information
+                    if 'text' in section.getName():
+                        self.text_rsize = section.sh_size
+                        self.text_address = self.pyew.elf.secnames[section.getName()].sh_offset
+                        break
+            self.seek(self.text_address)
+            dis = self.pyew.disassemble(self.pyew.buf, self.pyew.processor, self.pyew.type, self.pyew.lines, self.text_rsize, baseoffset=self.text_address)
             self.text_dasm = dis
+        self.pyew.bsize = 512
+        self.pyew.lines = 40
         return self.text_dasm
 
     def get_fulldasm(self):
+        self.pyew.bsize = self.pyew.maxsize
+        self.seek(0)
         if not self.fulldasm:
             self.pyew.lines = 100*100
             dis = self.pyew.disassemble(self.pyew.buf, self.pyew.processor, self.pyew.type, self.pyew.lines, self.pyew.bsize, baseoffset=self.pyew.offset)
             self.fulldasm = dis
+        self.pyew.bsize = 512
+        self.pyew.lines = 40
         return self.fulldasm
+
+    def seek(self, pos):
+        data = ''
+        if pos > self.pyew.maxsize:
+            data = 'End of file reached'
+            self.pyew.offset = self.pyew.maxsize
+        elif pos < 0:
+            data = 'Begin of file reached'
+            self.pyew.offset = 0
+        else:
+            self.pyew.offset = pos
+        if len(self.pyew.previousoffset) > 0:
+            if self.pyew.previousoffset[ len(self.pyew.previousoffset)-1 ] != self.pyew.offset:
+                self.pyew.previousoffset.append(self.pyew.offset)
+        else:
+            self.pyew.previousoffset.append(self.pyew.offset)
+        
+        self.pyew.f.seek(self.pyew.offset)
+        self.pyew.buf = self.pyew.f.read(self.pyew.bsize)
+
+        return data
+
+    def move(self, direction, output):
+
+        #self.pyew.bsize = 512
+        self.cmd = direction
+        limit = ''
+
+        if len(self.pyew.previousoffset) > 0:
+            if self.pyew.previousoffset[ len(self.pyew.previousoffset)-1 ] != self.pyew.offset:
+                self.pyew.previousoffset.append(self.pyew.offset)
+        else:
+            self.pyew.previousoffset.append(self.pyew.offset)
+        
+#        va = None
+#        if self.pyew.virtual:
+#            va = self.pyew.getVirtualAddressFromOffset(self.pyew.offset)
+#        
+#        if va:
+#            prompt = "[0x%08x:0x%08x]> " % (self.pyew.offset, va)
+#        else:
+#            prompt = "[0x%08x]> " % self.pyew.offset
+
+        if self.cmd == "b":
+            tmp = self.pyew.previousoffset.pop()
+            
+            if len(self.pyew.previousoffset) > 0:
+                tmp = self.pyew.previousoffset[ len(self.pyew.previousoffset)-1 ]
+            else:
+                tmp = 0
+                
+            self.pyew.offset = tmp
+            self.pyew.lastasmoffset = tmp
+
+            limit = self.seek(tmp)
+
+        elif self.cmd == "b" and self.last_cmd == "b":
+            if len(self.pyew.previousoffset) < 2:
+                return
+            
+            tmp = self.pyew.previousoffset.pop()
+            tmp = self.pyew.previousoffset[ len(self.pyew.previousoffset)-1 ]
+
+            limit = self.seek(tmp)
+
+        elif output == 'disassembly':
+            self.pyew.offset = self.pyew.lastasmoffset
+
+            self.pyew.seek(self.pyew.offset)
+#            if last_cmd.isdigit():
+#                last_cmd = "c"
+
+        else:
+            self.pyew.offset = self.pyew.offset + self.pyew.bsize
+            limit = self.seek(self.pyew.offset)
+
+        self.cmd = self.last_cmd
+
+        if not limit:
+            if output == 'hexadecimal':
+                data = self.get_hexdump()
+            else:
+                data = self.get_dasm()
+            return data
+        else:
+            print limit
+            return
 
     def get_python_dasm(self):
         if not self.pythondasm:
@@ -333,9 +455,12 @@ class Core():
         for element in self.parsed_links['locals']:
             element = element.strip(' ').split('/')
             if len(element) > 1:
-                root = next(s for s in element if s)
-                root_index = element.index(root)
-                self.links_struct.append( {root:element[root_index + 1:]} )
+                try:
+                    root = next(s for s in element if s)
+                    root_index = element.index(root)
+                    self.links_struct.append( {root:element[root_index + 1:]} )
+                except:
+                    pass
             elif len(element) == 1:
                 self.links_struct.append( {element[0]:['']} )
         import generate_dot as gendot

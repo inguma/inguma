@@ -39,8 +39,8 @@ class RightCombo(gtk.Table):
         options = ['Classic', 'Cobalt', 'kate', 'Oblivion', 'Tango']
         for option in options:
             self.theme_combo.append_text(option)
-#        # Set first by default
-#        self.theme_combo.set_active(0)
+        # Set first by default
+        self.theme_combo.set_active(0)
 
         self.theme_combo.connect("changed", self.theme_combo_change)
         self.attach(self.theme_combo, 1, 2, 0, 1)
@@ -89,7 +89,7 @@ class RightCombo(gtk.Table):
         self.right_combo.disconnect(self.connect)
         self.right_combo.get_model().clear()
         main_options = ["Hexdump", "String Repr", "Strings"]
-        if self.uicore.pyew.format in ['PE', 'Elf']:
+        if self.uicore.pyew.format in ['PE', 'ELF', 'Hexdump']:
             self.right_combo.append_text('Disassembly')
             # Set Disassembly by default
             self.right_combo.set_active(0)
@@ -103,6 +103,8 @@ class RightCombo(gtk.Table):
             self.right_combo.append_text('Plain Text')
             # Set plain text by default
             self.right_combo.set_active(3)
+        else:
+            self.right_combo.set_active(0)
 
         self.connect = self.right_combo.connect("changed", self.right_combo_change)
 

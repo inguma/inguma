@@ -35,10 +35,15 @@ graph G {
         node = branch.keys()[0]
         elements = branch[node]
 
-        if '&amp;' in node or '&' in node or '?' in node:
-            node = node.replace('?', '|')
-            node = node.replace('&amp;', '|')
-            node = node.replace('&', '|')
+        # Parse params to create clusters
+        if '&amp;' in node or '&' in node or '?' in node or '&quest' in node:
+            # Check if there is param name or just value
+            if len( node.split('?') ) > 2:
+                node = node.replace('?', '|')
+            if len( node.split('&amp;') ) > 2:
+                node = node.replace('&amp;', '|')
+            if len( node.split('&') ) > 2:
+                node = node.replace('&', '|')
             dotcode += '''"%s" [label="%s", shape="record", style="rounded, filled"]\n''' % (node, node)
             dotcode += '''"%s" -- "%s" [len=1.25, color=azure3]; ''' % (root_node, node)
         else:
@@ -51,10 +56,16 @@ graph G {
         for element in elements:
             if element != '':
                 if '&amp;' in element:
-                    element = prefix + element
+                    if not prefix in element:
+                        element = prefix + element
                     element = element.replace('&amp;', '|')
+                if '?' in element:
+                    if not prefix in element:
+                        element = prefix + element
+                    element = element.replace('?', '|')
                 if '&' in element:
-                    element = prefix + element
+                    if not prefix in element:
+                        element = prefix + element
                     element = element.replace('&', '|')
                 dotcode += '''"%s" [label="%s", shape="record", style="rounded, filled"]\n''' % (element, element)
                 dotcode += '''"%s" -- "%s" [len=1.25, color=azure3]; ''' % (prev_element, element)

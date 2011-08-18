@@ -17,13 +17,17 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys
+import os, sys
+
+import gtk
 
 class OutputManager:
 
-    def __init__(self, iface):
+    def __init__(self, iface, ing):
 
+        self.ing = ing
         self.iface = iface
+
         if self.iface != 'gui' and self.iface != 'console':
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
@@ -89,3 +93,43 @@ class OutputManager:
     def get_new_nodes(self):
 
         return self.newNodes
+
+    #
+    # Statusbar output methods
+    #
+    def insert_sb_text(self, text):
+        context = self.ing.statusbar.get_context_id(text)
+        self.icon = gtk.Image()
+        pixbuf = gtk.gdk.pixbuf_new_from_file('logo' + os.sep + 'icon.png')
+        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        self.icon.set_from_pixbuf(scaled_buf)
+
+        self.ing.statusbar.pack_end(gtk.Label(text), False)
+        self.ing.statusbar.pack_end(self.icon, False, False, 2)
+        self.ing.statusbar.pack_end(gtk.VSeparator(), False)
+
+    def insert_bokken_text(self, data_dict, version):
+        '''data_dict ontains text to be added.
+           Key will be the title
+           Value will be... well, the value :)'''
+
+        context = self.ing.bokken_sb.get_context_id('sb')        
+        self.text = ''
+        for element in data_dict.keys():
+            self.text += element.capitalize() + ': ' + str(data_dict[element]) + ' | '
+        self.ing.bokken_sb.push(context, self.text)
+        if version:
+            self.icon = gtk.Image()
+            pixbuf = gtk.gdk.pixbuf_new_from_file('lib/ui/bokken/data/icon.png')
+            scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+            self.icon.set_from_pixbuf(scaled_buf)
+
+            self.ing.bokken_sb.pack_end(gtk.Label('Bokken ' + version), False)
+            self.ing.bokken_sb.pack_end(self.icon, False, False, 2)
+            self.ing.bokken_sb.pack_end(gtk.VSeparator(), False)
+        #self.ing.bokken_sb.show_all()
+
+    def clear_sb_text(self):
+        context = self.ing.statusbar.get_context_id('sb')        
+        self.ing.statusbar.pop(context)
+
