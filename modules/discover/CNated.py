@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 ##      CNated.py
 #       
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
@@ -20,11 +18,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
-import sys
-import time
+""" CNated module, check if some target ports are NATed. """
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 try:
     import scapy.all as scapy
@@ -37,23 +33,16 @@ name = "isnated"
 brief_description = "Check if the target's port is NATed"
 type = "discover"
 
-class CNated(CIngumaModule):
+class CNated(CIngumaDiscoverModule):
     target = "192.168.1.0/24"
     port = 0
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    services = {}
-    results = {}
-    dict = None
-    ret = False
-    probeResults = {}
+    probe_results = {}
 
     def help(self):
-        print "target = <target host or network>"
-        print "timeout = <timeout>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("timeout = <timeout>")
 
-    def probeICMP(self):
+    def probe_icmp(self):
         p = scapy.IP(dst=self.target)/scapy.ICMP()
         res = scapy.sr1(p, timeout = self.timeout)
         hops = None
@@ -61,10 +50,10 @@ class CNated(CIngumaModule):
         if res:
             hops = res.ttl
         
-        self.probeResults["ICMP"] = hops
+        self.probe_results["ICMP"] = hops
         return hops
     
-    def probeTcpPort(self, port):
+    def probe_tcp_port(self, port):
         p = scapy.IP(dst=self.target)/scapy.TCP(dport=int(port), flags="S")
         res = scapy.sr1(p, timeout = self.timeout)
         hops = None
@@ -72,25 +61,25 @@ class CNated(CIngumaModule):
         if res:
             hops = res.ttl
 
-        self.probeResults[port] = hops
+        self.probe_results[port] = hops
         return hops
 
-    def isNatedPort(self, port):
-        icmpTtl = self.probeICMP()
-        tcpTtl = self.probeTcpPort(port)
+    def is_nated_port(self, port):
+        icmpTtl = self.probe_icmp()
+        tcpTtl = self.probe_tcp_port(port)
         
         if icmpTtl != tcpTtl and icmpTtl != None and tcpTtl != None:
             return True
 
-    def checkIsNated(self):
+    def check_is_nated(self):
         ttls = []
-        res = self.probeICMP() # Do it just one time
+        res = self.probe_icmp() # Do it just one time
         
         if res:
             ttls.append(res)
 
         for port in self.dict[self.target + "_tcp_ports"]:
-            res = self.probeTcpPort(port)
+            res = self.probe_tcp_port(port)
             
             if res:
                 ttls.append(res)
@@ -99,37 +88,37 @@ class CNated(CIngumaModule):
         maxTtl = max(ttls)
         
         if minTtl != maxTtl:
-            self.gom.echo( "Ports are NATed" )
+            self.gom.echo("Ports are NATed")
             return True
         else:
-            self.gom.echo( "Ports are NOT NATed" )
+            self.gom.echo("Ports are NOT NATed")
             return False
 
     def run(self):
         if hasScapy:
             if self.port == 0:
                 if self.dict.has_key(self.target + "_tcp_ports"):
-                    return self.checkIsNated()
+                    return self.check_is_nated()
                 else:
-                    self.gom.echo( "Can't check NATed ports for " + self.target + " without ports scanned" )
-                    self.gom.echo( "Perform a portscan or tcpscan over " + self.target )
+                    self.gom.echo("Can't check NATed ports for " + self.target + " without ports scanned")
+                    self.gom.echo("Perform a portscan or tcpscan over " + self.target)
             else:
-                if self.isNatedPort(self.port):
-                    self.gom.echo( "Port " + self.port + " is NATed" )
+                if self.is_nated_port(self.port):
+                    self.gom.echo("Port " + self.port + " is NATed")
                 else:
-                    self.gom.echo( "Port " + self.port + " is NOT NATed" )
+                    self.gom.echo("Port " + self.port + " is NOT NATed")
 
             return True
         else:
-            self.gom.echo( "No scapy support :(" )
+            self.gom.echo("No scapy support :(")
             return False
 
-    def printSummary(self):
-        for res in self.probeResults:
+    def print_summary(self):
+        for res in self.probe_results:
             if res == "ICMP":
-                if self.probeResults[res]:
-                    self.gom.echo( "ICMP TTL: " + str(self.probeResults[res]) )
+                if self.probe_results[res]:
+                    self.gom.echo("ICMP TTL: " + str(self.probe_results[res]))
                 else:
-                    self.gom.echo( "Target refuses ICMP traffic" )
+                    self.gom.echo("Target refuses ICMP traffic")
             else:
-                self.gom.echo( "TCP Port " + str(res) + " TTL: " + str(self.probeResults[res]) )
+                self.gom.echo("TCP Port " + str(res) + " TTL: " + str(self.probe_results[res]))

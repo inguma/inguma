@@ -109,6 +109,7 @@ class CIngumaNewModule:
 
     target = ""
     timeout = 1
+    dict = None
 
     # Legacy properties follow.
 
@@ -122,7 +123,6 @@ class CIngumaNewModule:
     #randomizeWaitTime = False
     #iface = "eth0"
     #results = {}
-    #dict = None
     #interactive = True
 
     def __init__(self):
