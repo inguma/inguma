@@ -40,14 +40,20 @@ class CIngumaModule:
     results = {}
     dict = None
     interactive = True
-    """ The following are used ONLY for exploits (shellcode) """
+
+    # The following are used ONLY for exploits (shellcode)
     command = ""
     listenPort = 4444
     ostype = 1
     payload = "bindshell"
 
+    def __init__(self):
+        """ Constructor. """
+        pass
+
     def help(self):
-        """ Method called when 'help <module> is executed from the command line. """
+        """ Method called when 'help <module> is executed from the command
+        line."""
         pass
 
     def run(self):
@@ -65,7 +71,8 @@ class CIngumaModule:
     # Legacy methods follow.
 
     def addToDict(self, element, value):
-        """ It's used to add data to the knowledge base to be used, i.e., by other modules """
+        """ It's used to add data to the knowledge base to be used, i.e., by
+        other modules """
         if value == None:
             return
 
@@ -118,6 +125,9 @@ class CIngumaNewModule:
     #dict = None
     #interactive = True
 
+    def __init__(self):
+        pass
+
     def add_data_to_kb(self, element, value):
         """ Method used to add data to the current knowledge base. """
         if value == None:
@@ -135,7 +145,8 @@ class CIngumaNewModule:
                 self.dict[element] = [value]
 
     def help(self):
-        """ Method called when 'help <module> is executed from the command line. """
+        """ Method called when 'help <module> is executed from the command
+        line."""
         self.gom.echo("Module has no help information.")
 
     def print_summary(self):
@@ -158,12 +169,14 @@ class CIngumaNewModule:
     # Legacy methods follow.
 
     def addToDict(self, element, value):
-        """ Legacy method for adding data to the current KB.  Superseded by add_data_to_kb(). """
-        self.add_data_to_kb(element,value)
+        """ Legacy method for adding data to the current KB.  Superseded by
+        add_data_to_kb(). """
+        self.add_data_to_kb(element, value)
 
     def printSummary(self):
         """ Method called when run() has returned True.  It's used for showing
-        a summary of the execution to the user. Superseded by print_summary(). """
+        a summary of the execution to the user. Superseded by
+        print_summary(). """
         self.print_summary()
 
 class CIngumaBruteModule(CIngumaNewModule):
@@ -178,11 +191,11 @@ class CIngumaExploitModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma exploit module. """
 
-    """ The following are used ONLY for exploits (shellcode) """
-    command = ""
-    listenPort = 4444
-    ostype = 1
-    payload = "bindshell"
+    # The following are used ONLY for exploits (shellcode).
+    #command = ""
+    #listenPort = 4444
+    #ostype = 1
+    #payload = "bindshell"
 
 class CIngumaFuzzerModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
