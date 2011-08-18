@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 #       
 #       Inguma Penetration Testing Toolkit
 #       Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
@@ -51,7 +50,7 @@ def str2uni(data):
     return buf
 
 def regexp2pyre(regexp):
-    """ Convert a perl regular expression to a python compatible regular
+    """ Convert a Perl regular expression to a Python-compatible regular
     expression """
     buf = regexp
     
@@ -131,15 +130,12 @@ def getProtocolName(proto):
 def get_profile_file_path(item):
     """ This function returns the proper file path for loading/saving personal
     data in user's homedir. """
-    # TODO: Fix this with os.sep (for Windows).
-
     import os
 
     return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)
 
 def create_profile_dir():
     """ Tries to create ~/.inguma in the user's homedir. """
-
     import os
 
     inguma_homedir = get_profile_file_path('')
@@ -155,6 +151,7 @@ def create_profile_dir():
         return False
 
 def check_distorm_lib(path):
+    import os
     return os.path.isfile(path + 'libdistorm64.so')
 
 def get_inguma_version():
