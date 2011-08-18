@@ -7,6 +7,7 @@ Version 0.4 (released ??-Sep-2011)
 	* Added new 'subdomain' discover module.
 	* Added fuzzer UI.
 	* Rewritten toolbars code and cleaned them up.
+	* Updated to Bokken 1.0.
 
 Version 0.3 (released 13-Jun-2011)
 
