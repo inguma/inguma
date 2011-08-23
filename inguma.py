@@ -1109,11 +1109,8 @@ def set_om():
     global gom
     if isGui == True:
         gom = om.OutputManager('gui')
-        # The above 'if' does not have any sense, ginguma has its own binary.
     else:
-        # We have to pass None here because there because the second parameter
-        # is the whole Inguma instance.
-        gom = om.OutputManager('console', None)
+        gom = om.OutputManager('console')
     setattr(gom, 'isGui', isGui)
 
 def setup_auto_completion():

@@ -23,7 +23,7 @@ import gtk
 
 class OutputManager:
 
-    def __init__(self, iface, ing):
+    def __init__(self, iface, ing=None):
 
         self.ing = ing
         self.iface = iface
