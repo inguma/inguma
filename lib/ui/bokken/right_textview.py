@@ -39,7 +39,7 @@ class RightTextView(gtk.VBox, Searchable):
         lm = gtksourceview2.LanguageManager()
         # Add ui dir to language paths
         paths = lm.get_search_path()
-        print os.getcwd() + os.sep + 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep
+        #print os.getcwd() + os.sep + 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep
         paths.append(os.getcwd() + os.sep + 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep)
         lm.set_search_path(paths)
         self.buffer = gtksourceview2.Buffer()
