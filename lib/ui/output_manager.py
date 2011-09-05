@@ -1,4 +1,4 @@
-##      om.py
+##      output_manager.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       

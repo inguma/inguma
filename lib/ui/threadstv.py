@@ -17,7 +17,6 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
 import gtk, gobject
 import time
 
@@ -25,7 +24,9 @@ import lib.ui.libAutosave as libAutosave
 
 class ThreadsTv:
 
-    def __init__(self):
+    def __init__(self, main):
+
+        self.main = main
 
         # create dict to store threads
         self.threads = {}
@@ -92,6 +93,12 @@ class ThreadsTv:
     def add_action(self, module, target, threadid):
         """ Adds a new action to the list """
 
+        # Systray and throbber
+        self.systray = self.main.systray
+        self.systray.set_new_tooltip("Running " + module + " against " + target)
+        self.throbber = self.main.toolbar.throbber
+        self.throbber.running(True)
+
 #        print "Adding new content for:", module
         iter = self.liststore.append([self.counter, 0, "Running " + module + " against " + target, time.strftime("%H:%M:%S", time.localtime()), '', ''])
         self.stime = time.time()
@@ -123,6 +130,13 @@ class ThreadsTv:
             model.set_value(iter, 4, time.strftime("%H:%M:%S", time.localtime()))
             model.set_value(iter, 5, self.elapsed)
             model.set_value(iter, 1, 100)
+
+            # Update Systray icon and tooltip
+            tip = self.systray.get_tooltip_text()
+            self.systray.set_new_tooltip("Finished " + tip)
+            self.systray.set_from_stock(gtk.STOCK_INFO)
+            self.throbber.running(False)
+
             kbpath = libAutosave.get_kb_path()
             self.uicore.saveKB(kbpath)
             return False

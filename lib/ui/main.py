@@ -64,7 +64,7 @@ splash = Splash()
 splash.push(("Loading UI modules"))
 import lib.ui.core as core
 import lib.ui.kbwin as kbwin
-import lib.ui.om as om
+import lib.ui.output_manager as om
 import lib.ui.graphTBar as graphTBar
 import lib.ui.kbtree as kbtree
 import lib.ui.nodeMenu as nodeMenu
@@ -78,6 +78,7 @@ import lib.ui.bokken.main as bokken
 import lib.ui.toolbar as toolbar
 import lib.ui.bokken.toolbar as bokken_toolbar
 import lib.ui.statusbar as statusbar
+import lib.ui.systray as systray
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
@@ -301,7 +302,7 @@ class MainApp:
         b.show_all()
 
         term_box = gtk.VBox()
-        term_button = gtk.Button("New Tab")
+        term_button = gtk.Button("New Tab", gtk.STOCK_ADD)
         # Disable if VTE not available
         if not self.config.HAS_VTE:
             term_button.set_sensitive(False)
@@ -470,7 +471,7 @@ class MainApp:
         b.show_all()
 
         # Add Threads TreeView
-        self.threadsInst = threadstv.ThreadsTv()
+        self.threadsInst = threadstv.ThreadsTv(self)
         threadsGui = self.threadsInst.get_widget()
         setattr(self.threadsInst, 'uicore', self.uicore)
         threadsGui.show_all()
@@ -511,6 +512,9 @@ class MainApp:
         self.gom.insert_sb_text('Inguma ' + get_inguma_version())
         self.gom.insert_bokken_text({'Open a new file to start':''}, self.bokken.version)
         self.statusbar.show_all()
+
+        # Systray
+        self.systray = systray.Systray(self)
 
         #################################################################################################################################
         # finish it

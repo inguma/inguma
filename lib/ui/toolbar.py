@@ -23,6 +23,7 @@ import gtk
 import gobject
 import threading
 
+import lib.ui.about as about
 import bokken.throbber as throbber
 import lib.ui.reportWin as reportWin
 import lib.ui.propDialog as propDialog
@@ -460,20 +461,8 @@ class Toolbar(gtk.HBox):
         reportWin.reportWin(self.main.uicore)
 
     def create_about_dialog(self, widget):
-        from lib.core import get_inguma_version
+        about_dlg = about.AboutDialog()
+        dialog = about_dlg.create_dialog()
 
-        about = gtk.AboutDialog()
-        # Make the About window a real modal/transient one (no click outside allowed).
-        about.set_transient_for(self.main.window)
-        about.set_program_name("Inguma")
-        about.set_version(get_inguma_version())
-        about.set_copyright("(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"+
-                "(c) 2009-2011 Hugo Teso <hteso@inguma.eu>")
-        about.set_comments("A penetration testing and vulnerability research toolkit")
-        about.set_website("http://inguma.eu")
-        about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martínez Moreno <ender@inguma.eu>'])
-        about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>'])
-        about.set_logo(gtk.gdk.pixbuf_new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
-        about.set_modal(True)
-        about.run()
-        about.destroy()
+        dialog.run()
+        dialog.destroy()

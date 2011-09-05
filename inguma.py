@@ -32,7 +32,7 @@ from lib.core import isIpAddr4, create_profile_dir
 from lib.printwrapper import CPrintWrapper
 
 # Import Output Manager
-import lib.ui.om as om
+import lib.ui.output_manager as om
 
 try:
     import scapy.all as scapy
