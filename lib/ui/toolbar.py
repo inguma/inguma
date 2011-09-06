@@ -293,8 +293,8 @@ class Toolbar(gtk.HBox):
                 self.gom.echo( 'Closed, no files selected' , False)
             chooser.destroy()
         else:
-            self.uicore.saveKB(self.kbfile)
-            self.gom.echo( self.kbfile + ' selected' , False)
+            self.uicore.saveKB(self.main.kbfile)
+            self.gom.echo( self.main.kbfile + ' selected' , False)
             libAutosave.remove_kb()
 
     def import_scan(self, widget):
