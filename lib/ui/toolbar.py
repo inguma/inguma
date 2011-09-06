@@ -26,7 +26,7 @@ import threading
 import lib.ui.about as about
 import bokken.throbber as throbber
 import lib.ui.reportWin as reportWin
-import lib.ui.propDialog as propDialog
+import lib.ui.preferences_dialog as preferences_dialog
 import lib.ui.libAutosave as libAutosave
 import lib.ui.target_dialog as target_dialog
 
@@ -404,7 +404,7 @@ class Toolbar(gtk.HBox):
 
     def show_pref(self, widget):
         # FIXME: Change propWhatever to prefWhatever.
-        propDialog.propDialog(self.main.uicore, self.main.gom, self.main.threadsInst, self.main.config)
+        preferences_dialog.propDialog(self.main.uicore, self.main.gom, self.main.threadsInst, self.main.config)
 
     def show_term(self, widget):
         self.new_tab('scapy', 'scapy')

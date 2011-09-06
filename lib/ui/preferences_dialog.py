@@ -1,4 +1,4 @@
-##      propDialog.py
+##      preferences_dialog.py
 #       
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -24,7 +24,7 @@ sys.path.append('../..')
 from lib.core import get_profile_file_path
 
 class propDialog:
-    '''Dialog for adding targets and run some modules'''
+    '''Preferences dialog'''
 
     def __init__(self, core, gom, threadtv, config):
 
