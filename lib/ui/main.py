@@ -74,9 +74,10 @@ import lib.ui.exploits as exploits
 import lib.ui.libTerminal as libTerminal
 import lib.ui.threadstv as threadstv
 import lib.ui.libAutosave as libAutosave
-import lib.ui.bokken.main as bokken
+if config.HAS_SOURCEVIEW:
+    import lib.ui.bokken.main as bokken
+    import lib.ui.bokken.toolbar as bokken_toolbar
 import lib.ui.toolbar as toolbar
-import lib.ui.bokken.toolbar as bokken_toolbar
 import lib.ui.statusbar as statusbar
 import lib.ui.systray as systray
 # Fuzzers
@@ -157,9 +158,11 @@ class MainApp:
         #################################################################
         splash.push(("Creating menu and toolbar..."))
         self.toolbar = toolbar.Toolbar(self.ing)
-        self.bokken_tb = bokken_toolbar.TopButtons(self.ing)
         mainvbox.pack_start(self.toolbar, False, False, 1)
-        mainvbox.pack_start(self.bokken_tb, False, False, 1)
+
+        if self.config.HAS_SOURCEVIEW:
+            self.bokken_tb = bokken_toolbar.TopButtons(self.ing)
+            mainvbox.pack_start(self.bokken_tb, False, False, 1)
 
         # Disable if not GtkSourceView2
         if not self.config.HAS_SOURCEVIEW:
@@ -330,13 +333,14 @@ class MainApp:
         b.pack_start(i)
         b.show_all()
 
-        # Create bokken UI and add to the Notebook
-        self.bokken = bokken.MainApp('', self.ing)
-        self.rcevb = self.bokken.get_supervb()
-        self.rcevb.show_all()
-        self.notebook.append_page(self.rcevb, b)
-        self.bokken_tb.init_core()
-        self.bokken_tb.hide()
+        if self.config.HAS_SOURCEVIEW:
+            # Create bokken UI and add to the Notebook
+            self.bokken = bokken.MainApp('', self.ing)
+            self.rcevb = self.bokken.get_supervb()
+            self.rcevb.show_all()
+            self.notebook.append_page(self.rcevb, b)
+            self.bokken_tb.init_core()
+            self.bokken_tb.hide()
 
         #################################################################################################################################
         # Xploit Iface
@@ -501,16 +505,22 @@ class MainApp:
         # And to exploit management module
         setattr(self.exploitsInst, 'threadsInst', self.threadsInst)
 
+        # Must be connected here to avoid errors due to bottom_nb not yet existing
+        self.exploits_nb.connect("switch_page", self.on_exploits_switch)
+
         #################################################################################################################################
         #StatusBar
         #################################################################
         self.statusbar = statusbar.Statusbar() 
-        self.bokken_sb = statusbar.Statusbar() 
         mainvbox.pack_end(self.statusbar, False, False, 1)
-        mainvbox.pack_end(self.bokken_sb, False, False, 1)
         from lib.core import get_inguma_version
         self.gom.insert_sb_text('Inguma ' + get_inguma_version())
-        self.gom.insert_bokken_text({'Open a new file to start':''}, self.bokken.version)
+
+        if self.config.HAS_SOURCEVIEW:
+            self.bokken_sb = statusbar.Statusbar() 
+            mainvbox.pack_end(self.bokken_sb, False, False, 1)
+            self.gom.insert_bokken_text({'Open a new file to start':''}, self.bokken.version)
+
         self.statusbar.show_all()
 
         # Systray
@@ -572,25 +582,44 @@ class MainApp:
                     md.run()
                     md.destroy()
 
-            self.toolbar.hide()
-            self.bokken_tb.show()
+            if self.config.HAS_SOURCEVIEW:
+                self.toolbar.hide()
+                self.bokken_tb.show()
+                self.statusbar.hide()
+                self.bokken_sb.show_all()
             self.bottom_nb.hide()
-            self.statusbar.hide()
-            self.bokken_sb.show_all()
         elif more == 1:
-            self.toolbar.show()
-            self.bokken_tb.hide()
+            if self.config.HAS_SOURCEVIEW:
+                self.toolbar.show()
+                self.bokken_tb.hide()
+                self.statusbar.show()
+                self.bokken_sb.hide()
             self.bottom_nb.hide()
-            self.statusbar.show()
-            self.bokken_sb.hide()
+        elif more == 3:
+            if self.config.HAS_SOURCEVIEW:
+                self.toolbar.show()
+                self.bokken_tb.hide()
+                self.statusbar.show()
+                self.bokken_sb.hide()
+            if self.exploits_nb.get_current_page() == 1:
+                self.bottom_nb.show()
         else:
-            self.toolbar.show()
-            self.bokken_tb.hide()
+            if self.config.HAS_SOURCEVIEW:
+                self.toolbar.show()
+                self.bokken_tb.hide()
+                self.statusbar.show()
+                self.bokken_sb.hide()
+                self.gom.clear_sb_text()
+            if self.bottom_nb.is_visible:
+                self.bottom_nb.show()
+            else:
+                self.bottom_nb.hide()
+
+    def on_exploits_switch(self, widget, data, more):
+        if more == 1:
             self.bottom_nb.show()
-            self.bottom_nb.is_visible = True
-            self.gom.clear_sb_text()
-            self.statusbar.show()
-            self.bokken_sb.hide()
+        elif not self.bottom_nb.is_visible:
+            self.bottom_nb.hide()
 
     def rescroll(self, adj, scroll):
         adj.set_value(adj.upper-adj.page_size)
