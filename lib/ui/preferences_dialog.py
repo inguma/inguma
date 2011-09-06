@@ -18,6 +18,7 @@
 #       MA 02110-1301, USA.
 
 import gtk
+import gobject
 
 import os, sys, threading, urllib, gzip
 sys.path.append('../..')
@@ -137,19 +138,25 @@ class propDialog:
         import lib.ui.exploits as exploits
 
         self.exploitsInst = exploits.Exploits(self.config)
+        widget.set_sensitive(False)
         t = threading.Thread(target=self.exploitsInst.download_exploits, args=(self.gom,))
         t.start()
+        gobject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('Exploit-db Update', 'Exploits DB', t)
 
     def update_nikto(self, widget):
         command = 'python lib/libnikto.py'
+        widget.set_sensitive(False)
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
+        gobject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('Nikto Update', 'Nikto DB', t)
 
     def update_geo(self, widget):
         t = threading.Thread(target=self.download_geodb)
+        widget.set_sensitive(False)
         t.start()
+        gobject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('GeoIP-DB Update', 'GeoIP DB', t)
 
     def download_geodb(self):
@@ -174,6 +181,7 @@ class propDialog:
 
     def download_distorm(self, widget):
 
+        self.dis_bt.set_sensitive(False)
         import platform
         path = get_profile_file_path('data' + os.sep)
 
@@ -189,3 +197,11 @@ class propDialog:
         self.gom.echo( "Downloading " + page, False )
         urllib.urlretrieve(page, path + "libdistorm64.so")
         self.gom.echo( "Operation Complete", False )
+        self.dis_bt.set_sensitive(True)
+
+    def reactivate_button(self, threadid, widget):
+        if threadid.is_alive():
+            return True
+        else:
+            widget.set_sensitive(True)
+            return False
