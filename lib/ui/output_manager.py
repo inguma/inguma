@@ -45,6 +45,7 @@ class OutputManager:
             else:
                 self.omwidget.insert(enditer, data)
             #self.omwidget.set_text(data + '\n')
+            self.update_helpers()
             self.alert_tab()
 
         elif self.iface == 'gui' and window:
@@ -53,6 +54,7 @@ class OutputManager:
                 self.module_dialog.output_buffer.insert(enditer, data + '\n')
             else:
                 self.module_dialog.output_buffer.insert(enditer, data)
+            self.update_helpers()
             #self.omwidget.set_text(data + '\n')
 
         elif self.iface == 'console':
@@ -106,13 +108,13 @@ class OutputManager:
     def insert_sb_text(self, text):
         context = self.ing.statusbar.get_context_id(text)
         self.icon = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('logo' + os.sep + 'icon.png')
+        pixbuf = gtk.gdk.pixbuf_new_from_file('logo' + os.sep + 'inguma_16.png')
         scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
         self.icon.set_from_pixbuf(scaled_buf)
 
-        self.ing.statusbar.pack_end(gtk.Label(text), False)
-        self.ing.statusbar.pack_end(self.icon, False, False, 2)
-        self.ing.statusbar.pack_end(gtk.VSeparator(), False)
+        self.ing.statusbar.pack_start(self.icon, False, False, 2)
+        self.ing.statusbar.pack_start(gtk.Label(text), False)
+        self.ing.statusbar.pack_start(gtk.VSeparator(), False)
 
     def insert_bokken_text(self, data_dict, version):
         '''data_dict ontains text to be added.
@@ -139,3 +141,8 @@ class OutputManager:
         context = self.ing.statusbar.get_context_id('sb')        
         self.ing.statusbar.pop(context)
 
+    def update_helpers(self):
+        core = self.ing.uicore
+        targets = str(len(core.get_kbfield('targets')))
+        vulns = str(core.get_vulns())
+        self.ing.statusbar.update_helpers([targets, vulns, '0'])

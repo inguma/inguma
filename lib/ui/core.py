@@ -129,6 +129,13 @@ class UIcore():
 
         return inguma.user_data[field]
 
+    def get_vulns(self):
+        vulns = 0
+        for element in inguma.user_data:
+            if '-vulns' in element:
+                vulns += len(element)
+        return vulns
+
     def set_kbfield(self, field, new_content):
         '''Updates KB field contents'''
 

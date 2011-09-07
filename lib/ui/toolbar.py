@@ -276,6 +276,9 @@ class Toolbar(gtk.HBox):
         self.gom.echo( 'Loaded' , False)
         self.main.kbfile = res
 
+        # Add text to the statusbar
+        self.main.statusbar._set_message(res)
+
     def save_kb(self, widget):
         from lib.core import get_profile_file_path
         if self.main.kbfile == '':
@@ -300,6 +303,9 @@ class Toolbar(gtk.HBox):
             self.uicore.saveKB(self.main.kbfile)
             self.gom.echo( self.main.kbfile + ' selected' , False)
             libAutosave.remove_kb()
+
+        # Add text to the statusbar
+        self.main.statusbar._set_message(self.main.kbfile)
 
     def import_scan(self, widget):
         """ Parse and import nmap scan """

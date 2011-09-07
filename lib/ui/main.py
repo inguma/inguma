@@ -117,7 +117,7 @@ class MainApp:
         #################################################################
         splash.push(("Creating main window..."))
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_icon_from_file('logo' + os.sep + 'icon.png')
+        self.window.set_icon_from_file('logo' + os.sep + 'inguma_16.png')
         self.window.set_focus = True
         self.window.connect("delete_event", self.quit)
         splash.push(("Loading..."))
@@ -513,6 +513,7 @@ class MainApp:
         #StatusBar
         #################################################################
         self.statusbar = statusbar.Statusbar() 
+        self.statusbar._create_helpers()
         mainvbox.pack_end(self.statusbar, False, False, 1)
         from lib.core import get_inguma_version
         self.gom.insert_sb_text('Inguma ' + get_inguma_version())
@@ -613,7 +614,6 @@ class MainApp:
                 self.bokken_tb.hide()
                 self.statusbar.show()
                 self.bokken_sb.hide()
-                self.gom.clear_sb_text()
             if self.bottom_nb.is_visible:
                 self.bottom_nb.show()
             else:
