@@ -29,7 +29,7 @@ class Systray(gtk.StatusIcon):
 
         self.main = main
 
-        self.set_from_file('logo' + os.sep + 'icon.png') 
+        self.set_from_file('logo' + os.sep + 'inguma_16.png')
         self.connect('popup-menu', self.on_right_click)
         self.connect('activate', self.on_left_click)
         self.set_tooltip(('Inguma 0.4'))
@@ -42,7 +42,7 @@ class Systray(gtk.StatusIcon):
             self.main.window.hide()
         else:
             self.main.window.show()
-        self.set_from_file('logo' + os.sep + 'icon.png') 
+        self.set_from_file('logo' + os.sep + 'inguma_16.png') 
         return True
 
     def set_new_tooltip(self, text):

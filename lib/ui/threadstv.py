@@ -132,9 +132,10 @@ class ThreadsTv:
             model.set_value(iter, 1, 100)
 
             # Update Systray icon and tooltip
-            tip = self.systray.get_tooltip_text()
-            self.systray.set_new_tooltip("Finished " + tip)
-            self.systray.set_from_stock(gtk.STOCK_INFO)
+            if not self.main.window.get_property("visible"):
+                tip = self.systray.get_tooltip_text()
+                self.systray.set_new_tooltip("Finished " + tip)
+                self.systray.set_from_stock(gtk.STOCK_INFO)
             self.throbber.running(False)
 
             kbpath = libAutosave.get_kb_path()
