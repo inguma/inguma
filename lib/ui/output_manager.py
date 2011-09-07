@@ -45,6 +45,7 @@ class OutputManager:
             else:
                 self.omwidget.insert(enditer, data)
             #self.omwidget.set_text(data + '\n')
+            self.alert_tab()
 
         elif self.iface == 'gui' and window:
             enditer = self.module_dialog.output_buffer.get_end_iter()
@@ -93,6 +94,11 @@ class OutputManager:
     def get_new_nodes(self):
 
         return self.newNodes
+
+    def alert_tab(self):
+        bottom_nb = self.ing.bottom_nb
+        if bottom_nb.get_current_page() != 0:
+            self.ing.log_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
 
     #
     # Statusbar output methods

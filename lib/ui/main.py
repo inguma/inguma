@@ -449,16 +449,17 @@ class MainApp:
         self.bottom_nb = gtk.Notebook()
         self.bottom_nb.set_size_request(-1, 110)
         self.bottom_nb.set_tab_pos(gtk.POS_LEFT)
+        self.bottom_nb.connect("switch_page", self.on_bottom_switch)
 
         # Icon and label for Logs tab
         label = gtk.Label(' Logs')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
+        self.log_icon = gtk.Image()
+        self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
         b.pack_start(label)
-        b.pack_start(i)
+        b.pack_start(self.log_icon)
         b.show_all()
 
         self.bottom_nb.append_page(self.log_scrolled_window, b)
@@ -568,6 +569,9 @@ class MainApp:
     def new_tab(self, widget, command=''):
         self.term_notebook.new_tab(command)
         self.notebook.set_current_page(1)
+
+    def on_bottom_switch(self, widget, data, page):
+        self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
 
     def on_switch(self, widget, data, more):
         from lib.core import get_profile_file_path

@@ -84,23 +84,6 @@ class CGeoIp(CIngumaDiscoverModule):
         else:
             geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
             self.gi = GeoIP.open(geoip_db_path, GeoIP.GEOIP_STANDARD)
-#            self.gom.echo('%-15s  |  %15s %15s %15s %15s %15s ' % ('IP', 'Latitude', 'Longitude', 'Country', 'City', 'Region'))
-#            self.gom.echo('+----------------+--------------------------------------------------------------------------------+')
-#            for ip in targets:
-#                try:
-#                    gir = gi.record_by_addr(ip)
-#                    ### look up the ip
-#                    lat = gir['latitude']
-#                    lon = gir['longitude']
-#                    country = gir['country_name']
-#                    region = gir['region']
-#                    city = gir['city']
-##                    self.gom.echo(ip, lat, lon, country, region, city)
-#                    self.gom.echo('%-15s ==> %15s %15s %15s %15s %15s ' % (ip, lat, lon, country, city, region))
-#                except:
-#                    self.gom.echo("%-15s ==>" % (ip))
-#                    #pass
-#            self.gom.echo('+-------------------------------------------------------------------------------------------------+')
             
             return True
 
