@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys, os
+import os
 import urllib, gzip
 from lib.module import CIngumaDiscoverModule
 from lib.core import get_profile_file_path
@@ -68,37 +68,57 @@ class CGeoIp(CIngumaDiscoverModule):
             import GeoIP
         except:
             self.gom.echo("No GeoIp library found, please install it")
-            sys.exit(0)
+            return False
 
         if self.target == "download":
             self.download_db()
             return False
         elif self.target == "all":
-            targets = self.user_data['hosts']
+            self.targets = self.user_data['hosts']
         else:
-            targets = [self.target]
+            self.targets = [self.target]
 
         if self.check_db() == False:
             self.gom.echo('GeoIP database not found, install it setting target = \"download\" and running geoip again')
+            return False
         else:
             geoip_db_path = get_profile_file_path('data/GeoLiteCity.dat')
-            gi = GeoIP.open(geoip_db_path, GeoIP.GEOIP_STANDARD)
-            self.gom.echo('%-15s  |  %15s %15s %15s %15s %15s ' % ('IP', 'Latitude', 'Longitude', 'Country', 'City', 'Region'))
-            self.gom.echo('+----------------+--------------------------------------------------------------------------------+')
-            for ip in targets:
-                try:
-                    gir = gi.record_by_addr(ip)
-                    ### look up the ip
-                    lat = gir['latitude']
-                    lon = gir['longitude']
-                    country = gir['country_name']
-                    region = gir['region']
-                    city = gir['city']
-#                    self.gom.echo(ip, lat, lon, country, region, city)
-                    self.gom.echo('%-15s ==> %15s %15s %15s %15s %15s ' % (ip, lat, lon, country, city, region))
-                except:
-                    self.gom.echo("%-15s ==>" % (ip))
-                    #pass
-            self.gom.echo('+-------------------------------------------------------------------------------------------------+')
+            self.gi = GeoIP.open(geoip_db_path, GeoIP.GEOIP_STANDARD)
+#            self.gom.echo('%-15s  |  %15s %15s %15s %15s %15s ' % ('IP', 'Latitude', 'Longitude', 'Country', 'City', 'Region'))
+#            self.gom.echo('+----------------+--------------------------------------------------------------------------------+')
+#            for ip in targets:
+#                try:
+#                    gir = gi.record_by_addr(ip)
+#                    ### look up the ip
+#                    lat = gir['latitude']
+#                    lon = gir['longitude']
+#                    country = gir['country_name']
+#                    region = gir['region']
+#                    city = gir['city']
+##                    self.gom.echo(ip, lat, lon, country, region, city)
+#                    self.gom.echo('%-15s ==> %15s %15s %15s %15s %15s ' % (ip, lat, lon, country, city, region))
+#                except:
+#                    self.gom.echo("%-15s ==>" % (ip))
+#                    #pass
+#            self.gom.echo('+-------------------------------------------------------------------------------------------------+')
             
-            return False
+            return True
+
+    def print_summary(self):
+        self.gom.echo('%-15s  |  %15s %15s %15s %15s %15s ' % ('IP', 'Latitude', 'Longitude', 'Country', 'City', 'Region'))
+        self.gom.echo('+----------------+--------------------------------------------------------------------------------+')
+        for ip in self.targets:
+            try:
+                gir = self.gi.record_by_addr(ip)
+                ### look up the ip
+                lat = gir['latitude']
+                lon = gir['longitude']
+                country = gir['country_name']
+                region = gir['region']
+                city = gir['city']
+#                self.gom.echo(ip, lat, lon, country, region, city)
+                self.gom.echo('%-15s ==> %15s %15s %15s %15s %15s ' % (ip, lat, lon, country, city, region))
+            except:
+                self.gom.echo("%-15s ==>" % (ip))
+                #pass
+        self.gom.echo('+-------------------------------------------------------------------------------------------------+')
