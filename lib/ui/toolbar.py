@@ -253,6 +253,10 @@ class Toolbar(gtk.HBox):
                 chooser.destroy()
                 return False
 
+            elif response == gtk.RESPONSE_DELETE_EVENT:
+                chooser.destroy()
+                return False
+
         else:
             res = file
 
@@ -260,14 +264,14 @@ class Toolbar(gtk.HBox):
         self.gom.echo(  res + ' selected' , False)
         self.manager.add_item('file://' + res)
         self.uicore.loadKB(res)
-
+    
         # Update KB textview
         self.textview.updateWin()
         self.treeview.updateTree()
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
         self.xdotw.zoom_image(1.0)
-
+    
         # Adding text to Log window
         self.gom.echo( 'Loaded' , False)
         self.main.kbfile = res

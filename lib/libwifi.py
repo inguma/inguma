@@ -1,5 +1,4 @@
 from scapy.all import *
-import sys
 
 unique = []
 
@@ -34,4 +33,3 @@ def sniffarpip(p):
           if unique.count(arp) == 0:
                unique.append(arp)
                print arp
-

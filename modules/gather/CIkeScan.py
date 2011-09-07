@@ -21,7 +21,7 @@
 #       MA 02110-1301, USA.
 
 import re
-import sys,  os
+import sys
 import binascii
 import random
 

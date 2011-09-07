@@ -19,8 +19,6 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys
-#from scapy.all import *
 from lib.module import CIngumaModule
 from lib.libwifi import *
 

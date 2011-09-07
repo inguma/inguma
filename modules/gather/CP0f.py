@@ -4,7 +4,7 @@
 p0f interface module for Inguma
 Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 """
-import os
+
 import sys
 from lib.module import CIngumaModule
 
