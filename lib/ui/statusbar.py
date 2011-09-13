@@ -28,11 +28,8 @@ class Statusbar(gtk.Statusbar):
         self.sbar_context = self.get_context_id('sb')
 
         if not init_msg:
-            init_msg = 'No KB saved/loaded yet'
+            init_msg = 'No KB has been saved/loaded yet'
         self._set_message(init_msg)
-
-        #self._create_helpers()
-        #self.pack_end(self.helpers_box, False, False, 1)
 
     def _set_message(self, msg):
         '''Inserts a message in the statusbar.'''
@@ -40,14 +37,17 @@ class Statusbar(gtk.Statusbar):
 
     def _create_helpers(self):
         self.helpers_box = gtk.HBox()
-        self.helpers_box.set_tooltip_text("Targets, vulnerabilities and XXXX discovered")
 
         self.targ_icon = gtk.Image()
+        self.targ_icon.set_tooltip_text("Targets discovered")
         self.targ_icon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
         self.vuln_icon = gtk.Image()
+        self.vuln_icon.set_tooltip_text("Vulnerabilities discovered")
         self.vuln_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
         self.shll_icon = gtk.Image()
+        self.shll_icon.set_tooltip_text("Shells available (not yet working)")
         self.shll_icon.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+        self.shll_icon.set_sensitive(False)
 
         self.targ_label = gtk.Label('0')
         self.vuln_label = gtk.Label('0')

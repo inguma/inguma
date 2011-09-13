@@ -112,9 +112,9 @@ class OutputManager:
         scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
         self.icon.set_from_pixbuf(scaled_buf)
 
+        self.ing.statusbar.pack_start(gtk.VSeparator(), False, False, 2)
+        self.ing.statusbar.pack_start(gtk.Label(text), False, False, 2)
         self.ing.statusbar.pack_start(self.icon, False, False, 2)
-        self.ing.statusbar.pack_start(gtk.Label(text), False)
-        self.ing.statusbar.pack_start(gtk.VSeparator(), False)
 
     def insert_bokken_text(self, data_dict, version):
         '''data_dict ontains text to be added.
