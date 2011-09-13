@@ -24,7 +24,6 @@ NOTE: It works depending on the moon.
 """
 
 import os
-import sys
 
 from lib.module import CIngumaModule
 
@@ -52,7 +51,8 @@ class CNmapFp(CIngumaModule):
     dict = None
     oport = 80
     cport = 81
-    conf.nmap_base='data/nmap-os-fingerprints'
+    path = os.getcwd()
+    conf.nmap_base= path + os.sep + 'data' + os.sep + 'nmap-os-fingerprints'
 
     def help(self):
         print "target = <target host or network>"

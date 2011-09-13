@@ -14,7 +14,8 @@ from scapy.all import *
 if WINDOWS:
     conf.nmap_base=os.environ["ProgramFiles"] + "\\nmap\\nmap-os-fingerprints"
 else:
-    conf.nmap_base ="/usr/share/nmap/nmap-os-fingerprints"
+    #conf.nmap_base ="/usr/share/nmap/nmap-os-fingerprints"
+    conf.nmap_base = os.getcwd() + os.sep + "data" + os.sep + "nmap-os-fingerprints"
 
 
 ######################
