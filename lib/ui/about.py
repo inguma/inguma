@@ -34,7 +34,7 @@ class AboutDialog():
         about.set_comments("A penetration testing and vulnerability research toolkit")
         about.set_website("http://inguma.eu")
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martinez Moreno <ender@inguma.eu>'])
-        about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>'])
+        about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>', 'Juanje <juanje@gmail.com>', ' * Web: http://www.puntodepartida.com'])
         about.set_logo(gtk.gdk.pixbuf_new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
         about.set_modal(True)
 
