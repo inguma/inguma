@@ -1,7 +1,10 @@
 Long development on road to 1.0...
 ----------------------------------
 
-Version 0.4 (released ??-Sep-2011)
+Version 0.4 (released 14-Sep-2011)
+	* Added systray
+	* Added Logs tab warning
+    * Removed debugger
 	* Fixed tab completion on OS X.
 	* Lots of cleanups in the CLI code.
 	* Added new 'subdomain' discover module.
