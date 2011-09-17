@@ -1,16 +1,19 @@
 Long development on road to 1.0...
 ----------------------------------
 
+Version 0.5 (released ??-Dec-2011)
+    *
+
 Version 0.4 (released 14-Sep-2011)
-	* Added systray
-	* Added Logs tab warning
+    * Added systray
+    * Added Logs tab warning
     * Removed debugger
-	* Fixed tab completion on OS X.
-	* Lots of cleanups in the CLI code.
-	* Added new 'subdomain' discover module.
-	* Added fuzzer UI.
-	* Rewritten toolbars code and cleaned them up.
-	* Updated to Bokken 1.0.
+    * Fixed tab completion on OS X.
+    * Lots of cleanups in the CLI code.
+    * Added new 'subdomain' discover module.
+    * Added fuzzer UI.
+    * Rewritten toolbars code and cleaned them up.
+    * Updated to Bokken 1.0.
 
 Version 0.3 (released 13-Jun-2011)
 
@@ -190,7 +193,7 @@ AT 26 03 2009
 
 AT 25 03 2009
     * Modified code for gtkrc parsing on realice that rc_parse doesn't throw
-	exceptions
+      exceptions
     * Found a module for working with IP Addresses (under tools dir)
     * Changed module trace to keep list of hosts (gensantadelamorhermoso)
     * Added code get data to send for create dot
@@ -412,3 +415,4 @@ CURRENT_RELEASE Joxean Koret - Version 0.1.0
 2007-02-16 Joxean Koret - Version 0.0.1
     * First public version. PRE-ALPHA
 
+# vim:set ai et sts=4 sw=4 tw=80:
