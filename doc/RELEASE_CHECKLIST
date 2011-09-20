@@ -29,13 +29,16 @@ hg push
     everything will appear as a long sentence.  If you are in doubt, preview your changes or see other
     releases.
 
-* Go to Redmine, to the Versions tab under Settings (http://inguma.eu/projects/inguma/settings/versions) and
-  close the current version and add the new one with the proposed schedule (at the time of this writing,
-  that will be in 3 months from the release day).
-
 * Go to the Roadmap page (http://inguma.eu/projects/inguma/roadmap) and move all the open bugs (if any!)
   in the already-released version to the next one.  You can do it in bulk from the UI.  Click on "X open bugs",
   and the select all of them (you can do it by clicking on a blank part in the first Subject field, then
   Shift-click in the last issue, and then right-click...Target version...0.5).
+
+* Go back to the Roadmap page and move all the closed bugs in the Open Backlog (if any) into the
+  already-released version.  Same as above, click "N closed", then select all and assign them to 0.4.
+
+* Go to Redmine, to the Versions tab under Settings (http://inguma.eu/projects/inguma/settings/versions) and
+  close the current version and add the new one with the proposed schedule (at the time of this writing,
+  that will be in 3 months from the release day).
 
 * Take a breath.
