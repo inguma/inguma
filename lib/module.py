@@ -126,6 +126,7 @@ class CIngumaNewModule:
     #interactive = True
 
     def __init__(self):
+        """ Constructor. """
         pass
 
     def add_data_to_kb(self, element, value):

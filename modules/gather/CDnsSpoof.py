@@ -21,6 +21,8 @@
 
 try:
     from scapy.all import get_if_addr, get_working_if, dns_spoof, conf
+    # Something inside scapy uses this (#95).
+    from scapy.layers import IP
     bHasScapy = True
 except:
     bHasScapy = False
