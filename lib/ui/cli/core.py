@@ -24,6 +24,8 @@ MA 02110-1301, USA.
 This library offers functions for the CLI version of Inguma.
 """
 
+import sys
+
 def unified_input_prompt(caller, prompt = ''):
     """
     Helper for common input loops.
