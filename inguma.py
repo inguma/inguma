@@ -196,21 +196,6 @@ class Inguma:
 
 # ------------------------------ End of Inguma class ------------------------------
 
-def print_banner():
-    from lib.core import get_inguma_version
-
-    print "Inguma v" + get_inguma_version()
-    print "Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>"
-    print "Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>"
-    print
-
-def usage():
-    print "Usage:", sys.argv[0], " <flag>"
-    print
-    print "-d      Show debug information"
-    print "-h      Show this help and exit"
-    print
-
 def check_args():
 
     global debug
@@ -330,44 +315,44 @@ def loadModule(path, atype, marray, bLoad = True):
 
 def readDiscover():
     global commands
-    
+
     path = "modules" + os.sep + "discover"
     loadModule(path, "discover", "discovers")
 
 def readGather():
     global commands
-    
+
     path = "modules" + os.sep + "gather"
     loadModule(path, "gather", "gathers")
 
 def readRce():
     global commands
-    
+
     path = "modules" + os.sep + "rce"
     loadModule(path, "rce", "rces")
 
 def readBrute():
     global commands
-    
+
     path = "modules" + os.sep + "brute"
     loadModule(path, "brute", "brutes")
 
 def readExploits():
     global commands
-    
+
     path = "modules" + os.sep + "exploits"
     loadModule(path, "exploit", "exploits")
 
 def readFuzzers():
     global commands
-    
+
     path = "modules" + os.sep + "fuzzers"
     loadModule(path, "fuzz", "fuzzers")
 
 def readCommands():
     debugPrint("Reading modules ... ")
     debugPrint()
-    
+
     modules = [
         'Discover',
         'Gather',
@@ -846,7 +831,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
                 showLaunch("portscan", "Port scanning target %s\n" % target)
                 #showLaunch("tcpscan", "TCP scanning target %s\n" % target)
-                
+
                 if host not in ["localhost", "127.0.0.1"]:
                     showLaunch("getmac", "MAC Address target %s\n" % target)
                     # It's more than slow...
@@ -863,11 +848,11 @@ def doAutoScan(guest = "no", fuzz = "no"):
                         # The first port will be used as the opened port
                         oport = ports[0]
                         # The last port + 1 will be used as the closed port
-                        cport = ports[len(ports)-1]+1 
+                        cport = ports[len(ports)-1]+1
 
                 showLaunch("nmapfp", "Detecting operating system target %s\n" % target)
 
-                if os.name == "nt":                
+                if os.name == "nt":
                     showLaunch("winspdetect", "Detecting service pack level target %s\n" % target)
 
                 if 135 in ports or 139 in ports or 445 in ports:
@@ -896,7 +881,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                             port = int(service.split("/")[0])
                             # TNS Listener
                             showLaunch("tnscmd", "Getting information from the Oracle TNS Listener target %s\n" % target)
-                            
+
                             if guestPasswords:
                                 showLaunch("sidguess", "Getting the Oracle TNS Listener's sid target %s\n" % target)
 
@@ -907,14 +892,14 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
                         elif service.find("/ftp") > -1:
                             port = int(service.split("/")[0])
-                            
+
                             if guestPasswords:
                                 if user_data.has_key(target + "_users"):
                                     for luser in user_data[target + "_users"]:
                                         user = luser
                                         # FTP Server
                                         showLaunch("bruteftp", "Brute forcing FTP Server at port %d target %s" % (port, target))
-                            
+
                             if autoFuzz:
                                 showLaunch("ftpfuzz", "Fuzzing FTP server at port %d target %s" % (port, target))
                         elif service.find("/ssh") > -1:
@@ -965,7 +950,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
 def main_loop():
     """ Main execution loop after initialization. """
 
-    import lib.ui.cli.core as CLIcore
+    import lib.ui.cli.core as uicore
     global prompt
     global oldPrompt
     global prevRes
@@ -981,7 +966,7 @@ def main_loop():
     inguma = Inguma(hasScapy)
 
     while 1:
-        res = CLIcore.unified_input_prompt(inguma)
+        res = uicore.unified_input_prompt(inguma)
         if res == None:
             print "Exit."
             sys.exit(0)
@@ -1019,12 +1004,12 @@ def main_loop():
                 if prevRes != "":
                     prevRes += "\n" + res
                     res = prevRes
-    
+
                 exec(GLOBAL_VARIABLES + res)
-    
+
             except:
                 print "Exec error:",sys.exc_info()[1]
-    
+
             prevRes = ""
             if oldPrompt != "":
                 prompt = oldPrompt
@@ -1039,42 +1024,42 @@ def main_loop():
                     exec(GLOBAL_VARIABLES + res)
             except:
                 print "Internal error.",sys.exc_info()[1]
-                
+
                 if debug:
                     raise
-    
-def printPayloads():
-    global payload
 
-    print "Payloads"
-    print "--------"
-    print
-    print "ostype:"
-    print
-    print "1) Linuxx86Syscall"
-    print "2) FreeBSDx86Syscall"
-    print "3) OpenBSDx86Syscall"
-    print "4) Solarisx86Syscall"
-    print
-    print "payload:"
-    print
-    print "1) runcommand"
-    print "2) bindshell"
-    print "3) connectback"
-    print "4) xorbindshell"
-    print 
-    print "Payload arguments:"
-    print
-    print "1) runcommand"
-    print
-    print "command = <command to run>"
-    print
-    print "2) bindshell, connectback, xorbindshell"
-    print
-    print "listenPort = <remote or local listening port>"
-    print 
-    print 'NOTE: "listenPort" will be the local port to connect back or the remote port to connect.'
-    print
+def printPayloads():
+    global payload, gom
+
+    gom.echo('Payloads')
+    gom.echo('--------')
+    gom.echo()
+    gom.echo('ostype:')
+    gom.echo()
+    gom.echo('1) Linuxx86Syscall')
+    gom.echo('2) FreeBSDx86Syscall')
+    gom.echo('3) OpenBSDx86Syscall')
+    gom.echo('4) Solarisx86Syscall')
+    gom.echo()
+    gom.echo('payload:')
+    gom.echo()
+    gom.echo('1) runcommand')
+    gom.echo('2) bindshell')
+    gom.echo('3) connectback')
+    gom.echo('4) xorbindshell')
+    gom.echo()
+    gom.echo('Payload arguments:')
+    gom.echo()
+    gom.echo('1) runcommand')
+    gom.echo()
+    gom.echo('command = <command to run>')
+    gom.echo()
+    gom.echo('2) bindshell, connectback, xorbindshell')
+    gom.echo()
+    gom.echo('listenPort = <remote or local listening port>')
+    gom.echo()
+    gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
+    gom.echo()
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
@@ -1094,7 +1079,7 @@ def loadHistory():
     from lib.core import get_profile_file_path
 
     historyFile = get_profile_file_path("history")
-    
+
     if os.path.exists(historyFile):
         readline.read_history_file(historyFile)
     else:
@@ -1136,9 +1121,16 @@ def setup_auto_completion():
 def main():
     """ Main program loop. """
 
+    import lib.ui.cli.core as uicore
+
+    # Set OutputManager for modules
+    set_om()
+
+    uicore.print_banner(gom)
+
     # Check args and enable debug if requested
     if not check_args():
-        usage()
+        uicore.usage(gom)
         sys.exit(0)
 
     # Remove scapy output messages
@@ -1151,18 +1143,14 @@ def main():
     # Create .inguma directory.
     create_profile_dir()
 
-    # Set OutputManager for modules
-    set_om()
     readCommands()
 
     # Display banner.
-    print
-    print "Type 'help' for a short usage guide."
+    gom.echo("\nType 'help' for a short usage guide.")
 
     # Set autocompletion and load commands history
     setup_auto_completion()
     main_loop()
 
 if __name__ == "__main__":
-    print_banner()
     main()
