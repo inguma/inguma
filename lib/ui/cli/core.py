@@ -76,5 +76,6 @@ def usage(gom):
     gom.echo()
     gom.echo('-d      Show debug information')
     gom.echo('-h      Show this help and exit')
+    gom.echo('-w      Run HTTP server on port 4545 (EXPERIMENTAL AND HIGHLY INSECURE!!)')
     gom.echo()
 

@@ -46,6 +46,8 @@ from gather import *
 from rce import *
 
 isGui = False
+debug = False
+http_server = False
 
 global target
 global targets
@@ -127,8 +129,6 @@ global password; global domain; global payload; global ostype; global command;
 global listenPort; global ignore_host;
 """
 
-debug = False
-
 commands = {}
 discovers = []
 gathers = []
@@ -198,11 +198,13 @@ class Inguma:
 
 def check_args():
 
-    global debug
+    global debug, http_server
 
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
             debug = True
+        elif arg.lower() == "-w":
+            http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
             usage()
             sys.exit(0)
@@ -969,7 +971,7 @@ def main_loop():
         res = uicore.unified_input_prompt(inguma)
         if res == None:
             print "Exit."
-            sys.exit(0)
+            return False
 
         if res == "" and prevRes == "":
             pass
@@ -1088,14 +1090,14 @@ def loadHistory():
         except:
             print "Cannot create " + historyFile
 
-def set_om():
+def set_om(debug=debug):
     """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
     if isGui == True:
-        gom = om.OutputManager('gui')
+        gom = om.OutputManager('gui', debug=debug)
     else:
-        gom = om.OutputManager('console')
+        gom = om.OutputManager('console', debug=debug)
     setattr(gom, 'isGui', isGui)
 
 def setup_auto_completion():
@@ -1124,7 +1126,7 @@ def main():
     import lib.ui.cli.core as uicore
 
     # Set OutputManager for modules
-    set_om()
+    set_om(debug=debug)
 
     uicore.print_banner(gom)
 
@@ -1145,12 +1147,23 @@ def main():
 
     readCommands()
 
+    # Start up HTTP server.
+    if http_server:
+        import lib.http as httpd
+        http = httpd.IngumaHttpServer()
+        http.gom = gom
+        gom.echo("\nBringing up HTTP server.")
+        http.start()
+
     # Display banner.
     gom.echo("\nType 'help' for a short usage guide.")
 
     # Set autocompletion and load commands history
     setup_auto_completion()
     main_loop()
+    if http_server:
+        gom.echo("Shutting down HTTP server.")
+        http.terminate()
 
 if __name__ == "__main__":
     main()

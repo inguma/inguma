@@ -1,17 +1,17 @@
 ##      output_manager.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -21,16 +21,33 @@ import os, sys
 
 import gtk
 
+# The reason for this is that PyGTK now contains an interactive event loop.
+# We should switch off this event loop before starting our own event loop for
+# the HTTP server to avoid the two event loops interfering with each other.
+# gtk.set_interactive(True) causes gtk's event loop to run automatically
+# whenever Python is waiting for the user to type in the next Python command, as in
+# the main loop in raw_input. After gtk.set_interactive(False), the *automatic*
+# launching of the event loop no longer happens. Otherwise, it has no effect on
+# gtk's event loops.
+gtk.set_interactive(False)
+
 class OutputManager:
 
-    def __init__(self, iface, ing=None):
+    def __init__(self, iface, ing=None, debug=False):
 
         self.ing = ing
         self.iface = iface
+        self.debug = debug
 
         if self.iface != 'gui' and self.iface != 'console':
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
+
+    def debug(self, data = '', window=True, newline=True):
+        """ Function that will print debug messages if we enabled -d on the command line."""
+
+        if self.debug:
+            print data
 
     def echo(self, data = "", window=True, newline=True):
 
