@@ -58,3 +58,23 @@ def unified_input_prompt(caller, prompt = ''):
         return None
 
     return input
+
+def print_banner(gom):
+    """Prints the salute banner."""
+
+    from lib.core import get_inguma_version
+
+    gom.echo('Inguma v' + get_inguma_version())
+    gom.echo('Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>')
+    gom.echo('Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>')
+    gom.echo()
+
+def usage(gom):
+    """Prints help and usage instructions."""
+
+    gom.echo('Usage:', sys.argv[0], ' <flag>')
+    gom.echo()
+    gom.echo('-d      Show debug information')
+    gom.echo('-h      Show this help and exit')
+    gom.echo()
+
