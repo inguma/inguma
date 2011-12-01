@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-#       
+#
 #       Inguma Penetration Testing Toolkit
 #       Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
-#       
+#
 #       This program is free software; you can redistribute it and/or
 #       modify it under the terms of the GNU General Public License
 #       as published by the Free Software Foundation; version 2
 #       of the License.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -21,7 +21,7 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
-inguma_version = '0.4'
+inguma_version = '0.5-dev'
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *
@@ -34,7 +34,7 @@ def int2hex(integer):
 
     string = str(hex(integer))
     string = string.replace("0x", "")
-    
+
     if len(string) == 1:
         string = "0" + string
 
@@ -53,11 +53,11 @@ def regexp2pyre(regexp):
     """ Convert a Perl regular expression to a Python-compatible regular
     expression """
     buf = regexp
-    
+
     # Remove starting slash
     if buf.startswith("/"):
         buf = buf[1:]
-    
+
     idx = len(buf)
     i = 0
     while 1:
@@ -75,7 +75,7 @@ def regexp2pyre(regexp):
 def isIpAddr4(data):
     """ Verification function for IPv4 addresses """
     x = data.split("/")
-    
+
     if len(x) == 1:
         x = data.split(".")
     else:
@@ -112,7 +112,7 @@ def getMacVendor(mac):
 
                 if mac.lower().startswith(prefix.lower()):
                     return vendor.replace("\r", "").replace("\n", "")
-        
+
         return "Unknown"
     except:
         return "Unknown"# + str(sys.exc_info()[1])
