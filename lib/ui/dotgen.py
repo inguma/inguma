@@ -17,6 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import os
 import lib.ui.config as config
 
 def generate_dot(kb, localip, gw, direction='TD'):
@@ -104,9 +105,9 @@ def generate_dot(kb, localip, gw, direction='TD'):
             target_os = target + '_os'
             if target_os in kb:
                 target_os = kb[target_os][0]
-                for os in config.ICONS:
-                    if os.capitalize() in target_os:
-                        icon = 'lib/ui/data/icons/' + os + '.png'
+                for oss in config.ICONS:
+                    if oss.capitalize() in target_os:
+                        icon = 'lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png'
                         target_data += '", shapefile="' + icon
             else:
                 target_data += '", shapefile="lib/ui/data/icons/generic.png'
