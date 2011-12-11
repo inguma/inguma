@@ -27,6 +27,9 @@ class KBtree:
 
     def __init__(self):
         self.uicore = core.UIcore()
+        self.xdot = None
+        # nodes will store graph nodes used for automove on kbtree click
+        self.nodes = {}
 
     def createTree(self):
 
@@ -80,6 +83,9 @@ class KBtree:
         # Allow drag and drop reordering of rows
         self.treeview.set_reorderable(True)
 
+        # Connect right click popup search menu
+        self.popup_handler = self.treeview.connect('button-press-event', self.popup_menu)
+
         return self.treeview
 
     def updateTree(self):
@@ -120,3 +126,21 @@ class KBtree:
                         else:
                             #print "\tSet subelement not list:", subelement
                             self.treestore.append( eiter, [None, subelement] )
+            if self.xdot:
+                function = ''
+                for node in self.xdot.graph.nodes:
+                    if node.url:
+                        target = node.url
+                        self.nodes[target] = [node.x, node.y]
+
+    def popup_menu(self, tree, event):
+        if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
+            #(path, column) = tree.get_cursor()
+            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
+            # Is it over a plugin name ?
+            # Ge the information about the click
+            if path is not None and len(path) == 1 and self.nodes:
+                node = self.treestore[path][1]
+                if node in self.nodes:
+                    self.xdot.animate_to( int(self.nodes[node][0]), int(self.nodes[node][1]) )
+

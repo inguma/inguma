@@ -101,6 +101,7 @@ class OutputManager:
     def set_map(self, map):
 
         self.map = map
+        self.kbwin.xdot = self.map
 
     def set_core(self, core):
 
