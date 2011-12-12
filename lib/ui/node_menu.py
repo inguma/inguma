@@ -229,7 +229,7 @@ self.showBrute )], user_data=[ip, port] )
             self.target_menu += '<menuitem action="Report" position="top"/>'
    
             # Add IP Address
-            self.actiongroup2.add_actions( [(ip, None, '  <b>' + ip + '</b>  ')] )
+            self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
             self.target_menu += '<menuitem action="' + ip + '" position="top">'
             self.target_menu += '</menuitem>'
     

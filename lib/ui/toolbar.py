@@ -154,13 +154,13 @@ class Toolbar(gtk.HBox):
         self.main_tb.insert(self.prefs_tb, 11)
 
         # Log  button
-        self.log_tb = gtk.ToggleToolButton(gtk.STOCK_LEAVE_FULLSCREEN)
+        self.log_tb = gtk.ToggleToolButton(gtk.STOCK_GOTO_BOTTOM)
         self.log_tb.set_tooltip_text('Show/Hide Log panel')
         self.log_tb.connect("toggled", self.show_log)
         self.main_tb.insert(self.log_tb, 12)
 
         # KB button
-        self.kb_tb = gtk.ToggleToolButton(gtk.STOCK_LEAVE_FULLSCREEN)
+        self.kb_tb = gtk.ToggleToolButton(gtk.STOCK_GOTO_LAST)
         self.kb_tb.set_tooltip_text('Show/Hide KB panel')
         self.kb_tb.connect("toggled", self.show_kb)
         self.main_tb.insert(self.kb_tb, 13)
@@ -463,9 +463,9 @@ class Toolbar(gtk.HBox):
             self.bottom_nb.is_visible = True
 
         if self.log_tb.get_active():
-            self.log_tb.set_stock_id(gtk.STOCK_FULLSCREEN)
+            self.log_tb.set_stock_id(gtk.STOCK_GOTO_TOP)
         else:
-            self.log_tb.set_stock_id(gtk.STOCK_LEAVE_FULLSCREEN)
+            self.log_tb.set_stock_id(gtk.STOCK_GOTO_BOTTOM)
 
     def show_kb(self, widget):
         ''' Show/hide KB panel'''
@@ -485,9 +485,9 @@ class Toolbar(gtk.HBox):
             self.scrolled_window.is_visible = True
 
         if self.kb_tb.get_active():
-            self.kb_tb.set_stock_id(gtk.STOCK_FULLSCREEN)
+            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_FIRST)
         else:
-            self.kb_tb.set_stock_id(gtk.STOCK_LEAVE_FULLSCREEN)
+            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_LAST)
 
     def _toggle_fullscreen(self, widget):
         if self.full_tb.get_active():
