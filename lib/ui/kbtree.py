@@ -25,8 +25,10 @@ import lib.ui.config as config
 
 class KBtree:
 
-    def __init__(self):
+    def __init__(self, node_menu):
         self.uicore = core.UIcore()
+        self.node_menu = node_menu
+
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
@@ -126,8 +128,9 @@ class KBtree:
                         else:
                             #print "\tSet subelement not list:", subelement
                             self.treestore.append( eiter, [None, subelement] )
+
             if self.xdot:
-                function = ''
+                #function = ''
                 for node in self.xdot.graph.nodes:
                     if node.url:
                         target = node.url
@@ -143,4 +146,12 @@ class KBtree:
                 node = self.treestore[path][1]
                 if node in self.nodes:
                     self.xdot.animate_to( int(self.nodes[node][0]), int(self.nodes[node][1]) )
-
+        elif event.button == 3:
+            #(path, column) = tree.get_cursor()
+            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
+            # Is it over a plugin name ?
+            # Ge the information about the click
+            if path is not None and len(path) == 1:
+                node = self.treestore[path][1]
+                self.node_menu.set_data(node)
+                self.node_menu.popmenu.popup(None, None, None, 1, event.time)

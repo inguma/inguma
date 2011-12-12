@@ -3,6 +3,7 @@ syntax: glob
 data/exploits/
 data/*.xml
 data/*.kb
+data/*.csv
 *.swp
 extlib/pyew/*
 

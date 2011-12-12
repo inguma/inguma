@@ -1,4 +1,4 @@
-##      nodeMenu.py
+##      node_menu.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -25,10 +25,11 @@ from . import gather_dialog
 from . import config
 from . import reportWin
 
-class UIManager(gtk.UIManager):
+class NodeMenu(gtk.UIManager):
 
     def __init__(self, gom, core, config):
-        gtk.UIManager.__init__(self)
+        #gtk.NodeMenu.__init__(self)
+        super(NodeMenu,self).__init__()
 
         self.ui_id = 0
         self.gom = gom
@@ -228,7 +229,7 @@ self.showBrute )], user_data=[ip, port] )
             self.target_menu += '<menuitem action="Report" position="top"/>'
    
             # Add IP Address
-            self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
+            self.actiongroup2.add_actions( [(ip, None, '  <b>' + ip + '</b>  ')] )
             self.target_menu += '<menuitem action="' + ip + '" position="top">'
             self.target_menu += '</menuitem>'
     

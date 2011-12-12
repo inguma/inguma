@@ -67,7 +67,7 @@ import lib.ui.kbwin as kbwin
 import lib.ui.output_manager as om
 import lib.ui.graphTBar as graphTBar
 import lib.ui.kbtree as kbtree
-import lib.ui.nodeMenu as nodeMenu
+import lib.ui.node_menu as node_menu
 import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
 import lib.ui.exploits as exploits
@@ -182,27 +182,12 @@ class MainApp:
         self.hpaned = gtk.HPaned()
 
         #################################################################
-        # KB Textview
-        #################################################################
-        self.textview = kbwin.KBwindow()
-        #self.gom.set_kbwin(self.textview)
-
-        #################################################################
-        # KB TreeView
-        #################################################################
-        self.treeview = kbtree.KBtree()
-        self.tree = self.treeview.createTree()
-        self.treeview.updateTree()
-        self.gom.set_kbwin(self.treeview)
-        self.tree.show()
-
-        #################################################################
         # xdot map
         #################################################################
         from . import inxdot
 
-        # nodeMenu initialization stuff
-        self.uiman = nodeMenu.UIManager(self.gom, self.uicore, self.config)
+        # node_menu initialization stuff
+        self.uiman = node_menu.NodeMenu(self.gom, self.uicore, self.config)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
         self.window.add_accel_group(accel)
@@ -221,7 +206,6 @@ class MainApp:
         setattr(self.graph_uiman, 'xdot', self.xdotw)
         setattr(self.altnode_uiman, 'xdot', self.xdotw)
 
-        self.gom.set_map(self.xdotw)
         setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=False)
 
@@ -241,6 +225,22 @@ class MainApp:
         # Show elements
         gmenu.show()
         menubox.show()
+
+        #################################################################
+        # KB Textview
+        #################################################################
+        self.textview = kbwin.KBwindow()
+        #self.gom.set_kbwin(self.textview)
+
+        #################################################################
+        # KB TreeView
+        #################################################################
+        self.treeview = kbtree.KBtree(self.uiman)
+        self.tree = self.treeview.createTree()
+        self.treeview.updateTree()
+        self.gom.set_kbwin(self.treeview)
+        self.gom.set_map(self.xdotw)
+        self.tree.show()
 
         #################################################################
         # Scrolled Window
