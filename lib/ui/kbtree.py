@@ -33,6 +33,9 @@ class KBtree:
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
 
+        # OS visibility
+        self.os_visible = {}
+
         #################################################################
         # Scrolled Window and Co
         #################################################################
@@ -94,10 +97,12 @@ class KBtree:
         btn = gtk.ToggleToolButton()
         btn.set_label('Generic')
         btn.set_tooltip_text('Generic')
+        self.os_visible['generic'] = True
         icon = gtk.Image()
         icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
         btn.set_icon_widget(icon)
         btn.set_active(True)
+        btn.connect('toggled', self._filter_on_toggle)
         oss_bar.insert(btn, 0)
         counter = 1
         for oss in config.ICONS:
@@ -108,6 +113,8 @@ class KBtree:
             icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
             btn.set_icon_widget(icon)
             btn.set_active(True)
+            self.os_visible[oss.lower()] = True
+            btn.connect('toggled', self._filter_on_toggle)
             oss_bar.insert(btn, counter)
             counter += 1
         self.right_vbox.pack_start(oss_bar, False, False, 1)
@@ -117,7 +124,7 @@ class KBtree:
         #################################################################
         # TreeStore
         #################################################################
-        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str)
+        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, str)
 
         self.modelfilter = self.treestore.filter_new()
 
@@ -185,23 +192,23 @@ class KBtree:
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
                         icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
-                        piter = self.treestore.append(None, [icon, host])
+                        piter = self.treestore.append(None, [icon, host, oss])
             else:
-                piter = self.treestore.append(None, [self.default_icon, host])
+                piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
             for element in kb:
                 if element.__contains__(host + '_'):
 #                    self.treestore.append( piter, [element.split('_')[-1].capitalize()])
                     #print "Set element:", element
-                    eiter = self.treestore.append( piter, [self.node_icon, element.split('_')[-1].capitalize()])
+                    eiter = self.treestore.append( piter, [self.node_icon, element.split('_')[-1].capitalize(), None])
 
                     for subelement in kb[element]:
                         if subelement is list:
                             #print "\tSet subelement list:", subelement
                             for x in subelement:
-                                self.treestore.append( eiter, [self.value_icon, x] )
+                                self.treestore.append( eiter, [self.value_icon, x, None] )
                         else:
                             #print "\tSet subelement not list:", subelement
-                            self.treestore.append( eiter, [self.value_icon, subelement] )
+                            self.treestore.append( eiter, [self.value_icon, subelement, None] )
 
             if self.xdot:
                 #function = ''
@@ -224,13 +231,25 @@ class KBtree:
         '''filter treeview while user types'''
         self.modelfilter.refilter()
 
+    def _filter_on_toggle(self, widget):
+        os_name = widget.get_label().lower()
+        self.os_visible[os_name] = widget.get_active()
+        self.modelfilter.refilter()
+
     def visible_cb(self, model, iter):
         data = self.tgt_entry.get_text()
         # Just filter root nodes, so we check iter path
         if len(model.get_path(iter)) == 1:
-            # Just filter if text entry is filled
-            if data:
-                return data in model.get_value(iter, 1)
+            # Check os filter buttons
+            if model.get_value(iter, 2) and self.os_visible:
+                if not self.os_visible[model.get_value(iter, 2)]:
+                    return False
+                else:
+                    # Just filter if text entry is filled
+                    if data:
+                        return data in model.get_value(iter, 1)
+                    else:
+                        return True
             else:
                 return True
         else:
