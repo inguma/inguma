@@ -33,6 +33,83 @@ class KBtree:
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
 
+        #################################################################
+        # Scrolled Window and Co
+        #################################################################
+        self.right_vbox = gtk.VBox(False)
+
+        self.tree = self.createTree()
+        self.updateTree()
+        self.tree.expand_all()
+
+        # Target filter text entry
+        # expand/collapse buttons
+        self.tgt_hbox = gtk.HBox(False)
+
+        self.expand_btn = gtk.Button()
+        self.expand_icon = gtk.Image()
+        self.expand_icon.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        self.expand_btn.set_image(self.expand_icon)
+        self.expand_btn.set_relief(gtk.RELIEF_NONE)
+        self.expand_btn.set_tooltip_text('Expand all nodes')
+        self.expand_btn.connect('clicked', self._expand_all)
+
+        self.collapse_btn = gtk.Button()
+        self.collapse_icon = gtk.Image()
+        self.collapse_icon.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        self.collapse_btn.set_image(self.collapse_icon)
+        self.collapse_btn.set_relief(gtk.RELIEF_NONE)
+        self.collapse_btn.set_tooltip_text('Collapse all nodes')
+        self.collapse_btn.connect('clicked', self._collapse_all)
+
+        sep = gtk.VSeparator()
+
+        self.tgt_entry = gtk.Entry(20)
+        self.tgt_entry.set_icon_from_stock(1, gtk.STOCK_CLEAR)
+
+        self.tgt_hbox.pack_start(self.expand_btn, False, False, 0)
+        self.tgt_hbox.pack_start(self.collapse_btn, False, False, 0)
+        self.tgt_hbox.pack_start(sep, False, False, 2)
+        self.tgt_hbox.pack_start(self.tgt_entry, True, True, 0)
+
+        self.right_vbox.pack_start(self.tgt_hbox, False, False, 1)
+
+        # Scrolledwindow/Treeview
+        self.scrolled_window = gtk.ScrolledWindow()
+        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolled_window.set_size_request(250,-1)
+
+        # Add Textview to Scrolled Window
+        self.scrolled_window.add_with_viewport(self.tree)
+
+        self.right_vbox.pack_start(self.scrolled_window, True, True, 0)
+
+        # OS filter buttons
+        oss_bar = gtk.Toolbar()
+        oss_bar.set_show_arrow(True)
+        oss_bar.set_style(gtk.TOOLBAR_ICONS)
+        btn = gtk.ToggleToolButton()
+        btn.set_label('Generic')
+        btn.set_tooltip_text('Generic')
+        icon = gtk.Image()
+        icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
+        btn.set_icon_widget(icon)
+        #btn.set_relief(gtk.RELIEF_NONE)
+        btn.set_active(True)
+        oss_bar.insert(btn, 0)
+        counter = 1
+        for oss in config.ICONS:
+            btn = gtk.ToggleToolButton(oss)
+            btn.set_label(oss.capitalize())
+            btn.set_tooltip_text(oss.capitalize())
+            icon = gtk.Image()
+            icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+            btn.set_icon_widget(icon)
+            btn.set_active(True)
+            oss_bar.insert(btn, counter)
+            counter += 1
+        self.right_vbox.pack_start(oss_bar, False, False, 1)
+
     def createTree(self):
 
         #################################################################
@@ -41,12 +118,8 @@ class KBtree:
         self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str)
 
         self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
-
-#        # Add local IPs
-#        localip = self.uicore.getLocalIP()
-#        piter = self.treestore.append(None, [localip] )
-#        gateway = self.uicore.getLocalGW()
-#        piter = self.treestore.append(None, [gateway] )
+        self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
+        self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
 
         #################################################################
         # TreeView
@@ -95,12 +168,6 @@ class KBtree:
 
         self.treestore.clear()
 
-#        # Add local IPs
-#        localip = self.uicore.getLocalIP()
-#        piter = self.treestore.append(None, [localip] )
-#        gateway = self.uicore.getLocalGW()
-#        piter = self.treestore.append(None, [gateway] )
-
         kb = self.uicore.get_kbList()
         # Add all hosts
         targets = kb['targets']
@@ -118,16 +185,16 @@ class KBtree:
                 if element.__contains__(host + '_'):
 #                    self.treestore.append( piter, [element.split('_')[-1].capitalize()])
                     #print "Set element:", element
-                    eiter = self.treestore.append( piter, [None, element.split('_')[-1].capitalize()])
+                    eiter = self.treestore.append( piter, [self.node_icon, element.split('_')[-1].capitalize()])
 
                     for subelement in kb[element]:
                         if subelement is list:
                             #print "\tSet subelement list:", subelement
                             for x in subelement:
-                                self.treestore.append( eiter, [None, x] )
+                                self.treestore.append( eiter, [self.value_icon, x] )
                         else:
                             #print "\tSet subelement not list:", subelement
-                            self.treestore.append( eiter, [None, subelement] )
+                            self.treestore.append( eiter, [self.value_icon, subelement] )
 
             if self.xdot:
                 #function = ''
@@ -135,6 +202,12 @@ class KBtree:
                     if node.url:
                         target = node.url
                         self.nodes[target] = [node.x, node.y]
+
+    def _expand_all(self, widget):
+        self.tree.expand_all()
+
+    def _collapse_all(self, widget):
+        self.tree.collapse_all()
 
     def popup_menu(self, tree, event):
         if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:

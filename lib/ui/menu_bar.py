@@ -195,7 +195,7 @@ class MenuBar(gtk.Menu):
 
         self.gom = self.main.gom
         self.uicore = self.main.uicore
-        self.textview = self.main.textview
+#        self.textview = self.main.textview
         self.treeview = self.main.treeview
         self.xdotw = self.main.xdotw
 
@@ -227,8 +227,8 @@ class MenuBar(gtk.Menu):
         self.manager.add_item('file://' + res)
         self.uicore.loadKB(res)
     
-        # Update KB textview
-        self.textview.updateWin()
+        # Update KB Tree
+#        self.textview.updateWin()
         self.treeview.updateTree()
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )

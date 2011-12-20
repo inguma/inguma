@@ -78,6 +78,7 @@ if config.HAS_SOURCEVIEW:
     import lib.ui.bokken.main as bokken
     import lib.ui.bokken.toolbar as bokken_toolbar
 import lib.ui.toolbar as toolbar
+import lib.ui.right_buttons as right_buttons
 import lib.ui.statusbar as statusbar
 import lib.ui.systray as systray
 # Fuzzers
@@ -227,30 +228,26 @@ class MainApp:
         menubox.show()
 
         #################################################################
-        # KB Textview
+        # Right panel
         #################################################################
-        self.textview = kbwin.KBwindow()
-        #self.gom.set_kbwin(self.textview)
+        # Holds right tree and buttons
+        self.right_hbox = gtk.HBox(False)
 
-        #################################################################
         # KB TreeView
-        #################################################################
         self.treeview = kbtree.KBtree(self.uiman)
-        self.tree = self.treeview.createTree()
-        self.treeview.updateTree()
+        self.tree = self.treeview.tree
         self.gom.set_kbwin(self.treeview)
         self.gom.set_map(self.xdotw)
-        self.tree.show()
 
-        #################################################################
-        # Scrolled Window
-        #################################################################
-        self.scrolled_window = gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolled_window.set_size_request(250,-1)
+        self.right_vbox = self.treeview.right_vbox
+        self.scrolled_window = self.treeview.scrolled_window
 
-        # Add Textview to Scrolled Window
-        self.scrolled_window.add_with_viewport(self.tree)
+        # Right buttons
+        self.btn_vbox = right_buttons.RightButtons()
+        self.btn_vbox.create_buttons()
+
+        self.right_hbox.pack_start(self.right_vbox, True, True, 1)
+        self.right_hbox.pack_start(self.btn_vbox, False, False, 1)
 
         #################################################################
         # Map Iface
@@ -260,12 +257,12 @@ class MainApp:
         # Test XDOT MAP
         self.hpaned.show()
         self.hpaned.pack1(menubox, True, True)
-        self.hpaned.pack2(self.scrolled_window, False, False)
-        self.textview.show()
+        self.hpaned.pack2(self.right_hbox, False, False)
 
         # Check visibility on config preferences
         if self.config.SHOW_KBTREE:
-            self.scrolled_window.show()
+            self.scrolled_window.show_all()
+            self.right_hbox.show_all()
             self.scrolled_window.is_visible = True
         else:
             self.scrolled_window.is_visible = False
@@ -545,8 +542,7 @@ class MainApp:
                 self.uicore.loadKB(kbpath)
                 libAutosave.remove_kb()
                 
-                # Update KB textview
-                self.textview.updateWin()
+                # Update KB Tree
                 self.treeview.updateTree()
     
                 # Adding text to Log window
