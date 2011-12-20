@@ -81,8 +81,8 @@ class KBtree:
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolled_window.set_size_request(250,-1)
 
-        self.tree = self.createTree()
-        self.updateTree()
+        self.tree = self.create_tree()
+        self.update_tree()
         self.tree.expand_all()
 
         # Add Textview to Scrolled Window
@@ -119,7 +119,7 @@ class KBtree:
             counter += 1
         self.right_vbox.pack_start(oss_bar, False, False, 1)
 
-    def createTree(self):
+    def create_tree(self):
 
         #################################################################
         # TreeStore
@@ -142,6 +142,7 @@ class KBtree:
         self.treeview.set_model(self.modelfilter)
 
         self.treeview.set_rules_hint(True)
+        self.treeview.set_enable_tree_lines(True)
 
         # create the TreeViewColumn to display the data
         self.tvcolumn = gtk.TreeViewColumn('Hosts')
@@ -177,7 +178,7 @@ class KBtree:
 
         return self.treeview
 
-    def updateTree(self):
+    def update_tree(self):
         '''Reads KB and updates TreeView'''
 
         self.treestore.clear()

@@ -194,7 +194,7 @@ class TargetDialog:
 
             self.uicore.getDot(doASN=False)
 
-            self.gom.kbwin.updateTree()
+            self.gom.kbwin.update_tree()
             self.gom.update_graph( self.uicore.get_kbfield('dotcode') )
 
     def get_active_text(self, combobox):

@@ -256,7 +256,7 @@ class Toolbar(gtk.HBox):
 
         else:
             self.right_hbox.show_all()
-            self.treeview.updateTree()
+            self.treeview.update_tree()
             self.scrolled_window.is_visible = True
 
         if self.kb_tb.get_active():

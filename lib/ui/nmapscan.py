@@ -17,13 +17,11 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
 import gtk, gobject
 import threading
 
 import sys, os
 sys.path.append('../..')
-import lib.IPy as IPy
 
 from . import config
 
@@ -157,7 +155,7 @@ class NmapScan:
             self.uicore.getDot(doASN=False)
 
             self.gom.update_graph( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.updateTree()
+            self.gom.kbwin.update_tree()
 
     def show_help(self):
         help = os.popen('nmap --help')

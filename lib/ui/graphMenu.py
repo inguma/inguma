@@ -115,7 +115,7 @@ class UIManager(gtk.UIManager):
             return True
         else:
             self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.updateTree()
+            self.gom.kbwin.update_tree()
             return False
 
     def doToFrom(self, widget, type):

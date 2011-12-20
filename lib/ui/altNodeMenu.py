@@ -94,5 +94,5 @@ class UIManager(gtk.UIManager):
         else:
             self.uicore.getDot(True)
             self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.updateTree()
+            self.gom.kbwin.update_tree()
             return False

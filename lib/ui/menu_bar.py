@@ -232,7 +232,7 @@ class MenuBar(gtk.Menu):
         self.xdotw.zoom_image(1.0)
         # Update KB Tree
 #        self.textview.updateWin()
-        self.treeview.updateTree()
+        self.treeview.update_tree()
     
         # Adding text to Log window
         self.gom.echo( 'Loaded' , False)
@@ -344,7 +344,7 @@ class MenuBar(gtk.Menu):
                 # Update graph and KB tree
                 self.uicore.getDot(doASN=False)
                 self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-                self.gom.kbwin.updateTree()
+                self.gom.kbwin.update_tree()
             except:
                 print "Your lack of faith on my parsing capabilities is disturbing..."
 
@@ -362,7 +362,7 @@ class MenuBar(gtk.Menu):
             self.uicore = self.main.uicore
 
             self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.updateTree()
+            self.gom.kbwin.update_tree()
             return False
 
     def show_wiki(self, widget):
