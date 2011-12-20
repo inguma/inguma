@@ -247,15 +247,15 @@ class Toolbar(gtk.HBox):
         ''' Show/hide KB panel'''
 
         self.scrolled_window = self.main.scrolled_window
-        self.right_vbox = self.main.right_vbox
+        self.right_hbox = self.main.right_hbox
         self.treeview = self.main.treeview
 
         if self.scrolled_window.is_visible == True:
-            self.right_vbox.hide_all()
+            self.right_hbox.hide_all()
             self.scrolled_window.is_visible = False
 
         else:
-            self.right_vbox.show_all()
+            self.right_hbox.show_all()
             self.treeview.updateTree()
             self.scrolled_window.is_visible = True
 

@@ -179,7 +179,7 @@ class MainApp:
         # Will contain on top the notebook and on bottom log window
         self.vpaned = gtk.VPaned()
         # Will contain xdot widget and kb window
-        self.hpaned = gtk.HPaned()
+        self.network_paned = gtk.HPaned()
 
         #################################################################
         # xdot map
@@ -219,12 +219,12 @@ class MainApp:
         #################################################################
         # HBox for Map and GraphMenu
         #################################################################
-        menubox = gtk.HBox()
-        menubox.pack_start(self.xdotw, True, True)
-        menubox.pack_start(gmenu, False, False)
+        self.graph_box = gtk.HBox()
+        self.graph_box.pack_start(self.xdotw, True, True)
+        self.graph_box.pack_start(gmenu, False, False)
         # Show elements
         gmenu.show()
-        menubox.show()
+        self.graph_box.show()
 
         #################################################################
         # Right panel
@@ -253,10 +253,9 @@ class MainApp:
         #################################################################
         label = gtk.Label('Map')
 
-        # Test XDOT MAP
-        self.hpaned.show()
-        self.hpaned.pack1(menubox, True, True)
-        self.hpaned.pack2(self.right_hbox, False, False)
+        # Pack map and right tree
+        self.network_paned.pack1(self.graph_box, True, True)
+        self.network_paned.pack2(self.right_hbox, False, False)
 
         # Check visibility on config preferences
         if self.config.SHOW_KBTREE:
@@ -266,7 +265,7 @@ class MainApp:
         else:
             self.scrolled_window.is_visible = False
 
-        self.hpaned.show()
+        self.network_paned.show()
         self.xdotw.show()
 
         label = gtk.Label(' Map')
@@ -284,7 +283,7 @@ class MainApp:
         #################################################################
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(gtk.POS_LEFT)
-        self.notebook.append_page(self.hpaned, b)
+        self.notebook.append_page(self.network_paned, b)
         self.notebook.connect("switch_page", self.on_switch)
 
         #################################################################################################################################
@@ -554,6 +553,7 @@ class MainApp:
 
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.treeview.updateTree()
         self.xdotw.zoom_image(1.0)
 
         gtk.main()

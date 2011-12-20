@@ -227,12 +227,12 @@ class MenuBar(gtk.Menu):
         self.manager.add_item('file://' + res)
         self.uicore.loadKB(res)
     
-        # Update KB Tree
-#        self.textview.updateWin()
-        self.treeview.updateTree()
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
         self.xdotw.zoom_image(1.0)
+        # Update KB Tree
+#        self.textview.updateWin()
+        self.treeview.updateTree()
     
         # Adding text to Log window
         self.gom.echo( 'Loaded' , False)
