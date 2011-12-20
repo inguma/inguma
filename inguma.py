@@ -198,6 +198,8 @@ class Inguma:
 
 def check_args():
 
+    import lib.ui.cli.core as uicore
+
     global debug, http_server
 
     for arg in sys.argv:
@@ -206,7 +208,7 @@ def check_args():
         elif arg.lower() == "-w":
             http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
-            usage()
+            uicore.usage(gom)
             sys.exit(0)
 
     return True
