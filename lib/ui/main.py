@@ -63,7 +63,6 @@ splash = Splash()
 # Import ui modules
 splash.push(("Loading UI modules"))
 import lib.ui.core as core
-import lib.ui.kbwin as kbwin
 import lib.ui.output_manager as om
 import lib.ui.graphTBar as graphTBar
 import lib.ui.kbtree as kbtree

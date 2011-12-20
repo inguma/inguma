@@ -38,10 +38,6 @@ class KBtree:
         #################################################################
         self.right_vbox = gtk.VBox(False)
 
-        self.tree = self.createTree()
-        self.updateTree()
-        self.tree.expand_all()
-
         # Target filter text entry
         # expand/collapse buttons
         self.tgt_hbox = gtk.HBox(False)
@@ -66,6 +62,9 @@ class KBtree:
 
         self.tgt_entry = gtk.Entry(20)
         self.tgt_entry.set_icon_from_stock(1, gtk.STOCK_CLEAR)
+        self.tgt_entry.set_icon_tooltip_text(1, 'Clear entry')
+        self.tgt_entry.connect('icon-press', self._clear_entry)
+        self.tgt_entry.connect('changed', self._do_filter)
 
         self.tgt_hbox.pack_start(self.expand_btn, False, False, 0)
         self.tgt_hbox.pack_start(self.collapse_btn, False, False, 0)
@@ -78,6 +77,10 @@ class KBtree:
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolled_window.set_size_request(250,-1)
+
+        self.tree = self.createTree()
+        self.updateTree()
+        self.tree.expand_all()
 
         # Add Textview to Scrolled Window
         self.scrolled_window.add_with_viewport(self.tree)
@@ -94,7 +97,6 @@ class KBtree:
         icon = gtk.Image()
         icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
         btn.set_icon_widget(icon)
-        #btn.set_relief(gtk.RELIEF_NONE)
         btn.set_active(True)
         oss_bar.insert(btn, 0)
         counter = 1
@@ -117,6 +119,8 @@ class KBtree:
         #################################################################
         self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str)
 
+        self.modelfilter = self.treestore.filter_new()
+
         self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
         self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
         self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
@@ -126,6 +130,9 @@ class KBtree:
         #################################################################
         # create the TreeView using treestore
         self.treeview = gtk.TreeView(self.treestore)
+
+        self.modelfilter.set_visible_func(self.visible_cb)
+        self.treeview.set_model(self.modelfilter)
 
         self.treeview.set_rules_hint(True)
 
@@ -208,6 +215,26 @@ class KBtree:
 
     def _collapse_all(self, widget):
         self.tree.collapse_all()
+
+    def _clear_entry(self, entry, icon_pos, event):
+        entry.set_text('')
+        self.modelfilter.refilter()
+
+    def _do_filter(self, widget):
+        '''filter treeview while user types'''
+        self.modelfilter.refilter()
+
+    def visible_cb(self, model, iter):
+        data = self.tgt_entry.get_text()
+        # Just filter root nodes, so we check iter path
+        if len(model.get_path(iter)) == 1:
+            # Just filter if text entry is filled
+            if data:
+                return data in model.get_value(iter, 1)
+            else:
+                return True
+        else:
+            return True
 
     def popup_menu(self, tree, event):
         if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
