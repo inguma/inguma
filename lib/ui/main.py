@@ -242,11 +242,8 @@ class MainApp:
         self.scrolled_window = self.treeview.scrolled_window
 
         # Right buttons
-        self.btn_vbox = right_buttons.RightButtons()
+        self.btn_vbox = right_buttons.RightButtons(self.right_vbox)
         self.btn_vbox.create_buttons()
-
-        self.right_hbox.pack_start(self.right_vbox, True, True, 1)
-        self.right_hbox.pack_start(self.btn_vbox, False, False, 1)
 
         #################################################################
         # Map Iface
@@ -255,7 +252,10 @@ class MainApp:
 
         # Pack map and right tree
         self.network_paned.pack1(self.graph_box, True, True)
-        self.network_paned.pack2(self.right_hbox, False, False)
+        self.network_paned.pack2(self.right_vbox, False, False)
+
+        self.right_hbox.pack_start(self.network_paned, True, True, 1)
+        self.right_hbox.pack_start(self.btn_vbox, False, False, 1)
 
         # Check visibility on config preferences
         if self.config.SHOW_KBTREE:
@@ -283,7 +283,7 @@ class MainApp:
         #################################################################
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(gtk.POS_LEFT)
-        self.notebook.append_page(self.network_paned, b)
+        self.notebook.append_page(self.right_hbox, b)
         self.notebook.connect("switch_page", self.on_switch)
 
         #################################################################################################################################

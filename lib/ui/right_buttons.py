@@ -22,8 +22,10 @@ import gtk
 class RightButtons(gtk.VBox):
     '''Right buttons for Treeview change'''
 
-    def __init__(self):
+    def __init__(self, right_vbox):
         super(RightButtons,self).__init__(False, 1)
+
+        self.right_vbox = right_vbox
 
     ##################################
     # Methods
@@ -41,6 +43,8 @@ class RightButtons(gtk.VBox):
         a = gtk.VBox(False, 1)
         tgttb = gtk.ToggleButton()
         tgttb.set_active(True)
+        handler = tgttb.connect('toggled', self._on_toggle)
+        tgttb.handler = handler
         l = gtk.Label('Targets')
         l.set_angle(270)
         a.pack_start(self.tgt_icon, False, False, 1)
@@ -50,6 +54,8 @@ class RightButtons(gtk.VBox):
 
         a = gtk.VBox(False, 1)
         vulntb = gtk.ToggleButton()
+        handler = vulntb.connect('toggled', self._on_toggle)
+        vulntb.handler = handler
         l = gtk.Label('Vulnerabilities')
         l.set_angle(270)
         a.pack_start(self.vuln_icon, False, False, 1)
@@ -60,6 +66,8 @@ class RightButtons(gtk.VBox):
 
         a = gtk.VBox(False, 1)
         shelltb = gtk.ToggleButton()
+        handler = shelltb.connect('toggled', self._on_toggle)
+        shelltb.handler = handler
         l = gtk.Label('Shells')
         l.set_angle(270)
         a.pack_start(self.shell_icon, False, False, 1)
@@ -69,3 +77,24 @@ class RightButtons(gtk.VBox):
         shelltb.set_sensitive(False)
 
         self.show_all()
+
+    def _on_toggle(self, widget):
+        for x in self:
+            if x != widget:
+                x.handler_block(x.handler)
+                x.set_active(False)
+                x.handler_unblock(x.handler)
+            elif x == widget:
+                if x.get_active() == True:
+                    x.handler_block(x.handler)
+                    x.set_active(True)
+                    x.handler_unblock(x.handler)
+                    #option = x.get_children()[0].get_children()[0].get_text()
+                    #self.main.tviews.create_model(option)
+                    self.right_vbox.show_all()
+                else:
+                    x.handler_block(x.handler)
+                    x.set_active(False)
+                    x.handler_unblock(x.handler)
+                    self.right_vbox.hide_all()
+
