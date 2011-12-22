@@ -38,10 +38,10 @@ class Systray(gtk.StatusIcon):
         self.make_menu(event_button, event_time)
 
     def on_left_click(self, icon):
-        if self.main.window.get_property("visible"):
-            self.main.window.hide()
+        if self.main.get_property("visible"):
+            self.main.hide()
         else:
-            self.main.window.show()
+            self.main.show()
         self.set_from_file('logo' + os.sep + 'inguma_16.png') 
         return True
 

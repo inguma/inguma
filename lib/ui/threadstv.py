@@ -132,7 +132,7 @@ class ThreadsTv:
             model.set_value(iter, 1, 100)
 
             # Update Systray icon and tooltip
-            if not self.main.window.get_property("visible"):
+            if not self.main.get_property("visible"):
                 tip = self.systray.get_tooltip_text()
                 self.systray.set_new_tooltip("Finished " + tip)
                 self.systray.set_from_stock(gtk.STOCK_INFO)

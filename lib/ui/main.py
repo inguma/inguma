@@ -87,10 +87,15 @@ from lib.core import check_distorm_lib
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
-class MainApp:
+class MainApp(gtk.Window):
     '''Main GTK application'''
 
+    __gsignals__ = {
+        "configure-event" : "override"
+        }
+
     def __init__(self):
+        super(MainApp, self).__init__()
 
 #        #################################################################################################################################
 #        # Load and apply gtkrc
@@ -116,21 +121,20 @@ class MainApp:
         # Create a new window
         #################################################################
         splash.push(("Creating main window..."))
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_icon_from_file('logo' + os.sep + 'inguma_16.png')
-        self.window.set_focus = True
-        self.window.connect("delete_event", self.quit)
+        self.set_icon_from_file('logo' + os.sep + 'inguma_16.png')
+        self.set_focus = True
+        self.connect("delete_event", self._quit)
         splash.push(("Loading..."))
         gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
 
         # Title
-        self.window.set_title(MAINTITLE)
+        self.set_title(MAINTITLE)
 
         # Positions
-        self.window.resize(800, 600)
-        self.window.move(25, 25)
+        self.resize(800, 600)
+        self.move(25, 25)
         # Maximize window
-        self.window.maximize()
+        self.maximize()
 
         #################################################################################################################################
         # Load core...
@@ -150,7 +154,7 @@ class MainApp:
         #################################################################
         mainvbox = gtk.VBox(False, 1)
         mainvbox.set_border_width(1)
-        self.window.add(mainvbox)
+        self.add(mainvbox)
         mainvbox.show()
 
         #################################################################################################################################
@@ -190,17 +194,17 @@ class MainApp:
         self.uiman = node_menu.NodeMenu(self.gom, self.uicore, self.config)
         self.uiman.set_data(None)
         accel = self.uiman.get_accel_group()
-        self.window.add_accel_group(accel)
+        self.add_accel_group(accel)
 
         # graphMenu initialization stuff
         self.graph_uiman = graphMenu.UIManager(self.gom, self.uicore)
         graph_accel = self.graph_uiman.get_accel_group()
-        self.window.add_accel_group(graph_accel)
+        self.add_accel_group(graph_accel)
 
         # altNodeMenu initialization stuff
         self.altnode_uiman = altNodeMenu.UIManager(self.gom, self.uicore)
         altnode_accel = self.altnode_uiman.get_accel_group()
-        self.window.add_accel_group(altnode_accel)
+        self.add_accel_group(altnode_accel)
 
         self.xdotw = inxdot.MyDotWidget(self.uiman, self.graph_uiman, self.altnode_uiman, self.uicore)
         setattr(self.graph_uiman, 'xdot', self.xdotw)
@@ -527,7 +531,7 @@ class MainApp:
         # finish it
         #################################################################
         self.vpaned.show()
-        self.window.show()
+        self.show()
         splash.destroy()
 
         # Check for autosaved KB and ask for loading
@@ -625,7 +629,16 @@ class MainApp:
         adj.set_value(adj.upper-adj.page_size)
         scroll.set_vadjustment(adj)
 
-    def quit(self, widget, event, data=None):
+    def do_configure_event(self, event):
+        '''Method used to coordinat main window and popup movement'''
+
+        if self.toolbar.popup_dialogs:
+            for dialog in self.toolbar.popup_dialogs:
+                dialog.update_position()
+        
+        gtk.Window.do_configure_event(self, event)
+
+    def _quit(self, widget, event, data=None):
         '''Main quit.
 
         @param widget: who sent the signal.

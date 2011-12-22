@@ -22,24 +22,23 @@ import gobject
 
 import os, sys, threading, urllib, gzip
 sys.path.append('../..')
-from lib.core import get_profile_file_path
 
-class propDialog:
+from lib.core import get_profile_file_path
+import lib.ui.popup_dialog as popup_dialog
+
+class PropDialog(popup_dialog.PopupDialog):
     '''Preferences dialog'''
 
-    def __init__(self, core, gom, threadtv, config):
-
-        TITLE = "Preferences"
+    def __init__(self, main, coord, button):
+        super(PropDialog, self).__init__(main, coord, button)
 
         # Core instance for manage the KB
-        self.uicore = core
-        self.gom = gom
-        self.threadtv = threadtv
-        self.config = config
-
-        # Dialog
-        self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
-        self.dialog.resize(250, 75)
+        self.main = main
+        self.uicore = main.uicore
+        self.gom = main.gom
+        self.threadtv = main.threadsInst
+        self.config = main.config
+        self.button = button
 
         # Notebook
         self.prefs_nb = gtk.Notebook()
@@ -64,9 +63,6 @@ class propDialog:
         # Add elements to Table
         self.main_table.attach(self.iface_lbl, 0, 1, 0, 1)
         self.main_table.attach(self.iface_combo, 1, 2, 0, 1)
-
-        # Add NoteBook to VBox
-        self.dialog.vbox.pack_start(self.prefs_nb, False, False, 2)
 
         # Add Table to Notebook
         self.prefs_nb.append_page(self.main_table, self.main_lbl)
@@ -107,19 +103,11 @@ class propDialog:
         # Add Table to Notebook
         self.prefs_nb.append_page(self.update_table, self.update_lbl)
 
-        #########################################################
-        # the cancel button
-        self.butt_cancel = self.dialog.action_area.get_children()[1]
-        self.butt_cancel.connect("clicked", lambda x: self.dialog.destroy())
-
-        # the ok button
-        self.butt_ok = self.dialog.action_area.get_children()[0]
-#        self.butt_ok.connect("clicked", lambda x: self.dialog.destroy())
-        self.butt_ok.connect("clicked", self.set_interface)
+        # Add NoteBook to Popup dialog
+        self.add_content(self.prefs_nb)
 
         # Finish
-        self.dialog.show_all()
-        self.dialog.show()
+        self.show_all()
 
     def get_selected_iface(self):
         model = self.iface_combo.get_model()

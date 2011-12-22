@@ -19,16 +19,18 @@
 
 import gtk, gobject
 
+import lib.ui.popup_dialog as popup_dialog
+
 import os, sys, threading
 sys.path.append('../..')
 import lib.IPy as IPy
 
-class TargetDialog:
+class TargetDialog(popup_dialog.PopupDialog):
     '''Dialog for adding targets and running some modules'''
 
-    def __init__(self, core, gom, threadtv, config, xdotw):
+    def __init__(self, main, coord, button):
 
-        TITLE = "Specify target"
+        super(TargetDialog, self).__init__(main, coord, button)
 
         self.DISCOVERS = ['hostname',
                     'tcptrace',
@@ -38,15 +40,13 @@ class TargetDialog:
         self.GATHERS = ['portscan', 'identify']
 
         # Core instance for manage the KB
-        self.uicore = core
-        self.gom = gom
-        self.threadtv = threadtv
-        self.config = config
-        self.xdotw = xdotw
-
-        # Dialog
-        self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
-        self.dialog.set_resizable(False)
+        self.main = main
+        self.uicore = main.uicore
+        self.gom = main.gom
+        self.threadtv = main.threadsInst
+        self.config = main.config
+        self.xdotw = main.xdotw
+        self.button = button
 
         # Radio buttons
         self.ip_rbutton= gtk.RadioButton(group=None, label='Single IP')
@@ -59,6 +59,10 @@ class TargetDialog:
         # A target text entry
         self.tgentry = gtk.Entry(max=30)
         self.tgentry.set_focus = True
+        self.tgentry.set_icon_from_stock(1, gtk.STOCK_ADD)
+        self.tgentry.connect('activate', self.validate_data)
+        self.tgentry.connect('icon-press', self.validate_data)
+        self.tgentry.set_icon_tooltip_text(1, 'Add new target')
 
         # Checkbox to use nmap
         self.nmap = gtk.CheckButton("Use Nmap")
@@ -82,36 +86,27 @@ class TargetDialog:
         table.attach(self.audit, 0, 1, 2, 3)
         table.attach(self.nmap, 1, 2, 2, 3)
 
-        # Add HBox to VBox
-        self.dialog.vbox.pack_start(table, False, False, 2)
-
-        #########################################################
-        # The cancel button
-        self.butt_cancel = self.dialog.action_area.get_children()[1]
-        self.butt_cancel.connect("clicked", lambda x: self.dialog.destroy())
-
-        # The save button
-        self.butt_save = self.dialog.action_area.get_children()[0]
-        self.butt_save.connect("clicked", self.validate_data)
+        self.add_content(table)
 
         # Finish
-        self.dialog.show_all()
-        self.dialog.show()
+        self.show_all()
 
-    def validate_data(self, widget):
+    def validate_data(self, widget, icon_pos=None, event=None):
         '''Validate user input and call insert_data when done'''
 
         if self.active == 'IP':
             try:
                 if self.tgentry.get_text():
                     ip = IPy.IP( self.tgentry.get_text() )
-                self.dialog.destroy()
+                #self.destroy()
+                self._quit(widget)
                 self.insert_data('ip', ip)
             except:
                 self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
         elif self.active == 'DOM':
                 self.insert_data('dom', self.tgentry.get_text())
-                self.dialog.destroy()
+                #self.destroy()
+                self._quit(widget)
 
     def rbcallback(self, widget, data=None):
         self.active = data

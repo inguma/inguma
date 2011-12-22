@@ -37,6 +37,8 @@ class Toolbar(gtk.HBox):
 
         self.main = main
         self.toolbox = self
+        # List to store popup dialogs
+        self.popup_dialogs = []
 
         self.main_tb = gtk.Toolbar()
         self.main_tb.set_style(gtk.TOOLBAR_ICONS)
@@ -105,15 +107,17 @@ class Toolbar(gtk.HBox):
         self.main_tb.insert(self.sep, 9)
 
         # Add target button
-        self.add_tb = gtk.ToolButton(gtk.STOCK_ADD)
+        self.add_tb = gtk.ToggleToolButton(gtk.STOCK_ADD)
         self.add_tb.set_tooltip_text('Add a new target')
-        self.add_tb.connect("clicked", self.add_target)
+        handler = self.add_tb.connect("toggled", self.add_target, self.add_tb)
+        self.add_tb.handler = handler
         self.main_tb.insert(self.add_tb, 10)
 
         # Preferences button
-        self.prefs_tb = gtk.ToolButton(gtk.STOCK_PREFERENCES)
+        self.prefs_tb = gtk.ToggleToolButton(gtk.STOCK_PREFERENCES)
         self.prefs_tb.set_tooltip_text('Open preferences dialog')
-        self.prefs_tb.connect("clicked", self.show_pref)
+        handler = self.prefs_tb.connect("toggled", self.show_pref, self.prefs_tb)
+        self.prefs_tb.handler = handler
         self.main_tb.insert(self.prefs_tb, 11)
 
         # Log  button
@@ -122,46 +126,46 @@ class Toolbar(gtk.HBox):
         self.log_tb.connect("toggled", self.show_log)
         self.main_tb.insert(self.log_tb, 12)
 
-        # KB button
-        self.kb_tb = gtk.ToggleToolButton(gtk.STOCK_GOTO_LAST)
-        self.kb_tb.set_tooltip_text('Show/Hide KB panel')
-        self.kb_tb.connect("toggled", self.show_kb)
-        self.main_tb.insert(self.kb_tb, 13)
+#        # KB button
+#        self.kb_tb = gtk.ToggleToolButton(gtk.STOCK_GOTO_LAST)
+#        self.kb_tb.set_tooltip_text('Show/Hide KB panel')
+#        self.kb_tb.connect("toggled", self.show_kb)
+#        self.main_tb.insert(self.kb_tb, 13)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
-        self.main_tb.insert(self.sep, 14)
+        self.main_tb.insert(self.sep, 13)
 
         # Report button
         self.report_tb = gtk.ToolButton(gtk.STOCK_INDEX)
         self.report_tb.set_tooltip_text('Show KB report')
         self.report_tb.connect("clicked", self.report)
-        self.main_tb.insert(self.report_tb, 15)
+        self.main_tb.insert(self.report_tb, 14)
 
         # Exit button
         self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
         self.exit_tb.connect("clicked", self._bye)
         self.exit_tb.set_tooltip_text('Have a nice day ;-)')
-        self.main_tb.insert(self.exit_tb, 16)
+        self.main_tb.insert(self.exit_tb, 15)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
-        self.main_tb.insert(self.sep, 17)
+        self.main_tb.insert(self.sep, 16)
 
         # Toggle Full screen
         self.full_tb = gtk.ToggleToolButton(gtk.STOCK_FULLSCREEN)
         self.full_tb.connect("toggled", self._toggle_fullscreen)
         self.full_tb.set_tooltip_text('Toggle full screen')
-        self.main_tb.insert(self.full_tb, 18)
+        self.main_tb.insert(self.full_tb, 17)
 
 
         # Throbber
         self.throbber = throbber.Throbber()
         self.throbber_tb = gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
-        self.main_tb.insert(self.throbber_tb, 19)
+        self.main_tb.insert(self.throbber_tb, 18)
 
         self.toolbox.pack_start(self.main_tb, True, True)
 
@@ -207,13 +211,32 @@ class Toolbar(gtk.HBox):
         import lib.ui.editor as editor
         editor.main()
 
-    def add_target(self, event):
+    def add_target(self, event, button):
+        self._clean_popup_dialogs()
+        if button.get_active():
+            self.addtgt = target_dialog.TargetDialog(self.main, self.window, button)
+            self.popup_dialogs.append(self.addtgt)
+        else:
+            if self.addtgt in self.popup_dialogs:
+                self.popup_dialogs.remove(self.addtgt)
+            self.addtgt.destroy()
 
-        addtgt = target_dialog.TargetDialog(self.main.uicore, self.main.gom, self.main.threadsInst, self.main.config, self.main.xdotw)
+    def show_pref(self, event, button):
+        self._clean_popup_dialogs()
+        if button.get_active():
+            self.prefs_dialog = preferences_dialog.PropDialog(self.main, self.window, button)
+            self.popup_dialogs.append(self.prefs_dialog)
+        else:
+            if self.prefs_dialog in self.popup_dialogs:
+                self.popup_dialogs.remove(self.prefs_dialog)
+            self.prefs_dialog.destroy()
 
-    def show_pref(self, widget):
-        # FIXME: Change propWhatever to prefWhatever.
-        preferences_dialog.propDialog(self.main.uicore, self.main.gom, self.main.threadsInst, self.main.config)
+    def _clean_popup_dialogs(self):
+        if self.popup_dialogs:
+            for popup in self.popup_dialogs:
+                if popup in self.popup_dialogs:
+                    self.popup_dialogs.remove(popup)
+                popup._quit(self)
 
     def show_term(self, widget):
         self.new_tab('scapy', 'scapy')
@@ -243,33 +266,33 @@ class Toolbar(gtk.HBox):
         else:
             self.log_tb.set_stock_id(gtk.STOCK_GOTO_BOTTOM)
 
-    def show_kb(self, widget):
-        ''' Show/hide KB panel'''
-
-        self.scrolled_window = self.main.scrolled_window
-        self.right_hbox = self.main.right_hbox
-        self.treeview = self.main.treeview
-
-        if self.scrolled_window.is_visible == True:
-            self.right_hbox.hide_all()
-            self.scrolled_window.is_visible = False
-
-        else:
-            self.right_hbox.show_all()
-            self.treeview.update_tree()
-            self.scrolled_window.is_visible = True
-
-        if self.kb_tb.get_active():
-            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_FIRST)
-        else:
-            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_LAST)
+#    def show_kb(self, widget):
+#        ''' Show/hide KB panel'''
+#
+#        self.scrolled_window = self.main.scrolled_window
+#        self.right_vbox = self.main.right_vbox
+#        self.treeview = self.main.treeview
+#
+#        if self.scrolled_window.is_visible == True:
+#            self.right_vbox.hide_all()
+#            self.scrolled_window.is_visible = False
+#
+#        else:
+#            self.right_vbox.show_all()
+#            self.treeview.update_tree()
+#            self.scrolled_window.is_visible = True
+#
+#        if self.kb_tb.get_active():
+#            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_FIRST)
+#        else:
+#            self.kb_tb.set_stock_id(gtk.STOCK_GOTO_LAST)
 
     def _toggle_fullscreen(self, widget):
         if self.full_tb.get_active():
-            self.main.window.fullscreen()
+            self.main.fullscreen()
             self.full_tb.set_stock_id(gtk.STOCK_LEAVE_FULLSCREEN)
         else:
-            self.main.window.unfullscreen()
+            self.main.unfullscreen()
             self.full_tb.set_stock_id(gtk.STOCK_FULLSCREEN)
 
     def report(self, widget):
