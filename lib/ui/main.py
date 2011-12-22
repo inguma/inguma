@@ -512,10 +512,10 @@ class MainApp(gtk.Window):
         #StatusBar
         #################################################################
         self.statusbar = statusbar.Statusbar() 
-        self.statusbar._create_helpers()
-        mainvbox.pack_end(self.statusbar, False, False, 1)
+        self.statusbar.create_statusbar()
         from lib.core import get_inguma_version
-        self.gom.insert_sb_text('Inguma ' + get_inguma_version())
+        self.statusbar.add_text(None, get_inguma_version())
+        mainvbox.pack_end(self.statusbar, False, False, 1)
 
         if self.config.HAS_SOURCEVIEW:
             self.bokken_sb = statusbar.Statusbar() 
