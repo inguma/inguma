@@ -28,10 +28,15 @@ class PopupDialog(gtk.Window):
 
         self.connect("destroy", self._quit)
 
+        self.eb = gtk.EventBox()
+        self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("black"))
+
         # Add an VBox to store contents
-        self.set_border_width(5)
+        self.set_border_width(1)
         self.vbox = gtk.VBox(False)
-        self.add(self.vbox)
+        self.vbox.set_border_width(5)
+        self.eb.add(self.vbox)
+        self.add(self.eb)
 
         self.main = main
         self.win = window
