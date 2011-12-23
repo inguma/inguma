@@ -26,6 +26,7 @@ import lib.ui.config as config
 class KBtree:
 
     def __init__(self, node_menu):
+
         self.uicore = core.UIcore()
         self.node_menu = node_menu
 
@@ -33,13 +34,24 @@ class KBtree:
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
 
+        # Main VBox to store right panel elements
+        self.right_vbox = gtk.VBox(False)
+
         # OS visibility
         self.os_visible = {}
+        self.os_visible['generic'] = True
+        for oss in config.ICONS:
+            self.os_visible[oss.lower()] = True
+
+        # OS buttons bar
+        self.oss_bar = gtk.Toolbar()
+        self.oss_bar.set_show_arrow(True)
+        self.oss_bar.set_style(gtk.TOOLBAR_ICONS)
+        self.create_os_buttons()
 
         #################################################################
         # Scrolled Window and Co
         #################################################################
-        self.right_vbox = gtk.VBox(False)
 
         # Target filter text entry
         # expand/collapse buttons
@@ -90,22 +102,37 @@ class KBtree:
 
         self.right_vbox.pack_start(self.scrolled_window, True, True, 0)
 
+    def create_os_buttons(self):
         # OS filter buttons
-        oss_bar = gtk.Toolbar()
-        oss_bar.set_show_arrow(True)
-        oss_bar.set_style(gtk.TOOLBAR_ICONS)
-        btn = gtk.ToggleToolButton()
-        btn.set_label('Generic')
-        btn.set_tooltip_text('Generic')
-        self.os_visible['generic'] = True
-        icon = gtk.Image()
-        icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
-        btn.set_icon_widget(icon)
-        btn.set_active(True)
-        btn.connect('toggled', self._filter_on_toggle)
-        oss_bar.insert(btn, 0)
-        counter = 1
-        for oss in config.ICONS:
+
+        self.remove_os_buttons()
+
+        counter = 0
+        added_os = []
+        kb = self.uicore.get_kbList()
+        targets = kb['targets']
+        for target in targets:
+            if kb.has_key(target + '_os'):
+                oss = kb[target + '_os'][0].lower()
+                for os_icon in config.ICONS:
+                    if os_icon in oss and os_icon not in added_os:
+                        btn = self.create_os_button(os_icon)
+                        self.oss_bar.insert(btn, counter)
+                        counter += 1
+                        added_os.append(os_icon)
+            else:
+                if 'generic' not in added_os:
+                    btn = self.create_os_button('generic', True)
+                    self.oss_bar.insert(btn, counter)
+                    counter += 1
+                    added_os.append('generic')
+
+        if len(self.oss_bar.get_children()) > 1:
+            self.right_vbox.pack_start(self.oss_bar, False, False, 1)
+            self.oss_bar.show_all()
+
+    def create_os_button(self, oss, generic=False):
+        if not generic:
             btn = gtk.ToggleToolButton(oss)
             btn.set_label(oss.capitalize())
             btn.set_tooltip_text(oss.capitalize())
@@ -115,9 +142,24 @@ class KBtree:
             btn.set_active(True)
             self.os_visible[oss.lower()] = True
             btn.connect('toggled', self._filter_on_toggle)
-            oss_bar.insert(btn, counter)
-            counter += 1
-        self.right_vbox.pack_start(oss_bar, False, False, 1)
+        else:
+            btn = gtk.ToggleToolButton()
+            btn.set_label('Generic')
+            btn.set_tooltip_text('Generic')
+            self.os_visible['generic'] = True
+            icon = gtk.Image()
+            icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
+            btn.set_icon_widget(icon)
+            btn.set_active(True)
+            btn.connect('toggled', self._filter_on_toggle)
+
+        return btn
+
+    def remove_os_buttons(self):
+        for child in self.oss_bar.get_children():
+            self.oss_bar.remove(child)
+        if self.oss_bar in self.right_vbox:
+            self.right_vbox.remove(self.oss_bar)
 
     def create_tree(self):
 
@@ -217,6 +259,8 @@ class KBtree:
                     if node.url:
                         target = node.url
                         self.nodes[target] = [node.x, node.y]
+        # Update OS bar
+        self.create_os_buttons()
 
     def _expand_all(self, widget):
         self.tree.expand_all()

@@ -97,8 +97,7 @@ class Statusbar(gtk.Statusbar):
             label = gtk.Label()
             label.set_markup('<b>Inguma ' + version + '</b>')
             label.set_alignment(0.5, 0.6)
-            #label.set_padding(3, 3)
-            self.pack_end(label, False, False, 5)
+            self.pack_end(label, False, False, 1)
 
         self.show_all()
 
