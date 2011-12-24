@@ -1,18 +1,18 @@
 ##      CNated.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -49,10 +49,10 @@ class CNated(CIngumaDiscoverModule):
 
         if res:
             hops = res.ttl
-        
+
         self.probe_results["ICMP"] = hops
         return hops
-    
+
     def probe_tcp_port(self, port):
         p = scapy.IP(dst=self.target)/scapy.TCP(dport=int(port), flags="S")
         res = scapy.sr1(p, timeout = self.timeout)
@@ -65,29 +65,29 @@ class CNated(CIngumaDiscoverModule):
         return hops
 
     def is_nated_port(self, port):
-        icmpTtl = self.probe_icmp()
-        tcpTtl = self.probe_tcp_port(port)
-        
-        if icmpTtl != tcpTtl and icmpTtl != None and tcpTtl != None:
+        icmp_ttl = self.probe_icmp()
+        tcp_ttl = self.probe_tcp_port(port)
+
+        if icmp_ttl != tcp_ttl and icmp_ttl != None and tcp_ttl != None:
             return True
 
     def check_is_nated(self):
         ttls = []
         res = self.probe_icmp() # Do it just one time
-        
+
         if res:
             ttls.append(res)
 
         for port in self.dict[self.target + "_tcp_ports"]:
             res = self.probe_tcp_port(port)
-            
+
             if res:
                 ttls.append(res)
-        
-        minTtl = min(ttls)
-        maxTtl = max(ttls)
-        
-        if minTtl != maxTtl:
+
+        min_ttl = min(ttls)
+        max_ttl = max(ttls)
+
+        if min_ttl != max_ttl:
             self.gom.echo("Ports are NATed")
             return True
         else:

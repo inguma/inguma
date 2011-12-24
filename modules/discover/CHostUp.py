@@ -1,31 +1,27 @@
-#!/usr/bin/python
-
 ##      CHostUp.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
-import time
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 try:
-    from scapy.all import IP, ICMP, sr, conf, getmacbyip, get_working_if, get_if_list, icmptypes
+    from scapy.all import IP, ICMP, sr, get_working_if, get_if_list, icmptypes
     bHasScapy = True
 except:
     bHasScapy = False
@@ -34,9 +30,9 @@ name = "icmping"
 brief_description = "Ping a host"
 type = "discover"
 
-globals = ["packetType", ]
+globals = [ "packetType", ]
 
-class CHostUp(CIngumaModule):
+class CHostUp(CIngumaDiscoverModule):
 
     ECHO_REPLY = 0
     DEST_UNREACH = 3
@@ -52,7 +48,7 @@ class CHostUp(CIngumaModule):
     INFORMATION_REQUEST = 15
     INFORMATION_RESPONSE = 16
     ADDRESS_MASK_REQUEST = 17
-    ADDRESS_MASK_REPPLY = 18
+    ADDRESS_MASK_REPLY = 18
 
     waitTime = 0
     up = {}
@@ -66,25 +62,25 @@ class CHostUp(CIngumaModule):
     dict = None
 
     def help(self):
-        print "target = <target host or network>"
-        print "timeout = <timeout>"
-        print "waitTime = <wait time between packets>"
-        print "packetType = <numeric packet type> (Default to ECHO_REQUEST)"
-        print "iface = <iface>"
+        self.gom.echo('target = <target host or network>')
+        self.gom.echo('timeout = <timeout>')
+        self.gom.echo('waitTime = <wait time between packets>')
+        self.gom.echo('packetType = <numeric packet type> (Default to ECHO_REQUEST)')
+        self.gom.echo('iface = <iface>')
 
     def runAsWizard(self):
         try:
-            print
-            print "Interface list"
-            print "--------------"
-            print
+            self.gom.echo('')
+            self.gom.echo('Interface list')
+            self.gom.echo('--------------')
+            self.gom.echo('')
             for miface in get_if_list():
-                print miface
+                self.gom.echo(miface)
 
-            print
+            self.gom.echo('')
 
             res = raw_input("Interface [" + get_working_if() + "]: ")
-            
+
             if res != "":
                 iface = res
 
@@ -98,18 +94,18 @@ class CHostUp(CIngumaModule):
 
     def run(self):
         if not bHasScapy:
-            print "No scapy support :("
+            self.gom.echo('No scapy support :(')
             return False
         self.results = {}
         self.up = {}
         self.down = {}
 
         target = IP(dst=self.target)
-        
+
         if self.wizard:
             self.runAsWizard()
 
-        self.gom.echo( "Sending probe to\t" + str(target.dst) )
+        self.gom.echo("Sending probe to\t" + str(target.dst))
         p = IP(dst=target.dst)/ICMP(type=self.packetType)
         ans, unans = sr(p, timeout=self.timeout, iface=self.iface, retry=0)
 
@@ -117,44 +113,27 @@ class CHostUp(CIngumaModule):
             for a in ans:
                 if a[0][0].type == 8:
                     self.up[len(self.up)+1] = a[0][0].dst
-                    self.addToDict("alive", a[0][0].dst)
-                    self.addToDict("hosts", a[0][0].dst)
-                    self.addToDict("targets", a[0][0].dst)
-                    #self.addToDict(ans[0][0].dst + "_trace", a[0][0].dst)
+                    self.add_data_to_kb("alive", a[0][0].dst)
+                    self.add_data_to_kb("hosts", a[0][0].dst)
+                    self.add_data_to_kb("targets", a[0][0].dst)
+                    #self.add_data_to_kb(ans[0][0].dst + "_trace", a[0][0].dst)
                 else:
                     self.down[len(self.up)+1] = a[0][0].dst
-                    self.gom.echo( "Answer of type " + str(icmptypes[a[0][0].type]) + " from " + str(a[0][0].dst) )
+                    self.gom.echo('Answer of type ' + str(icmptypes[a[0][0].type]) + ' from ' + str(a[0][0].dst))
 
         self.results = self.up
         return True
-    
-    def printSummary(self):
+
+    def print_summary(self):
         if len(self.results) == 0:
             return
 
         i = 0
-        self.gom.echo( "" )
-        self.gom.echo( "Discovered hosts" )
-        self.gom.echo( "----------------" )
-        self.gom.echo( "" )
+        self.gom.echo('')
+        self.gom.echo('Discovered hosts')
+        self.gom.echo('----------------')
+        self.gom.echo('')
 
         for res in self.results:
             i += 1
-            self.gom.echo( "Found host " + str(i) + "\t" + str(self.results[res]) )
-
-        print
-
-if __name__ == "__main__":
-    import sys
-    objHostUp = CHostUp()
-    objHostUp.iface = "eth0"
-
-    if len(sys.argv) == 1:
-        objHostUp.target = "192.168.1.1"
-    else:
-        objHostUp.target = sys.argv[1]
-
-    objHostUp.run()
-
-    for host in objHostUp.up:
-        self.gom.echo( "Host " + str(host) +" is up" )
+            self.gom.echo('Found host ' + str(i) + "\t" + str(self.results[res]))
