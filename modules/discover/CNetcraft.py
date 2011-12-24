@@ -1,17 +1,17 @@
 ##      CNetcraft.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -41,7 +41,7 @@ class SimpleHTMLParser(HTMLParser):
             self.ignoreIt = False
 
     def handle_data(self, data):
-    
+
         if len(data) > 1 and data.lower().find("uptime graph") == -1:
 
             if data[0:1] == '\r' or data[0:1] == '\n':
@@ -52,7 +52,7 @@ class SimpleHTMLParser(HTMLParser):
 class CNetcraft(CIngumaDiscoverModule):
 
     def NetcraftHtmlParser(self, data):
-        
+
         html_parser = SimpleHTMLParser()
         html_parser.feed(data)
         html_parser.close()
@@ -73,7 +73,7 @@ class CNetcraft(CIngumaDiscoverModule):
 
     def help(self):
         """ Method called when 'help <module> is executed from the command line. """
-        self.gom.echo("target = \"<target host or network>\"")
+        self.gom.echo('target = "<target host or network>"')
 
     def run(self):
         try:
@@ -97,9 +97,8 @@ class CNetcraft(CIngumaDiscoverModule):
         end = len(self.data)
         for x in range(start, end):
             try:
-                self.gom.echo( str(self.data[start]) + ':\t\t' + str(self.data[start + 1]) )
+                self.gom.echo(str(self.data[start]) + ':\t\t' + str(self.data[start + 1]))
                 self.addToDict(self.target + "_netcraft", [self.data[start], self.data[start + 1]])
                 start = start + 2
             except:
                 return False
-
