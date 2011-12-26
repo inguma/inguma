@@ -217,6 +217,10 @@ class CIngumaGatherModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma gather module. """
 
+    module_type = 'gather'
+
 class CIngumaRCEModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma RCE module. """
+
+    module_type = 'rce'

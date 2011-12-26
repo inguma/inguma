@@ -1,96 +1,94 @@
-#!/usr/bin/python
-
 ##      CRceToolBox.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys, os, string
+import sys, string
 from lib.libasciienc import *
 from lib.librcetools import *
-from lib.module import CIngumaModule
+from lib.module import CIngumaRCEModule
 
 name = "toolbox"
 brief_description = "A module with many RCE tools"
 type = "rce"
 
-class CRceToolBox(CIngumaModule):
+class CRceToolBox(CIngumaRCEModule):
     interactive = True
 
     def help(self):
-        print "A module with many RCE tools"
+        self.gom.echo('A module with many RCE tools')
 
-    def showHelp(self):
-        print 
-        print "Inguma's RCE Toolbox Help"
-        print "========================="
-        print
-        print "help                     Show this help"
-        print "exit                     Exit from RCE Toolbox"
-        print 
-        print "Convertion tools"
-        print "----------------"
-        print 
-        print "ascii2bin                Convert ASCII to Binary"
-        print "ascii2oct                Convert ASCII to Octal"
-        print "ascii2hex                Convert ASCII to Hexadecimal"
-        print "ascii2str                Convert ASCII to string"
-        print
-        print "bin2ascii                Convert Binary to ASCII"
-        print "oct2ascii                Convert Octal to ASCII"
-        print "hex2ascii                Convert Hexadecimal to ASCII"
-        print "str2ascii                Convert string to ASCII"
-        print
-        print "Misc"
-        print "----"
-        print
-        print "pattern                  pattern <length> <string>"
-        print
+    def help_interactive(self):
+        self.gom.echo()
+        self.gom.echo('Inguma\'s RCE Toolbox Help')
+        self.gom.echo('=========================')
+        self.gom.echo()
+        self.gom.echo('help                     Show this help')
+        self.gom.echo('exit                     Exit from RCE Toolbox')
+        self.gom.echo()
+        self.gom.echo('Conversion tools')
+        self.gom.echo('----------------')
+        self.gom.echo()
+        self.gom.echo('ascii2bin                Convert ASCII to Binary')
+        self.gom.echo('ascii2oct                Convert ASCII to Octal')
+        self.gom.echo('ascii2hex                Convert ASCII to Hexadecimal')
+        self.gom.echo('ascii2str                Convert ASCII to string')
+        self.gom.echo()
+        self.gom.echo('bin2ascii                Convert Binary to ASCII')
+        self.gom.echo('oct2ascii                Convert Octal to ASCII')
+        self.gom.echo('hex2ascii                Convert Hexadecimal to ASCII')
+        self.gom.echo('str2ascii                Convert string to ASCII')
+        self.gom.echo()
+        self.gom.echo('Misc')
+        self.gom.echo('----')
+        self.gom.echo()
+        self.gom.echo('pattern                  pattern <length> <string>')
+        self.gom.echo()
 
     def ascii2bin(self, asciistr):
-        print "ASCII:\t\t" + asciistr
+        self.gom.echo("ASCII:\t\t" + asciistr)
         #asciistr = asciistr.split("ascii2bin ")
-        print "Binary:\t\t" + ascii2binary(asciistr)
+        self.gom.echo("Binary:\t\t" + ascii2binary(asciistr))
 
     def ascii2oct(self, octstr):
-        print "ASCII:\t\t" + octstr
-        print "Octal:\t\t" + ascii2octal(octstr)
+        self.gom.echo("ASCII:\t\t" + octstr)
+        self.gom.echo("Octal:\t\t" + ascii2octal(octstr))
 
     def ascii2hex(self, hexstr):
-        print "ASCII:\t\t" + hexstr
-        print "Hexadecimal:\t" + ascii2hex(hexstr)
+        self.gom.echo("ASCII:\t\t" + hexstr)
+        self.gom.echo("Hexadecimal:\t" + ascii2hex(hexstr))
 
     def bin2ascii(self, binstr):
-        print "Binary:\t\t" + binstr
-        print "ASCII:\t\t" + bin2ascii(binstr)
+        self.gom.echo("Binary:\t\t" + binstr)
+        self.gom.echo("ASCII:\t\t" + bin2ascii(binstr))
 
     def oct2ascii(self, octstr):
-        print "Octal:\t\t" + octstr
-        print "ASCII:\t\t" + octal2ascii(octstr)
+        self.gom.echo("Octal:\t\t" + octstr)
+        self.gom.echo("ASCII:\t\t" + octal2ascii(octstr))
 
     def hex2ascii(self, hexstr):
-        print "Hexadecimal:\t" + hexstr
-        print "ASCII:\t\t" + hex2ascii(hexstr)
+        self.gom.echo("Hexadecimal:\t" + hexstr)
+        self.gom.echo("ASCII:\t\t" + hex2ascii(hexstr))
 
     def str2ascii(self, data):
-        print encrypt(data)
+        self.gom.echo(encrypt(data))
 
     def ascii2str(self, data):
-        print unencrypt(data)
+        self.gom.echo(unencrypt(data))
 
     def pattern(self, input):
 
@@ -100,8 +98,8 @@ class CRceToolBox(CIngumaModule):
         except:
             patlen = input
             search = False
-        #print "patlen: " + patlen
-        #print "patstr: " + patstr
+        #self.gom.echo("patlen: " + patlen)
+        #self.gom.echo("patstr: " + patstr)
 
         stop = int(patlen) / 3 + 1
         patend = int(patlen)
@@ -133,13 +131,13 @@ class CRceToolBox(CIngumaModule):
 
         if search == False:
             sys.stdout.write(item[0:patend])
-            print item[0:patend]
+            self.gom.echo(item[0:patend])
         else:
             location = item.find(patstr)
             if location == -1:
-                print patstr + " not found in buffer."
+                self.gom.echo(patstr + " not found in buffer.")
                 sys.exit()
-            print location
+            self.gom.echo(location)
 
     def runLoop(self):
         while 1:
@@ -150,8 +148,8 @@ class CRceToolBox(CIngumaModule):
             except EOFError:
                 break
             except:
-                print "raw_input:", sys.exc_info()[1]
-            
+                self.gom.echo("raw_input:", sys.exc_info()[1])
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
@@ -184,11 +182,11 @@ class CRceToolBox(CIngumaModule):
                 mystring = string.join(words[1:])
                 self.ascii2str(mystring)
             elif words[0].lower() == "help":
-                self.showHelp()
+                self.help_interactive()
             elif words[0].lower() in ["exit", "quit"]:
                 break
             else:
-                print "Unknow option or command '%s'" % res
+                self.gom.echo("Unknown option or command '%s'" % res)
 
     def run(self):
 
