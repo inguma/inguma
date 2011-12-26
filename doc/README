@@ -1,8 +1,8 @@
-Inguma v0.0.6
+Inguma v0.4
 -------------
 
 Inguma is an open source penetration testing toolkit written completely in Python.
-The environment is mainly oriented to attack Oracle related systems but, anyway, 
+The environment was mainly oriented to attack Oracle related systems but, anyway,
 it can be used against any other kind of systems.
 
 What the fuck is "Inguma"?
@@ -14,34 +14,40 @@ and, also, the one who make the nightmares.
 Who is the author?
 ------------------
 
-The author of Inguma is Joxean Koret, a basque software developer who mainly works
-with Oracle products.
+The original author of Inguma is Joxean Koret, a basque software developer who mainly
+works with Oracle products.
+
+Currently is maintained by Hugo Teso and David Martínez.
 
 For what purpose was it created?
 --------------------------------
 
 It is being created mainly for fun, not for (economic) profit but, of course, it can
-be used to accomplish that kind of thinks.
+be used to accomplish that kind of things.
 
 It doesn't work for me!
 -----------------------
 
-Well, is a pre-alpha version so, is "expected behaviour". Please, open a bug in the
-project's bugtracker, available here: 
+Well, whether you are using the stable or the development version, we are committed to
+offer our users the best possible experience.  Even so, our resources are limited and
+we do our best to test the whole program, so if you find any problem, please open a
+ticket in the project's bugtracker, available here:
 
-http://sourceforge.net/tracker/?group_id=188246&atid=924541
+http://inguma.eu/issues/
+
+Thanks!
 
 What the f*ck are "discover" and "gather" modules?
 --------------------------------------------------
 
-Discover modules are used to detect networks and hosts; gather modules are used to 
+Discover modules are used to detect networks and hosts; gather modules are used to
 determine what services are listening at the host, what operative system is being
 used, what service pack, etc...
 
 It doesn't work "always" in Win32!
 ----------------------------------
 
-I'm working in this subject but is hard work. There is no well support for raw 
+I'm working in this subject but is hard work. There is no well support for raw
 sockets or, well, no "easy" support. In example, many of the modules (gather mainly)
 which uses the Scapy library will have problems in Win32 distribution.
 
@@ -55,14 +61,14 @@ you will get a working Inguma version.
 I want to collaborate!
 ----------------------
 
-Ok. Send patches and/or ideas to my personal e-mail joxeankoret@yahoo.es and I will 
-take a look. Help in this open source project (as in any other OS project) is very
-needed.
+Ok. Send patches and/or ideas to the bug tracker or our development list
+(inguma-devel@inguma.eu) and we will take a look. Help in this open source project
+(as in any other OS project) is very needed.
 
 Can I use it for commercial purposes?
 -------------------------------------
 
-Of course, but you need to accomplish with the GPL v2 License, which allows the
+Of course, but you need to comply with the GPL v2 License, which allows the
 commercial use of it.
 
 I created a new module for Inguma. Now, what?
@@ -86,16 +92,16 @@ http://oss.coresecurity.com/projects/impacket.html
 
 In the near future it will be replaced with the scapy implementation, surely.
 
-There is no gui!
+There is no GUI!
 ----------------
 
-Inguma comes with 2 GUIs: text based and PyQT based. The most tested one and the unique
-will work surely is the text based. The PyQT one is _only_ the first version of it.
+Inguma comes with 2 functional GUIs: text-based and PyGTK-based. If you don't have a
+graphical display, PyGTK will not work.
 
 No module named cx_Oracle
 -------------------------
 
-When you tries to use any Oracle related module you may found that error. You need to 
+When you tries to use any Oracle related module you may found that error. You need to
 download and install yourself that library from the following location:
 
 http://www.cxtools.net/default.aspx?nav=cxorlb
@@ -110,15 +116,12 @@ protoscan: global name 'conf' is not defined
 --------------------------------------------
 
 Due to an unknown (at the moment) to me reason Scapy fails reporting that the target being
-scanned doesn't exist. If you get the problem with an existent target, please, open a bug
-at the following location:
-
-http://sourceforge.net/tracker/?group_id=188246&atid=924541
+scanned doesn't exist. If you get the problem with an existent target, please, open a ticket!
 
 How can I create shellcodes?
 ----------------------------
 
-At the moment only x86 procesor based shellcodes for Linux and OpenBSD can be created. To
+At the moment only x86 procesor-based shellcodes for Linux and OpenBSD can be created. To
 learn using PyShellcodeLib (the library used for that purpose) take a look to the file
 $INGUMA_DIR/lib/pyshellcodelib, mainly, to the file pyshellcodelib.py, which comes with
 an example that prints a C based program ready to run your shellcodes.
@@ -127,12 +130,9 @@ Is PyShellcodeLib Free?
 -----------------------
 
 Yes, it's completely free. GPL'ed. Version2. In fact, that library is a replacement for the
-non free (as in freedom) library InlineEgg of CORE Impact.
+non-free (as in freedom) library InlineEgg of CORE Impact.
 
 How to disassemble, to do a bindiff, etc...?
 --------------------------------------------
 
 Read the corresponding README file: $INGUMA_DIR/dis/README.
-
-
-
