@@ -276,7 +276,7 @@ def loadModule(path, atype, marray, bLoad = True):
                                 exec ("global " + aGlobal)
                                 GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
-                                print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename) 
+                                print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename)
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
@@ -286,7 +286,7 @@ def loadModule(path, atype, marray, bLoad = True):
                 exec(marray + ".append(eval(file))")
 
                 commands[eval(file).name] = eval(file)
-                
+
                 if atype == "unknown":
                     if eval(file).type == "gather":
                         exec("gathers.append(eval(file))")

@@ -1,36 +1,32 @@
-#!/usr/bin/python
-
-##      main.py
-#       
+##      CHexDump.py
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import sys
-
-from lib.module import CIngumaModule
+from lib.module import CIngumaRCEModule
 
 name = "hexdump"
 brief_description = "A simple HexDump utility"
-type = "rce" # The type of a module, currently, can only be 'gather', 'exploit', 'discover', 'fuzz' or 'brute'
+type = "rce"
 
 globals = ['dumpSize', ]
 
-class CHexDump(CIngumaModule):
-    """ The example module. The main class will always starts with the character "C". Any other class will be ignored """
+class CHexDump(CIngumaRCEModule):
+    """ Module to do an hexadecimal dump of a file. """
 
     startOffset = 0
     dumpSize = -1
@@ -43,17 +39,17 @@ class CHexDump(CIngumaModule):
 
     def help(self):
         """ This is the entry point for info <module> """
-        print "target = < Target file >"
-        print "dumpSize = < Size of data to dump >"
+        self.gom.echo("target = < Target file >")
+        self.gom.echo("dumpSize = < Size of data to dump >")
 
     def run(self):
         """ This is the main entry point of the module """
 
-        print "dumpSize %s" % self.dumpSize
+        self.gom.echo("dumpSize %s" % self.dumpSize)
         try:
             file = open(self.target, 'rb')
         except:
-            print "Cannot open file %s" % self.target
+            self.gom.echo("Cannot open file %s" % self.target)
             return False
 
         # if self.dumpSize was not provided, make it size of file
@@ -62,13 +58,13 @@ class CHexDump(CIngumaModule):
                 file.seek(0, 2)
                 self.dumpSize = file.tell()
             except:
-                print 'Cannot determine size of %s' % self.target
+                self.gom.echo('Cannot determine size of %s' % self.target)
                 return False
 
         try:
             file.seek(self.startOffset)
         except:
-            print 'Cannot use startOffset %d in %s' % (self.startOffset, self.target)
+            self.gom.echo('Cannot use startOffset %d in %s' % (self.startOffset, self.target))
             return False
 
         maxReadBlock = self.bytesPerGroup * self.groupsPerLine
@@ -106,7 +102,7 @@ class CHexDump(CIngumaModule):
                 else:
                     lineBuffer += '  '
 
-            # print ascii?
+            # self.gom.echo(ascii?)
             if (self.printAscii == 'y'):
                 lineBuffer += '%s|%s' % (str(' ') * self.spacesBetweenGroup, str(' ') * self.spacesBetweenGroup)
                 for index in range(bytesRead):
@@ -116,7 +112,7 @@ class CHexDump(CIngumaModule):
                         lineBuffer += "'"
 
             try:
-                print lineBuffer
+                self.gom.echo(lineBuffer)
             except:
                 break
 
