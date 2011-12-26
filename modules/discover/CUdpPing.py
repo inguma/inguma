@@ -17,9 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
-import time
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 try:
     import scapy.all as scapy
@@ -31,7 +29,7 @@ name = "udping"
 brief_description = "UDP Ping"
 type = "discover"
 
-class CUdpPing(CIngumaModule):
+class CUdpPing(CIngumaDiscoverModule):
 
     port = 135
     waitTime = 0

@@ -21,7 +21,7 @@
 import sys
 import socket
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "whois"
 brief_description = "Query multiple whois databases"
@@ -29,7 +29,7 @@ type = "discover"
 
 globals = ['db', ]
 
-class CWhois(CIngumaModule):
+class CWhois(CIngumaDiscoverModule):
     port = 0
     waitTime = 0
     timeout = 1

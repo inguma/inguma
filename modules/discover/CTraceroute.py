@@ -20,7 +20,7 @@
 
 import random
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 try:
     from scapy.all import IP, TCP, sr, conf, TracerouteResult
@@ -33,7 +33,7 @@ name = "tcptrace"
 brief_description = "Trace a route to a host(s)"
 type = "discover"
 
-class CTraceroute(CIngumaModule):
+class CTraceroute(CIngumaDiscoverModule):
 
     ports = [21, 22, 23, 80, 443, 135, 139, 445, 1521, 1526, 1531, 1541, 1551, 1561, 7777, 7999, 8000, 8001, 8002, 8888]
     sport = random.randint(1024, 65535)

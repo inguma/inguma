@@ -78,7 +78,7 @@ class CIngumaModule:
 
         if self.dict is not None:
             if self.dict.has_key(element):
-            
+
                 for x in self.dict[element]:
                     if x == value:
                         return
@@ -107,9 +107,10 @@ class CIngumaNewModule:
     for creating an Inguma module.
     This class will supersede CIngumaModule in the future. """
 
-    target = ""
+    target = ''
     timeout = 1
     dict = None
+    module_type = None
 
     # Legacy properties follow.
 
@@ -136,7 +137,7 @@ class CIngumaNewModule:
 
         if self.dict is not None:
             if self.dict.has_key(element):
-            
+
                 for x in self.dict[element]:
                     if x == value:
                         return
@@ -158,11 +159,11 @@ class CIngumaNewModule:
     def run(self):
         """ Method called when the module is invoked.
         If it returns False, execution is stopped there.
-        If it returns True, then printSummary() is called after run().
+        If it returns True, then print_summary() is called after run().
         """
         pass
 
-    def show_help(self):
+    def help_interactive(self):
         """ Method called when the module is interactive and 'help' is executed
         from the command line. """
         pass
@@ -180,6 +181,11 @@ class CIngumaNewModule:
         print_summary(). """
         self.print_summary()
 
+    def show_help(self):
+        """ Method called when the module is interactive and 'help' is executed
+        from the command line. Superseded by help_interactive()."""
+        self.help_interactive()
+
 class CIngumaBruteModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma brute-force module. """
@@ -188,10 +194,15 @@ class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma discover module. """
 
+    module_type = 'discover'
+
 class CIngumaExploitModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma exploit module. """
 
+    module_type = 'exploit'
+
+    # Legacy properties follow.
     # The following are used ONLY for exploits (shellcode).
     #command = ""
     #listenPort = 4444
