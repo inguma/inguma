@@ -22,7 +22,7 @@ import os
 import gtk, pango
 import gtksourceview2
 
-import interactive_buttons
+import lib.ui.bokken.interactive_buttons as interactive_buttons
 
 class InteractiveTextView(gtk.VBox):
     '''Interactive Right TextView elements'''
@@ -41,7 +41,7 @@ class InteractiveTextView(gtk.VBox):
         lm = gtksourceview2.LanguageManager()
         # Add ui dir to language paths
         paths = lm.get_search_path()
-        paths.append(os.getcwd() + os.sep + 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep)
+        paths.append(os.path.dirname(__file__) + os.sep + 'data' + os.sep)
         lm.set_search_path(paths)
         self.buffer = gtksourceview2.Buffer()
         self.buffer.create_tag("green-background", background="green", foreground="black")
@@ -100,8 +100,8 @@ class InteractiveTextView(gtk.VBox):
 
     def update_content(self):
         # Add hexdump to textview
-        self.uicore.pyew.offset = 0
-        dump = self.uicore.pyew.hexdump(self.uicore.pyew.buf, self.uicore.pyew.hexcolumns)
+        self.uicore.core.offset = 0
+        dump = self.uicore.core.hexdump(self.uicore.core.buf, self.uicore.core.hexcolumns)
         self.buffer.set_text(dump)
 
     def _key(self, widg, event):
@@ -109,7 +109,7 @@ class InteractiveTextView(gtk.VBox):
         # Number
         if event.keyval in [self.key_1, self.key_2, self.key_3, self.key_4, self.key_5,\
                             self.key_6, self.key_7, self.key_8, self.key_9]:
-            self.interactive_buttons.seek(self, event.string)
+            self.interactive_buttons.seek(self, None, None, event.string)
         elif event.keyval == self.key_b:
             self.interactive_buttons.move(self, event.string)
         elif event.keyval == self.key_f:

@@ -25,7 +25,7 @@ import traceback
 import zlib
 
 from stat import *
-from Elf.elf_lookup import *
+from extlib.pyew.Elf.elf_lookup import *
 
 verbose = False
 

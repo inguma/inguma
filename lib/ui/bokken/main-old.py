@@ -1,0 +1,191 @@
+#       main.py
+#       
+#       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+
+import os, sys, threading
+
+# Now that I know that I have them, import them!
+import gtk, gobject
+
+import core
+import textviews
+
+# Threading initializer
+if sys.platform == "win32":
+    gobject.threads_init()
+else:
+    gtk.gdk.threads_init()
+
+MAINTITLE = "Bokken, a GUI for pyew and (soon) radare2!"
+VERSION = "1.0"
+
+FAIL = '\033[91m'
+OKGREEN = '\033[92m'
+ENDC = '\033[0m'
+
+class MainApp:
+    '''Main GTK application'''
+
+    def __init__(self, target, ing):
+
+        self.target = target
+        self.empty_gui = False
+        self.version = VERSION
+        self.ing = ing
+
+        self.uicore = core.Core()
+
+        # Check if target name is an URL, pyew stores it as 'raw'
+        self.uicore.is_url(self.target)
+
+        if self.target:
+            # Just open the target if path is correct or an url
+            if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.target):
+                print "Incorrect file argument:", FAIL, self.target, ENDC
+                sys.exit(1)
+    
+            # Use threads to avoid freezing the GUI load
+            thread = threading.Thread(target=self.load_file, args=(self.target,))
+            thread.start()
+            # This call must not depend on load_file data
+            gobject.timeout_add(500, self.show_file_data, thread)
+        else:
+            self.empty_gui = True
+
+
+        gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
+
+        # Create VBox to contain top buttons and other VBox
+        self.supervb = gtk.VBox(False, 1)
+
+        # Create top buttons and add to VBox
+        self.topbuttons = self.ing.bokken_tb
+
+        # Create VBox to contain textviews and statusbar
+        self.mainvb = gtk.VBox(False, 1)
+        self.supervb.pack_start(self.mainvb, True, True, 1)
+
+        # Initialize and add TextViews
+        self.tviews = textviews.TextViews(self.uicore)
+
+        # Add textviews and statusbar to the VBox
+        self.mainvb.pack_start(self.tviews, True, True, 1)
+
+        # Start the throbber while the thread is running...
+        self.topbuttons.throbber.running(True)
+
+        # Disable all until file loads
+        self.disable_all()
+
+        if self.empty_gui:
+            self.show_empty_gui()
+
+
+    def get_supervb(self):
+        return self.supervb
+
+    # Do all the core stuff of parsing file
+    def load_file(self, target):
+
+        self.ing.gom.insert_bokken_text({'Please wait while loading file':target}, '')
+        print "Loading file: %s..." % (target)
+        self.uicore.load_file(target)
+        if self.uicore.pyew.format in ['PE', 'Elf']:
+            self.uicore.get_sections()
+        print 'File successfully loaded' + OKGREEN + "\tOK" + ENDC
+
+    def show_empty_gui(self):
+        self.topbuttons.throbber.running('')
+
+    # Once we have the file info, let's create the GUI
+    def show_file_data(self, thread):
+        if thread.isAlive() == True:
+            return True
+        else:
+            #print "File format detected: %s" % (self.uicore.pyew.format)
+            # Create left combo depending on file format
+            self.tviews.update_left_combo()
+            # Right combo content
+            self.tviews.update_right_combo()
+
+            # Add data to RIGHT TextView
+            if self.uicore.pyew.format in ["PE", "ELF"]:
+                self.tviews.update_righttext('Disassembly')
+            elif self.uicore.pyew.format in ["PYC"]:
+                self.tviews.update_righttext('Python')
+            elif self.uicore.pyew.format in ['URL']:
+                self.tviews.update_righttext('URL')
+            elif self.uicore.pyew.format in ['Plain Text']:
+                self.tviews.update_righttext('Plain Text')
+            else:
+                self.tviews.update_righttext('Hexdump')
+
+            # Add data to INTERACTIVE TextView
+            self.tviews.update_interactive()
+
+            # Load data to LEFT Tree
+            if self.uicore.pyew.format in ["PE", "ELF"]:
+                self.tviews.create_model('Functions')
+                self.tviews.left_combo.set_active(0)
+            elif self.uicore.pyew.format in ["PDF"]:
+                # Why?! Oh why in the name of God....!!
+                self.tviews.create_model('PDF')
+                #self.tviews.left_combo.set_active(0)
+            elif self.uicore.pyew.format in ["URL"]:
+                self.tviews.create_model('URL')
+
+            # Update statusbar with file info
+            info = self.uicore.get_file_info()
+            self.ing.gom.insert_bokken_text(info, '')
+
+            # Create seek entry autocompletion of function names...
+            self.tviews.create_completion()
+
+            # Enable GUI
+            self.enable_all()
+            self.topbuttons.throbber.running('')
+
+    def disable_all(self):
+        self.topbuttons.disable_all()
+        self.tviews.set_sensitive(False)
+
+    def enable_all(self):
+        self.topbuttons.set_sensitive(True)
+        self.topbuttons.enable_all()
+        self.tviews.set_sensitive(True)
+
+    def quit(self, widget, event, data=None):
+        '''Main quit.
+
+        @param widget: who sent the signal.
+        @param event: the event that happened
+        @param data: optional data to receive.
+        '''
+        msg = ("Do you really want to quit?")
+        dlg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
+        opt = dlg.run()
+        dlg.destroy()
+
+        if opt != gtk.RESPONSE_YES:
+            return True
+
+        gtk.main_quit()
+        return False
+
+def main(target):
+    MainApp(target)

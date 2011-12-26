@@ -25,10 +25,22 @@ FAIL = '\033[91m'
 ENDC = '\033[0m'
 
 def check_all():
+    python_version()
     pyew_dependency_check()
+    radare_dependency_check()
+    cores()
     gtkui_dependency_check()
     psyco_dependency_check()
     tidy_dependency_check()
+
+def python_version():
+    print '\tPython version...',
+    if sys.version_info[0] == 3:
+        print FAIL + "\tD'oh!" + ENDC
+        sys.stderr.write("Python3 not supported, install python 2.7 to run Bokken")
+        exit(1)
+    else:
+        print OKGREEN + "\tOK" + ENDC
 
 def tidy_dependency_check():
     '''Try to use tidy'''
@@ -40,7 +52,7 @@ def tidy_dependency_check():
         print OKGREEN + "\tOK" + ENDC
     except ImportError:
         print FAIL + "\tD'oh!" + ENDC
-        msg = 'No tidy module found. HTTP code won\'t be properly formated\n'
+        msg = 'No tidy module found. HTTP code won\'t be properly formatted\n'
         print msg
 
 def pyew_dependency_check():
@@ -49,14 +61,41 @@ def pyew_dependency_check():
     print 'Checking:'
     print '\tPyew availability...',
 
+    global HAS_PYEW
     try:
-        import extlib.pyew.pyew as pyew
+        import pyew
         print OKGREEN + "\tOK" + ENDC
+        HAS_PYEW = True
     except:
         print FAIL + "\tD'oh!" + ENDC
-        msg = 'You need pyew for making this software work. Download it from its web:\n'
-        msg += '    - code.google.com/p/pyew/\n'
+        msg = 'You need pyew in order to use pyew backend in binaries and PDFs. Download it from its web:\n'
+        msg += '    - http://code.google.com/p/pyew/\n'
         print msg
+        HAS_PYEW = False
+        #sys.exit( 1 )
+
+def radare_dependency_check():
+    '''We need to verify the presence of radare2'''
+    
+    print '\tRadare availability...',
+
+    global HAS_RADARE
+    try:
+        import r2
+        print OKGREEN + "\tOK" + ENDC
+        HAS_RADARE = True
+    except:
+        print FAIL + "\tD'oh!" + ENDC
+        msg = 'You need radare2 bindings to use r2 backend. Download it from its web:\n'
+        msg += '    - http://www.radare.org\n'
+        print msg
+        HAS_RADARE = False
+
+def cores():
+    if not HAS_PYEW and not HAS_RADARE:
+        print "You need at least one core, either pyew or radare:"
+        print '    - http://code.google.com/p/pyew/'
+        print '    - http://www.radare.org'
         sys.exit( 1 )
 
 def psyco_dependency_check():

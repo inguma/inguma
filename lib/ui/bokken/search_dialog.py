@@ -17,13 +17,14 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import os
 import gtk
 
 class SearchDialog(gtk.Dialog):
     '''Window to popup search output'''
 
-    def __init__(self):
-        super(SearchDialog,self).__init__('Search results', None, gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
+    def __init__(self, title='Search results'):
+        super(SearchDialog,self).__init__(title, None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
 
         # the cancel button
         self.butt_cancel = self.action_area.get_children()[0]
@@ -32,6 +33,7 @@ class SearchDialog(gtk.Dialog):
         # Positions
         self.resize(400, 400)
         self.set_position(gtk.WIN_POS_CENTER)
+        self.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
 
         # Log TextView
         #################################################################

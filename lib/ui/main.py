@@ -75,7 +75,8 @@ import lib.ui.threadstv as threadstv
 import lib.ui.libAutosave as libAutosave
 if config.HAS_SOURCEVIEW:
     import lib.ui.bokken.main as bokken
-    import lib.ui.bokken.toolbar as bokken_toolbar
+    import lib.ui.bokken.pyew_toolbar as bokken_toolbar
+    import lib.ui.bokken.statusbar as bokken_statusbar
 import lib.ui.toolbar as toolbar
 import lib.ui.right_buttons as right_buttons
 import lib.ui.statusbar as statusbar
@@ -163,10 +164,6 @@ class MainApp(gtk.Window):
         splash.push(("Creating menu and toolbar..."))
         self.toolbar = toolbar.Toolbar(self.ing)
         mainvbox.pack_start(self.toolbar, False, False, 1)
-
-        if self.config.HAS_SOURCEVIEW:
-            self.bokken_tb = bokken_toolbar.TopButtons(self.ing)
-            mainvbox.pack_start(self.bokken_tb, False, False, 1)
 
         # Disable if not GtkSourceView2
         if not self.config.HAS_SOURCEVIEW:
@@ -334,11 +331,15 @@ class MainApp(gtk.Window):
 
         if self.config.HAS_SOURCEVIEW:
             # Create bokken UI and add to the Notebook
-            self.bokken = bokken.MainApp('', self.ing)
+            self.bokken = bokken.MainApp('', 'pyew', self)
+
+            self.bokken_tb = bokken_toolbar.TopButtons(self.bokken.uicore, self.bokken)
+            mainvbox.pack_start(self.bokken_tb, False, False, 1)
+
             self.rcevb = self.bokken.get_supervb()
             self.rcevb.show_all()
             self.notebook.append_page(self.rcevb, b)
-            self.bokken_tb.init_core()
+#            self.bokken_tb.init_core()
             self.bokken_tb.hide()
 
         #################################################################################################################################
@@ -518,10 +519,11 @@ class MainApp(gtk.Window):
         mainvbox.pack_end(self.statusbar, False, False, 1)
 
         if self.config.HAS_SOURCEVIEW:
-            self.bokken_sb = statusbar.Statusbar() 
-            mainvbox.pack_end(self.bokken_sb, False, False, 1)
-            self.gom.insert_bokken_text({'Open a new file to start':''}, self.bokken.version)
+            self.bokken_statusbar = bokken_statusbar.Statusbar(self.bokken.uicore, self.bokken.tviews) 
+            self.bokken_statusbar.create_statusbar()
+            mainvbox.pack_end(self.bokken_statusbar, False, False, 1)
 
+        self.bokken_statusbar.hide_all()
         self.statusbar.show_all()
 
         # Systray
@@ -591,21 +593,21 @@ class MainApp(gtk.Window):
                 self.toolbar.hide()
                 self.bokken_tb.show()
                 self.statusbar.hide()
-                self.bokken_sb.show_all()
+                self.bokken_statusbar.show_all()
             self.bottom_nb.hide()
         elif more == 1:
             if self.config.HAS_SOURCEVIEW:
                 self.toolbar.show()
                 self.bokken_tb.hide()
                 self.statusbar.show()
-                self.bokken_sb.hide()
+                self.bokken_statusbar.hide()
             self.bottom_nb.hide()
         elif more == 3:
             if self.config.HAS_SOURCEVIEW:
                 self.toolbar.show()
                 self.bokken_tb.hide()
                 self.statusbar.show()
-                self.bokken_sb.hide()
+                self.bokken_statusbar.hide()
             if self.exploits_nb.get_current_page() == 1:
                 self.bottom_nb.show()
         else:
@@ -613,7 +615,7 @@ class MainApp(gtk.Window):
                 self.toolbar.show()
                 self.bokken_tb.hide()
                 self.statusbar.show()
-                self.bokken_sb.hide()
+                self.bokken_statusbar.hide()
             if self.bottom_nb.is_visible:
                 self.bottom_nb.show()
             else:

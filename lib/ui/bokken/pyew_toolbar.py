@@ -1,4 +1,4 @@
-#       buttons.py
+#       pyew_toolbar.py
 #       
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os, sys
+import os
 
 import gtk, gobject
 import threading
@@ -27,38 +27,40 @@ OKGREEN = '\033[92m'
 ENDC = '\033[0m'
 
 # We need it for the "New" button
-import file_dialog
-import throbber
+import lib.ui.bokken.file_dialog as file_dialog
+import lib.ui.bokken.throbber as throbber
+
+import lib.ui.bokken.main_button_menu as main_button_menu
+import lib.ui.bokken.main_button as main_button
 
 class TopButtons(gtk.HBox):
     '''Top Buttons'''
 
-    def __init__(self, ing):
+    def __init__(self, core, main):
         super(TopButtons,self).__init__(False, 1)
 
-        self.ing = ing
-        #self.main = self.ing.bokken
+        self.main = main
 
+        self.uicore = core
         self.toolbox = self
+#        self.dependency_check = self.main.dependency_check
 
-        self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep
+        self.img_path = os.path.dirname(__file__) + os.sep + 'data' + os.sep
         self.options_dict = {'Hexadecimal':'x', 'String':'s', 'String no case':'i', 'Regexp':'r', 'Unicode':'u', 'Unicode no case':'U'}
 
         self.main_tb = gtk.Toolbar()
         self.main_tb.set_style(gtk.TOOLBAR_ICONS)
 
-        # New file button
-        self.new_tb = gtk.MenuToolButton(gtk.STOCK_NEW)
-        self.new_tb.set_tooltip_text('Open new file')
-        self.new_tb.connect("clicked", self.new_file)
-        self.main_tb.insert(self.new_tb, 0)
+        # Main Button
+        self.menu = main_button_menu.MenuBar(self.main)
 
-        # Rcent files menu
-        self.manager = gtk.recent_manager_get_default()
-        self.recent_menu = gtk.RecentChooserMenu(self.manager)
-        self.new_tb.set_menu(self.recent_menu)
-        self.new_tb.set_arrow_tooltip_text('Recent opened files')
-        self.recent_menu.connect('item-activated', self.recent_kb)
+        self.menu_button = main_button.MainMenuButton("Bokken", self.menu)
+        self.menu_button.set_border_width(0)
+
+        menu_toolitem = gtk.ToolItem()
+
+        menu_toolitem.add(self.menu_button)
+        self.main_tb.insert(menu_toolitem, 0)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
@@ -75,146 +77,172 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.sep, 3)
 
         # URL related buttons
-        self.url_tb = gtk.ToolButton()
+
         i = gtk.Image()
         pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-headers.png')
         scaled_buf = pixbuf.scale_simple(24,24,gtk.gdk.INTERP_BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        self.url_tb.set_icon_widget(i)
-        self.url_tb.set_tooltip_text('URL')
-        self.url_tb.connect("clicked", self.show_urls)
-        self.url_tb.set_sensitive(False)
-        self.main_tb.insert(self.url_tb, 4)
+        self.urls = gtk.MenuToolButton(i, 'URL')
+        #self.urls.set_icon_widget(i)
+        self.urls.set_tooltip_text('URL plugins')
+        self.urls.set_sensitive(False)
+        self.urls_menu = gtk.Menu()
 
-        self.check_url_tb = gtk.ToolButton()
         i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path  + 'response-body.png')
-        scaled_buf = pixbuf.scale_simple(24,24,gtk.gdk.INTERP_BILINEAR)
+        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-headers.png')
+        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        self.check_url_tb.set_icon_widget(i)
-        self.check_url_tb.set_tooltip_text('Check URL')
-        self.check_url_tb.connect("clicked", self.check_urls)
-        self.check_url_tb.set_sensitive(False)
-        self.main_tb.insert(self.check_url_tb, 5)
+        item = gtk.ImageMenuItem('Search for URL')
+        item.set_image(i)
+        item.connect("activate", self.show_urls)
+        self.urls_menu.append(item)
 
-        self.bad_url_tb = gtk.ToolButton()
         i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path  + 'request-body.png')
-        scaled_buf = pixbuf.scale_simple(24,24,gtk.gdk.INTERP_BILINEAR)
+        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-body.png')
+        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        self.bad_url_tb.set_icon_widget(i)
-        self.bad_url_tb.set_tooltip_text('Check bad URL')
-        self.bad_url_tb.connect("clicked", self.check_bad_urls)
-        self.bad_url_tb.set_sensitive(False)
-        self.main_tb.insert(self.bad_url_tb, 6)
+        item = gtk.ImageMenuItem('Check URL')
+        item.set_image(i)
+        item.connect("activate", self.check_urls)
+        self.urls_menu.append(item)
+
+        i = gtk.Image()
+        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'request-body.png')
+        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        i.set_from_pixbuf(scaled_buf)
+        item = gtk.ImageMenuItem('Check bad URL')
+        item.set_image(i)
+        item.connect("activate", self.check_bad_urls)
+        self.urls_menu.append(item)
+
+        self.urls_menu.show_all()
+
+        self.urls.set_menu(self.urls_menu)
+        self.urls_menu.show_all()
+        self.main_tb.insert(self.urls, 4)
+
         # Separator
         self.sep = gtk.SeparatorToolItem()
-        self.main_tb.insert(self.sep, 7)
+        self.main_tb.insert(self.sep, 5)
 
         # Visualizatin buttons
         self.visbin_tb = gtk.ToolButton(gtk.STOCK_ZOOM_FIT)
         self.visbin_tb.connect("clicked", self.execute, 'binvi')
         self.visbin_tb.set_tooltip_text('Visualize binary')
         self.visbin_tb.set_sensitive(False)
-        self.main_tb.insert(self.visbin_tb, 8)
+        self.main_tb.insert(self.visbin_tb, 6)
         # Separator
         self.sep = gtk.SeparatorToolItem()
-        self.main_tb.insert(self.sep, 9)
+        self.main_tb.insert(self.sep, 7)
 
         # Binary analysis buttons
         self.vtotal_tb = gtk.ToolButton(gtk.STOCK_CONNECT)
         self.vtotal_tb.connect("clicked", self.send_to_virustotal)
         self.vtotal_tb.set_tooltip_text('Send to VirusTotal')
         self.vtotal_tb.set_sensitive(False)
-        self.main_tb.insert(self.vtotal_tb, 10)
+        self.main_tb.insert(self.vtotal_tb, 8)
 
         self.threat_tb = gtk.ToolButton(gtk.STOCK_JUMP_TO)
         self.threat_tb.connect("clicked", self.execute, 'threat')
         self.threat_tb.set_tooltip_text('Search in Threat Expert')
         self.threat_tb.set_sensitive(False)
-        self.main_tb.insert(self.threat_tb, 11)
+        self.main_tb.insert(self.threat_tb, 9)
 
         self.shellcode_tb = gtk.ToolButton(gtk.STOCK_FIND)
         self.shellcode_tb.connect("clicked", self.search_shellcode)
         self.shellcode_tb.set_tooltip_text('Search for Shellcode')
         self.shellcode_tb.set_sensitive(False)
-        self.main_tb.insert(self.shellcode_tb, 12)
+        self.main_tb.insert(self.shellcode_tb, 10)
 
         # not yet working properly
         self.antivm_tb = gtk.ToolButton(gtk.STOCK_FIND_AND_REPLACE)
         self.antivm_tb.connect("clicked", self.search_antivm)
         self.antivm_tb.set_tooltip_text('Search for antivm tricks')
         self.antivm_tb.set_sensitive(False)
-        self.main_tb.insert(self.antivm_tb, 13)
+        self.main_tb.insert(self.antivm_tb, 11)
 
         self.packed_tb = gtk.ToolButton(gtk.STOCK_CONVERT)
         self.packed_tb.connect("clicked", self.check_packer)
         self.packed_tb.set_tooltip_text('Check if the PE file is packed')
         self.packed_tb.set_sensitive(False)
-        self.main_tb.insert(self.packed_tb, 14)
+        self.main_tb.insert(self.packed_tb, 12)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
-        self.main_tb.insert(self.sep, 15)
+        self.main_tb.insert(self.sep, 13)
 
         # Search components
-        self.search_tb = gtk.ToolItem()
-        self.search_label = gtk.Label('  Search:  ')
-        self.search_tb.add(self.search_label)
-        self.main_tb.insert(self.search_tb, 16)
-
         self.search_combo_tb = gtk.ToolItem()
-        self.search_combo = gtk.combo_box_new_text()
+        self.search_combo_align = gtk.Alignment(yalign=0.5)
+        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
+        self.search_combo = gtk.ComboBox(store)
+        rendererText = gtk.CellRendererText()
+        rendererPix = gtk.CellRendererPixbuf()
+        self.search_combo.pack_start(rendererPix, False)
+        self.search_combo.pack_start(rendererText, True)
+        self.search_combo.add_attribute(rendererPix, 'pixbuf', 0)
+        self.search_combo.add_attribute(rendererText, 'text', 1)
 
-        options = ['Hexadecimal', 'String', 'String no case', 'Regexp', 'Unicode', 'Unicode no case']
-        for option in options:
-            self.search_combo.append_text(option)
-        self.search_combo_tb.add(self.search_combo)
-        self.main_tb.insert(self.search_combo_tb, 17)
+        options = {
+            'String':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_16.png'),
+            'String no case':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_no_case_16.png'),
+            'Hexadecimal':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_hexadecimal_16.png'),
+            'Regexp':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_regexp_16.png')
+        }
+
+        for option in options.keys():
+            store.append([options[option], option])
+        self.search_combo.set_active(0)
+        self.search_combo_align.add(self.search_combo)
+        self.search_combo_tb.add(self.search_combo_align)
+        self.main_tb.insert(self.search_combo_tb, 14)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
         self.sep.set_draw(False)
-        self.main_tb.insert(self.sep, 18)
+        self.main_tb.insert(self.sep, 15)
 
         self.search_entry_tb = gtk.ToolItem()
         self.search_entry = gtk.Entry(100)
+        self.search_entry.set_text('Text to search')
+        self.search_entry.set_icon_from_stock(1, gtk.STOCK_FIND)
+        self.search_entry.set_icon_tooltip_text(1, 'Search')
+        self.search_entry.connect("activate", self.search)
+        self.search_entry.connect("icon-press", self.search)
+        self.search_entry.connect('focus-in-event', self._clean, 'in')
+        self.search_entry.connect('focus-out-event', self._clean, 'out')
         self.search_entry_tb.add(self.search_entry)
-        self.main_tb.insert(self.search_entry_tb, 19)
-
-        self.search_tb = gtk.ToolButton(gtk.STOCK_FIND)
-        self.search_tb.connect("clicked", self.search)
-        self.search_tb.set_tooltip_text('Search')
-        self.search_tb.set_sensitive(False)
-        self.main_tb.insert(self.search_tb, 20)
+        self.search_entry.set_sensitive(False)
+        self.main_tb.insert(self.search_entry_tb, 16)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
-        self.main_tb.insert(self.sep, 21)
+        self.main_tb.insert(self.sep, 17)
 
-        # Exit button
-        self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
-        self.exit_tb.connect("clicked", self._bye)
-        self.exit_tb.set_tooltip_text('Have a nice day ;-)')
-        self.main_tb.insert(self.exit_tb, 22)
+        # Cheatsheet button
+        self.cheatsheet_tb = gtk.ToolButton(gtk.STOCK_JUSTIFY_FILL)
+        self.cheatsheet_tb.set_tooltip_text('Show assembler reference sheet')
+        self.cheatsheet_tb.connect("clicked", self.create_cheatsheet_dialog)
+        self.main_tb.insert(self.cheatsheet_tb, 18)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
-        self.main_tb.insert(self.sep, 23)
+        self.main_tb.insert(self.sep, 19)
 
-        # About button
-        self.about_tb = gtk.ToolButton(gtk.STOCK_ABOUT)
-        self.about_tb.connect("clicked", self.create_about_dialog)
-        self.about_tb.set_tooltip_text('About Bokken')
-        self.main_tb.insert(self.about_tb, 24)
+        # Exit button
+        self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
+        self.exit_tb.set_label('Quit')
+        self.exit_tb.connect("clicked", self.main.quit)
+        self.exit_tb.set_tooltip_text('Have a nice day ;-)')
+        self.main_tb.insert(self.exit_tb, 20)
 
         # Throbber
         self.throbber = throbber.Throbber()
         self.throbber_tb = gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
-        self.main_tb.insert(self.throbber_tb, 25)
+        self.main_tb.insert(self.throbber_tb, 21)
 
         self.toolbox.pack_start(self.main_tb, True, True)
 
@@ -227,63 +255,46 @@ class TopButtons(gtk.HBox):
 
     # Private methods
     #
-    def _bye(self, widget):
-        msg = ("Do you really want to quit?")
-        dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
-        opt = dlg.run()
-        dlg.destroy()
 
-        if opt != gtk.RESPONSE_YES:
-            return True
-
-        gtk.main_quit()
-        return False
+    def _clean(self, widget, event, data):
+        if data == 'in':
+            if widget.get_text() == 'Text to search':
+                widget.set_text('')
+        elif data == 'out':
+            if widget.get_text() == '':
+                widget.set_text('Text to search')
 
     def disable_all(self):
         for child in self:
-            try:
-                if child.label.label not in ['New', 'Quit', 'About']:
-                    child.set_sensitive(False)
-            except:
-                pass
+            child.set_sensitive(False)
+            for button in child:
+                button.set_sensitive(False)
+                try:
+                    if button.get_label() not in ['New', 'Quit']:
+                        button.set_sensitive(False)
+                except:
+                    button.set_sensitive(False)
 
     def enable_all(self):
         for toolbar in self:
+            toolbar.set_sensitive(True)
             for child in toolbar:
                 child.set_sensitive(True)
-
-    def init_core(self):
-        self.uicore = self.ing.bokken.uicore
+        self.search_entry.set_sensitive(True)
+        self.search_entry.set_icon_sensitive(1, True)
 
     # New File related methods
     #
     def new_file(self, widget, file=''):
-        if not file:
-            dialog = file_dialog.FileDialog()
-            dialog.run()
-            self.file = dialog.file
+        dialog = file_dialog.FileDialog(True, False, 'pyew', file)
+        resp = dialog.run()
+        if resp == gtk.RESPONSE_DELETE_EVENT or resp == gtk.RESPONSE_REJECT:
+            dialog.destroy()
         else:
-            self.file = file
+            self.file = dialog.file
 
-        # Clean full vars where file parsed data is stored as cache
-        self.uicore.clean_fullvars()
-
-        # Check if file name is an URL, pyew stores it as 'raw'
-        self.uicore.is_url(self.file)
-
-        self.manager.add_item('file://' + self.file)
-
-        # Just open the file if path is correct or an url
-        if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.file):
-            print "Incorrect file argument:", FAIL, self.file, ENDC
-            sys.exit(1)
-
-        # Use threads not to freeze GUI while loading
-        # FIXME: Same code used in main.py, should be converted into a function
-        self.throbber.running(True)
-        t = threading.Thread(target=self.ing.bokken.load_file, args=(self.file,))
-        t.start()
-        gobject.timeout_add(500, self.load_data, t)
+            self.main.load_new_file(dialog, self.file)
+            dialog.destroy()
 
     def recent_kb(self, widget):
         """Activated when an item from the recent projects menu is clicked"""
@@ -298,13 +309,13 @@ class TopButtons(gtk.HBox):
             return True
         else:
             self.throbber.running('')
-            self.ing.bokken.show_file_data(thread)
+            self.main.show_file_data(thread)
             return False
 
     # Button callback methods
     #
     def search_pdfstreams(self, widget):
-        if self.uicore.pyew.format in 'PDF':
+        if self.uicore.core.format in 'PDF':
             streams = self.uicore.get_pdf_streams()
     
             self.create_search_dialog()
@@ -320,21 +331,22 @@ class TopButtons(gtk.HBox):
             md.run()
             md.destroy()
 
-    def search(self, widget):
+    def search(self, widget, icon_pos=None, event=None):
         data = self.search_entry.get_text()
-        model = self.search_combo.get_model()
-        active = self.search_combo.get_active()
-        option = model[active][0]
-
-        results = self.uicore.dosearch(data, self.options_dict[option])
-
-        self.create_search_dialog()
-        enditer = self.search_dialog.output_buffer.get_end_iter()
-
-        FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
-        for element in results:
-            hit = ("HIT [0x%08x]: %s\n" % (element.keys()[0], element.values()[0].translate(FILTER)))
-            self.search_dialog.output_buffer.insert(enditer, hit)
+        if data:
+            model = self.search_combo.get_model()
+            active = self.search_combo.get_active()
+            option = model[active][1]
+    
+            results = self.uicore.dosearch(data, self.options_dict[option])
+    
+            self.create_search_dialog()
+            enditer = self.search_dialog.output_buffer.get_end_iter()
+    
+            FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
+            for element in results:
+                hit = ("HIT [0x%08x]: %s\n" % (element.keys()[0], element.values()[0].translate(FILTER)))
+                self.search_dialog.output_buffer.insert(enditer, hit)
 
     def show_urls(self, widget):
         urls = self.uicore.get_urls()
@@ -452,17 +464,12 @@ class TopButtons(gtk.HBox):
 
         return False
 
-    def create_about_dialog(self, widget):
-        about = gtk.AboutDialog()
-        about.set_program_name("Bokken")
-        about.set_version("1.0")
-        about.set_copyright("(c) Hugo Teso <hteso@inguma.eu>")
-        about.set_comments("A GUI for pyew and (soon) radare2!")
-        about.set_website("http://bokken.inguma.eu")
-        about.set_logo(gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep + 'logo.png'))
-        about.set_modal(True)
-        about.run()
-        about.destroy()
+    def create_cheatsheet_dialog(self, widget):
+
+        import cheatsheet_dialog
+        self.cheatsheet_dialog = cheatsheet_dialog.CheatsheetDialog()
+
+        return False
 
     # Executes pyew's plugins
     def execute(self, widget, plugin):

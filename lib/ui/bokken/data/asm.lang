@@ -21,7 +21,7 @@
 
 -->
 <!--
-	Mostly copied and pasted from c.lang
+    Mostly copied and pasted from c.lang
 -->
 <language id="asm" _name="ASM" version="2.0" _section="Others">
     <metadata>
@@ -44,6 +44,7 @@
         <style id="octal"             _name="Octal number"        map-to="def:base-n-integer"/>
         <style id="hexadecimal"       _name="Hexadecimal number"  map-to="def:base-n-integer"/>
         <style id="binary"            _name="Binary number"       map-to="def:base-n-integer"/>
+        <style id="ir-direction"      _name="Instruction Register(IR) Direction" map-to="def:underlined"/>
     </styles>
     
     <default-regex-options case-sensitive="false"/>
@@ -92,6 +93,29 @@
                         ([0-9]+[Ee][+-]?[0-9]*))
                         (?![\w\.])
                     </match>
+                </context>
+
+                <!-- 
+                Context for underlining address to jump to in branch/jump instructions.
+                The regular expression has a first part that matches the opcode (instruction), a second one
+                that gets (if any) the type of opcode, and a third one that matches the next word as the address to link.
+                -->
+                <context id="ir-direction">
+                   <match extended="true">
+                    (?&lt;![\w\.])
+                                (?P&lt;opcode&gt;((J|CMOV|SET)N?(AE|BE|PE|PO|LE|GE|O|B|C|Z|E|A|S|P|L|G))|(FCMOVN?(BE|B|E|U))|CALL) ## Regex que captura el opcode
+                    (\s+(?P&lt;matched_type&gt;(DWORD|BYTE)\s+)?) ## Regex matching blanks and the dword/byte if it exists.
+                    (?P&lt;address&gt;\S+) ## Regex matching the next word to underline it.
+                    (?![\w\.])
+                   </match>
+                   <include>
+                    <!--context sub-pattern="0" style-ref="comment"/-->
+                    <context sub-pattern="opcode" style-ref="opcode"/>
+                    <context sub-pattern="matched_type" style-ref="type"/>
+                    <context sub-pattern="address" style-ref="ir-direction"/>
+                    <context sub-pattern="address" style-ref="comment"/>
+                    <context sub-pattern="hex" style-ref="hexadecimal"/>
+                   </include>
                 </context>
 
                 <context id="hexadecimal" style-ref="hexadecimal">
@@ -355,8 +379,11 @@
                     </match>
                 </context>
 
+		
             </include>
         </context>
+
+	
         
     </definitions>
 </language>
