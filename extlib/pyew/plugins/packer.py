@@ -21,9 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-import sys
-import pefile
-import peutils
+import extlib.pyew.peutils as peutils
 
 def checkPacker(pyew, doprint=True):
     """ Check if the PE file is packed """
