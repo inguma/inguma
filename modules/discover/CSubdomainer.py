@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CSubdomainer.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -25,16 +23,15 @@
 
 import random
 import socket
-import pprint
 import httplib
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaDiscoverModule
 
 name = "subdomainer"
 brief_description = "Find subdomains for a given domain"
 type = "discover"
 
-class CSubdomainer(CIngumaModule):
+class CSubdomainer(CIngumaDiscoverModule):
 
     exploitType = 0
     results = {}
@@ -70,7 +67,7 @@ class CSubdomainer(CIngumaModule):
                 "weblib", "weblogic", "webmail", "webserver", "webservices", "websphere", "whois", "wireless", "work",
                 "world", "write", "ws", "ws1", "ws2", "ws3", "www1", "www2", "www3", "error", "cpanel", "my"
                     ]
-    
+
     agents = [
                 "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
                 "Opera/9.80 (Windows NT 5.1; U; pl) Presto/2.8.131 Version/11.10",
@@ -85,10 +82,10 @@ class CSubdomainer(CIngumaModule):
                 ]
 
     def help(self):
-        self.gom.echo( "target = <target domain. ej: example.com>" )
+        self.gom.echo('target = <target domain. ej: example.com>')
 
     def test_wildcard(self):
-        self.gom.echo( "Testing wildcard..." )
+        self.gom.echo('Testing wildcard...')
         results = []
         charset = "abcdefghijklmnopqrstuvwxyz0123456789"
         for count in range(3):
@@ -103,37 +100,37 @@ class CSubdomainer(CIngumaModule):
                 results.append(response.status)
             except:
                 pass
-    
+
         if not results:
-            #self.gom.echo( "\tFalse" )
+            #self.gom.echo('\tFalse')
             return False
         else:
-            #self.gom.echo( "\tTrue" )
+            #self.gom.echo('\tTrue')
             return True
-    
+
     def check_host(self, hostname):
-        #self.gom.echo( "\t\tSearching for: " + hostname )
+        #self.gom.echo('\t\tSearching for: " + hostname )
         try:
             ip = socket.gethostbyname(hostname)
             self.results[hostname] = ip
-            #self.gom.echo( "OK -> " + ip )
+            #self.gom.echo('OK -> " + ip )
         except:
-            #self.gom.echo( "Meeec!" )
+            #self.gom.echo('Meeec!')
             pass
-    
+
     def find_subdomains(self):
         if self.test_wildcard() is True:
-            self.gom.echo( "The target domain has a DNS wildcard configuration." )
+            self.gom.echo('The target domain has a DNS wildcard configuration.')
             return
         else:
             # Internal dictionary
-            self.gom.echo( "Searching subdomains..." )
+            self.gom.echo('Searching subdomains...')
             for item in self.database:
                 subdomain = "%s.%s" % (item, self.target)
                 self.check_host(subdomain)
-    
+
         if not self.results:
-            self.gom.echo( "\tNothing found." )
+            self.gom.echo('\tNothing found.')
             return False
         else:
             return True
@@ -144,9 +141,9 @@ class CSubdomainer(CIngumaModule):
 
         return True
 
-    def printSummary(self):
+    def print_summary(self):
         for domain in self.results.keys():
-            self.gom.echo( "Domain: %s:\tIP: %s" % (domain, self.results[domain]) )
-            #self.gom.echo( "Adding to discovered hosts " + self.results[domain] )
-            self.addToDict("targets", self.results[domain])
-            self.addToDict(self.results[domain] + "_name", domain)
+            self.gom.echo("Domain: %s:\tIP: %s" % (domain, self.results[domain]) )
+            #self.gom.echo('Adding to discovered hosts " + self.results[domain] )
+            self.add_data_to_kb("targets", self.results[domain])
+            self.add_data_to_kb(self.results[domain] + "_name", domain)
