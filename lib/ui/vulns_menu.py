@@ -19,23 +19,26 @@
 
 import gtk
 
+from webbrowser import open_new
+
 class VulnsMenu(gtk.MenuBar):
     '''Vulns popup menu'''
 
-    def __init__(self, uicore, main):
+    def __init__(self, main):
         super(VulnsMenu,self).__init__()
 
-        self.uicore = uicore
         self.main = main
 
-    def create_menu(self, target):
+    def create_menu(self, poc, target):
         # Function Menu
         vulnmenu = gtk.Menu()
+        self.poc = poc
+        self.id = target.split('-')[0]
+        self.host = target.split('-')[1]
 
         self.targetm = gtk.ImageMenuItem(target)
-        self.targetm.set_image(self.target_img)
         label = self.targetm.get_children()[0]
-        label.set_markup('<b>OSVDB id: ' + target + '</b>')
+        label.set_markup('<b>OSVDB id: ' + self.id + '</b>')
         vulnmenu.append(self.targetm)
 
         # Separator
@@ -45,17 +48,35 @@ class VulnsMenu(gtk.MenuBar):
         # Open with browser, bokken and osvbd web
         self.browsermenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
         self.browsermenu.get_children()[0].set_label('Open in browser')
+        self.browsermenu.connect('activate', self.open_poc)
 
         vulnmenu.append(self.browsermenu)
 
         self.bokkenmenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
         self.bokkenmenu.get_children()[0].set_label('Open with Bokken')
+        self.bokkenmenu.connect('activate', self.open_bokken)
 
         vulnmenu.append(self.bokkenmenu)
 
         self.osvdbmenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
         self.osvdbmenu.get_children()[0].set_label('Open in OSVDB')
+        self.osvdbmenu.connect('activate', self.open_osvdb)
 
         vulnmenu.append(self.osvdbmenu)
 
         return vulnmenu
+
+    def open_osvdb(self, widget):
+        open_new('http://osvdb.org/show/osvdb/' + self.id)
+
+    def open_poc(self, widget):
+        open_new('http://' + self.host + self.poc)
+
+    def open_bokken(self, widget):
+        self.main.toolbar.hide()
+        self.main.bokken_tb.show()
+        self.main.statusbar.hide()
+        self.main.bokken_statusbar.show_all()
+        self.main.bottom_nb.hide()
+        self.main.notebook.set_current_page(2)
+        self.main.bokken_tb.new_file(None, 'http://' + self.host + self.poc)

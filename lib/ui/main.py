@@ -234,7 +234,7 @@ class MainApp(gtk.Window):
         self.right_hbox = gtk.HBox(False)
 
         # KB TreeView
-        self.treeview = right_tree.KBtree(self.uiman)
+        self.treeview = right_tree.KBtree(self, self.uicore)
         self.gom.set_kbwin(self.treeview)
         self.gom.set_map(self.xdotw)
 

@@ -20,19 +20,22 @@
 import os
 import gtk
 
-import lib.ui.core as core
 import lib.ui.config as config
+import lib.ui.vulns_menu as vulns_menu
 
 class KBtree(gtk.TreeView):
 
-    def __init__(self, node_menu):
+    def __init__(self, main, core):
         # TreeStore
         self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, str)
         # create the TreeView using treestore
         super(KBtree,self).__init__(self.treestore)
 
-        self.uicore = core.UIcore()
-        self.node_menu = node_menu
+        self.main = main
+        self.uicore = core
+        self.node_menu = main.uiman
+
+        self.vuln_popup = vulns_menu.VulnsMenu(self.main)
 
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
@@ -206,23 +209,27 @@ class KBtree(gtk.TreeView):
         targets = kb['targets']
         targets.sort()
         for host in targets:
-            if host + '_80-web-vulns' in kb.keys():
-                if host + '_os' in kb:
-                    target_os = kb[host + '_os'][0]
-                    for oss in config.ICONS:
-                        if oss.capitalize() in target_os:
-                            icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
-                            piter = self.treestore.append(None, [icon, host, oss])
-                else:
-                    piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
-                for id, vuln in kb[host + '_80-web-vulns']:
-                    if id not in ids.keys():
-                        #print "Set element:", element
-                        iditer = self.treestore.append( piter, [self.node_icon, id, None])
-                        self.treestore.append( iditer, [self.value_icon, vuln, None])
-                        ids[id] = iditer
-                    else:
-                        self.treestore.append( ids[id], [self.value_icon, vuln, None])
+            if host + '_tcp_ports' in kb:
+                for port in kb[host + '_tcp_ports']:
+                    if host + '_'+ str(port) + '-web-vulns' in kb.keys():
+                        if host + '_os' in kb:
+                            target_os = kb[host + '_os'][0]
+                            for oss in config.ICONS:
+                                if oss.capitalize() in target_os:
+                                    icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                                    piter = self.treestore.append(None, [icon, host, oss])
+                        else:
+                            piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
+                        for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
+                            if id not in ids.keys():
+                                #print "Set element:", element
+                                iditer = self.treestore.append( piter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
+                                self.treestore.append( iditer, [self.value_icon, vuln,  id + '-' + host + ':' + str(port)])
+                                ids[id] = iditer
+                            else:
+                                self.treestore.append( ids[id], [self.value_icon, vuln, id + '-' + host + ':' + str(port)])
+
+        self.popup_handler = self.connect('button-press-event', self.popup_vuln_menu)
 
     def create_targets_tree(self):
 
@@ -357,3 +364,15 @@ class KBtree(gtk.TreeView):
                 node = self.treestore[path][1]
                 self.node_menu.set_data(node)
                 self.node_menu.popmenu.popup(None, None, None, 1, event.time)
+
+    def popup_vuln_menu(self, tree, event):
+        if event.button == 3:
+            #(path, column) = tree.get_cursor()
+            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
+            # Is it over a plugin name ?
+            # Ge the information about the click
+            if path is not None and len(path) == 3:
+                node = self.treestore[path][1]
+                menu = self.vuln_popup.create_menu(node, self.treestore[path][2])
+                menu.popup(None, None, None, 1, event.time)
+                menu.show_all()

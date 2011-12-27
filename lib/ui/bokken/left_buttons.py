@@ -196,6 +196,5 @@ class LeftButtons(gtk.VBox):
             widget.set_image(i)
 
     def remove_all(self):
-        print "Removing All!"
         for child in self.get_children():
             self.remove(child)
