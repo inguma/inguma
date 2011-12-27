@@ -47,8 +47,6 @@ from discover import *
 from gather import *
 from rce import *
 
-isGui = False
-
 global target
 global targets
 global otherTargets
@@ -120,7 +118,6 @@ user_data["wizard"] = []
 user_data["base_path"] = os.path.dirname (sys.argv[0])
 user_data["dict"] = user_data["base_path"] + "data" + os.sep + "dict"
 user_data["ports"] = ports
-user_data["isGui"] = False
 
 GLOBAL_VARIABLES = """
 global target; global targets; global port; global covert; global timeout; global waittime;
@@ -364,10 +361,9 @@ def exploitWizard():
     i = 0
 
     global target
-    global isGui
 
     if target == "" or target == None:
-        if not isGui:
+        if not config.isGui:
             target = raw_input("Target: ")
         else:
             print "[!] You need to specify the target"
@@ -385,7 +381,7 @@ def exploitWizard():
         print str(i) + " " + mod.name, " \t\t", mod.brief_description
     print
     """
-    if not isGui:
+    if not config.isGui:
         res = raw_input("Select module [all]: ")
     else:
         res = ""
@@ -741,7 +737,6 @@ def doAutoScan(guest = "no", fuzz = "no"):
     global user_data
     global wizard
     global user
-    global isGui
     global sid
     global ignore_host
     global ports
@@ -752,10 +747,10 @@ def doAutoScan(guest = "no", fuzz = "no"):
     try:
         wizard = False
 
-        if target == "" and not isGui:
+        if target == "" and not config.isGui:
             target = raw_input("Target host or network: ")
 
-        if not isGui:
+        if not config.isGui:
             guestPasswords = raw_input("Brute force username and passwords (y/n)[n]: ")
         else:
             guestPasswords = guest
@@ -766,7 +761,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             guestPasswords = False
 
-        if not isGui:
+        if not config.isGui:
             autoFuzz = raw_input("Automagically fuzz available targets (y/n)[n]: ")
         else:
             autoFuzz = fuzz
@@ -776,7 +771,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             autoFuzz = False
 
-        if not isGui:
+        if not config.isGui:
             printTo = raw_input("Print to filename (enter for stdout): ")
 
             if printTo != "":
@@ -1076,11 +1071,13 @@ def set_om(debug=config.debug):
     """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
-    if isGui == True:
+    if config.isGui == True:
         gom = om.OutputManager('gui', debug=debug)
     else:
         gom = om.OutputManager('console', debug=debug)
-    setattr(gom, 'isGui', isGui)
+    setattr(gom, 'isGui', config.isGui)
+    # DEPRECATE: Most of the above as soon as everything is moved to config.gom.
+    config.gom = gom
 
 def setup_auto_completion():
     """ Checks dependencies for autocompletion and sets it up. """
@@ -1108,11 +1105,11 @@ def main():
     # Set OutputManager for modules
     set_om(debug=config.debug)
 
-    uicore.print_banner(gom)
+    uicore.print_banner(config.gom)
 
     # Check args and enable debug if requested
     if not check_args():
-        uicore.usage(gom)
+        uicore.usage(config.gom)
         sys.exit(0)
 
     # Remove scapy output messages
@@ -1131,8 +1128,9 @@ def main():
     if config.http_server:
         import lib.http as httpd
         http = httpd.IngumaHttpServer()
-        http.gom = gom
-        gom.echo("\nBringing up HTTP server.")
+        # DEPRECATE: Use config.gom in the http module.
+        http.gom = config.gom
+        config.gom.echo("\nBringing up HTTP server.")
         http.start()
 
     # Display banner.

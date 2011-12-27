@@ -1,21 +1,22 @@
 ##      core.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
+
 import sys
 sys.path.append('../..')
 import gobject
@@ -29,10 +30,10 @@ scapy.conf.verb = 0
 import dotgen
 
 import lib.IPy as IPy
+import lib.config as config
 
 #inguma.debug = True
-inguma.isGui = True
-inguma.user_data["isGui"] = True
+config.isGui = True
 inguma.user_data["interactive"] = False
 
 # Fix for bug 1807529 (andresriancho)
@@ -161,8 +162,8 @@ class UIcore():
 
     def set_om(self, om):
         self.gom = om
+        config.gom = self.gom
         setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
-        setattr(self.gom, 'isGui', inguma.isGui)
         self.gom.set_new_nodes(False)
 
     def get_interfaces(self):
