@@ -9,6 +9,7 @@ Version 0.5 (released ??-Feb-2012)
       - New status bar.
     * Code cleanups (an ongoing effort).
     * Discover modules converted to CIngumaDiscoverModule.
+    * Integration of Bokken 1.5.
 
 Version 0.4 (released 14-Sep-2011)
     * Added systray

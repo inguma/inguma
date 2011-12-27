@@ -25,6 +25,7 @@ import sys
 import time
 import pickle
 import readline
+import lib.config as config
 
 from reports import generateReport
 
@@ -46,8 +47,6 @@ from gather import *
 from rce import *
 
 isGui = False
-debug = False
-http_server = False
 
 global target
 global targets
@@ -65,7 +64,7 @@ global sid
 global ostype
 global payload
 global listenPort
-global hash 
+global hash
 global ignore_host
 global url
 
@@ -89,7 +88,7 @@ hash = ""
 
 try:
     f = file("data/ports", "r")
-    
+
     for line in f:
         ports.append(int(line))
 
@@ -123,9 +122,9 @@ user_data["ports"] = ports
 user_data["isGui"] = False
 
 GLOBAL_VARIABLES = """
-global target; global targets; global port; global covert; global timeout; global waittime; global debug
+global target; global targets; global port; global covert; global timeout; global waittime;
 global otherTargets; global services; global wizard; global user_data; global user;
-global password; global domain; global payload; global ostype; global command; 
+global password; global domain; global payload; global ostype; global command;
 global listenPort; global ignore_host;
 """
 
@@ -200,13 +199,11 @@ def check_args():
 
     import lib.ui.cli.core as uicore
 
-    global debug, http_server
-
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
-            debug = True
+            config.debug = True
         elif arg.lower() == "-w":
-            http_server = True
+            config.http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
             uicore.usage(gom)
             sys.exit(0)
@@ -214,18 +211,9 @@ def check_args():
     return True
 
 def debugPrint(*args):
-
-    # Print debug messages if debug is activated (run with -d)
-    global debug
-
-    if not debug:
-        return
-
-    outStr = ""
-    for arg in args:
-        outStr += str(arg) + " "
-
-    print outStr
+    """DEPRECATED: Use debug_print()."""
+    import lib.ui.cli.core as uicore
+    uicore.debug_print(*args)
 
 def loadModule(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
@@ -441,7 +429,7 @@ def runRegisteredCommand(cmd, mVars = None):
 
     if ret:
         user_data = ret
-    
+
     return ret
 
 def showInfo(cmd):
@@ -963,7 +951,6 @@ def main_loop():
     global covert
     global timeout
     global waittime
-    global debug
 
     oldPrompt = ""
     prevRes = ""
@@ -1029,7 +1016,7 @@ def main_loop():
             except:
                 print "Internal error.",sys.exc_info()[1]
 
-                if debug:
+                if config.debug:
                     raise
 
 def printPayloads():
@@ -1092,7 +1079,7 @@ def loadHistory():
         except:
             print "Cannot create " + historyFile
 
-def set_om(debug=debug):
+def set_om(debug=config.debug):
     """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
@@ -1128,7 +1115,7 @@ def main():
     import lib.ui.cli.core as uicore
 
     # Set OutputManager for modules
-    set_om(debug=debug)
+    set_om(debug=config.debug)
 
     uicore.print_banner(gom)
 
@@ -1139,7 +1126,7 @@ def main():
 
     # Remove scapy output messages
     if hasScapy:
-        if not debug:
+        if not config.debug:
             scapy.conf.verb = 0
         else:
             scapy.conf.verb = 1
@@ -1150,7 +1137,7 @@ def main():
     readCommands()
 
     # Start up HTTP server.
-    if http_server:
+    if config.http_server:
         import lib.http as httpd
         http = httpd.IngumaHttpServer()
         http.gom = gom
@@ -1163,7 +1150,7 @@ def main():
     # Set autocompletion and load commands history
     setup_auto_completion()
     main_loop()
-    if http_server:
+    if config.http_server:
         gom.echo("Shutting down HTTP server.")
         http.terminate()
 

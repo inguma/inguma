@@ -27,7 +27,7 @@ except:
     hasScapy = False
 
 name = "ispromisc"
-brief_description = "Check if the target is in promiscous mode"
+brief_description = "Check if the target is in promiscuous mode"
 type = "discover"
 
 class CPromisc(CIngumaDiscoverModule):

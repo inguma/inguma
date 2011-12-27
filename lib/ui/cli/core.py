@@ -25,6 +25,19 @@ This library offers functions for the CLI version of Inguma.
 """
 
 import sys
+import lib.config as config
+
+def debug_print(*args):
+
+    # Print debug messages if debug is activated (run with -d)
+    if not config.debug:
+        return
+
+    output_string = ""
+    for arg in args:
+        output_string += str(arg) + " "
+
+    print output_string
 
 def unified_input_prompt(caller, prompt = ''):
     """
