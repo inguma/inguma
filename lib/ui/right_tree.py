@@ -1,4 +1,4 @@
-##      kbtree.py
+##      right_tree.py
 #       
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       
@@ -23,9 +23,13 @@ import gtk
 import lib.ui.core as core
 import lib.ui.config as config
 
-class KBtree:
+class KBtree(gtk.TreeView):
 
     def __init__(self, node_menu):
+        # TreeStore
+        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, str)
+        # create the TreeView using treestore
+        super(KBtree,self).__init__(self.treestore)
 
         self.uicore = core.UIcore()
         self.node_menu = node_menu
@@ -33,6 +37,11 @@ class KBtree:
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
+
+        # Tree icons
+        self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
+        self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
+        self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
 
         # Main VBox to store right panel elements
         self.right_vbox = gtk.VBox(False)
@@ -93,12 +102,21 @@ class KBtree:
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolled_window.set_size_request(250,-1)
 
-        self.tree = self.create_tree()
-        self.update_tree()
-        self.tree.expand_all()
+        self.modelfilter = self.treestore.filter_new()
+
+        self.modelfilter.set_visible_func(self.visible_cb)
+        self.set_model(self.modelfilter)
+
+        self.set_rules_hint(True)
+        self.set_enable_tree_lines(True)
+
+        # Fill by default with targets info
+        self.create_targets_tree()
+        self.update_targets_tree()
+        self.expand_all()
 
         # Add Textview to Scrolled Window
-        self.scrolled_window.add_with_viewport(self.tree)
+        self.scrolled_window.add_with_viewport(self)
 
         self.right_vbox.pack_start(self.scrolled_window, True, True, 0)
 
@@ -155,42 +173,64 @@ class KBtree:
 
         return btn
 
+    def create_model(self, mode):
+        # Clear before changing contents
+        self.treestore.clear()
+        self.remove_columns()
+
+        if mode == 'Targets':
+            self.create_targets_tree()
+            self.update_targets_tree()
+        elif mode == 'Vulnerabilities':
+            self.create_targets_tree()
+            self.create_vulns_tree()
+
+        # Update all
+        self.expand_all()
+
+    def remove_columns(self):
+        columns = self.get_columns() 
+        for column in columns:
+            self.remove_column(column)
+
     def remove_os_buttons(self):
         for child in self.oss_bar.get_children():
             self.oss_bar.remove(child)
         if self.oss_bar in self.right_vbox:
             self.right_vbox.remove(self.oss_bar)
 
-    def create_tree(self):
+    def create_vulns_tree(self):
+        ids = {}
+        kb = self.uicore.get_kbList()
+        # Add all hosts
+        targets = kb['targets']
+        targets.sort()
+        for host in targets:
+            if host + '_80-web-vulns' in kb.keys():
+                if host + '_os' in kb:
+                    target_os = kb[host + '_os'][0]
+                    for oss in config.ICONS:
+                        if oss.capitalize() in target_os:
+                            icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                            piter = self.treestore.append(None, [icon, host, oss])
+                else:
+                    piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
+                for id, vuln in kb[host + '_80-web-vulns']:
+                    if id not in ids.keys():
+                        #print "Set element:", element
+                        iditer = self.treestore.append( piter, [self.node_icon, id, None])
+                        self.treestore.append( iditer, [self.value_icon, vuln, None])
+                        ids[id] = iditer
+                    else:
+                        self.treestore.append( ids[id], [self.value_icon, vuln, None])
 
-        #################################################################
-        # TreeStore
-        #################################################################
-        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, str)
-
-        self.modelfilter = self.treestore.filter_new()
-
-        self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
-        self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
-        self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
-
-        #################################################################
-        # TreeView
-        #################################################################
-        # create the TreeView using treestore
-        self.treeview = gtk.TreeView(self.treestore)
-
-        self.modelfilter.set_visible_func(self.visible_cb)
-        self.treeview.set_model(self.modelfilter)
-
-        self.treeview.set_rules_hint(True)
-        self.treeview.set_enable_tree_lines(True)
+    def create_targets_tree(self):
 
         # create the TreeViewColumn to display the data
         self.tvcolumn = gtk.TreeViewColumn('Hosts')
 
         # add tvcolumn to treeview
-        self.treeview.append_column(self.tvcolumn)
+        self.append_column(self.tvcolumn)
 
         # create a CellRendererText to render the data
         self.cell = gtk.CellRendererText()
@@ -207,20 +247,18 @@ class KBtree:
         #self.tvcolumn.add_attribute(self.cell, 'text', 1)
 
         # make it searchable
-        self.treeview.set_search_column(1)
+        self.set_search_column(1)
 
         # Allow sorting on the column
         self.tvcolumn.set_sort_column_id(1)
 
         # Allow drag and drop reordering of rows
-        self.treeview.set_reorderable(True)
+        self.set_reorderable(True)
 
         # Connect right click popup search menu
-        self.popup_handler = self.treeview.connect('button-press-event', self.popup_menu)
+        self.popup_handler = self.connect('button-press-event', self.popup_menu)
 
-        return self.treeview
-
-    def update_tree(self):
+    def update_targets_tree(self):
         '''Reads KB and updates TreeView'''
 
         self.treestore.clear()
@@ -263,10 +301,10 @@ class KBtree:
         self.create_os_buttons()
 
     def _expand_all(self, widget):
-        self.tree.expand_all()
+        self.expand_all()
 
     def _collapse_all(self, widget):
-        self.tree.collapse_all()
+        self.collapse_all()
 
     def _clear_entry(self, entry, icon_pos, event):
         entry.set_text('')

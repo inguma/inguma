@@ -65,7 +65,7 @@ splash.push(("Loading UI modules"))
 import lib.ui.core as core
 import lib.ui.output_manager as om
 import lib.ui.graphTBar as graphTBar
-import lib.ui.kbtree as kbtree
+import lib.ui.right_tree as right_tree
 import lib.ui.node_menu as node_menu
 import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
@@ -234,8 +234,7 @@ class MainApp(gtk.Window):
         self.right_hbox = gtk.HBox(False)
 
         # KB TreeView
-        self.treeview = kbtree.KBtree(self.uiman)
-        self.tree = self.treeview.tree
+        self.treeview = right_tree.KBtree(self.uiman)
         self.gom.set_kbwin(self.treeview)
         self.gom.set_map(self.xdotw)
 
@@ -243,7 +242,7 @@ class MainApp(gtk.Window):
         self.scrolled_window = self.treeview.scrolled_window
 
         # Right buttons
-        self.btn_vbox = right_buttons.RightButtons(self.right_vbox)
+        self.btn_vbox = right_buttons.RightButtons(self.right_vbox, self.treeview)
         self.btn_vbox.create_buttons()
 
         #################################################################
@@ -559,8 +558,8 @@ class MainApp(gtk.Window):
 
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-        self.treeview.update_tree()
-        self.tree.expand_all()
+        self.treeview.update_targets_tree()
+        self.treeview.expand_all()
         self.xdotw.zoom_image(1.0)
 
         gtk.main()

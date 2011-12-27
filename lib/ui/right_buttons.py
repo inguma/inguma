@@ -22,10 +22,11 @@ import gtk
 class RightButtons(gtk.VBox):
     '''Right buttons for Treeview change'''
 
-    def __init__(self, right_vbox):
+    def __init__(self, right_vbox, tree):
         super(RightButtons,self).__init__(False, 1)
 
         self.right_vbox = right_vbox
+        self.right_tree = tree
 
     ##################################
     # Methods
@@ -61,7 +62,6 @@ class RightButtons(gtk.VBox):
         a.pack_start(self.vuln_icon, False, False, 1)
         a.pack_start(l, False, False, 1)
         vulntb.add(a)
-        vulntb.set_sensitive(False)
         self.pack_start(vulntb, False, False, 0)
 
         a = gtk.VBox(False, 1)
@@ -89,8 +89,8 @@ class RightButtons(gtk.VBox):
                     x.handler_block(x.handler)
                     x.set_active(True)
                     x.handler_unblock(x.handler)
-                    #option = x.get_children()[0].get_children()[0].get_text()
-                    #self.main.tviews.create_model(option)
+                    option = x.get_children()[0].get_children()[1].get_text()
+                    self.right_tree.create_model(option)
                     self.right_vbox.show_all()
                 else:
                     x.handler_block(x.handler)
