@@ -26,6 +26,7 @@ import time
 import pickle
 import readline
 import lib.config as config
+import lib.ui.cli.core as uicore
 
 from reports import generateReport
 
@@ -197,8 +198,6 @@ class Inguma:
 
 def check_args():
 
-    import lib.ui.cli.core as uicore
-
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
             config.debug = True
@@ -209,11 +208,6 @@ def check_args():
             sys.exit(0)
 
     return True
-
-def debugPrint(*args):
-    """DEPRECATED: Use debug_print()."""
-    import lib.ui.cli.core as uicore
-    uicore.debug_print(*args)
 
 def loadModule(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
@@ -243,7 +237,7 @@ def loadModule(path, atype, marray, bLoad = True):
         if not file:
             continue
 
-        debugPrint("Loading " + atype + " module", file)
+        uicore.debug_print("Loading " + atype + " module", file)
 
         if bLoad:
             try:
@@ -268,7 +262,7 @@ def loadModule(path, atype, marray, bLoad = True):
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
-                    debugPrint(FAIL + "Error loading global variables" + ENDC)
+                    uicore.debug_print(FAIL + "Error loading global variables" + ENDC)
                     print sys.exc_info()[1]
 
                 exec(marray + ".append(eval(file))")
@@ -289,13 +283,13 @@ def loadModule(path, atype, marray, bLoad = True):
 
                 for x in filter(lambda x: x.startswith("C"), dir(eval(file))):
                     classes.append(file + "." + x)
-                    debugPrint("Registering class",file + "." + x)
-                    debugPrint("Creating a base object ....")
+                    uicore.debug_print("Registering class",file + "." + x)
+                    uicore.debug_print("Creating a base object ....")
 
                     obj = eval(file + "." + x +"()")
                     del obj
             except:
-                debugPrint(FAIL + "Error loading module", file, ":" + ENDC,sys.exc_info()[1])
+                uicore.debug_print(FAIL + "Error loading module", file, ":" + ENDC,sys.exc_info()[1])
                 if file.lower().find("smtp") > -1:
                     raise
         else:
@@ -342,8 +336,8 @@ def readFuzzers():
     loadModule(path, "fuzz", "fuzzers")
 
 def readCommands():
-    debugPrint("Reading modules ... ")
-    debugPrint()
+    uicore.debug_print("Reading modules ... ")
+    uicore.debug_print()
 
     modules = [
         'Discover',
@@ -942,7 +936,6 @@ def doAutoScan(guest = "no", fuzz = "no"):
 def main_loop():
     """ Main execution loop after initialization. """
 
-    import lib.ui.cli.core as uicore
     global prompt
     global oldPrompt
     global prevRes
@@ -1111,8 +1104,6 @@ def setup_auto_completion():
 
 def main():
     """ Main program loop. """
-
-    import lib.ui.cli.core as uicore
 
     # Set OutputManager for modules
     set_om(debug=config.debug)

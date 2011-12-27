@@ -22,11 +22,11 @@ import os
 
 class CIngumaModule:
     """ This module contains the common methods (mostly stubs) and variables
-    for creating an Inguma module. 
+    for creating an Inguma module.
     This class is deprecated, all the new additions should be done to temporary
     class CIngumaNewModule. """
 
-    target = ""
+    target = ''
     ports = []
     sport = 1025
     closed = {}
@@ -147,7 +147,7 @@ class CIngumaNewModule:
                 self.dict[element] = [value]
 
     def help(self):
-        """ Method called when 'help <module> is executed from the command
+        """Method called when 'help <module> is executed from the command
         line."""
         self.gom.echo("Module has no help information.")
 
@@ -189,6 +189,8 @@ class CIngumaNewModule:
 class CIngumaBruteModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma brute-force module. """
+
+    module_type = 'brute'
 
 class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
