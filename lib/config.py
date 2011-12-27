@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Global configuration object for Inguma.  It replaces all the 'global'
 usage that has become a nightmare in the code."""
 
+commands = {}
 debug = False
 http_server = False
 isGui = False

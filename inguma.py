@@ -127,7 +127,6 @@ global password; global domain; global payload; global ostype; global command;
 global listenPort; global ignore_host;
 """
 
-commands = {}
 discovers = []
 gathers = []
 rces = []
@@ -265,7 +264,7 @@ def loadModule(path, atype, marray, bLoad = True):
 
                 exec(marray + ".append(eval(file))")
 
-                commands[eval(file).name] = eval(file)
+                config.commands[eval(file).name] = eval(file)
 
                 if atype == "unknown":
                     if eval(file).type == "gather":
@@ -298,37 +297,31 @@ def loadModule(path, atype, marray, bLoad = True):
                 continue
 
 def readDiscover():
-    global commands
 
     path = "modules" + os.sep + "discover"
     loadModule(path, "discover", "discovers")
 
 def readGather():
-    global commands
 
     path = "modules" + os.sep + "gather"
     loadModule(path, "gather", "gathers")
 
 def readRce():
-    global commands
 
     path = "modules" + os.sep + "rce"
     loadModule(path, "rce", "rces")
 
 def readBrute():
-    global commands
 
     path = "modules" + os.sep + "brute"
     loadModule(path, "brute", "brutes")
 
 def readExploits():
-    global commands
 
     path = "modules" + os.sep + "exploits"
     loadModule(path, "exploit", "exploits")
 
 def readFuzzers():
-    global commands
 
     path = "modules" + os.sep + "fuzzers"
     loadModule(path, "fuzz", "fuzzers")
@@ -404,7 +397,7 @@ def runRegisteredCommand(cmd, mVars = None):
 
     global user_data
 
-    mType = commands[cmd].type
+    mType = config.commands[cmd].type
     vars = globals()
 
     if mVars != None:
@@ -412,9 +405,9 @@ def runRegisteredCommand(cmd, mVars = None):
             vars[x] = mVars[x]
 
     if mType in ["gather", "exploit", "brute", "fuzzer",  "rce"]:
-        ret = runGatherModule(vars, commands[cmd], user_data, gom)
+        ret = runGatherModule(vars, config.commands[cmd], user_data, gom)
     elif mType == "discover":
-        ret = runModule(vars, commands[cmd], user_data, gom)
+        ret = runModule(vars, config.commands[cmd], user_data, gom)
     else:
         print "Unknown module type '" + str(mType) + "'"
 
@@ -453,10 +446,10 @@ def showInfo(cmd):
 
             return
 
-    for command in commands:
+    for command in config.commands:
         if command == cmd.lower():
             try:
-                module = commands[command]
+                module = config.commands[command]
                 if module.__name__.isalnum():
                     obj = eval("module."+module.__name__ +"()")
                     obj.gom = gom
@@ -510,7 +503,7 @@ def runCommand(data, mVars = None):
                 return True
             else:
 
-                if commands.has_key(word.lower()):
+                if config.commands.has_key(word.lower()):
                     runRegisteredCommand(word.lower(), mVars)
                     return True
                 else:
@@ -1009,37 +1002,37 @@ def main_loop():
                     raise
 
 def printPayloads():
-    global payload, gom
+    global payload
 
-    gom.echo('Payloads')
-    gom.echo('--------')
-    gom.echo()
-    gom.echo('ostype:')
-    gom.echo()
-    gom.echo('1) Linuxx86Syscall')
-    gom.echo('2) FreeBSDx86Syscall')
-    gom.echo('3) OpenBSDx86Syscall')
-    gom.echo('4) Solarisx86Syscall')
-    gom.echo()
-    gom.echo('payload:')
-    gom.echo()
-    gom.echo('1) runcommand')
-    gom.echo('2) bindshell')
-    gom.echo('3) connectback')
-    gom.echo('4) xorbindshell')
-    gom.echo()
-    gom.echo('Payload arguments:')
-    gom.echo()
-    gom.echo('1) runcommand')
-    gom.echo()
-    gom.echo('command = <command to run>')
-    gom.echo()
-    gom.echo('2) bindshell, connectback, xorbindshell')
-    gom.echo()
-    gom.echo('listenPort = <remote or local listening port>')
-    gom.echo()
-    gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
-    gom.echo()
+    config.gom.echo('Payloads')
+    config.gom.echo('--------')
+    config.gom.echo()
+    config.gom.echo('ostype:')
+    config.gom.echo()
+    config.gom.echo('1) Linuxx86Syscall')
+    config.gom.echo('2) FreeBSDx86Syscall')
+    config.gom.echo('3) OpenBSDx86Syscall')
+    config.gom.echo('4) Solarisx86Syscall')
+    config.gom.echo()
+    config.gom.echo('payload:')
+    config.gom.echo()
+    config.gom.echo('1) runcommand')
+    config.gom.echo('2) bindshell')
+    config.gom.echo('3) connectback')
+    config.gom.echo('4) xorbindshell')
+    config.gom.echo()
+    config.gom.echo('Payload arguments:')
+    config.gom.echo()
+    config.gom.echo('1) runcommand')
+    config.gom.echo()
+    config.gom.echo('command = <command to run>')
+    config.gom.echo()
+    config.gom.echo('2) bindshell, connectback, xorbindshell')
+    config.gom.echo()
+    config.gom.echo('listenPort = <remote or local listening port>')
+    config.gom.echo()
+    config.gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
+    config.gom.echo()
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
@@ -1082,14 +1075,13 @@ def set_om(debug=config.debug):
 
 def setup_auto_completion():
     """ Checks dependencies for autocompletion and sets it up. """
-    global commands
 
     try:
         import atexit
         import rlcompleter
 
         # Add commands to autocompletion
-        readline.set_completer(rlcompleter.Completer(commands).complete)
+        readline.set_completer(rlcompleter.Completer(config.commands).complete)
         if(sys.platform == 'darwin'):
             readline.parse_and_bind ("bind ^I rl_complete")
         else:
