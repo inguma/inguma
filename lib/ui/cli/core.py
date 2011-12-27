@@ -28,6 +28,8 @@ import sys
 import lib.config as config
 
 def debug_print(*args):
+    """Prints a debug message on the terminal."""
+    # FIXME: This should be a method in the gom object.
 
     # Print debug messages if debug is activated (run with -d)
     if not config.debug:

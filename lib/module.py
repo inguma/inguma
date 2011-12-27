@@ -2,7 +2,10 @@
 """
 Inguma Penetration Testing Toolkit
 Copyright (C) 2011 David Martínez Moreno <ender@debian.org>
-This software is not affiliated in any way with Facebook, my current employer.
+
+I am providing code in this repository to you under an open source license.
+Because this is a personal repository, the license you receive to my code
+is from me and not my employer (Facebook).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
