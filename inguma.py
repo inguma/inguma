@@ -296,52 +296,23 @@ def loadModule(path, atype, marray, bLoad = True):
                 print WARNING + "The module %s appears to be a non-valid module" + ENDC % file
                 continue
 
-def readDiscover():
-
-    path = "modules" + os.sep + "discover"
-    loadModule(path, "discover", "discovers")
-
-def readGather():
-
-    path = "modules" + os.sep + "gather"
-    loadModule(path, "gather", "gathers")
-
-def readRce():
-
-    path = "modules" + os.sep + "rce"
-    loadModule(path, "rce", "rces")
-
-def readBrute():
-
-    path = "modules" + os.sep + "brute"
-    loadModule(path, "brute", "brutes")
-
-def readExploits():
-
-    path = "modules" + os.sep + "exploits"
-    loadModule(path, "exploit", "exploits")
-
-def readFuzzers():
-
-    path = "modules" + os.sep + "fuzzers"
-    loadModule(path, "fuzz", "fuzzers")
-
 def readCommands():
     uicore.debug_print("Reading modules ... ")
     uicore.debug_print()
 
-    modules = [
-        'Discover',
-        'Gather',
-        'Rce',
-        'Fuzzers',
-        'Brute',
-        'Exploits'
-    ]
+    modules = {
+        'discovers': 'discover',
+        'gathers': 'gather',
+        'rces': 'rce',
+        'fuzzers': 'fuzzers',
+        'brutes': 'brute',
+        'exploits': 'exploits'
+    }
 
-    # load all modules
-    for module in modules:
-        eval("read%s" % module)()
+    # Load all modules.
+    for exploit_type, exploit_dir in modules.iteritems():
+        path = "modules" + os.sep + exploit_dir
+        loadModule(path, exploit_dir, exploit_type)
 
 def exploitWizard():
 
