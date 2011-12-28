@@ -171,6 +171,9 @@ class UIcore():
     def set_interface(self, iface):
         scapy.conf.iface = iface
 
+    def get_interface(self):
+        return scapy.conf.iface
+
     def getLocalIP(self):
         return scapy.get_if_addr(scapy.conf.iface)
 

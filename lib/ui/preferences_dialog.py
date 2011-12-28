@@ -56,9 +56,15 @@ class PropDialog(popup_dialog.PopupDialog):
         self.iface_lbl = gtk.Label('Network interface')
         self.iface_combo = gtk.combo_box_new_text()
 
+        # fill and select interfaces
+        count = 0
+        active_iface = self.uicore.get_interface()
         for iface in self.uicore.get_interfaces():
             self.iface_combo.append_text(iface)
-        #self.iface_combo.set_active(0)
+            if iface == active_iface:
+                i = count
+            count += 1
+        self.iface_combo.set_active(i)
 
         # Add elements to Table
         self.main_table.attach(self.iface_lbl, 0, 1, 0, 1)
