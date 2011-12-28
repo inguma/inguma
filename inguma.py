@@ -26,6 +26,7 @@ import sys
 import time
 import pickle
 import readline
+import lib.module
 import lib.config as config
 import lib.ui.cli.core as uicore
 
@@ -263,6 +264,8 @@ def loadModule(path, atype, marray, bLoad = True):
                     print sys.exc_info()[1]
 
                 exec(marray + ".append(eval(file))")
+                # Do this in the meantime to populate the config.* structures.
+                exec('config.' + marray + ".append(eval(file))")
 
                 config.commands[eval(file).name] = eval(file)
 
@@ -387,53 +390,6 @@ def runRegisteredCommand(cmd, mVars = None):
 
     return ret
 
-def showInfo(cmd):
-
-    global exploits
-    global classes
-
-    for mod in exploits:
-        if mod.name == cmd.lower():
-            try:
-                print "Information"
-                print "-----------"
-                print
-                print "Name:", mod.name
-                print "Type:",mod.category
-                print "Discoverer:",mod.discoverer
-                print "Module author:", mod.author
-                print "Description:", mod.brief_description
-                print "Affected versions:"
-                print 
-                for affected in mod.affects:
-                    print "\t",affected
-                print
-                print "Notes:\r\n",mod.description
-                print
-                print "Patch information:", mod.patch
-                print
-            except:
-                print "Error getting module's information:",sys.exc_info()[1]
-
-            return
-
-    for command in config.commands:
-        if command == cmd.lower():
-            try:
-                module = config.commands[command]
-                if module.__name__.isalnum():
-                    obj = eval("module."+module.__name__ +"()")
-                    obj.gom = gom
-                    obj.help()
-            except AttributeError:
-                gom.echo("Module has no help information.")
-            except:
-                gom.echo("Internal error: " + str(sys.exc_info()[1]))
-
-            return
-
-    gom.echo("Module does not exist.")
-
 def execute(command, index):
 
     if len(command) < index:
@@ -494,7 +450,7 @@ def runCommand(data, mVars = None):
                 loadModule(word, "unknown", "others")
                 return True
             elif mode == "info":
-                showInfo(word)
+                lib.module.show_exploit_info(word)
                 return True
             elif mode == "!": #Execute command
                 execute(words, index)
@@ -583,7 +539,7 @@ def showExploits():
     mList = []
     zerodays = []
 
-    for x in exploits:
+    for x in config.exploits:
         if x.brief_description.startswith("[0day]"):
             zerodays.append(x.name + "    \t\t" + x.brief_description)
         else:

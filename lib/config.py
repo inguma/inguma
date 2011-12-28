@@ -29,3 +29,12 @@ commands = {}
 debug = False
 http_server = False
 isGui = False
+
+discovers = []
+gathers = []
+rces = []
+fuzzers = []
+brutes = []
+classes = []
+others = []
+exploits = []
