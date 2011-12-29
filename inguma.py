@@ -450,7 +450,7 @@ def runCommand(data, mVars = None):
                 loadModule(word, "unknown", "others")
                 return True
             elif mode == "info":
-                lib.module.show_exploit_info(word)
+                uicore.show_exploit_info(word)
                 return True
             elif mode == "!": #Execute command
                 execute(words, index)
