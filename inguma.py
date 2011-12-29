@@ -121,13 +121,6 @@ user_data["base_path"] = os.path.dirname (sys.argv[0])
 user_data["dict"] = user_data["base_path"] + "data" + os.sep + "dict"
 user_data["ports"] = ports
 
-GLOBAL_VARIABLES = """
-global target; global targets; global port; global covert; global timeout; global waittime;
-global otherTargets; global services; global wizard; global user_data; global user;
-global password; global domain; global payload; global ostype; global command;
-global listenPort; global ignore_host;
-"""
-
 discovers = []
 gathers = []
 rces = []
@@ -148,49 +141,49 @@ class Inguma:
         self.has_scapy = has_scapy
 
     def show_help(self):
-        print
-        print "+----------------------------------------------------------------------------+"
-        print "| load kb                 | Load the knowledge base                          |"
-        print "| save kb                 | Save the knowledge base                          |"
-        print "| clear kb                | Clear the knowledge base's data                  |"
-        print "| show kb                 | Shows the knowledge base's data (very verbose)   |"
-        print "| report                  | Generate a report                                |"
-        print "|----------------------------------------------------------------------------|"
-        print "| show discover           | Show discover modules                            |"
-        print "| show gather             | Show gather modules                              |"
-        print "| show rce                | Show RCE modules                                 |"
-        print "| show fuzzers            | Show fuzzing modules                             |"
-        print "| show exploits           | Show available exploits                          |"
-        print "| show brute              | Show brute force modules                         |"
-        print "| show options            | Show options                                     |"
-        print "| payload                 | Show the supported OS types and payloads         |"
-        print "| info <exploit>          | Show additional information about an exploit     |"
-        print "|----------------------------------------------------------------------------|"
-        print "| autoscan                | Perform an automatic scan                        |"
-        print "| autoexploit             | Exploit wizard                                   |"
-        #print "fuzz                     Fuzz a target (Unavailable)"
-        print "| exploit                 | Run an exploit against a target or targets       |"
-        print "|----------------------------------------------------------------------------|"
-        print "| use <mod>               | Load all modules from a directory                |"
-        print "| ! <command>             | Run an operating system command                  |"
-        print "| exit | quit | ..        | Exit Inguma                                      |"
-        print "| help | h | ?            | Show this help                                   |"
+        config.gom.echo()
+        config.gom.echo('+----------------------------------------------------------------------------+')
+        config.gom.echo('| load kb                 | Load the knowledge base                          |')
+        config.gom.echo('| save kb                 | Save the knowledge base                          |')
+        config.gom.echo('| clear kb                | Clear the knowledge base\'s data                  |')
+        config.gom.echo('| show kb                 | Shows the knowledge base\'s data (very verbose)   |')
+        config.gom.echo('| report                  | Generate a report                                |')
+        config.gom.echo('|----------------------------------------------------------------------------|')
+        config.gom.echo('| show discover           | Show discover modules                            |')
+        config.gom.echo('| show gather             | Show gather modules                              |')
+        config.gom.echo('| show rce                | Show RCE modules                                 |')
+        config.gom.echo('| show fuzzers            | Show fuzzing modules                             |')
+        config.gom.echo('| show exploits           | Show available exploits                          |')
+        config.gom.echo('| show brute              | Show brute force modules                         |')
+        config.gom.echo('| show options            | Show options                                     |')
+        config.gom.echo('| payload                 | Show the supported OS types and payloads         |')
+        config.gom.echo('| info <exploit>          | Show additional information about an exploit     |')
+        config.gom.echo('|----------------------------------------------------------------------------|')
+        config.gom.echo('| autoscan                | Perform an automatic scan                        |')
+        config.gom.echo('| autoexploit             | Exploit wizard                                   |')
+        #config.gom.echo('fuzz                     Fuzz a target (Unavailable)')
+        config.gom.echo('| exploit                 | Run an exploit against a target or targets       |')
+        config.gom.echo('|----------------------------------------------------------------------------|')
+        config.gom.echo('| use <mod>               | Load all modules from a directory                |')
+        config.gom.echo('| ! <command>             | Run an operating system command                  |')
+        config.gom.echo('| exit | quit | ..        | Exit Inguma                                      |')
+        config.gom.echo('| help | h | ?            | Show this help                                   |')
 
         if self.has_scapy:
-            print "|----------------------------------------------------------------------------|"
-            print "|                                                                            |"
-            print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
-            print "|----------------------------------------------------------------------------|"
-            print "|                                                                            |"
-            print "| NOTE: Remember to use 'scapy.<function>' to use.                           |"
-            print "|                                                                            |"
-            print "| Type 'scapy.interact()' to start an scapy session.                         |"
-            print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
+            config.gom.echo('|----------------------------------------------------------------------------|')
+            config.gom.echo('|                                                                            |')
+            config.gom.echo('| To see registered scapy commands execute command \'scapy.lsc()\'             |')
+            config.gom.echo('|----------------------------------------------------------------------------|')
+            config.gom.echo('|                                                                            |')
+            config.gom.echo('| NOTE: Remember to use \'scapy.<function>\' to use.                           |')
+            config.gom.echo('|                                                                            |')
+            config.gom.echo('| Type \'scapy.interact()\' to start an scapy session.                         |')
+            config.gom.echo('| To get help for scapy commands type help(scapy.<scapy command>).           |')
 
-        print "+----------------------------------------------------------------------------+"
-        print
-        print "Any other typed text will be evaluated - with eval() - as a Python expression."
-        print
+        config.gom.echo('+----------------------------------------------------------------------------+')
+        config.gom.echo()
+        config.gom.echo('Any other typed text will be evaluated - with eval() - as a Python expression.')
+        config.gom.echo()
 
 # ------------------------------ End of Inguma class ------------------------------
 
@@ -207,15 +200,13 @@ def check_args():
 
     return True
 
-def loadModule(path, atype, marray, bLoad = True):
+def load_module(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
     Arguments:
     path:   module category path (modules/discover)
     atype:  module category (discover)
     marray: module category list (discovers)
     """
-
-    global GLOBAL_VARIABLES
 
     sys.path.append(path)
 
@@ -254,7 +245,7 @@ def loadModule(path, atype, marray, bLoad = True):
                         for aGlobal in moduleGlobals:
                             if aGlobal.isalnum():
                                 exec ("global " + aGlobal)
-                                GLOBAL_VARIABLES += "global " + aGlobal + ";"
+                                config.GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
                                 print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename)
                                 print "The suspicious code:"
@@ -315,7 +306,7 @@ def readCommands():
     # Load all modules.
     for exploit_type, exploit_dir in modules.iteritems():
         path = "modules" + os.sep + exploit_dir
-        loadModule(path, exploit_dir, exploit_type)
+        load_module(path, exploit_dir, exploit_type)
 
 def exploitWizard():
 
@@ -447,7 +438,7 @@ def runCommand(data, mVars = None):
                     print "Unknown option",word,"for show command"
                     return True
             elif mode == "use":
-                loadModule(word, "unknown", "others")
+                load_module(word, "unknown", "others")
                 return True
             elif mode == "info":
                 uicore.show_exploit_info(word)
@@ -905,7 +896,7 @@ def main_loop():
                     prevRes += "\n" + res
                     res = prevRes
 
-                exec(GLOBAL_VARIABLES + res)
+                exec(config.GLOBAL_VARIABLES + res)
 
             except:
                 print "Exec error:",sys.exc_info()[1]
@@ -921,7 +912,7 @@ def main_loop():
         else:
             try:
                 if not runCommand(res, locals()):
-                    exec(GLOBAL_VARIABLES + res)
+                    exec(config.GLOBAL_VARIABLES + res)
             except:
                 print "Internal error.",sys.exc_info()[1]
 

@@ -38,3 +38,10 @@ brutes = []
 classes = []
 others = []
 exploits = []
+
+GLOBAL_VARIABLES = """
+global target; global targets; global port; global covert; global timeout; global waittime;
+global otherTargets; global services; global wizard; global user_data; global user;
+global password; global domain; global payload; global ostype; global command;
+global listenPort; global ignore_host;
+"""
