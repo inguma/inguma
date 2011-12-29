@@ -98,15 +98,15 @@ class UIcore():
         output.close()
 
     def get_modules(self, category):
-        ''' Returns an aray with the modules for one category'''
+        '''Returns an array with the modules for one category.'''
 
         modules = eval('inguma.' + category)
         return modules
 
     def get_categories(self):
-        ''' returns an array with the categories of modules'''
+        '''Returns an array with the module categories.'''
 
-        categories = ['discovers', 'gathers', 'brutes','exploits'] 
+        categories = ['discovers', 'gathers', 'brutes', 'exploits']
         return categories
 
     def get_kbcontent(self):
@@ -281,7 +281,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
 
@@ -291,7 +291,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
         if join:
