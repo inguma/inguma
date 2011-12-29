@@ -29,6 +29,7 @@ scapy.conf.verb = 0
 import dotgen
 
 import lib.IPy as IPy
+import lib.liblistener as liblistener
 
 #inguma.debug = True
 inguma.isGui = True
@@ -43,8 +44,15 @@ inguma.interactive = False
 
 class UIcore():
 
-    def __init__(self):
+    def __init__(self, om):
+
+        self.gom = om
+        self.gom.isGui = True
+
         self.user_data = inguma.user_data
+        self.listener = liblistener.Listener(self.gom)
+
+        self.listeners = {}
 
     def add_local_asn(self):
         inguma.user_data['graph'] = { 'ASNs':{}, 'ASDs':{} }
@@ -177,6 +185,12 @@ class UIcore():
     def getLocalIP(self):
         return scapy.get_if_addr(scapy.conf.iface)
 
+    def get_iface_ip(self, iface):
+        if iface in scapy.get_if_list():
+            return scapy.get_if_addr(iface)
+        else:
+            return False
+
     def getLocalGW(self):
         for net,msk,gw,iface,addr in scapy.read_routes():
             if iface == scapy.conf.iface and gw != '0.0.0.0':
@@ -190,6 +204,12 @@ class UIcore():
 
     def getIfaceList(self):
         return scapy.get_if_list()
+
+    def create_listener(self, host, port):
+        listener = threading.Thread(target=self.listener.run, args=(port, host, 'local'))
+        listener.start()
+        listener_id = "_".join([host, str(port)])
+        self.listeners[listener_id] = self.listener
 
     def getTargetPath(self):
         steps = []

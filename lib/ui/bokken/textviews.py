@@ -219,7 +219,6 @@ class TextViews(gtk.HBox):
             except:
                 code = unicode(self.uicore.core.buf, 'iso8859-15')
             self.uicore.core.bsize = 512
-            print "set text to buffer"
             self.buffer.set_text(code)
             self.right_notebook.xdot_box.set_dot(self.uicore.http_dot)
             self.hexdump = self.uicore.get_full_hexdump()

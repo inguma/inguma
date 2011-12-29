@@ -187,6 +187,9 @@ class KBtree(gtk.TreeView):
         elif mode == 'Vulnerabilities':
             self.create_targets_tree()
             self.create_vulns_tree()
+        elif mode == 'Listeners':
+            self.create_listeners_list()
+            self.fill_listeners_list()
 
         # Update all
         self.expand_all()
@@ -201,6 +204,35 @@ class KBtree(gtk.TreeView):
             self.oss_bar.remove(child)
         if self.oss_bar in self.right_vbox:
             self.right_vbox.remove(self.oss_bar)
+
+    def create_listeners_list(self):
+        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
+        rendererPix = gtk.CellRendererPixbuf()
+        rendererText = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Host")
+        column.set_spacing(5)
+        column.pack_start(rendererPix, False)
+        column.pack_start(rendererText, True)
+        column.set_attributes(rendererText, text=1)
+        column.set_attributes(rendererPix, pixbuf=0)
+        column.set_sort_column_id(0)
+        self.append_column(column)
+
+        rendererText = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Port", rendererText, text=2)
+        self.treestore.set_sort_column_id(2,gtk.SORT_ASCENDING)
+        column.set_sort_column_id(2)
+        self.append_column(column)
+
+        self.set_model(self.liststore)
+
+    def fill_listeners_list(self):
+        icon = gtk.Image()
+        icon = icon.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
+        for listener in self.uicore.listeners:
+            print "Adding listener:", listener
+            host, port = listener.split('_')
+            self.liststore.append([icon, host, port])
 
     def create_vulns_tree(self):
         ids = {}
@@ -229,6 +261,7 @@ class KBtree(gtk.TreeView):
                             else:
                                 self.treestore.append( ids[id], [self.value_icon, vuln, id + '-' + host + ':' + str(port)])
 
+        self.set_model(self.modelfilter)
         self.popup_handler = self.connect('button-press-event', self.popup_vuln_menu)
 
     def create_targets_tree(self):
@@ -262,6 +295,7 @@ class KBtree(gtk.TreeView):
         # Allow drag and drop reordering of rows
         self.set_reorderable(True)
 
+        self.set_model(self.modelfilter)
         # Connect right click popup search menu
         self.popup_handler = self.connect('button-press-event', self.popup_menu)
 
@@ -332,7 +366,9 @@ class KBtree(gtk.TreeView):
         if len(model.get_path(iter)) == 1:
             # Check os filter buttons
             if model.get_value(iter, 2) and self.os_visible:
-                if not self.os_visible[model.get_value(iter, 2)]:
+                if not model.get_value(iter, 2) in self.os_visible.keys():
+                    return True
+                elif not self.os_visible[model.get_value(iter, 2)]:
                     return False
                 else:
                     # Just filter if text entry is filled

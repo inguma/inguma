@@ -35,22 +35,40 @@ class ListenerDialog(popup_dialog.PopupDialog):
         self.button = button
 
         self.main_vbox = gtk.VBox(False, 5)
-        self.hbox = gtk.HBox(False, 2)
+        self.main_hbox = gtk.HBox(False, 7)
+        self.desc_hbox = gtk.HBox(False, 0)
+        self.iface_vbox = gtk.VBox(False, 2)
+        self.ports_vbox = gtk.VBox(False, 2)
+
+        # Description icon
+        self.desc_icon = gtk.Image()
+        self.desc_icon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
 
         # Description label
-        self.desc_label = gtk.Label('Select interface and port to listen on:')
-        self.desc_label.set_padding(5, 0)
+        self.desc_label = gtk.Label()
+        self.desc_label.set_markup('<b>Select interface and port to listen on</b>')
+        self.desc_label.set_padding(4, 0)
         halign = gtk.Alignment(0, 1, 0, 0)
         halign.add(self.desc_label)
 
         # Choose network iface combo
-        self.iface_combo = gtk.combo_box_new_text()
+        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
+        self.iface_combo = gtk.ComboBox(store)
+        rendererText = gtk.CellRendererText()
+        rendererPix = gtk.CellRendererPixbuf()
+        self.iface_combo.pack_start(rendererPix, False)
+        self.iface_combo.pack_start(rendererText, True)
+        self.iface_combo.add_attribute(rendererPix, 'pixbuf', 0)
+        self.iface_combo.add_attribute(rendererText, 'text', 1)
 
         # fill and select interfaces
         count = 0
         active_iface = self.uicore.get_interface()
+        icon = gtk.Image()
+        #icon.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
+        icon = icon.render_icon(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
         for iface in self.uicore.get_interfaces():
-            self.iface_combo.append_text(iface)
+            store.append([icon, iface])
             if iface == active_iface:
                 i = count
             count += 1
@@ -59,15 +77,104 @@ class ListenerDialog(popup_dialog.PopupDialog):
         # Port entry
         self.port_entry = gtk.Entry()
         self.port_entry.set_icon_from_stock(1, gtk.STOCK_ADD)
+        self.port_entry.set_icon_from_stock(0, gtk.STOCK_STOP)
+        self.default_color = self.port_entry.get_style().text[0]
+        self.port_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
         self.port_entry.set_text('Port to listen')
+        self.port_entry.set_icon_tooltip_text(1, 'Create new listener')
+        self.port_entry.connect('focus-in-event', self._clean, 'in')
+        self.port_entry.connect('focus-out-event', self._clean, 'out')
+        self.port_entry.connect('activate', self._go_entry)
+        self.port_entry.connect('icon-press', self._go)
 
-        self.hbox.pack_start(self.iface_combo, False, False, 2)
-        self.hbox.pack_start(self.port_entry, True, True, 2)
+        # IP address label
+        self.ip_label = gtk.Label()
+        model = self.iface_combo.get_model()
+        active = self.iface_combo.get_active()
+        active_iface = model[active][1]
+        ip_addr = self.uicore.get_iface_ip(active_iface)
+        self.ip_label.set_text(ip_addr)
+        self.ip_label.set_padding(4, 0)
+        ip_halign = gtk.Alignment(0, 1, 0, 0)
+        ip_halign.add(self.ip_label)
 
-        self.main_vbox.pack_start(halign, False, False)
-        self.main_vbox.pack_start(self.hbox, False, False)
+        self.iface_combo.connect('changed', self.get_ip)
+
+        # Used ports label
+        self.used_ports_label = gtk.Label()
+        self.used_ports_label.set_markup('Ports in use: <span foreground=\"red\"><b>None</b></span>')
+        ports_halign = gtk.Alignment(0, 1, 0, 0)
+        ports_halign.add(self.used_ports_label)
+
+        # Packing elements
+        self.desc_hbox.pack_start(self.desc_icon, False, False, 1)
+        self.desc_hbox.pack_start(halign, False, False, 1)
+
+        self.iface_vbox.pack_start(self.iface_combo, False, False, 2)
+        self.iface_vbox.pack_start(ip_halign, True, True, 2)
+
+        self.ports_vbox.pack_start(self.port_entry, True, True, 2)
+        self.ports_vbox.pack_start(ports_halign, True, True, 2)
+
+        self.main_hbox.pack_start(self.iface_vbox, False, False)
+        self.main_hbox.pack_start(self.ports_vbox, False, False)
+
+        self.main_vbox.pack_start(self.desc_hbox, False, False)
+        self.main_vbox.pack_start(self.main_hbox, False, False)
 
         self.add_content(self.main_vbox)
 
         # Finish
         self.show_all()
+
+    ##############################################################
+    # Methods
+
+    def get_ip(self, widget):
+        '''get IP address of selected iface and change ip label'''
+
+        model = self.iface_combo.get_model()
+        active = self.iface_combo.get_active()
+        active_iface = model[active][1]
+        ip_addr = self.uicore.get_iface_ip(active_iface)
+        self.ip_label.set_text(ip_addr)
+
+    def _clean(self, widget, event, data):
+        if data == 'in':
+            if widget.get_text() == 'Port to listen':
+                self.port_entry.modify_text(gtk.STATE_NORMAL, self.default_color)
+                widget.set_text('')
+        elif data == 'out':
+            if widget.get_text() == '':
+                self.port_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
+                widget.set_text('Port to listen')
+
+    def _go_entry(self, widget):
+        port = widget.get_text()
+        host = self.ip_label.get_text()
+        colormap = widget.get_colormap()
+        #bg_ok = colormap.alloc_color("white")
+        bg_not_valid = colormap.alloc_color("red")
+    
+        if port and port != 'Port to listen':
+            self.uicore.create_listener(host, int(port))
+            self._quit(widget)
+        else:
+            widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+
+    def _go(self, widget, icon_pos, event):
+        if icon_pos == 1:
+            port = widget.get_text()
+            host = self.ip_label.get_text()
+            colormap = widget.get_colormap()
+            #bg_ok = colormap.alloc_color("white")
+            bg_not_valid = colormap.alloc_color("red")
+    
+            if port and port != 'Port to listen':
+                self.uicore.create_listener(host, int(port))
+                self._quit(widget)
+            else:
+                widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+        elif icon_pos == 0:
+            self.uicore.listeners['10.69.3.126_4444'].exit()
+            self._quit(widget)

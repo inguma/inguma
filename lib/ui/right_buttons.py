@@ -68,13 +68,12 @@ class RightButtons(gtk.VBox):
         shelltb = gtk.ToggleButton()
         handler = shelltb.connect('toggled', self._on_toggle)
         shelltb.handler = handler
-        l = gtk.Label('Shells')
+        l = gtk.Label('Listeners')
         l.set_angle(270)
         a.pack_start(self.shell_icon, False, False, 1)
         a.pack_start(l, False, False, 1)
         shelltb.add(a)
         self.pack_start(shelltb, False, False, 0)
-        shelltb.set_sensitive(False)
 
         self.show_all()
 

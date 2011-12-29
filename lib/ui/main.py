@@ -142,7 +142,7 @@ class MainApp(gtk.Window):
         #################################################################
         #Initialize KB
         splash.push(("Loading KB..."))
-        self.uicore = core.UIcore()
+        self.uicore = core.UIcore(self.gom)
         self.uicore.add_local_asn()
         self.gom.set_core(self.uicore)
 
