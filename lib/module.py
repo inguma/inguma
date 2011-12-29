@@ -2,7 +2,10 @@
 """
 Inguma Penetration Testing Toolkit
 Copyright (C) 2011 David Martínez Moreno <ender@debian.org>
-This software is not affiliated in any way with Facebook, my current employer.
+
+I am providing code in this repository to you under an open source license.
+Because this is a personal repository, the license you receive to my code
+is from me and not my employer (Facebook).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,14 +22,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import sys
+import lib.config as config
 
 class CIngumaModule:
     """ This module contains the common methods (mostly stubs) and variables
-    for creating an Inguma module. 
+    for creating an Inguma module.
     This class is deprecated, all the new additions should be done to temporary
     class CIngumaNewModule. """
 
-    target = ""
+    target = ''
     ports = []
     sport = 1025
     closed = {}
@@ -147,7 +152,7 @@ class CIngumaNewModule:
                 self.dict[element] = [value]
 
     def help(self):
-        """ Method called when 'help <module> is executed from the command
+        """Method called when 'help <module> is executed from the command
         line."""
         self.gom.echo("Module has no help information.")
 
@@ -189,6 +194,8 @@ class CIngumaNewModule:
 class CIngumaBruteModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma brute-force module. """
+
+    module_type = 'brute'
 
 class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """
 Inguma Penetration Testing Toolkit
 Copyright (c) 2006, 2007 Joxean Koret, joxeankoret [at] yahoo.es
@@ -23,6 +22,7 @@ NOTE: Why have I this in a separated module???
 """
 
 import sys
+import lib.config as config
 
 def runModule(vars, module, dict, om=None):
     objModule = eval("module."+module.__name__ +"()")
@@ -39,7 +39,7 @@ def runModule(vars, module, dict, om=None):
     if objModule.run():
         objModule.printSummary()
 
-        if vars['isGui'] == True:
+        if config.isGui == True:
             objModule.gom.uicore.getDot(False)
             objModule.gom.map.set_dotcode( dict['dotcode'] )
 

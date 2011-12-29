@@ -17,7 +17,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
 """
 
 import os
@@ -25,6 +26,9 @@ import sys
 import time
 import pickle
 import readline
+import lib.module
+import lib.config as config
+import lib.ui.cli.core as uicore
 
 from reports import generateReport
 
@@ -45,10 +49,6 @@ from discover import *
 from gather import *
 from rce import *
 
-isGui = False
-debug = False
-http_server = False
-
 global target
 global targets
 global otherTargets
@@ -65,7 +65,7 @@ global sid
 global ostype
 global payload
 global listenPort
-global hash 
+global hash
 global ignore_host
 global url
 
@@ -89,7 +89,7 @@ hash = ""
 
 try:
     f = file("data/ports", "r")
-    
+
     for line in f:
         ports.append(int(line))
 
@@ -120,16 +120,14 @@ user_data["wizard"] = []
 user_data["base_path"] = os.path.dirname (sys.argv[0])
 user_data["dict"] = user_data["base_path"] + "data" + os.sep + "dict"
 user_data["ports"] = ports
-user_data["isGui"] = False
 
 GLOBAL_VARIABLES = """
-global target; global targets; global port; global covert; global timeout; global waittime; global debug
+global target; global targets; global port; global covert; global timeout; global waittime;
 global otherTargets; global services; global wizard; global user_data; global user;
-global password; global domain; global payload; global ostype; global command; 
+global password; global domain; global payload; global ostype; global command;
 global listenPort; global ignore_host;
 """
 
-commands = {}
 discovers = []
 gathers = []
 rces = []
@@ -198,34 +196,16 @@ class Inguma:
 
 def check_args():
 
-    import lib.ui.cli.core as uicore
-
-    global debug, http_server
-
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
-            debug = True
+            config.debug = True
         elif arg.lower() == "-w":
-            http_server = True
+            config.http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
             uicore.usage(gom)
             sys.exit(0)
 
     return True
-
-def debugPrint(*args):
-
-    # Print debug messages if debug is activated (run with -d)
-    global debug
-
-    if not debug:
-        return
-
-    outStr = ""
-    for arg in args:
-        outStr += str(arg) + " "
-
-    print outStr
 
 def loadModule(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
@@ -255,7 +235,7 @@ def loadModule(path, atype, marray, bLoad = True):
         if not file:
             continue
 
-        debugPrint("Loading " + atype + " module", file)
+        uicore.debug_print("Loading " + atype + " module", file)
 
         if bLoad:
             try:
@@ -280,12 +260,14 @@ def loadModule(path, atype, marray, bLoad = True):
                                 print "The suspicious code:"
                                 print aGlobal
                 except:
-                    debugPrint(FAIL + "Error loading global variables" + ENDC)
+                    uicore.debug_print(FAIL + "Error loading global variables" + ENDC)
                     print sys.exc_info()[1]
 
                 exec(marray + ".append(eval(file))")
+                # Do this in the meantime to populate the config.* structures.
+                exec('config.' + marray + ".append(eval(file))")
 
-                commands[eval(file).name] = eval(file)
+                config.commands[eval(file).name] = eval(file)
 
                 if atype == "unknown":
                     if eval(file).type == "gather":
@@ -301,13 +283,13 @@ def loadModule(path, atype, marray, bLoad = True):
 
                 for x in filter(lambda x: x.startswith("C"), dir(eval(file))):
                     classes.append(file + "." + x)
-                    debugPrint("Registering class",file + "." + x)
-                    debugPrint("Creating a base object ....")
+                    uicore.debug_print("Registering class",file + "." + x)
+                    uicore.debug_print("Creating a base object ....")
 
                     obj = eval(file + "." + x +"()")
                     del obj
             except:
-                debugPrint(FAIL + "Error loading module", file, ":" + ENDC,sys.exc_info()[1])
+                uicore.debug_print(FAIL + "Error loading module", file, ":" + ENDC,sys.exc_info()[1])
                 if file.lower().find("smtp") > -1:
                     raise
         else:
@@ -317,58 +299,23 @@ def loadModule(path, atype, marray, bLoad = True):
                 print WARNING + "The module %s appears to be a non-valid module" + ENDC % file
                 continue
 
-def readDiscover():
-    global commands
-
-    path = "modules" + os.sep + "discover"
-    loadModule(path, "discover", "discovers")
-
-def readGather():
-    global commands
-
-    path = "modules" + os.sep + "gather"
-    loadModule(path, "gather", "gathers")
-
-def readRce():
-    global commands
-
-    path = "modules" + os.sep + "rce"
-    loadModule(path, "rce", "rces")
-
-def readBrute():
-    global commands
-
-    path = "modules" + os.sep + "brute"
-    loadModule(path, "brute", "brutes")
-
-def readExploits():
-    global commands
-
-    path = "modules" + os.sep + "exploits"
-    loadModule(path, "exploit", "exploits")
-
-def readFuzzers():
-    global commands
-
-    path = "modules" + os.sep + "fuzzers"
-    loadModule(path, "fuzz", "fuzzers")
-
 def readCommands():
-    debugPrint("Reading modules ... ")
-    debugPrint()
+    uicore.debug_print("Reading modules ... ")
+    uicore.debug_print()
 
-    modules = [
-        'Discover',
-        'Gather',
-        'Rce',
-        'Fuzzers',
-        'Brute',
-        'Exploits'
-    ]
+    modules = {
+        'discovers': 'discover',
+        'gathers': 'gather',
+        'rces': 'rce',
+        'fuzzers': 'fuzzers',
+        'brutes': 'brute',
+        'exploits': 'exploits'
+    }
 
-    # load all modules
-    for module in modules:
-        eval("read%s" % module)()
+    # Load all modules.
+    for exploit_type, exploit_dir in modules.iteritems():
+        path = "modules" + os.sep + exploit_dir
+        loadModule(path, exploit_dir, exploit_type)
 
 def exploitWizard():
 
@@ -382,10 +329,9 @@ def exploitWizard():
     i = 0
 
     global target
-    global isGui
 
     if target == "" or target == None:
-        if not isGui:
+        if not config.isGui:
             target = raw_input("Target: ")
         else:
             print "[!] You need to specify the target"
@@ -403,7 +349,7 @@ def exploitWizard():
         print str(i) + " " + mod.name, " \t\t", mod.brief_description
     print
     """
-    if not isGui:
+    if not config.isGui:
         res = raw_input("Select module [all]: ")
     else:
         res = ""
@@ -425,7 +371,7 @@ def runRegisteredCommand(cmd, mVars = None):
 
     global user_data
 
-    mType = commands[cmd].type
+    mType = config.commands[cmd].type
     vars = globals()
 
     if mVars != None:
@@ -433,63 +379,16 @@ def runRegisteredCommand(cmd, mVars = None):
             vars[x] = mVars[x]
 
     if mType in ["gather", "exploit", "brute", "fuzzer",  "rce"]:
-        ret = runGatherModule(vars, commands[cmd], user_data, gom)
+        ret = runGatherModule(vars, config.commands[cmd], user_data, gom)
     elif mType == "discover":
-        ret = runModule(vars, commands[cmd], user_data, gom)
+        ret = runModule(vars, config.commands[cmd], user_data, gom)
     else:
         print "Unknown module type '" + str(mType) + "'"
 
     if ret:
         user_data = ret
-    
+
     return ret
-
-def showInfo(cmd):
-
-    global exploits
-    global classes
-
-    for mod in exploits:
-        if mod.name == cmd.lower():
-            try:
-                print "Information"
-                print "-----------"
-                print
-                print "Name:", mod.name
-                print "Type:",mod.category
-                print "Discoverer:",mod.discoverer
-                print "Module author:", mod.author
-                print "Description:", mod.brief_description
-                print "Affected versions:"
-                print 
-                for affected in mod.affects:
-                    print "\t",affected
-                print
-                print "Notes:\r\n",mod.description
-                print
-                print "Patch information:", mod.patch
-                print
-            except:
-                print "Error getting module's information:",sys.exc_info()[1]
-
-            return
-
-    for command in commands:
-        if command == cmd.lower():
-            try:
-                module = commands[command]
-                if module.__name__.isalnum():
-                    obj = eval("module."+module.__name__ +"()")
-                    obj.gom = gom
-                    obj.help()
-            except AttributeError:
-                gom.echo("Module has no help information.")
-            except:
-                gom.echo("Internal error: " + str(sys.exc_info()[1]))
-
-            return
-
-    gom.echo("Module does not exist.")
 
 def execute(command, index):
 
@@ -531,7 +430,7 @@ def runCommand(data, mVars = None):
                 return True
             else:
 
-                if commands.has_key(word.lower()):
+                if config.commands.has_key(word.lower()):
                     runRegisteredCommand(word.lower(), mVars)
                     return True
                 else:
@@ -551,7 +450,7 @@ def runCommand(data, mVars = None):
                 loadModule(word, "unknown", "others")
                 return True
             elif mode == "info":
-                showInfo(word)
+                uicore.show_exploit_info(word)
                 return True
             elif mode == "!": #Execute command
                 execute(words, index)
@@ -640,7 +539,7 @@ def showExploits():
     mList = []
     zerodays = []
 
-    for x in exploits:
+    for x in config.exploits:
         if x.brief_description.startswith("[0day]"):
             zerodays.append(x.name + "    \t\t" + x.brief_description)
         else:
@@ -759,7 +658,6 @@ def doAutoScan(guest = "no", fuzz = "no"):
     global user_data
     global wizard
     global user
-    global isGui
     global sid
     global ignore_host
     global ports
@@ -770,10 +668,10 @@ def doAutoScan(guest = "no", fuzz = "no"):
     try:
         wizard = False
 
-        if target == "" and not isGui:
+        if target == "" and not config.isGui:
             target = raw_input("Target host or network: ")
 
-        if not isGui:
+        if not config.isGui:
             guestPasswords = raw_input("Brute force username and passwords (y/n)[n]: ")
         else:
             guestPasswords = guest
@@ -784,7 +682,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             guestPasswords = False
 
-        if not isGui:
+        if not config.isGui:
             autoFuzz = raw_input("Automagically fuzz available targets (y/n)[n]: ")
         else:
             autoFuzz = fuzz
@@ -794,7 +692,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             autoFuzz = False
 
-        if not isGui:
+        if not config.isGui:
             printTo = raw_input("Print to filename (enter for stdout): ")
 
             if printTo != "":
@@ -954,7 +852,6 @@ def doAutoScan(guest = "no", fuzz = "no"):
 def main_loop():
     """ Main execution loop after initialization. """
 
-    import lib.ui.cli.core as uicore
     global prompt
     global oldPrompt
     global prevRes
@@ -963,7 +860,6 @@ def main_loop():
     global covert
     global timeout
     global waittime
-    global debug
 
     oldPrompt = ""
     prevRes = ""
@@ -1029,41 +925,41 @@ def main_loop():
             except:
                 print "Internal error.",sys.exc_info()[1]
 
-                if debug:
+                if config.debug:
                     raise
 
 def printPayloads():
-    global payload, gom
+    global payload
 
-    gom.echo('Payloads')
-    gom.echo('--------')
-    gom.echo()
-    gom.echo('ostype:')
-    gom.echo()
-    gom.echo('1) Linuxx86Syscall')
-    gom.echo('2) FreeBSDx86Syscall')
-    gom.echo('3) OpenBSDx86Syscall')
-    gom.echo('4) Solarisx86Syscall')
-    gom.echo()
-    gom.echo('payload:')
-    gom.echo()
-    gom.echo('1) runcommand')
-    gom.echo('2) bindshell')
-    gom.echo('3) connectback')
-    gom.echo('4) xorbindshell')
-    gom.echo()
-    gom.echo('Payload arguments:')
-    gom.echo()
-    gom.echo('1) runcommand')
-    gom.echo()
-    gom.echo('command = <command to run>')
-    gom.echo()
-    gom.echo('2) bindshell, connectback, xorbindshell')
-    gom.echo()
-    gom.echo('listenPort = <remote or local listening port>')
-    gom.echo()
-    gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
-    gom.echo()
+    config.gom.echo('Payloads')
+    config.gom.echo('--------')
+    config.gom.echo()
+    config.gom.echo('ostype:')
+    config.gom.echo()
+    config.gom.echo('1) Linuxx86Syscall')
+    config.gom.echo('2) FreeBSDx86Syscall')
+    config.gom.echo('3) OpenBSDx86Syscall')
+    config.gom.echo('4) Solarisx86Syscall')
+    config.gom.echo()
+    config.gom.echo('payload:')
+    config.gom.echo()
+    config.gom.echo('1) runcommand')
+    config.gom.echo('2) bindshell')
+    config.gom.echo('3) connectback')
+    config.gom.echo('4) xorbindshell')
+    config.gom.echo()
+    config.gom.echo('Payload arguments:')
+    config.gom.echo()
+    config.gom.echo('1) runcommand')
+    config.gom.echo()
+    config.gom.echo('command = <command to run>')
+    config.gom.echo()
+    config.gom.echo('2) bindshell, connectback, xorbindshell')
+    config.gom.echo()
+    config.gom.echo('listenPort = <remote or local listening port>')
+    config.gom.echo()
+    config.gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
+    config.gom.echo()
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
@@ -1092,26 +988,27 @@ def loadHistory():
         except:
             print "Cannot create " + historyFile
 
-def set_om(debug=debug):
+def set_om(debug=config.debug):
     """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
-    if isGui == True:
+    if config.isGui == True:
         gom = om.OutputManager('gui', debug=debug)
     else:
         gom = om.OutputManager('console', debug=debug)
-    setattr(gom, 'isGui', isGui)
+    setattr(gom, 'isGui', config.isGui)
+    # DEPRECATE: Most of the above as soon as everything is moved to config.gom.
+    config.gom = gom
 
 def setup_auto_completion():
     """ Checks dependencies for autocompletion and sets it up. """
-    global commands
 
     try:
         import atexit
         import rlcompleter
 
         # Add commands to autocompletion
-        readline.set_completer(rlcompleter.Completer(commands).complete)
+        readline.set_completer(rlcompleter.Completer(config.commands).complete)
         if(sys.platform == 'darwin'):
             readline.parse_and_bind ("bind ^I rl_complete")
         else:
@@ -1125,21 +1022,19 @@ def setup_auto_completion():
 def main():
     """ Main program loop. """
 
-    import lib.ui.cli.core as uicore
-
     # Set OutputManager for modules
-    set_om(debug=debug)
+    set_om(debug=config.debug)
 
-    uicore.print_banner(gom)
+    uicore.print_banner(config.gom)
 
     # Check args and enable debug if requested
     if not check_args():
-        uicore.usage(gom)
+        uicore.usage(config.gom)
         sys.exit(0)
 
     # Remove scapy output messages
     if hasScapy:
-        if not debug:
+        if not config.debug:
             scapy.conf.verb = 0
         else:
             scapy.conf.verb = 1
@@ -1150,21 +1045,20 @@ def main():
     readCommands()
 
     # Start up HTTP server.
-    if http_server:
+    if config.http_server:
         import lib.http as httpd
         http = httpd.IngumaHttpServer()
-        http.gom = gom
-        gom.echo("\nBringing up HTTP server.")
+        config.gom.echo("\nBringing up HTTP server.")
         http.start()
 
     # Display banner.
-    gom.echo("\nType 'help' for a short usage guide.")
+    config.gom.echo("\nType 'help' for a short usage guide.")
 
     # Set autocompletion and load commands history
     setup_auto_completion()
     main_loop()
-    if http_server:
-        gom.echo("Shutting down HTTP server.")
+    if config.http_server:
+        config.gom.echo("Shutting down HTTP server.")
         http.terminate()
 
 if __name__ == "__main__":

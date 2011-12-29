@@ -25,6 +25,7 @@ try:
 except:
     bHasScapy = False
 
+import lib.config as config
 from lib.core import getMacVendor
 from lib.module import CIngumaModule
 
@@ -56,7 +57,7 @@ class CArpCachePoison(CIngumaModule):
         self.address = get_if_addr(get_working_if())
         self.gom.echo( "[+] Using " + str(self.address) )
         self.gom.echo( "  --> Cache poisoning, interval " + str(self.interval) )
-        if user_data['isGui'] == False:
+        if config.isGui == False:
             self.gom.echo( "Press Ctrl+C to cancel" )
         arpcachepoison(self.address, self.target, self.interval)
         return True
