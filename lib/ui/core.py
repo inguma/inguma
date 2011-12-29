@@ -30,11 +30,13 @@ import dotgen
 
 import lib.IPy as IPy
 import lib.liblistener as liblistener
+import lib.config as config
 
 #inguma.debug = True
 inguma.isGui = True
 inguma.user_data["isGui"] = True
 inguma.user_data["interactive"] = False
+config.isGui = True
 
 # Fix for bug 1807529 (andresriancho)
 inguma.user_data["base_path"] = '.'
@@ -169,6 +171,7 @@ class UIcore():
 
     def set_om(self, om):
         self.gom = om
+        config.gom = self.gom
         setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
         setattr(self.gom, 'isGui', inguma.isGui)
         self.gom.set_new_nodes(False)
@@ -303,7 +306,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
 
@@ -313,7 +316,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, inguma.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
         if join:

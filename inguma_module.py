@@ -43,7 +43,7 @@ def runModule(vars, module, dict, om=None):
             objModule.gom.uicore.getDot(False)
             objModule.gom.map.set_dotcode( dict['dotcode'] )
 
-            objModule.gom.kbwin.updateTree()
+            objModule.gom.kbwin.update_targets_tree()
             #objModule.gom.map.set_filter('twopi')
             #objModule.gom.map.zoom_to_fit()
         return dict
