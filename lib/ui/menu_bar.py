@@ -120,17 +120,6 @@ class MenuBar(gtk.Menu):
         sep = gtk.SeparatorMenuItem()
         self.append(sep)
 
-        # Preferences
-        pref_menu = gtk.Menu()
-        prefm = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
-        prefm.set_submenu(pref_menu)
-
-        self.append(prefm)
-
-        # Separator
-        sep = gtk.SeparatorMenuItem()
-        self.append(sep)
-
         # Documentation
         helpi = gtk.ImageMenuItem(gtk.STOCK_HELP, agr)
         helpi.get_children()[0].set_label('Documentation')
