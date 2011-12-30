@@ -1,17 +1,17 @@
 ##      core.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -33,7 +33,6 @@ import lib.liblistener as liblistener
 import lib.config as config
 
 #inguma.debug = True
-inguma.isGui = True
 inguma.user_data["isGui"] = True
 inguma.user_data["interactive"] = False
 config.isGui = True
@@ -48,8 +47,7 @@ class UIcore():
 
     def __init__(self, om):
 
-        self.gom = om
-        self.gom.isGui = True
+        self.gom = config.gom
 
         self.user_data = inguma.user_data
         self.listener = liblistener.Listener(self.gom)
@@ -107,15 +105,15 @@ class UIcore():
         output.close()
 
     def get_modules(self, category):
-        ''' Returns an aray with the modules for one category'''
+        '''Returns an array with the modules for one category.'''
 
         modules = eval('inguma.' + category)
         return modules
 
     def get_categories(self):
-        ''' returns an array with the categories of modules'''
+        '''Returns an array with the module categories.'''
 
-        categories = ['discovers', 'gathers', 'brutes','exploits'] 
+        categories = ['discovers', 'gathers', 'brutes', 'exploits']
         return categories
 
     def get_kbcontent(self):
@@ -173,7 +171,7 @@ class UIcore():
         self.gom = om
         config.gom = self.gom
         setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
-        setattr(self.gom, 'isGui', inguma.isGui)
+        setattr(self.gom, 'isGui', config.isGui)
         self.gom.set_new_nodes(False)
 
     def get_interfaces(self):
