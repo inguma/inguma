@@ -66,8 +66,8 @@ class Listener:
 
         self.gom.echo( "== New Listener created on Port %d ==" % port, False)
 
-        while self.keep: # listen for connections  
-            self.sockfd.listen(1)
+#        while self.keep: # listen for connections
+        self.sockfd.listen(1)
 #            self.clientsock , clientaddr = self.sockfd.accept()
 #            self.conn = True
 #            self.gom.echo( "Got Connection from " + str(clientaddr), False )
@@ -99,7 +99,7 @@ class Listener:
 #            self.clientsock.shutdown(0)
 #            self.conn = False
         self.keep = False
-        self.sockfd.shutdown(0)
+        self.sockfd.shutdown(socket.SHUT_WR)
         self.gom.echo( ">>>> Server Terminated <<<<<", False)
 
     def create_remote_listener(self, port, host, platform=''):

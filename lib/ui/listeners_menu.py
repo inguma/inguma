@@ -22,11 +22,12 @@ import gtk
 class ListenersMenu(gtk.MenuBar):
     '''Listeners popup menu'''
 
-    def __init__(self, main):
+    def __init__(self, main, tree):
         super(ListenersMenu,self).__init__()
 
         self.main = main
         self.gom = main.gom
+        self.tree = tree
         self.uicore = main.uicore
 
     def create_menu(self, host, port):
@@ -58,3 +59,4 @@ class ListenersMenu(gtk.MenuBar):
         self.uicore.listeners[self.host + '_' + self.port].exit()
         self.uicore.listeners.pop(self.host + '_' + self.port)
         self.gom.echo('Killed listener at port: ' + str(self.port), False)
+        self.tree.fill_listeners_list()

@@ -39,7 +39,7 @@ class KBtree(gtk.TreeView):
         self.handler = None
 
         self.vuln_popup = vulns_menu.VulnsMenu(self.main)
-        self.listener_popup = listeners_menu.ListenersMenu(self.main)
+        self.listener_popup = listeners_menu.ListenersMenu(self.main, self)
 
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
@@ -232,6 +232,7 @@ class KBtree(gtk.TreeView):
         self.set_model(self.liststore)
 
     def fill_listeners_list(self):
+        self.liststore.clear()
         icon = gtk.Image()
         icon = icon.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
         if self.uicore.listeners:
