@@ -268,7 +268,7 @@ class MainApp(gtk.Window):
         self.network_paned.show()
         self.xdotw.show()
 
-        label = gtk.Label(' Network')
+        label = gtk.Label(' Networking')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
@@ -318,7 +318,7 @@ class MainApp(gtk.Window):
         # RCE Iface
         #################################################################
 
-        label = gtk.Label(' RCE')
+        label = gtk.Label(' Reversing')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
@@ -390,7 +390,7 @@ class MainApp(gtk.Window):
         setattr(self.uiman, 'fuzz_frame', self.fuzz_frame)
 
         # Add exploits notebook and text/label to main notebook
-        label = gtk.Label(' Exploit')
+        label = gtk.Label(' Exploiting')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
@@ -654,6 +654,8 @@ class MainApp(gtk.Window):
         if opt != gtk.RESPONSE_YES:
             return True
 
+        self.gom.echo( 'Killing all listeners', False)
+        self.uicore.kill_all_listeners()
         self.gom.echo( 'Exit!', False)
         gtk.main_quit()
         return False

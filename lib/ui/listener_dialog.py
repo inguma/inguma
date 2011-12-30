@@ -77,7 +77,6 @@ class ListenerDialog(popup_dialog.PopupDialog):
         # Port entry
         self.port_entry = gtk.Entry()
         self.port_entry.set_icon_from_stock(1, gtk.STOCK_ADD)
-        self.port_entry.set_icon_from_stock(0, gtk.STOCK_STOP)
         self.default_color = self.port_entry.get_style().text[0]
         self.port_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
         self.port_entry.set_text('Port to listen')
@@ -95,16 +94,19 @@ class ListenerDialog(popup_dialog.PopupDialog):
         ip_addr = self.uicore.get_iface_ip(active_iface)
         self.ip_label.set_text(ip_addr)
         self.ip_label.set_padding(4, 0)
-        ip_halign = gtk.Alignment(0, 1, 0, 0)
+        ip_halign = gtk.Alignment(0, 0, 0, 0)
         ip_halign.add(self.ip_label)
 
         self.iface_combo.connect('changed', self.get_ip)
 
         # Used ports label
         self.used_ports_label = gtk.Label()
-        self.used_ports_label.set_markup('Ports in use: <span foreground=\"red\"><b>None</b></span>')
+        self.used_ports_label.set_markup('Ports in use:')
         ports_halign = gtk.Alignment(0, 1, 0, 0)
         ports_halign.add(self.used_ports_label)
+
+        # Ports list
+        self.ports_list = self._create_ports_list()
 
         # Packing elements
         self.desc_hbox.pack_start(self.desc_icon, False, False, 1)
@@ -115,6 +117,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
         self.ports_vbox.pack_start(self.port_entry, True, True, 2)
         self.ports_vbox.pack_start(ports_halign, True, True, 2)
+        self.ports_vbox.pack_start(self.ports_list, True, True, 2)
 
         self.main_hbox.pack_start(self.iface_vbox, False, False)
         self.main_hbox.pack_start(self.ports_vbox, False, False)
@@ -129,6 +132,25 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
     ##############################################################
     # Methods
+
+    def _create_ports_list(self):
+        store = gtk.ListStore(str)
+
+        if self.uicore.listeners:
+            for listener in self.uicore.listeners.keys():
+                port = listener.split('_')[1]
+                store.append([port])
+
+        treeView = gtk.TreeView(store)
+        treeView.set_rules_hint(True)
+
+        rendererText = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("", rendererText, text=0)
+        column.set_sort_column_id(0)    
+        treeView.append_column(column)
+        treeView.set_headers_visible(False)
+
+        return treeView
 
     def get_ip(self, widget):
         '''get IP address of selected iface and change ip label'''
@@ -163,18 +185,14 @@ class ListenerDialog(popup_dialog.PopupDialog):
             widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
 
     def _go(self, widget, icon_pos, event):
-        if icon_pos == 1:
-            port = widget.get_text()
-            host = self.ip_label.get_text()
-            colormap = widget.get_colormap()
-            #bg_ok = colormap.alloc_color("white")
-            bg_not_valid = colormap.alloc_color("red")
+        port = widget.get_text()
+        host = self.ip_label.get_text()
+        colormap = widget.get_colormap()
+        #bg_ok = colormap.alloc_color("white")
+        bg_not_valid = colormap.alloc_color("red")
     
-            if port and port != 'Port to listen':
-                self.uicore.create_listener(host, int(port))
-                self._quit(widget)
-            else:
-                widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
-        elif icon_pos == 0:
-            self.uicore.listeners['10.69.3.126_4444'].exit()
+        if port and port != 'Port to listen':
+            self.uicore.create_listener(host, int(port))
             self._quit(widget)
+        else:
+            widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)

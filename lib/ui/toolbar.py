@@ -37,6 +37,8 @@ class Toolbar(gtk.HBox):
         super(Toolbar,self).__init__(False, 1)
 
         self.main = main
+        self.gom = main.gom
+        self.uicore = main.uicore
         self.toolbox = self
         # List to store popup dialogs
         self.popup_dialogs = []
@@ -194,6 +196,8 @@ class Toolbar(gtk.HBox):
         if opt != gtk.RESPONSE_YES:
             return True
 
+        self.gom.echo( 'Killing all listeners', False)
+        self.uicore.kill_all_listeners()
         gtk.main_quit()
         return False
 

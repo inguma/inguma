@@ -214,6 +214,12 @@ class UIcore():
         listener_id = "_".join([host, str(port)])
         self.listeners[listener_id] = self.listener
 
+    def kill_all_listeners(self):
+        if self.listeners:
+            for listener in self.listeners.keys():
+                self.listeners[listener].exit()
+                self.listeners.pop(listener)
+
     def getTargetPath(self):
         steps = []
         for target in inguma.user_data['targets']:

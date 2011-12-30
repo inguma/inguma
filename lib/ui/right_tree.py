@@ -22,6 +22,7 @@ import gtk
 
 import lib.ui.config as config
 import lib.ui.vulns_menu as vulns_menu
+import lib.ui.listeners_menu as listeners_menu
 
 class KBtree(gtk.TreeView):
 
@@ -35,7 +36,10 @@ class KBtree(gtk.TreeView):
         self.uicore = core
         self.node_menu = main.uiman
 
+        self.handler = None
+
         self.vuln_popup = vulns_menu.VulnsMenu(self.main)
+        self.listener_popup = listeners_menu.ListenersMenu(self.main)
 
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
@@ -240,6 +244,10 @@ class KBtree(gtk.TreeView):
             icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
             self.liststore.append([icon, 'No active listeners', None])
 
+        if self.handler:
+            self.disconnect(self.handler)
+        self.handler = self.connect('button-press-event', self.listener_menu)
+
     def create_vulns_tree(self):
         ids = {}
         kb = self.uicore.get_kbList()
@@ -279,7 +287,9 @@ class KBtree(gtk.TreeView):
                 self.treestore.append( piter, [icon, 'No opened ports found yet', None])
 
         self.set_model(self.modelfilter)
-        self.popup_handler = self.connect('button-press-event', self.popup_vuln_menu)
+        if self.handler:
+            self.disconnect(self.handler)
+        self.handler = self.connect('button-press-event', self.popup_vuln_menu)
 
     def create_targets_tree(self):
 
@@ -314,7 +324,9 @@ class KBtree(gtk.TreeView):
 
         self.set_model(self.modelfilter)
         # Connect right click popup search menu
-        self.popup_handler = self.connect('button-press-event', self.popup_menu)
+        if self.handler:
+            self.disconnect(self.handler)
+        self.handler = self.connect('button-press-event', self.popup_menu)
 
     def update_targets_tree(self):
         '''Reads KB and updates TreeView'''
@@ -424,8 +436,20 @@ class KBtree(gtk.TreeView):
             (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
             # Is it over a plugin name ?
             # Ge the information about the click
-            if path is not None and len(path) == 3:
+            if path is not None and len(path) == 4:
                 node = self.treestore[path][1]
                 menu = self.vuln_popup.create_menu(node, self.treestore[path][2])
+                menu.popup(None, None, None, 1, event.time)
+                menu.show_all()
+
+    def listener_menu(self, tree, event):
+        if event.button == 3:
+            #(path, column) = tree.get_cursor()
+            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
+            # Is it over a plugin name ?
+            # Ge the information about the click
+            if path is not None and self.uicore.listeners:
+                node = self.liststore[path][1]
+                menu = self.listener_popup.create_menu(node, self.liststore[path][2])
                 menu.popup(None, None, None, 1, event.time)
                 menu.show_all()

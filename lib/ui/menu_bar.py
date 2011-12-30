@@ -32,6 +32,8 @@ class MenuBar(gtk.Menu):
         super(MenuBar,self).__init__()
 
         self.main = main
+        self.gom = self.main.gom
+        self.uicore = self.main.uicore
 
         agr = gtk.AccelGroup()
         #self.main.window.add_accel_group(agr)
@@ -169,6 +171,8 @@ class MenuBar(gtk.Menu):
         if opt != gtk.RESPONSE_YES:
             return True
 
+        self.gom.echo( 'Killing all listeners', False)
+        self.uicore.kill_all_listeners()
         gtk.main_quit()
         return False
 
@@ -182,8 +186,6 @@ class MenuBar(gtk.Menu):
 
     def load_kb(self, widget, file=''):
 
-        self.gom = self.main.gom
-        self.uicore = self.main.uicore
 #        self.textview = self.main.textview
         self.treeview = self.main.treeview
         self.xdotw = self.main.xdotw
