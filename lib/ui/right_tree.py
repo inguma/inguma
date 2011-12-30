@@ -45,6 +45,7 @@ class KBtree(gtk.TreeView):
         self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
         self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
         self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
+        self.vuln_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
 
         # Main VBox to store right panel elements
         self.right_vbox = gtk.VBox(False)
@@ -229,10 +230,15 @@ class KBtree(gtk.TreeView):
     def fill_listeners_list(self):
         icon = gtk.Image()
         icon = icon.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
-        for listener in self.uicore.listeners:
-            print "Adding listener:", listener
-            host, port = listener.split('_')
-            self.liststore.append([icon, host, port])
+        if self.uicore.listeners:
+            for listener in self.uicore.listeners:
+                print "Adding listener:", listener
+                host, port = listener.split('_')
+                self.liststore.append([icon, host, port])
+        else:
+            icon = gtk.Image()
+            icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+            self.liststore.append([icon, 'No active listeners', None])
 
     def create_vulns_tree(self):
         ids = {}
@@ -241,25 +247,36 @@ class KBtree(gtk.TreeView):
         targets = kb['targets']
         targets.sort()
         for host in targets:
+            if host + '_os' in kb:
+                target_os = kb[host + '_os'][0]
+                for oss in config.ICONS:
+                    if oss.capitalize() in target_os:
+                        icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                        piter = self.treestore.append(None, [icon, host, oss])
+            else:
+                piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
             if host + '_tcp_ports' in kb:
                 for port in kb[host + '_tcp_ports']:
+                    icon = gtk.Image()
+                    icon = icon.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
+                    port_iter = self.treestore.append( piter, [icon, port + '/TCP', None])
                     if host + '_'+ str(port) + '-web-vulns' in kb.keys():
-                        if host + '_os' in kb:
-                            target_os = kb[host + '_os'][0]
-                            for oss in config.ICONS:
-                                if oss.capitalize() in target_os:
-                                    icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
-                                    piter = self.treestore.append(None, [icon, host, oss])
-                        else:
-                            piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
                         for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
                             if id not in ids.keys():
                                 #print "Set element:", element
-                                iditer = self.treestore.append( piter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
-                                self.treestore.append( iditer, [self.value_icon, vuln,  id + '-' + host + ':' + str(port)])
+                                iditer = self.treestore.append( port_iter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
+                                self.treestore.append( iditer, [self.vuln_icon, vuln,  id + '-' + host + ':' + str(port)])
                                 ids[id] = iditer
                             else:
-                                self.treestore.append( ids[id], [self.value_icon, vuln, id + '-' + host + ':' + str(port)])
+                                self.treestore.append( ids[id], [self.vuln_icon, vuln, id + '-' + host + ':' + str(port)])
+                    else:
+                        icon = gtk.Image()
+                        icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+                        self.treestore.append( port_iter, [icon, 'No vulnerabilities found yet', None])
+            else:
+                icon = gtk.Image()
+                icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+                self.treestore.append( piter, [icon, 'No opened ports found yet', None])
 
         self.set_model(self.modelfilter)
         self.popup_handler = self.connect('button-press-event', self.popup_vuln_menu)

@@ -268,12 +268,12 @@ class MainApp(gtk.Window):
         self.network_paned.show()
         self.xdotw.show()
 
-        label = gtk.Label(' Map')
+        label = gtk.Label(' Network')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
+        i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map.png')
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()
@@ -289,12 +289,12 @@ class MainApp(gtk.Window):
         #################################################################################################################################
         # Consoles Tab
         #################################################################
-        label = gtk.Label(' Term')
+        label = gtk.Label(' Terminals')
         label.set_angle(90)
         b_factory = gtk.VBox
         b = b_factory(spacing=1)
         i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+        i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
         b.pack_start(label)
         b.pack_start(i)
         b.show_all()

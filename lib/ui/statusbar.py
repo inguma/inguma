@@ -55,7 +55,7 @@ class Statusbar(gtk.Statusbar):
         self.vuln_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
         self.shll_icon = gtk.Image()
         self.shll_icon.set_tooltip_text("Shells available (not yet working)")
-        self.shll_icon.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+        self.shll_icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
         self.shll_icon.set_sensitive(False)
 
         self.targ_label = gtk.Label('0')
@@ -75,7 +75,7 @@ class Statusbar(gtk.Statusbar):
 
         # KB icon and label
         self.kb_icon = gtk.Image()
-        self.kb_icon.set_from_stock(gtk.STOCK_FILE, gtk.ICON_SIZE_MENU)
+        self.kb_icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'database.png')
         self.kb_label = gtk.Label('No KB has been saved/loaded yet')
         #self.kb_label.set_alignment(1.0, 1.0)
         self.kb_label.set_padding(1, 5)
