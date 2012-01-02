@@ -109,11 +109,8 @@ class FileManagerNotebook(gtk.Notebook):
 
         self.file_tree.set_model(self.liststore)
 
-    def fill_file_list(self, path=None):
+    def fill_file_list(self, path=os.getcwd()):
         self.liststore.clear()
-
-        if not path:
-            path = os.getcwd()
 
         elements = os.listdir(path)
         if elements:
@@ -121,15 +118,17 @@ class FileManagerNotebook(gtk.Notebook):
         files = []
         folders = ['..']
         for filename in elements:
-            if os.path.isdir(filename):
+            filepath = os.path.join(path, filename)
+            if os.path.isdir(filepath):
                 folders.append(filename)
             else:
                 files.append(filename)
 
-        for folder in folders:    
+        for folder in folders:
             icon = self.folder_icon
             self.liststore.append([icon, folder])
         for file in files:
             icon = self.file_icon
             self.liststore.append([icon, file])
+
 #        self.handler = self.connect('button-press-event', self.listener_menu)

@@ -303,7 +303,7 @@ class MainApp(gtk.Window):
         # Paned to contain left file manager tree and terminals notebook
         self.terms_paned = gtk.HPaned()
 
-        self.term_notebook = terminal_manager.TerminalNotebook()
+        self.term_notebook = terminal_manager.TerminalNotebook(self)
         setattr(self.uiman, 'termnb', self.term_notebook)
         setattr(self.uiman, 'mainnb', self.notebook)
         self.file_notebook = filemanager_notebook.FileManagerNotebook(self)

@@ -20,6 +20,7 @@
 import os
 import gtk, pango
 import pwd
+import psutil
 import lib.ui.config as config
 
 if config.HAS_VTE:
@@ -30,8 +31,11 @@ notebook = None
 
 class TerminalNotebook(gtk.Notebook):
 
-    def __init__(self):
+    def __init__(self, main):
         gtk.Notebook.__init__(self)
+
+        self.pid = None
+        self.main = main
 
         #set the tab properties
         self.set_property('homogeneous', True)
@@ -51,14 +55,14 @@ class TerminalNotebook(gtk.Notebook):
 
         term.set_font(pango.FontDescription('mono 8'))
         if command:
-            term.fork_command(command=command, argv=args)
+            self.pid = term.fork_command(command=command, argv=args)
         else:
-            term.fork_command()
+            self.pid = term.fork_command()
         term.set_scrollback_lines(500)
         term.set_scroll_on_output = True
         term.connect("child-exited", lambda w: term.destroy())
         term.show_all()
-        self._create_term_buttons(hbox)
+        self._create_term_buttons(term)
         hbox.pack_start(self.tools, False, False, 0)
         hbox.pack_start(term, True, True, 0)
         hbox.pack_start(self.tools2, False, False, 0)
@@ -94,7 +98,7 @@ class TerminalNotebook(gtk.Notebook):
             self.remove_page(pagenum)
             child.destroy()
 
-    def _create_term_buttons(self, child):
+    def _create_term_buttons(self, term):
         self.close_button = self.load_button('cross.png',
           'Close terminal window')
         self.browse_button = self.load_button('folder.png',
@@ -128,10 +132,15 @@ class TerminalNotebook(gtk.Notebook):
         self.tools2.pack_start(self.paste_button, expand=False)
         self.tools2.pack_start(self.selectall_button, expand=False)
         self.tools2.pack_start(self.selectnone_button, expand=False)
-        self.copy_button.set_sensitive(False)
+        #self.copy_button.set_sensitive(False)
 
         self.shell_button.connect('clicked', self.add_new_tab)
-        self.close_button.connect('clicked', self.close_tab, child)
+        self.close_button.connect('clicked', self.close_tab, term)
+        self.copy_button.connect('clicked', self.copy_clipboard, term)
+        self.paste_button.connect('clicked', self.paste_clipboard, term)
+        self.selectall_button.connect('clicked', self.select_all, term)
+        self.selectnone_button.connect('clicked', self.select_none, term)
+        self.browse_button.connect('clicked', self.browse_directory, term)
 
     def load_button(self, icon, tip):
         button = gtk.Button()
@@ -145,6 +154,21 @@ class TerminalNotebook(gtk.Notebook):
         img.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + name)
         return img
 
+    def copy_clipboard(self, widget, term):
+        term.copy_clipboard()
+
+    def paste_clipboard(self, button, term):
+        term.paste_clipboard()
+
+    def select_all(self, button, term):
+        term.select_all()
+
+    def select_none(self, button, term):
+        term.select_none()
+
+    def browse_directory(self, button, terminal):
+        cwd = psutil.Process(self.pid).getcwd()
+        self.main.file_notebook.fill_file_list(cwd)
 
     def get_default_shell():
         """Returns the default shell for the user"""
