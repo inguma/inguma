@@ -8,6 +8,7 @@ inguma (0.4-1) unstable; urgency=low
       upstream to add those patches and drop it from the source.
     - Added PyGTK GUI and dropped the Qt-based one.
     - Changed ingumagui to ginguma.
+    - Bokken 1.0 has been integrated into GInguma.
   * debian/control:
     - Bumped to Standards-Version 3.9.2, no changes.
     - Dropped python-qt3, we are only using pygtk.
@@ -21,10 +22,10 @@ inguma (0.4-1) unstable; urgency=low
     - Removed some LICENSE files in dh_installdocs.
   * Dropped debian/patches, none currently needed.
   * Bumped compatibility version to debhelper v8.
-  * debian/copyright: Added lots of third-party dependencies and updated other
-    license terms.
+  * debian/copyright: Converted to new format, added lots of third-party
+    dependencies and updated other license terms.
 
- -- David Martínez Moreno <ender@debian.org>  Mon, 02 Jan 2012 02:38:37 +0100
+ -- David Martínez Moreno <ender@debian.org>  Mon, 02 Jan 2012 03:16:38 +0100
 
 inguma (0.0.7.2-2) unstable; urgency=low
 

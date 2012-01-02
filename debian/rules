@@ -18,3 +18,7 @@ override_dh_clean:
 
 override_dh_installdocs:
 	dh_installdocs -X doc/ChangeLog -X doc/LICENSE -X doc/COPYING
+
+override_dh_install:
+	dh_install -X lib/pyshellcodelib/x86/test -X LICENSE
+	chmod -x debian/inguma/usr/share/pyshared/inguma/logo/inguma_logo.jpg
