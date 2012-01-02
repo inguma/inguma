@@ -92,9 +92,10 @@ class TerminalNotebook(gtk.Notebook):
         self.set_current_page(-1)
 
     def close_tab(self, widget, child):
-        pagenum = self.page_num(child)
-        
-        if pagenum != -1:
+        box = child.get_parent()
+        pagenum = self.page_num(box)
+
+        if pagenum != -1 and self.get_n_pages() > 1:
             self.remove_page(pagenum)
             child.destroy()
 
