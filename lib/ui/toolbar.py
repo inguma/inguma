@@ -267,7 +267,7 @@ class Toolbar(gtk.HBox):
         self.new_tab('sniffer', 'tools/sniffer')
 
     def new_tab(self, widget, command=''):
-        self.main.term_notebook.new_tab(command)
+        self.main.term_notebook.add_new_tab(widget, command)
         self.main.notebook.set_current_page(1)
 
     def show_log(self, widget):

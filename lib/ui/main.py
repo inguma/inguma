@@ -70,7 +70,8 @@ import lib.ui.node_menu as node_menu
 import lib.ui.altNodeMenu as altNodeMenu
 import lib.ui.graphMenu as graphMenu
 import lib.ui.exploits as exploits
-import lib.ui.libTerminal as libTerminal
+import lib.ui.terminal_manager as terminal_manager
+import lib.ui.filemanager_notebook as filemanager_notebook
 import lib.ui.threadstv as threadstv
 import lib.ui.libAutosave as libAutosave
 if config.HAS_SOURCEVIEW:
@@ -299,20 +300,19 @@ class MainApp(gtk.Window):
         b.pack_start(i)
         b.show_all()
 
-        term_box = gtk.VBox()
-        term_button = gtk.Button("New Tab", gtk.STOCK_ADD)
-        # Disable if VTE not available
-        if not self.config.HAS_VTE:
-            term_button.set_sensitive(False)
-        term_box.pack_start(term_button,False)
-        self.term_notebook = libTerminal.TerminalNotebook()
-        term_button.connect("clicked", self.new_tab)
-        term_box.pack_start(self.term_notebook)
+        # Paned to contain left file manager tree and terminals notebook
+        self.terms_paned = gtk.HPaned()
+
+        self.term_notebook = terminal_manager.TerminalNotebook()
         setattr(self.uiman, 'termnb', self.term_notebook)
         setattr(self.uiman, 'mainnb', self.notebook)
+        self.file_notebook = filemanager_notebook.FileManagerNotebook(self)
 
-        self.notebook.append_page(term_box, b)
-        term_box.show_all()
+        # Pack all terminals stuff
+        self.terms_paned.pack1(self.file_notebook, resize=False, shrink=True)
+        self.terms_paned.pack2(self.term_notebook, resize=False, shrink=True)
+        self.terms_paned.show_all()
+        self.notebook.append_page(self.terms_paned, b)
 
         #################################################################################################################################
         # RCE Iface
@@ -567,10 +567,6 @@ class MainApp(gtk.Window):
 #################################################################################################################################
 # Functions
 #################################################################
-
-    def new_tab(self, widget, command=''):
-        self.term_notebook.new_tab(command)
-        self.notebook.set_current_page(1)
 
     def on_bottom_switch(self, widget, data, page):
         self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)

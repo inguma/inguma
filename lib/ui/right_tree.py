@@ -214,7 +214,7 @@ class KBtree(gtk.TreeView):
         self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
         rendererPix = gtk.CellRendererPixbuf()
         rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Host")
+        column = gtk.TreeViewColumn("File")
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)
@@ -229,6 +229,7 @@ class KBtree(gtk.TreeView):
         column.set_sort_column_id(2)
         self.append_column(column)
 
+        self.set_headers_visible(False)
         self.set_model(self.liststore)
 
     def fill_listeners_list(self):
