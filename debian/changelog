@@ -20,12 +20,13 @@ inguma (0.4-1) unstable; urgency=low
   * debian/rules:
     - Reduced to just some lines and removed all the old cruft.
     - Removed some LICENSE files in dh_installdocs.
-  * Dropped debian/patches, none currently needed.
   * Bumped compatibility version to debhelper v8.
   * debian/copyright: Converted to new format, added lots of third-party
     dependencies and updated other license terms.
+  * debian/patches: Added wrappers for {,g}inguma.py in /usr/bin, and replaced
+    shipped pyew with Debian's.
 
- -- David Martínez Moreno <ender@debian.org>  Mon, 02 Jan 2012 03:16:38 +0100
+ -- David Martínez Moreno <ender@debian.org>  Mon, 02 Jan 2012 04:38:43 +0100
 
 inguma (0.0.7.2-2) unstable; urgency=low
 

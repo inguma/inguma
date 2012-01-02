@@ -1,0 +1,89 @@
+Description: Use system pyew.
+ Pyew (a reverse engineering toolkit) is usually distributed together with
+ Inguma.  Given that it's also packaged for Debian, rewrite all the references
+ from extlib.pyew to just pyew.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: not-needed
+Last-Update: 2012-02-02
+
+--- inguma-0.4.orig/lib/ui/bokken/dependency_check.py
++++ inguma-0.4/lib/ui/bokken/dependency_check.py
+@@ -50,7 +50,7 @@ def pyew_dependency_check():
+     print '\tPyew availability...',
+ 
+     try:
+-        import extlib.pyew.pyew as pyew
++        import pyew.pyew as pyew
+         print OKGREEN + "\tOK" + ENDC
+     except:
+         print FAIL + "\tD'oh!" + ENDC
+--- inguma-0.4.orig/lib/ui/bokken/core.py
++++ inguma-0.4/lib/ui/bokken/core.py
+@@ -22,10 +22,9 @@ import sys
+ import sqlite3
+ 
+ from hashlib import md5, sha1, sha256
+-from extlib.pyew.config import DATABASE_PATH
++from pyew.config import DATABASE_PATH
+ 
+-sys.path.append( os.getcwd() + os.sep + 'extlib' + os.sep + 'pyew' + os.sep)
+-from extlib.pyew.pyew_core import CPyew
++from pyew.pyew_core import CPyew
+ 
+ class Core():
+ 
+--- inguma-0.4.orig/lib/ui/bokken/plugins/cgraph.py
++++ inguma-0.4/lib/ui/bokken/plugins/cgraph.py
+@@ -17,7 +17,7 @@
+ #       foundation, inc., 51 franklin street, fifth floor, boston,
+ #       ma 02110-1301, usa.
+ 
+-import extlib.pyew.plugins.graphs as graphs
++import pyew.plugins.graphs as graphs
+ 
+ 
+ def showCallGraph(pyew):
+--- inguma-0.4.orig/lib/ui/bokken/plugins/packer.py
++++ inguma-0.4/lib/ui/bokken/plugins/packer.py
+@@ -17,7 +17,7 @@
+ #       foundation, inc., 51 franklin street, fifth floor, boston,
+ #       ma 02110-1301, usa.
+ 
+-import extlib.pyew.plugins.packer as packer
++import pyew.plugins.packer as packer
+ 
+ def search_packer(pyew):
+     """ Search the sample for packer """
+--- inguma-0.4.orig/lib/ui/bokken/plugins/pdfinfo.py
++++ inguma-0.4/lib/ui/bokken/plugins/pdfinfo.py
+@@ -20,7 +20,7 @@
+ import re
+ import urllib
+ 
+-from extlib.pyew.plugins.pdfid_PL import PDFiD2String, PDFiD
++from pyew.plugins.pdfid_PL import PDFiD2String, PDFiD
+ 
+ FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
+ 
+--- inguma-0.4.orig/lib/ui/bokken/plugins/url.py
++++ inguma-0.4/lib/ui/bokken/plugins/url.py
+@@ -22,7 +22,7 @@ import re
+ 
+ def extract(pyew):
+ 
+-    from extlib.pyew.plugins.url import doFind
++    from pyew.plugins.url import doFind
+ 
+     urlfinders = [
+         re.compile("((http|ftp|mailto|telnet|ssh)(s){0,1}\:\/\/[\w|\/|\.|\#|\?|\&|\=|\-|\%]+)+", re.IGNORECASE | re.MULTILINE)
+--- inguma-0.4.orig/lib/ui/bokken/plugins/virustotal.py
++++ inguma-0.4/lib/ui/bokken/plugins/virustotal.py
+@@ -19,7 +19,7 @@
+ 
+ import hashlib
+ 
+-import extlib.pyew.plugins.virustotal as vt
++import pyew.plugins.virustotal as vt
+ 
+ def search_vt(pyew):
+     """ Search the sample in Virus Total """
