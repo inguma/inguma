@@ -1,4 +1,4 @@
-inguma (0.3.0~hg20110507-1) unstable; urgency=low
+inguma (0.4-1) unstable; urgency=low
 
   * New maintainer, taking over Pierre Chifflier.
   * New release (closes: #610648):
@@ -7,23 +7,24 @@ inguma (0.3.0~hg20110507-1) unstable; urgency=low
     - Scapy is again included due to patched sources.  We are in contact with
       upstream to add those patches and drop it from the source.
     - Added PyGTK GUI and dropped the Qt-based one.
+    - Changed ingumagui to ginguma.
   * debian/control:
     - Bumped to Standards-Version 3.9.2, no changes.
     - Dropped python-qt3, we are only using pygtk.
-    - Added python:Depends.
+    - Added ${python:Depends} and pyew 2.0 to Depends.
     - Added Homepage.
+    - Added VCS-* fields.
     - Recommend python-geoip.
+  * Moved packaging to v3.0 (quilt).
   * debian/rules:
-    - Revamped the way everything is done.
+    - Reduced to just some lines and removed all the old cruft.
     - Removed some LICENSE files in dh_installdocs.
-    - Changed ingumagui to ginguma.
   * Dropped debian/patches, none currently needed.
   * Bumped compatibility version to debhelper v8.
   * debian/copyright: Added lots of third-party dependencies and updated other
     license terms.
-  * Created debian/source/format.
 
- -- David Martínez Moreno <ender@debian.org>  Sun, 01 May 2011 15:44:38 -0700
+ -- David Martínez Moreno <ender@debian.org>  Mon, 02 Jan 2012 02:38:37 +0100
 
 inguma (0.0.7.2-2) unstable; urgency=low
 
