@@ -85,7 +85,7 @@ import lib.ui.systray as systray
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
 from lib.core import check_distorm_lib
-import lib.config
+import lib.globals as glob
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
@@ -115,7 +115,7 @@ class MainApp(gtk.Window):
 
         # Load Output Manager
         self.gom = om.OutputManager('gui', self.ing)
-        lib.config.gom = self.gom
+        glob.gom = self.gom
 
         # Create config
         self.config = config

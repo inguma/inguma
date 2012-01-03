@@ -25,14 +25,14 @@ This library offers functions for the CLI version of Inguma.
 """
 
 import sys
-import lib.config as config
+import lib.globals as glob
 
 def debug_print(*args):
     """Prints a debug message on the terminal."""
     # FIXME: This should be a method in the gom object.
 
     # Print debug messages if debug is activated (run with -d)
-    if not config.debug:
+    if not glob.debug:
         return
 
     output_string = ""
@@ -43,48 +43,48 @@ def debug_print(*args):
 
 def show_exploit_info(cmd):
 
-    for mod in config.exploits:
+    for mod in glob.exploits:
         if mod.name == cmd.lower():
             try:
-                config.gom.echo("Information")
-                config.gom.echo("-----------")
-                config.gom.echo()
-                config.gom.echo("Name: " + mod.name)
-                config.gom.echo("Type: " + mod.category)
-                config.gom.echo("Discoverer: " + mod.discoverer)
-                config.gom.echo("Module author: " + mod.author)
-                config.gom.echo("Description: " + mod.brief_description)
-                config.gom.echo("Affected versions:")
-                config.gom.echo()
+                glob.gom.echo("Information")
+                glob.gom.echo("-----------")
+                glob.gom.echo()
+                glob.gom.echo("Name: " + mod.name)
+                glob.gom.echo("Type: " + mod.category)
+                glob.gom.echo("Discoverer: " + mod.discoverer)
+                glob.gom.echo("Module author: " + mod.author)
+                glob.gom.echo("Description: " + mod.brief_description)
+                glob.gom.echo("Affected versions:")
+                glob.gom.echo()
                 for affected in mod.affects:
-                    config.gom.echo("\t" + affected)
-                config.gom.echo()
-                config.gom.echo("Notes:\r\n" + mod.description)
-                config.gom.echo()
-                config.gom.echo("Patch information: " + mod.patch)
-                config.gom.echo()
+                    glob.gom.echo("\t" + affected)
+                glob.gom.echo()
+                glob.gom.echo("Notes:\r\n" + mod.description)
+                glob.gom.echo()
+                glob.gom.echo("Patch information: " + mod.patch)
+                glob.gom.echo()
             except:
-                config.gom.echo("Error getting module's information: " + sys.exc_info()[1])
+                glob.gom.echo("Error getting module's information: " + sys.exc_info()[1])
 
             return
 
-    for command in config.commands:
+    for command in glob.commands:
         if command == cmd.lower():
             try:
-                module = config.commands[command]
+                module = glob.commands[command]
                 if module.__name__.isalnum():
                     obj = eval("module."+module.__name__ +"()")
-                    # FIXME: Remove this when all the modules have been converted to config.gom.
-                    obj.gom = config.gom
+                    # FIXME: Remove this when all the modules have been converted to glob.gom.
+                    obj.gom = glob.gom
                     obj.help()
             except AttributeError:
-                config.gom.echo("Module has no help information.")
+                glob.gom.echo("Module has no help information.")
             except:
-                config.gom.echo("Internal error: " + str(sys.exc_info()[1]))
+                glob.gom.echo("Internal error: " + str(sys.exc_info()[1]))
 
             return
 
-    config.gom.echo("Module does not exist.")
+    glob.gom.echo("Module does not exist.")
 
 def unified_input_prompt(caller, prompt = ''):
     """

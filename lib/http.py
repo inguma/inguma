@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import threading
-import lib.config as config
+import lib.globals as glob
 import lib.ui.cli.core as uicore
 
 class IngumaHttpServer(threading.Thread):
@@ -55,7 +55,7 @@ class HttpHandler(BaseHTTPRequestHandler):
         self.wfile.flush()
 
     def log_message(self, format, *args):
-        if not config.debug:
+        if not glob.debug:
             pass
         else:
             BaseHTTPRequestHandler.log_message(self, format, *args)
