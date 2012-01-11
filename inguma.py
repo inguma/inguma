@@ -27,7 +27,7 @@ import time
 import pickle
 import readline
 import lib.module
-import lib.config as config
+import lib.globals as glob
 import lib.ui.cli.core as uicore
 
 from reports import generateReport
@@ -121,13 +121,6 @@ user_data["base_path"] = os.path.dirname (sys.argv[0])
 user_data["dict"] = user_data["base_path"] + "data" + os.sep + "dict"
 user_data["ports"] = ports
 
-GLOBAL_VARIABLES = """
-global target; global targets; global port; global covert; global timeout; global waittime;
-global otherTargets; global services; global wizard; global user_data; global user;
-global password; global domain; global payload; global ostype; global command;
-global listenPort; global ignore_host;
-"""
-
 discovers = []
 gathers = []
 rces = []
@@ -148,49 +141,49 @@ class Inguma:
         self.has_scapy = has_scapy
 
     def show_help(self):
-        print
-        print "+----------------------------------------------------------------------------+"
-        print "| load kb                 | Load the knowledge base                          |"
-        print "| save kb                 | Save the knowledge base                          |"
-        print "| clear kb                | Clear the knowledge base's data                  |"
-        print "| show kb                 | Shows the knowledge base's data (very verbose)   |"
-        print "| report                  | Generate a report                                |"
-        print "|----------------------------------------------------------------------------|"
-        print "| show discover           | Show discover modules                            |"
-        print "| show gather             | Show gather modules                              |"
-        print "| show rce                | Show RCE modules                                 |"
-        print "| show fuzzers            | Show fuzzing modules                             |"
-        print "| show exploits           | Show available exploits                          |"
-        print "| show brute              | Show brute force modules                         |"
-        print "| show options            | Show options                                     |"
-        print "| payload                 | Show the supported OS types and payloads         |"
-        print "| info <exploit>          | Show additional information about an exploit     |"
-        print "|----------------------------------------------------------------------------|"
-        print "| autoscan                | Perform an automatic scan                        |"
-        print "| autoexploit             | Exploit wizard                                   |"
-        #print "fuzz                     Fuzz a target (Unavailable)"
-        print "| exploit                 | Run an exploit against a target or targets       |"
-        print "|----------------------------------------------------------------------------|"
-        print "| use <mod>               | Load all modules from a directory                |"
-        print "| ! <command>             | Run an operating system command                  |"
-        print "| exit | quit | ..        | Exit Inguma                                      |"
-        print "| help | h | ?            | Show this help                                   |"
+        glob.gom.echo()
+        glob.gom.echo('+----------------------------------------------------------------------------+')
+        glob.gom.echo('| load kb                 | Load the knowledge base                          |')
+        glob.gom.echo('| save kb                 | Save the knowledge base                          |')
+        glob.gom.echo('| clear kb                | Clear the knowledge base\'s data                  |')
+        glob.gom.echo('| show kb                 | Shows the knowledge base\'s data (very verbose)   |')
+        glob.gom.echo('| report                  | Generate a report                                |')
+        glob.gom.echo('|----------------------------------------------------------------------------|')
+        glob.gom.echo('| show discover           | Show discover modules                            |')
+        glob.gom.echo('| show gather             | Show gather modules                              |')
+        glob.gom.echo('| show rce                | Show RCE modules                                 |')
+        glob.gom.echo('| show fuzzers            | Show fuzzing modules                             |')
+        glob.gom.echo('| show exploits           | Show available exploits                          |')
+        glob.gom.echo('| show brute              | Show brute force modules                         |')
+        glob.gom.echo('| show options            | Show options                                     |')
+        glob.gom.echo('| payload                 | Show the supported OS types and payloads         |')
+        glob.gom.echo('| info <exploit>          | Show additional information about an exploit     |')
+        glob.gom.echo('|----------------------------------------------------------------------------|')
+        glob.gom.echo('| autoscan                | Perform an automatic scan                        |')
+        glob.gom.echo('| autoexploit             | Exploit wizard                                   |')
+        #glob.gom.echo('fuzz                     Fuzz a target (Unavailable)')
+        glob.gom.echo('| exploit                 | Run an exploit against a target or targets       |')
+        glob.gom.echo('|----------------------------------------------------------------------------|')
+        glob.gom.echo('| use <mod>               | Load all modules from a directory                |')
+        glob.gom.echo('| ! <command>             | Run an operating system command                  |')
+        glob.gom.echo('| exit | quit | ..        | Exit Inguma                                      |')
+        glob.gom.echo('| help | h | ?            | Show this help                                   |')
 
         if self.has_scapy:
-            print "|----------------------------------------------------------------------------|"
-            print "|                                                                            |"
-            print "| To see registered scapy commands execute command 'scapy.lsc()'             |"
-            print "|----------------------------------------------------------------------------|"
-            print "|                                                                            |"
-            print "| NOTE: Remember to use 'scapy.<function>' to use.                           |"
-            print "|                                                                            |"
-            print "| Type 'scapy.interact()' to start an scapy session.                         |"
-            print "| To get help for scapy commands type help(scapy.<scapy command>).           |"
+            glob.gom.echo('|----------------------------------------------------------------------------|')
+            glob.gom.echo('|                                                                            |')
+            glob.gom.echo('| To see registered scapy commands execute command \'scapy.lsc()\'             |')
+            glob.gom.echo('|----------------------------------------------------------------------------|')
+            glob.gom.echo('|                                                                            |')
+            glob.gom.echo('| NOTE: Remember to use \'scapy.<function>\' to use.                           |')
+            glob.gom.echo('|                                                                            |')
+            glob.gom.echo('| Type \'scapy.interact()\' to start an scapy session.                         |')
+            glob.gom.echo('| To get help for scapy commands type help(scapy.<scapy command>).           |')
 
-        print "+----------------------------------------------------------------------------+"
-        print
-        print "Any other typed text will be evaluated - with eval() - as a Python expression."
-        print
+        glob.gom.echo('+----------------------------------------------------------------------------+')
+        glob.gom.echo()
+        glob.gom.echo('Any other typed text will be evaluated - with eval() - as a Python expression.')
+        glob.gom.echo()
 
 # ------------------------------ End of Inguma class ------------------------------
 
@@ -198,24 +191,22 @@ def check_args():
 
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
-            config.debug = True
+            glob.debug = True
         elif arg.lower() == "-w":
-            config.http_server = True
+            glob.http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
             uicore.usage(gom)
             sys.exit(0)
 
     return True
 
-def loadModule(path, atype, marray, bLoad = True):
+def load_module(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
     Arguments:
     path:   module category path (modules/discover)
     atype:  module category (discover)
     marray: module category list (discovers)
     """
-
-    global GLOBAL_VARIABLES
 
     sys.path.append(path)
 
@@ -254,7 +245,7 @@ def loadModule(path, atype, marray, bLoad = True):
                         for aGlobal in moduleGlobals:
                             if aGlobal.isalnum():
                                 exec ("global " + aGlobal)
-                                GLOBAL_VARIABLES += "global " + aGlobal + ";"
+                                glob.GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
                                 print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename)
                                 print "The suspicious code:"
@@ -264,10 +255,10 @@ def loadModule(path, atype, marray, bLoad = True):
                     print sys.exc_info()[1]
 
                 exec(marray + ".append(eval(file))")
-                # Do this in the meantime to populate the config.* structures.
-                exec('config.' + marray + ".append(eval(file))")
+                # Do this in the meantime to populate the glob.* structures.
+                exec('glob.' + marray + ".append(eval(file))")
 
-                config.commands[eval(file).name] = eval(file)
+                glob.commands[eval(file).name] = eval(file)
 
                 if atype == "unknown":
                     if eval(file).type == "gather":
@@ -315,7 +306,7 @@ def readCommands():
     # Load all modules.
     for exploit_type, exploit_dir in modules.iteritems():
         path = "modules" + os.sep + exploit_dir
-        loadModule(path, exploit_dir, exploit_type)
+        load_module(path, exploit_dir, exploit_type)
 
 def exploitWizard():
 
@@ -331,7 +322,7 @@ def exploitWizard():
     global target
 
     if target == "" or target == None:
-        if not config.isGui:
+        if not glob.isGui:
             target = raw_input("Target: ")
         else:
             print "[!] You need to specify the target"
@@ -349,7 +340,7 @@ def exploitWizard():
         print str(i) + " " + mod.name, " \t\t", mod.brief_description
     print
     """
-    if not config.isGui:
+    if not glob.isGui:
         res = raw_input("Select module [all]: ")
     else:
         res = ""
@@ -371,7 +362,7 @@ def runRegisteredCommand(cmd, mVars = None):
 
     global user_data
 
-    mType = config.commands[cmd].type
+    mType = glob.commands[cmd].type
     vars = globals()
 
     if mVars != None:
@@ -379,9 +370,9 @@ def runRegisteredCommand(cmd, mVars = None):
             vars[x] = mVars[x]
 
     if mType in ["gather", "exploit", "brute", "fuzzer",  "rce"]:
-        ret = runGatherModule(vars, config.commands[cmd], user_data, gom)
+        ret = runGatherModule(vars, glob.commands[cmd], user_data, gom)
     elif mType == "discover":
-        ret = runModule(vars, config.commands[cmd], user_data, gom)
+        ret = runModule(vars, glob.commands[cmd], user_data, gom)
     else:
         print "Unknown module type '" + str(mType) + "'"
 
@@ -430,7 +421,7 @@ def runCommand(data, mVars = None):
                 return True
             else:
 
-                if config.commands.has_key(word.lower()):
+                if glob.commands.has_key(word.lower()):
                     runRegisteredCommand(word.lower(), mVars)
                     return True
                 else:
@@ -447,7 +438,7 @@ def runCommand(data, mVars = None):
                     print "Unknown option",word,"for show command"
                     return True
             elif mode == "use":
-                loadModule(word, "unknown", "others")
+                load_module(word, "unknown", "others")
                 return True
             elif mode == "info":
                 uicore.show_exploit_info(word)
@@ -539,7 +530,7 @@ def showExploits():
     mList = []
     zerodays = []
 
-    for x in config.exploits:
+    for x in glob.exploits:
         if x.brief_description.startswith("[0day]"):
             zerodays.append(x.name + "    \t\t" + x.brief_description)
         else:
@@ -668,10 +659,10 @@ def doAutoScan(guest = "no", fuzz = "no"):
     try:
         wizard = False
 
-        if target == "" and not config.isGui:
+        if target == "" and not glob.isGui:
             target = raw_input("Target host or network: ")
 
-        if not config.isGui:
+        if not glob.isGui:
             guestPasswords = raw_input("Brute force username and passwords (y/n)[n]: ")
         else:
             guestPasswords = guest
@@ -682,7 +673,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             guestPasswords = False
 
-        if not config.isGui:
+        if not glob.isGui:
             autoFuzz = raw_input("Automagically fuzz available targets (y/n)[n]: ")
         else:
             autoFuzz = fuzz
@@ -692,7 +683,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
         else:
             autoFuzz = False
 
-        if not config.isGui:
+        if not glob.isGui:
             printTo = raw_input("Print to filename (enter for stdout): ")
 
             if printTo != "":
@@ -905,7 +896,7 @@ def main_loop():
                     prevRes += "\n" + res
                     res = prevRes
 
-                exec(GLOBAL_VARIABLES + res)
+                exec(glob.GLOBAL_VARIABLES + res)
 
             except:
                 print "Exec error:",sys.exc_info()[1]
@@ -921,45 +912,45 @@ def main_loop():
         else:
             try:
                 if not runCommand(res, locals()):
-                    exec(GLOBAL_VARIABLES + res)
+                    exec(glob.GLOBAL_VARIABLES + res)
             except:
                 print "Internal error.",sys.exc_info()[1]
 
-                if config.debug:
+                if glob.debug:
                     raise
 
 def printPayloads():
     global payload
 
-    config.gom.echo('Payloads')
-    config.gom.echo('--------')
-    config.gom.echo()
-    config.gom.echo('ostype:')
-    config.gom.echo()
-    config.gom.echo('1) Linuxx86Syscall')
-    config.gom.echo('2) FreeBSDx86Syscall')
-    config.gom.echo('3) OpenBSDx86Syscall')
-    config.gom.echo('4) Solarisx86Syscall')
-    config.gom.echo()
-    config.gom.echo('payload:')
-    config.gom.echo()
-    config.gom.echo('1) runcommand')
-    config.gom.echo('2) bindshell')
-    config.gom.echo('3) connectback')
-    config.gom.echo('4) xorbindshell')
-    config.gom.echo()
-    config.gom.echo('Payload arguments:')
-    config.gom.echo()
-    config.gom.echo('1) runcommand')
-    config.gom.echo()
-    config.gom.echo('command = <command to run>')
-    config.gom.echo()
-    config.gom.echo('2) bindshell, connectback, xorbindshell')
-    config.gom.echo()
-    config.gom.echo('listenPort = <remote or local listening port>')
-    config.gom.echo()
-    config.gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
-    config.gom.echo()
+    glob.gom.echo('Payloads')
+    glob.gom.echo('--------')
+    glob.gom.echo()
+    glob.gom.echo('ostype:')
+    glob.gom.echo()
+    glob.gom.echo('1) Linuxx86Syscall')
+    glob.gom.echo('2) FreeBSDx86Syscall')
+    glob.gom.echo('3) OpenBSDx86Syscall')
+    glob.gom.echo('4) Solarisx86Syscall')
+    glob.gom.echo()
+    glob.gom.echo('payload:')
+    glob.gom.echo()
+    glob.gom.echo('1) runcommand')
+    glob.gom.echo('2) bindshell')
+    glob.gom.echo('3) connectback')
+    glob.gom.echo('4) xorbindshell')
+    glob.gom.echo()
+    glob.gom.echo('Payload arguments:')
+    glob.gom.echo()
+    glob.gom.echo('1) runcommand')
+    glob.gom.echo()
+    glob.gom.echo('command = <command to run>')
+    glob.gom.echo()
+    glob.gom.echo('2) bindshell, connectback, xorbindshell')
+    glob.gom.echo()
+    glob.gom.echo('listenPort = <remote or local listening port>')
+    glob.gom.echo()
+    glob.gom.echo('NOTE: \'listenPort\' will be the local port to connect back or the remote port to connect.')
+    glob.gom.echo()
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
@@ -988,17 +979,17 @@ def loadHistory():
         except:
             print "Cannot create " + historyFile
 
-def set_om(debug=config.debug):
+def set_om(debug=glob.debug):
     """ Decides which version of OM should be loaded. """
     # Set OutputManager to be used by modules
     global gom
-    if config.isGui == True:
+    if glob.isGui == True:
         gom = om.OutputManager('gui', debug=debug)
     else:
         gom = om.OutputManager('console', debug=debug)
-    setattr(gom, 'isGui', config.isGui)
-    # DEPRECATE: Most of the above as soon as everything is moved to config.gom.
-    config.gom = gom
+    setattr(gom, 'isGui', glob.isGui)
+    # DEPRECATE: Most of the above as soon as everything is moved to glob.gom.
+    glob.gom = gom
 
 def setup_auto_completion():
     """ Checks dependencies for autocompletion and sets it up. """
@@ -1008,7 +999,7 @@ def setup_auto_completion():
         import rlcompleter
 
         # Add commands to autocompletion
-        readline.set_completer(rlcompleter.Completer(config.commands).complete)
+        readline.set_completer(rlcompleter.Completer(glob.commands).complete)
         if(sys.platform == 'darwin'):
             readline.parse_and_bind ("bind ^I rl_complete")
         else:
@@ -1023,18 +1014,18 @@ def main():
     """ Main program loop. """
 
     # Set OutputManager for modules
-    set_om(debug=config.debug)
+    set_om(debug=glob.debug)
 
-    uicore.print_banner(config.gom)
+    uicore.print_banner(glob.gom)
 
     # Check args and enable debug if requested
     if not check_args():
-        uicore.usage(config.gom)
+        uicore.usage(glob.gom)
         sys.exit(0)
 
     # Remove scapy output messages
     if hasScapy:
-        if not config.debug:
+        if not glob.debug:
             scapy.conf.verb = 0
         else:
             scapy.conf.verb = 1
@@ -1045,20 +1036,20 @@ def main():
     readCommands()
 
     # Start up HTTP server.
-    if config.http_server:
+    if glob.http_server:
         import lib.http as httpd
         http = httpd.IngumaHttpServer()
-        config.gom.echo("\nBringing up HTTP server.")
+        glob.gom.echo("\nBringing up HTTP server.")
         http.start()
 
     # Display banner.
-    config.gom.echo("\nType 'help' for a short usage guide.")
+    glob.gom.echo("\nType 'help' for a short usage guide.")
 
     # Set autocompletion and load commands history
     setup_auto_completion()
     main_loop()
-    if config.http_server:
-        config.gom.echo("Shutting down HTTP server.")
+    if glob.http_server:
+        glob.gom.echo("Shutting down HTTP server.")
         http.terminate()
 
 if __name__ == "__main__":

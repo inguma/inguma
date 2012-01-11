@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import os, sys
-import lib.config as config
+import lib.globals as glob
 
 import gtk
 
@@ -52,7 +52,7 @@ class OutputManager:
 
     def echo(self, data = "", window=True, newline=True):
 
-        if window == True and config.isGui:
+        if window == True and glob.isGui:
             window = self.SHOW_MODULE_WIN
 
         if self.iface == 'gui' and not window:

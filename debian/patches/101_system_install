@@ -1,0 +1,29 @@
+Description: Make Inguma available for wide system use.
+ This allows the repo to be run locally but makes Inguma only able to run
+ inside a normal system directory.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: not-needed
+Last-Update: 2012-01-02
+
+--- inguma-0.4.orig/inguma
++++ inguma-0.4/inguma
+@@ -2,7 +2,7 @@
+ 
+ PYTHON_EXECUTABLE="python"
+ PYTHON_VER=`python -V 2>&1 |sed 's,Python \(.\)\..*,\1,'`
+-INGUMA_DIR=`dirname $0`
++INGUMA_DIR="/usr/share/pyshared/inguma"
+ 
+ if [ "$PYTHON_VER" -eq 3 ];then
+     # The python executable points to Python 3.
+--- inguma-0.4.orig/ginguma
++++ inguma-0.4/ginguma
+@@ -2,7 +2,7 @@
+ 
+ PYTHON_EXECUTABLE="python"
+ PYTHON_VER=`python -V 2>&1 |sed 's,Python \(.\)\..*,\1,'`
+-INGUMA_DIR=`dirname $0`
++INGUMA_DIR="/usr/share/pyshared/inguma"
+ 
+ if [ "$PYTHON_VER" -eq 3 ];then
+     # The python executable points to Python 3.

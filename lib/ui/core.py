@@ -1,17 +1,17 @@
 ##      core.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -30,13 +30,12 @@ import dotgen
 
 import lib.IPy as IPy
 import lib.liblistener as liblistener
-import lib.config as config
+import lib.globals as glob
 
 #inguma.debug = True
-inguma.isGui = True
 inguma.user_data["isGui"] = True
 inguma.user_data["interactive"] = False
-config.isGui = True
+glob.isGui = True
 
 # Fix for bug 1807529 (andresriancho)
 inguma.user_data["base_path"] = '.'
@@ -48,8 +47,7 @@ class UIcore():
 
     def __init__(self, om):
 
-        self.gom = om
-        self.gom.isGui = True
+        self.gom = glob.gom
 
         self.user_data = inguma.user_data
         self.listener = liblistener.Listener(self.gom)
@@ -107,15 +105,15 @@ class UIcore():
         output.close()
 
     def get_modules(self, category):
-        ''' Returns an aray with the modules for one category'''
+        '''Returns an array with the modules for one category.'''
 
         modules = eval('inguma.' + category)
         return modules
 
     def get_categories(self):
-        ''' returns an array with the categories of modules'''
+        '''Returns an array with the module categories.'''
 
-        categories = ['discovers', 'gathers', 'brutes','exploits'] 
+        categories = ['discovers', 'gathers', 'brutes', 'exploits']
         return categories
 
     def get_kbcontent(self):
@@ -171,9 +169,9 @@ class UIcore():
 
     def set_om(self, om):
         self.gom = om
-        config.gom = self.gom
+        glob.gom = self.gom
         setattr(self.gom, 'SHOW_MODULE_WIN', self.SHOW_MODULE_WIN)
-        setattr(self.gom, 'isGui', inguma.isGui)
+        setattr(self.gom, 'isGui', glob.isGui)
         self.gom.set_new_nodes(False)
 
     def get_interfaces(self):
@@ -312,7 +310,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, glob.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
 
@@ -322,7 +320,7 @@ class UIcore():
         vars = inguma.vars
         if self.SHOW_MODULE_WIN:
             self.gom.create_module_dialog()
-        t = threading.Thread(target=inguma.runModule, args=(vars, config.commands[mod], inguma.user_data, self.gom))
+        t = threading.Thread(target=inguma.runModule, args=(vars, glob.commands[mod], inguma.user_data, self.gom))
         t.start()
         self.threadtv.add_action(mod, inguma.user_data['target'], t)
         if join:

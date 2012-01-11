@@ -1,0 +1,16 @@
+inguma  /usr/bin/
+ginguma  /usr/bin/
+
+*.py        /usr/share/pyshared/inguma
+auxi/     /usr/share/pyshared/inguma
+data/     /usr/share/pyshared/inguma
+krash/     /usr/share/pyshared/inguma
+lib/     /usr/share/pyshared/inguma
+logo/     /usr/share/pyshared/inguma
+modules/     /usr/share/pyshared/inguma
+payloads/     /usr/share/pyshared/inguma
+scapy/     /usr/share/pyshared/inguma
+tools/     /usr/share/pyshared/inguma
+
+#debian/inguma.xpm   /usr/share/pixmaps/
+#debian/inguma.desktop   /usr/share/applications/

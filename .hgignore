@@ -8,10 +8,9 @@ data/*.csv
 extlib/pyew/*
 
 # Debian rules
-build-stamp
-configure-stamp
 debian/stamp-patched
 debian/files
 debian/inguma/
 debian/*debhelper*
 debian/*substvars
+.pc/

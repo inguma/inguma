@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CArpCachePoison.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -25,7 +23,7 @@ try:
 except:
     bHasScapy = False
 
-import lib.config as config
+import lib.globals as glob
 from lib.core import getMacVendor
 from lib.module import CIngumaModule
 
@@ -57,7 +55,7 @@ class CArpCachePoison(CIngumaModule):
         self.address = get_if_addr(get_working_if())
         self.gom.echo( "[+] Using " + str(self.address) )
         self.gom.echo( "  --> Cache poisoning, interval " + str(self.interval) )
-        if config.isGui == False:
+        if glob.isGui == False:
             self.gom.echo( "Press Ctrl+C to cancel" )
         arpcachepoison(self.address, self.target, self.interval)
         return True

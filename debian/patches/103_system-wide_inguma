@@ -1,0 +1,66 @@
+Description: Tweaks to make Inguma work in a system-wide installation.
+ Inguma is not prepared to run detached from the mercurial repository, and
+ there are some assumptions in the code that reinforces that.
+ The patch tries to fix all those paths to get Inguma running on a system without
+ write access and not having all the directriws under its feet.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: no
+Reviewed-By: David Martínez Moreno <ender@debian.org>
+Last-Update: 2010-02-02
+
+--- a/inguma.py
++++ b/inguma.py
+@@ -248,9 +248,9 @@
+ 
+     global GLOBAL_VARIABLES
+ 
+-    sys.path.append(path)
++    sys.path.append(os.path.dirname(__file__) + os.sep + path)
+ 
+-    for complete_filename in os.listdir(path):
++    for complete_filename in os.listdir(os.path.dirname(__file__) + os.sep + path):
+         # Load all modules in the path, unless:
+         if complete_filename.startswith("_") or complete_filename.startswith(".") or complete_filename.endswith("pyc"):
+             continue
+--- a/lib/ui/main.py
++++ b/lib/ui/main.py
+@@ -117,7 +117,7 @@
+         #################################################################
+         splash.push(("Creating main window..."))
+         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+-        self.window.set_icon_from_file('logo' + os.sep + 'inguma_16.png')
++        self.window.set_icon_from_file('/usr/share/pyshared/inguma' + os.sep + 'logo' + os.sep + 'inguma_16.png')
+         self.window.set_focus = True
+         self.window.connect("delete_event", self.quit)
+         splash.push(("Loading..."))
+--- a/lib/ui/bokken/toolbar.py
++++ b/lib/ui/bokken/toolbar.py
+@@ -41,7 +41,7 @@
+ 
+         self.toolbox = self
+ 
+-        self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep
++        self.img_path = os.path.dirname(__file__) + os.sep + 'data' + os.sep
+         self.options_dict = {'Hexadecimal':'x', 'String':'s', 'String no case':'i', 'Regexp':'r', 'Unicode':'u', 'Unicode no case':'U'}
+ 
+         self.main_tb = gtk.Toolbar()
+--- a/lib/ui/output_manager.py
++++ b/lib/ui/output_manager.py
+@@ -108,7 +108,7 @@
+     def insert_sb_text(self, text):
+         context = self.ing.statusbar.get_context_id(text)
+         self.icon = gtk.Image()
+-        pixbuf = gtk.gdk.pixbuf_new_from_file('logo' + os.sep + 'inguma_16.png')
++        pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/pyshared/inguma/logo' + os.sep + 'inguma_16.png')
+         scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+         self.icon.set_from_pixbuf(scaled_buf)
+ 
+@@ -128,7 +128,7 @@
+         self.ing.bokken_sb.push(context, self.text)
+         if version:
+             self.icon = gtk.Image()
+-            pixbuf = gtk.gdk.pixbuf_new_from_file('lib/ui/bokken/data/icon.png')
++            pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/pyshared/inguma/lib/ui/bokken/data/icon.png')
+             scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+             self.icon.set_from_pixbuf(scaled_buf)
+ 

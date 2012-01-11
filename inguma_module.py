@@ -22,7 +22,7 @@ NOTE: Why have I this in a separated module???
 """
 
 import sys
-import lib.config as config
+import lib.globals as glob
 
 def runModule(vars, module, dict, om=None):
     objModule = eval("module."+module.__name__ +"()")
@@ -39,7 +39,7 @@ def runModule(vars, module, dict, om=None):
     if objModule.run():
         objModule.printSummary()
 
-        if config.isGui == True:
+        if glob.isGui == True:
             objModule.gom.uicore.getDot(False)
             objModule.gom.map.set_dotcode( dict['dotcode'] )
 

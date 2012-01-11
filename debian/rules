@@ -9,98 +9,16 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/quilt/quilt.make
+%:
+	dh $@ --with python2
 
-configure: configure-stamp
-configure-stamp: patch
-	dh_testdir
+override_dh_clean:
+	dh_clean
+	find . -name "*.pyc" | xargs --no-run-if-empty rm -f
 
-	touch configure-stamp
+override_dh_installdocs:
+	dh_installdocs -X doc/ChangeLog -X doc/LICENSE -X doc/COPYING
 
-build: build-stamp
-
-build-stamp: configure-stamp 
-	dh_testdir
-
-	touch $@
-
-clean: clean-patched unpatch
-clean-patched:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
-
-	# Add here commands to clean up after the build process.
-	#-$(MAKE) clean
-	[ ! -d build ] || rm -rf build
-	find . -name "*.pyc" -delete
-
-	dh_clean 
-
-fixperms:
-	# fix scripts with shebang
-	# make python scripts executable
-	for i in `find $(CURDIR)/debian/inguma/ -mindepth 3 -type f`; do \
-	  case $$i in \
-	    *.py) \
-	      if head -n 1 $$i | grep -q -s "#!"; then \
-	        chmod 755 $$i; \
-	      fi; \
-	      ;; \
-	   esac \
-	done
-
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
-	dh_installdirs
-
-	# Add here commands to install the package into debian/inguma.
-	install -m755 debian/inguma.bin debian/inguma/usr/bin/inguma
-	install -m755 debian/ginguma.bin debian/inguma/usr/bin/ginguma
-
-	#rm -f $(CURDIR)/debian/inguma/usr/share/inguma/scapy.py
-	#rm -f $(CURDIR)/debian/inguma/usr/share/inguma/winscapy.py
-
-	for item in *.py auxi data dis krash lib modules payloads scapy tools; do \
-		cp -a $$item $(CURDIR)/debian/inguma/usr/share/inguma/; \
-	done
-
-	# Clean up.
-	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/x86/test
-	rm -f debian/inguma/usr/share/inguma/lib/libdisassemble/LICENSE
-	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/LICENSE
-	rm -f debian/inguma/usr/share/inguma/lib/debugger/envi/disassemblers/libdisassemble/license
-	rm -f debian/inguma/usr/share/inguma/lib/pyshellcodelib/test
-	#find debian/inguma/usr/share/inguma/ -mindepth 1 -type f -exec chmod 0644 {} \;
-	#chmod 0755 debian/inguma/usr/share/inguma/gui/make.sh
-
-
-# Build architecture-dependent files here.
-binary-arch: build install
-# We have nothing to do by default.
-
-# Build architecture-independent files here.
-binary-indep: build install fixperms
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs doc/ChangeLog
-	dh_installdocs -XLICENSE -XCOPYING
-	dh_installexamples
-#	dh_install
-#	dh_installmenu
-#	dh_installdebconf	
-	dh_pysupport
-	dh_installman
-#	dh_link
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure fixperms
+override_dh_install:
+	dh_install -X lib/pyshellcodelib/x86/test -X LICENSE
+	chmod -x debian/inguma/usr/share/pyshared/inguma/logo/inguma_logo.jpg
