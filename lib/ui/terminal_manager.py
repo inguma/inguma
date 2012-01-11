@@ -42,7 +42,7 @@ class TerminalNotebook(gtk.Notebook):
 #       self.set_tab_pos(gtk.POS_BOTTOM)
 
         # Add a tab from the begining
-        self.add_new_tab(self)
+        #self.add_new_tab(self)
 
         self.show_all()
 

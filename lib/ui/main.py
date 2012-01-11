@@ -546,7 +546,7 @@ class MainApp(gtk.Window):
                 libAutosave.remove_kb()
                 
                 # Update KB Tree
-                self.treeview.update_tree()
+                self.treeview.update_targets_tree()
     
                 # Adding text to Log window
                 self.gom.echo( 'Loaded' , False)
