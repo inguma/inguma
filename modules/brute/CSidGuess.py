@@ -1,33 +1,29 @@
-#!/usr/bin/python
-
 ##      CSidGuess.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
 import sys
 import time
 import urllib
-import string
 
 import cx_Oracle
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaBruteModule
 from lib.liboracleexploit import STANDARD_SIDS
 
 name = "sidguess"
@@ -36,39 +32,37 @@ type = "brute"
 
 globals = ["sid", ]
 
-class CSidGuess(CIngumaModule):
+class CSidGuess(CIngumaBruteModule):
 
     exploitType = 3
-    services = ""
     results = {}
-    user = ""
     sid = ""
     ssl = False
     connection = None
 
     def help(self):
-        print "target = <Target ip or hostname>"
-        print "port = <Target port>"
-        print
+        self.gom.echo("target = <Target ip or hostname>")
+        self.gom.echo("port = <Target port>")
+        self.gom.echo()
 
-    def bruteForce(self):
+    def brute_force(self):
         for sid in STANDARD_SIDS:
             time.sleep(self.waitTime)
             try:
-                self.gom.echo( "Trying SID " + sid + "..." )
+                self.gom.echo("Trying SID " + sid + "...")
                 ret = self.guess(sid)
                 sys.stdout.write("\b"  * 80)
-                
+
                 if ret:
-                    self.addToDict(self.target + "_sid", sid)
+                    self.add_data_to_kb(self.target + "_sid", sid)
                     self.results[self.target] = sid
-                    self.gom.echo( "" )
-                    self.gom.echo( "[+] Guessed SID " + sid )
+                    self.gom.echo("")
+                    self.gom.echo("[+] Guessed SID " + sid)
 
                     return True
 
             except KeyboardInterrupt:
-                self.gom.echo( "Aborted." )
+                self.gom.echo("Aborted.")
                 return False
             except:
                 pass
@@ -84,12 +78,12 @@ class CSidGuess(CIngumaModule):
             self.connection = cx_Oracle.connect(link)
             self.close()
 
-            self.addToDict(self.target + "_sid", sid)
+            self.add_data_to_kb(self.target + "_sid", sid)
 
-            self.gom.echo( "" )
-            self.gom.echo( "[+] We guess also a username/password!" )
-            self.addToDict(self.target + "_passwords", "system/manager")
-            self.gom.echo( "[+] Guessed: system/manager" )
+            self.gom.echo("")
+            self.gom.echo("[+] We guess also a username/password!")
+            self.add_data_to_kb(self.target + "_passwords", "system/manager")
+            self.gom.echo("[+] Guessed: system/manager")
         except:
             data = str(sys.exc_info()[1])
 
@@ -124,35 +118,35 @@ class CSidGuess(CIngumaModule):
             url = "https://" + url
         else:
             url = "http://" + url
-        
+
         try:
             data = urllib.urlopen(url).read()
             pos = data.find(magic)
-            
+
             if pos > -1:
                 tmp = data[pos:]
                 tmp = tmp[:tmp.find('</td></tr><tr><td class="x9"><img src="/em/cabo/images/t.gif">')]
                 tmp = tmp.split(":")
 
                 if len(tmp) > 0:
-                    self.addToDict(self.target + "_sid", tmp[1])
+                    self.add_data_to_kb(self.target + "_sid", tmp[1])
                     sid = tmp[1]
-                    self.gom.echo( "" )
-                    self.gom.echo( "[+] Guessed SID " + sid )
-                    self.gom.echo( "" )
+                    self.gom.echo("")
+                    self.gom.echo("[+] Guessed SID " + sid)
+                    self.gom.echo("")
                     return True
         except:
             pass
 
     def run(self):
         if self.target == "":
-            self.gom.echo( "No target specified" )
+            self.gom.echo("No target specified")
             return False
 
         if self.port == 0 or self.port == "":
             self.port = 1521
 
         if not self.tryEm():
-            self.bruteForce()
+            self.brute_force()
 
         return True

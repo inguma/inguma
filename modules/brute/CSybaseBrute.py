@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 MS SQL Server/Sybase Brute Force Module for Inguma
 
@@ -23,11 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 import sys
 import time
 import socket
-import threading
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaBruteModule
 
-from lib.core import int2hex
 from lib.libsybase import *
 
 VERSION = "0.1.1"
@@ -36,7 +32,7 @@ name = "brutesyb"
 brief_description = "Brute force tool for Sybase & MS SQL Servers"
 type = "brute"
 
-class CSybaseBrute(CIngumaModule):
+class CSybaseBrute(CIngumaBruteModule):
     host = ""
     port = 5000
     user = "sa"
@@ -47,9 +43,9 @@ class CSybaseBrute(CIngumaModule):
         pass
 
     def help(self):
-        print "target = <target host or network>"
-        print "port = <port>"
-        print "user = <username>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <port>")
+        self.gom.echo("user = <username>")
 
     def login(self, user, passwd):
         packet = makeSqlServerPacket(username = user, password = passwd, dbname = "master")
@@ -60,22 +56,22 @@ class CSybaseBrute(CIngumaModule):
             s.connect((self.target, int(self.port)))
             s.send(packet)
             data = s.recv(4096)
-        
+
             if data.find("Login failed") == -1:
                 return True
             else:
                 raise Exception("Login failed")
         except:
-            self.gom.echo( sys.exc_info()[1] )
-            self.gom.echo( "Aborted." )
+            self.gom.echo(sys.exc_info()[1])
+            self.gom.echo("Aborted.")
 
-    def doBruteForce(self):
+    def brute_force(self):
         userList = [self.user, ]
 
         try:
             self.gom.echo("Trying " + self.user + "/" + self.user)
             x = self.login(self.user, self.user)
-            self.addToDict(self.target + "_passwords", self.user + "/" + self.user)
+            self.add_data_to_kb(self.target + "_passwords", self.user + "/" + self.user)
             self.results[self.user] = self.user
             return True
         except:
@@ -83,19 +79,19 @@ class CSybaseBrute(CIngumaModule):
             pass
 
         for user in userList:
-            for passwd in self.getPasswordList():
+            for passwd in self.get_password_list(self.dict['base_path']):
                 time.sleep(self.waitTime)
                 try:
                     passwd = passwd.replace("\n", "").replace("\r", "")
-                    self.gom.echo( "Trying " + user + "/" + passwd + "..." )
+                    self.gom.echo("Trying " + user + "/" + passwd + "...")
                     self.login(user, passwd)
                     sys.stdout.write("\b"  * 80)
-                    self.addToDict(self.target + "_passwords", self.user + "/" + passwd)
+                    self.add_data_to_kb(self.target + "_passwords", self.user + "/" + passwd)
                     self.results[user] = passwd
 
                     return True
                 except KeyboardInterrupt:
-                    self.gom.echo( "Aborted." )
+                    self.gom.echo("Aborted.")
                     return False
                 except:
                     pass
@@ -104,9 +100,9 @@ class CSybaseBrute(CIngumaModule):
 
     def run(self):
         if self.user == "":
-            self.gom.echo( "No user specified" )
+            self.gom.echo("No user specified")
             return False
 
-        self.doBruteForce()
+        self.brute_force()
 
         return False
