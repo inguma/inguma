@@ -197,6 +197,19 @@ class CIngumaBruteModule(CIngumaNewModule):
 
     module_type = 'brute'
 
+    def get_password_list(self, base_path):
+        """Gets a password list distributed with Inguma"""
+        """FIXME: Get the base_path instead from the global or a parameter, from glob.base_path."""
+
+        fname = base_path
+        if fname != "" :
+            fname += os.sep + "data" + os.sep + "dict"
+        else:
+            fname = "data" + os.sep + "dict"
+
+        f = file(fname, "r")
+        return f.readlines()
+
 class CIngumaDiscoverModule(CIngumaNewModule):
     """ This module contains the common methods (mostly stubs) and variables
     for creating an Inguma discover module. """
