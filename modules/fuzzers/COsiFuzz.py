@@ -1,8 +1,21 @@
-#!/usr/bin/python
-
 """
-Fuzzer interface for OSI layer 2 and 3 protocolos
+Fuzzer interface for OSI layer 2 and 3 protocols
 Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301, USA.
 """
 
 """
@@ -10,7 +23,7 @@ NOTE: Many fuzzers *ARE NOT* implemented
 """
 
 import sys
-from lib.module import CIngumaModule
+from lib.module import CIngumaFuzzerModule
 
 try:
     from scapy.all import *
@@ -41,7 +54,7 @@ tos=None
 flags=None
 seq=None
 
-class COsiFuzz(CIngumaModule):
+class COsiFuzz(CIngumaFuzzerModule):
 
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
@@ -53,28 +66,28 @@ class COsiFuzz(CIngumaModule):
     iface = None
     filter = None
 
-    def showHelp(self):
-        print
-        print "Inguma's OSI fuzzing Interface Help"
-        print "-----------------------------------"
-        print
-        print "iface <iface>                Specify which iface will be used"
-        print "timeout <timeout>            Specify the timeout"
-        print "src=<target>                 Set the source address"
-        print "dst=<target>                 Set the destination to fuzz (default target)"
-        print "dport=<dport>                Set the destination port"
-        print "sport=<sport>                Set the source port"
-        print "ttl=<ttl>                    Set the packet's TTL"
-        print "tos=<tos>                    Set the packet's TOS"
-        print "seq=<seq>                    Set the sequence"
-        print "IP                           Send fuzzed IP frames"
-        print "TCP                          Send fuzzed TCP frames"
-        print "UDP                          Send fuzzed UDP frames"
-        print "ARP                          Send fuzzed ARP frames"
-        print "ICMP                         Send fuzzed ICMP frames"
-        print "help                         Show this help"
-        print "exit                         Exit from the OSI fuzz interface"
-        print
+    def help_interactive(self):
+        self.gom.echo()
+        self.gom.echo("Inguma's OSI fuzzing Interface Help")
+        self.gom.echo("-----------------------------------")
+        self.gom.echo()
+        self.gom.echo("iface <iface>                Specify which iface will be used")
+        self.gom.echo("timeout <timeout>            Specify the timeout")
+        self.gom.echo("src=<target>                 Set the source address")
+        self.gom.echo("dst=<target>                 Set the destination to fuzz (default target)")
+        self.gom.echo("dport=<dport>                Set the destination port")
+        self.gom.echo("sport=<sport>                Set the source port")
+        self.gom.echo("ttl=<ttl>                    Set the packet's TTL")
+        self.gom.echo("tos=<tos>                    Set the packet's TOS")
+        self.gom.echo("seq=<seq>                    Set the sequence")
+        self.gom.echo("IP                           Send fuzzed IP frames")
+        self.gom.echo("TCP                          Send fuzzed TCP frames")
+        self.gom.echo("UDP                          Send fuzzed UDP frames")
+        self.gom.echo("ARP                          Send fuzzed ARP frames")
+        self.gom.echo("ICMP                         Send fuzzed ICMP frames")
+        self.gom.echo("help                         Show this help")
+        self.gom.echo("exit                         Exit from the OSI fuzz interface")
+        self.gom.echo()
 
     def fuzzCommand(self, command):
         global src
@@ -87,14 +100,14 @@ class COsiFuzz(CIngumaModule):
         global seq
 
         command = command.lower()
-        
+
         if dst != None and dst != "":
             self.target = dst
-        
+
         idx = 0
-        
+
         if command == "arp":
-            print "Sending ethernet frames to the broadcast address (ff:ff:ff:ff:ff:ff) ... "
+            self.gom.echo("Sending ethernet frames to the broadcast address (ff:ff:ff:ff:ff:ff) ... ")
 
         while 1:
             try:
@@ -112,23 +125,23 @@ class COsiFuzz(CIngumaModule):
 
                 idx += 1
 
-                #print "Sended %d packets" % idx
+                #self.gom.echo("Sent %d packets" % idx)
 
                 if ans:
-                    print "-----> Sent"
-                    print p.summary()
+                    self.gom.echo("-----> Sent")
+                    self.gom.echo(p.summary())
                     hexdump(str(p))
 
-                    print "-----> Got reponse"
+                    self.gom.echo("-----> Got reponse")
                     ans.display()
                     ans.rawhexdump()
-                    print
+                    self.gom.echo()
 
             except KeyboardInterrupt:
-                print "Stoped."
+                self.gom.echo("Stoped.")
                 break
             except:
-                print "Error.", sys.exc_info()[1]
+                self.gom.echo("Error.", sys.exc_info()[1])
 
     def osiFuzzLoop(self):
         global src
@@ -148,7 +161,7 @@ class COsiFuzz(CIngumaModule):
             except EOFError:
                 break
             except:
-                print "raw_input:", sys.exc_info()[1]
+                self.gom.echo("raw_input:", sys.exc_info()[1])
 
             words = res.split(" ")
 
@@ -160,20 +173,20 @@ class COsiFuzz(CIngumaModule):
                     buf += word + " "
 
                 self.filter = buf
-                print "Filter is:", buf
+                self.gom.echo("Filter is:", buf)
             elif words[0].lower() == "iface":
                 if len(words) > 1:
                     self.iface = words[1]
-                    
+
                     if self.iface == "":
                         self.iface = None
 
-                    print "Interface is:", self.iface
+                    self.gom.echo("Interface is:", self.iface)
             elif words[0].lower() == "timeout":
                 if len(words) > 1:
                     self.timeout = float(words[1])
             elif words[0].lower() == "help":
-                self.showHelp()
+                self.help_interactive()
             elif words[0].lower() == "quit" or words[0].lower() == "exit":
                 break
             elif words[0].lower() in ["ip", "icmp", "arp"]:
@@ -182,7 +195,7 @@ class COsiFuzz(CIngumaModule):
                 try:
                     exec(res)
                 except:
-                    print "Error.", sys.exc_info()[1]
+                    self.gom.echo("Error.", sys.exc_info()[1])
 
         return True
 
@@ -195,9 +208,9 @@ class COsiFuzz(CIngumaModule):
         global tos
         global flags
         global seq
-        
+
         dst = self.target
-        
+
         if self.port != 0:
             sport = self.port
 
