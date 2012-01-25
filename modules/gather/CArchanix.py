@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CArchanix.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -22,13 +20,13 @@
 import sys
 import socket
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "archanix"
 brief_description = "Gather information from archaic Unix systems"
 type = "gather"
 
-class CArchanix(CIngumaModule):
+class CArchanix(CIngumaGatherModule):
 
     netstat = None
     sysstat = None
@@ -36,9 +34,9 @@ class CArchanix(CIngumaModule):
     _servicesList = {11:"sysstat", 15:"netstat", 79:"finger"}
 
     def help(self):
-        print "target = <target host or network>"
-        print "port = <target port>"
-        print "timeout = <timeout>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <target port>")
+        self.gom.echo("timeout = <timeout>")
 
     def execOldcommand(self, port, tosend = "\n\n"):
         try:
@@ -47,11 +45,11 @@ class CArchanix(CIngumaModule):
             s.connect((self.target, port))
             s.send(tosend)
             data = s.recv(8192)
-            
-            self.addToDict(self.target + "_netstat", data)
+
+            self.add_data_to_kb(self.target + "_netstat", data)
             return data
         except:
-            print sys.exc_info()[1]
+            self.gom.echo(sys.exc_info()[1])
             return False
 
     def run(self):
@@ -67,28 +65,28 @@ class CArchanix(CIngumaModule):
                     exec(cmd)
         else:
             if self.port == 0:
-                self.gom.echo( "No ports detected with a portscanner and the value of port is 0." )
+                self.gom.echo("No ports detected with a portscanner and the value of port is 0.")
                 return False
             else:
-                self.gom.echo( "Port %d" % self.port )
+                self.gom.echo("Port %d" % self.port)
 
         return True
 
-    def printSummary(self):
-        self.gom.echo( "SYSSTAT" )
-        self.gom.echo( "-------" )
-        self.gom.echo( "" )
-        self.gom.echo( str(self.sysstat) )
-        self.gom.echo( "" )
-        
-        self.gom.echo( "NETSTAT" )
-        self.gom.echo( "-------" )
-        self.gom.echo( "" )
-        self.gom.echo( str(self.netstat) )
-        self.gom.echo( "" )
-        
-        self.gom.echo( "FINGER" )
-        self.gom.echo( "------" )
-        self.gom.echo( "" )
-        self.gom.echo( str(self.finger) )
-        self.gom.echo( "" )
+    def print_summary(self):
+        self.gom.echo("SYSSTAT")
+        self.gom.echo("-------")
+        self.gom.echo("")
+        self.gom.echo(str(self.sysstat))
+        self.gom.echo("")
+
+        self.gom.echo("NETSTAT")
+        self.gom.echo("-------")
+        self.gom.echo("")
+        self.gom.echo(str(self.netstat))
+        self.gom.echo("")
+
+        self.gom.echo("FINGER")
+        self.gom.echo("------")
+        self.gom.echo("")
+        self.gom.echo(str(self.finger))
+        self.gom.echo("")

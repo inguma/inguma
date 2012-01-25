@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CIds.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -23,11 +21,10 @@
 NOTE: Subject to be removed.
 """
 
-import os
 import re
 import sys
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 try:
     from libsnort import *
@@ -45,7 +42,7 @@ name = "nids"
 brief_description = "A simple network based Intrusion Detection System (IDS)"
 type = "gather"
 
-class CIds(CIngumaModule):
+class CIds(CIngumaGatherModule):
 
     waitTime = 0
     timeout = 1
@@ -70,21 +67,21 @@ class CIds(CIngumaModule):
             idx += 1
 
             if rule.findall(data):
-                print "*****************************************************************************"
-                print "Attack detected by rule id %d:" % idx
-                print aux.sprintf("%.time% %-15s,IP.src% -> %-15s,IP.dst%")
-                print
+                self.gom.echo("*****************************************************************************")
+                self.gom.echo("Attack detected by rule id %d:" % idx)
+                self.gom.echo(aux.sprintf("%.time% %-15s,IP.src% -> %-15s,IP.dst%"))
+                self.gom.echo()
                 try:
-                    print self.realRules[idx]["attack"]
+                    self.gom.echo(self.realRules[idx]["attack"])
                 except:
                     pass
-                print
+                self.gom.echo()
                 try:
-                    print "Tip:", self.realRules[idx]["ids"]
+                    self.gom.echo("Tip:", self.realRules[idx]["ids"])
                 except:
                     pass
-                print "*****************************************************************************"
-                print
+                self.gom.echo("*****************************************************************************")
+                self.gom.echo()
 
     def runIds(self, mrules = False):
         try:
@@ -96,12 +93,12 @@ class CIds(CIngumaModule):
 
             for rule in mrules:
                 self.rules.append(re.compile(rule["data"], re.IGNORECASE))
-                
+
             if snortSupport:
                 try:
                     snortRuleParser = CSnortRuleParser()
                     snortRuleParser.parse("oracle.rules")
-                
+
                     for rule in snortRuleParser.rules:
 
                         if rule.pcre != "" or len(rule.contents) > 0:
@@ -128,31 +125,31 @@ class CIds(CIngumaModule):
                                 self.rules.append(p)
                                 self.realRules.append(arule)
                             except:
-                                print "Rule does not compile:", sys.exc_info()[1]
+                                self.gom.echo("Rule does not compile:", sys.exc_info()[1])
                 except:
                     #
                     # Ignore the exception, we can continue anyway
                     #
-                    print "Snort:", sys.exc_info()[1]
+                    self.gom.echo("Snort:", sys.exc_info()[1])
         except:
-            print "Can't read rules.py file. No rules."
-            print sys.exc_info()[1]
+            self.gom.echo("Can't read rules.py file. No rules.")
+            self.gom.echo(sys.exc_info()[1])
             return
 
-        print "Running Intrusion Detection System ... "
+        self.gom.echo("Running Intrusion Detection System ... ")
         scapy.sniff(iface = self.iface, filter = self.filter, prn= self.checkRule)
 
     def show_help(self):
-        print 
-        print "Inguma's Intrusion Detection System Help"
-        print "----------------------------------------"
-        print
-        print "run                          Run the Intrusion Detection System"
-        print "help | h | ?                 Show this help"
-        print "exit | quit | ..             Exit from the IDS interface"
-        print "filter <pcap filter>         Specify a valid pcap filter"
-        print "iface <iface>                Specify which iface will be used"
-        print
+        self.gom.echo()
+        self.gom.echo("Inguma's Intrusion Detection System Help")
+        self.gom.echo("----------------------------------------")
+        self.gom.echo()
+        self.gom.echo("run                          Run the Intrusion Detection System")
+        self.gom.echo("help | h | ?                 Show this help")
+        self.gom.echo("exit | quit | ..             Exit from the IDS interface")
+        self.gom.echo("filter <pcap filter>         Specify a valid pcap filter")
+        self.gom.echo("iface <iface>                Specify which iface will be used")
+        self.gom.echo()
 
     def runIdsLoop(self):
         import lib.ui.cli.core as CLIcore
@@ -174,7 +171,7 @@ class CIds(CIngumaModule):
                     buf += word + " "
 
                 self.filter = buf
-                print "Filter is:", buf
+                self.gom.echo("Filter is:", buf)
             elif words[0].lower() == "iface":
                 if len(words) > 1:
                     self.iface = words[1]
@@ -182,9 +179,9 @@ class CIds(CIngumaModule):
                     if self.iface == "":
                         self.iface = None
 
-                    print "Interface is:", self.iface
+                    self.gom.echo("Interface is:", self.iface)
             else:
-                print "Unknown command or option '" + str(res) + "'"
+                self.gom.echo("Unknown command or option '" + str(res) + "'")
 
     def run(self):
         self.runIdsLoop()

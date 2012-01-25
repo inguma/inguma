@@ -1,33 +1,28 @@
-#!/usr/bin/python
-
 ##      CPortScan.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import os
-import sys
-import time
 import socket
 import random
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 try:
-    from scapy.all import IP, ICMP, TCP, sr, conf, getmacbyip, get_working_if
+    from scapy.all import IP, ICMP, TCP, sr, getmacbyip
 
     hasScapy = True
 except:
@@ -39,7 +34,7 @@ type = "gather"
 
 globals = ["sport", "stype"]
 
-class CPortScan(CIngumaModule):
+class CPortScan(CIngumaGatherModule):
 
     SYN_SCAN = "S"
     TCP_SCAN = None
@@ -57,10 +52,10 @@ class CPortScan(CIngumaModule):
     dict = None
 
     def help(self):
-        print "target = <target host or network>"
-        print "port = <target port>"
-        print "sport = <source port>"
-        print "stype = <S,A>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <target port>")
+        self.gom.echo("sport = <source port>")
+        self.gom.echo("stype = <S,A>")
 
     def report_ports(self, target, ports):
         ans,unans = sr(IP(dst=target)/TCP(sport=self.sport, dport=ports, flags=self.stype),timeout=self.timeout, iface=self.iface)
@@ -71,18 +66,18 @@ class CPortScan(CIngumaModule):
                     self.mac[r.src] = getmacbyip(r.src)
                 except:
                     self.mac[r.src] = "ff:ff:ff:ff:ff"
-                
-                self.addToDict(r.src + "_mac", self.mac[r.src])
-    
+
+                self.add_data_to_kb(r.src + "_mac", self.mac[r.src])
+
                 if self.stype == self.SYN_SCAN:
                     if r.payload.flags == 0x12:
                         self.opened[r.sport] = r.src
-                        self.addToDict(r.src + "_tcp_ports", r.sport)
+                        self.add_data_to_kb(r.src + "_tcp_ports", r.sport)
                 elif self.stype == self.ACK_SCAN:
                     if s[TCP].dport == r[TCP].sport:
-                        #print str(s[TCP].dport) + " is unfiltered"
+                        #self.gom.echo(str(s[TCP].dport) + " is unfiltered")
                         self.opened[r.sport] = r.src
-                        self.addToDict(r.src + "_tcp_ports", r.sport)
+                        self.add_data_to_kb(r.src + "_tcp_ports", r.sport)
 
         for s,r in ans:
             if r.haslayer(ICMP):
@@ -96,14 +91,14 @@ class CPortScan(CIngumaModule):
     def runAsWizard(self):
         #try:
         if True:
-            print 
-            print "Default ports"
-            print "-------------"
-            print
-            print self.ports
-            print
+            self.gom.echo()
+            self.gom.echo("Default ports")
+            self.gom.echo("-------------")
+            self.gom.echo()
+            self.gom.echo(self.ports)
+            self.gom.echo()
             res = raw_input("Range to scan (1:65535) [default ports] ")
-            
+
             if res != "":
                 if res.find(":") > -1:
                     a, b = res.split(":")
@@ -115,16 +110,16 @@ class CPortScan(CIngumaModule):
                 for x in range(int(a), int(b)):
                     self.ports.append(x)
 
-            print
-            print "Scan type"
-            print "---------"
-            print
-            print " 1   SYN scan"
-            print " 2   No flags scan"
-            print " 3   ACK scan"
-            print " 4   XMAS scan"
-            print " 5   SYN+ACK scan"
-            print
+            self.gom.echo()
+            self.gom.echo("Scan type")
+            self.gom.echo("---------")
+            self.gom.echo()
+            self.gom.echo(" 1   SYN scan")
+            self.gom.echo(" 2   No flags scan")
+            self.gom.echo(" 3   ACK scan")
+            self.gom.echo(" 4   XMAS scan")
+            self.gom.echo(" 5   SYN+ACK scan")
+            self.gom.echo()
 
             res = raw_input("Scan type (numeric) [1]: ")
 
@@ -154,7 +149,7 @@ class CPortScan(CIngumaModule):
         self.opened = {}
         self.closed = {}
         mTargets = IP(dst=self.target)
-        
+
         if self.sport == 0:
             self.sport = random.randint(1024, 65535)
 
@@ -174,63 +169,21 @@ class CPortScan(CIngumaModule):
 
         return True
 
-    def printSummary(self):
-        self.gom.echo( "" )
-        self.gom.echo( "Portscan results" )
-        self.gom.echo( "----------------" )
-        self.gom.echo( "" )
+    def print_summary(self):
+        self.gom.echo()
+        self.gom.echo("Portscan results")
+        self.gom.echo("----------------")
+        self.gom.echo()
 
-        self.addToDict("hosts", self.target)
+        self.add_data_to_kb("hosts", self.target)
         for port in self.opened:
             try:
                 port_name = socket.getservbyport(port)
                 port_name = str(port) + "/" + port_name
             except:
                 port_name = str(port)
-                #print sys.exc_info()[1]
+                #self.gom.echo(sys.exc_info()[1])
 
-            self.gom.echo( "Port " + port_name + " is opened at " + self.opened[port] )
+            self.gom.echo("Port " + port_name + " is opened at " + self.opened[port])
 
-        self.gom.echo( "" )
-
-def main():
-
-    import sys
-
-    objScan = CPortScan()
-
-    if len(sys.argv) == 1:
-        objScan.target = "www.google.com"
-    else:
-        objScan.target = sys.argv[1]
-        print "Scanning",sys.argv[1],"...\n"
-
-    if len(sys.argv) == 2:
-        objScan.stype = CPortScan.SYN_SCAN
-    else:
-        objScan.stype = sys.argv[2]
-
-    if len(sys.argv) == 3:
-        objScan.timeout = 0.1
-    else:
-        objScan.timeout = float(sys.argv[3])
-
-    curTime = time.time()
-    if objScan.run():
-        for port in objScan.opened:
-            try:
-                port_name = socket.getservbyport(opened)
-                port_name = str(opened) + "/" + port_name
-            except:
-                port_name = str(opened)
-                print sys.exc_info()[1]
-
-            print "Port",port_name,"is open at", objScan.opened[port]
-
-    for host in objScan.mac:
-        print "\nMAC Address for",host,"is",objScan.mac[host]
-
-    print "Scan finished in about ", str((time.time() - curTime))
-
-if __name__ == "__main__":
-    main()
+        self.gom.echo()

@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      COraCrack11g.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -24,7 +22,7 @@ import sys
 import hashlib
 import binascii
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "oracrack11g"
 brief_description = "Crack an Oracle 11g password"
@@ -32,12 +30,12 @@ type = "gather"
 
 globals = ["hash", ]
 
-class COraCrack11g(CIngumaModule):
+class COraCrack11g(CIngumaGatherModule):
 
     hash = ""
 
     def help(self):
-        print "hash = <hash of the password>"
+        self.gom.echo("hash = <hash of the password>")
 
     def getPasswordList(self):
         fname = self.dict["base_path"]
@@ -52,7 +50,7 @@ class COraCrack11g(CIngumaModule):
     def findHash(self, hash):
 
         if len(hash) not in [60, 62]:
-            print "[!] Invalid hash: You need the full 60 characters long hash"
+            self.gom.echo("[!] Invalid hash: You need the full 60 characters long hash")
             return False
 
         hash = hash.lower()
@@ -63,7 +61,7 @@ class COraCrack11g(CIngumaModule):
         salt = hash[40:]
 
         if not salt.isalnum():
-            print "[!] Invalid hash: Non alphanumeric salt"
+            self.gom.echo("[!] Invalid hash: Non alphanumeric salt")
             return False
 
         salt = binascii.a2b_hex(salt)
@@ -72,17 +70,17 @@ class COraCrack11g(CIngumaModule):
             x = hashlib.sha1(passwd + salt).hexdigest()
 
             if x == thepasswd:
-                self.addToDict(hash, passwd)
-                print "[+] Password:", passwd
+                self.add_data_to_kb(hash, passwd)
+                self.gom.echo("[+] Password:", passwd)
                 return True
 
-        print "[!] No match"
+        self.gom.echo("[!] No match")
         return False
 
     def run(self):
 
         if self.hash == "":
-            print "[!] No hash specified"
+            self.gom.echo("[!] No hash specified")
             return False
         else:
             self.findHash(self.hash)

@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      COracleMode.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -22,15 +20,14 @@
 import sys
 import urllib
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 from lib.libhttp import CIngumaHTMLParser, CIngumaHttp
-from lib.libvulnoas import getVulnerableDad
 
 try:
     import cx_Oracle
     oracleSupport = True
 except:
-    print sys.exc_info()[1]
+    self.gom.echo(sys.exc_info()[1])
     oracleSupport = False
 
 name = "oratool"
@@ -39,7 +36,7 @@ type = "gather"
 
 globals = ["dad", "method", "ssl", "injectionPoint"]
 
-class COracleMode(CIngumaModule):
+class COracleMode(CIngumaGatherModule):
 
     sid = "orcl"
     dad = None
@@ -57,33 +54,33 @@ class COracleMode(CIngumaModule):
     injectionPoint = ""
 
     def help(self):
-        print "target = <target host or network>"
-        print "port = <target port>"
-        print "sid = <sid name>"
-        print "user = <database's username>"
-        print "password = <user's password>"
-        print "dad = <dad>"
-        print "method = <PL/SQL gateway bypass method>"
-        print
-        print 'Use dad="?" to autoresolve DAD'
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <target port>")
+        self.gom.echo("sid = <sid name>")
+        self.gom.echo("user = <database's username>")
+        self.gom.echo("password = <user's password>")
+        self.gom.echo("dad = <dad>")
+        self.gom.echo("method = <PL/SQL gateway bypass method>")
+        self.gom.echo()
+        self.gom.echo('Use dad="?" to autoresolve DAD')
 
     def show_help(self):
-        print
-        print "Inguma's Oracle mode help"
-        print "-------------------------"
-        print
-        print "help | h | ?                 Show this help"
-        print "exit | quit | ..             Exit from oracle mode"
-        print "sql                          Opens an interactive SQL terminal"
-        print "sid=<sid>                    Specify the database's SID"
-        print "dad=<dad>                    Specify the server's DAD name"
-        print "user=<user>                  Specify the user to use"
-        print "password=<password>          Specify the password to use"
-        print "print <var>                  Print the value of one variable"
-        print "set colsize <size>           Set the result's column size"
-        print
-        print "Any other typed expression will be evaled as a python expression"
-        print
+        self.gom.echo()
+        self.gom.echo("Inguma's Oracle mode help")
+        self.gom.echo("-------------------------")
+        self.gom.echo()
+        self.gom.echo("help | h | ?                 Show this help")
+        self.gom.echo("exit | quit | ..             Exit from oracle mode")
+        self.gom.echo("sql                          Opens an interactive SQL terminal")
+        self.gom.echo("sid=<sid>                    Specify the database's SID")
+        self.gom.echo("dad=<dad>                    Specify the server's DAD name")
+        self.gom.echo("user=<user>                  Specify the user to use")
+        self.gom.echo("password=<password>          Specify the password to use")
+        self.gom.echo("print <var>                  Print the value of one variable")
+        self.gom.echo("set colsize <size>           Set the result's column size")
+        self.gom.echo()
+        self.gom.echo("Any other typed expression will be evaled as a python expression")
+        self.gom.echo()
 
     def connect(self):
         if self.dad == None:
@@ -98,9 +95,9 @@ class COracleMode(CIngumaModule):
     def funnySQLCommand(self, sql):
         objHttp = CIngumaHttp("")
         objParser = CIngumaHTMLParser()
-        
+
         self.baseUrl = objHttp.buildUrl(self.target, self.port, self.ssl, "")
-        
+
         if self.injectionPoint == "":
             self.baseUrl = objHttp.buildUrl(self.target, self.port, self.ssl, self.baseUrl + self.dad + self.method + ".cellsprint?p_thequery=" + urllib.quote(sql))
         else:
@@ -126,18 +123,18 @@ class COracleMode(CIngumaModule):
             for col in cur.description:
                 buf += col[0].ljust(MAGIC_SIZE) + " "*4
 
-            print buf
-            print "-" * len(buf)
+            self.gom.echo(buf)
+            self.gom.echo("-" * len(buf))
 
             for row in cur.fetchall():
                 buf = ""
                 for col in row:
                     buf += str(col).ljust(MAGIC_SIZE) + " "*4
-                print buf
-            print
-            print "Total of",cur.rowcount, "row(s) selected."
+                self.gom.echo(buf)
+            self.gom.echo()
+            self.gom.echo("Total of",cur.rowcount, "row(s) selected.")
         else:
-            print "Statement executed."
+            self.gom.echo("Statement executed.")
 
     def sqlLoop(self):
         import lib.ui.cli.core as CLIcore
@@ -147,7 +144,7 @@ class COracleMode(CIngumaModule):
         i = 1
         prompt = 'oratool/sql'
 
-        print "Type ';' or '/' in a single line to run a command. Exit to quit."
+        self.gom.echo("Type ';' or '/' in a single line to run a command. Exit to quit.")
 
         while 1:
             res = CLIcore.unified_input_prompt(self, prompt)
@@ -162,7 +159,7 @@ class COracleMode(CIngumaModule):
                 continue
             elif res in [";", "r", "/"]:
                 if buf == "":
-                    print "No data in buffer"
+                    self.gom.echo("No data in buffer")
                     continue
 
                 prompt = "oratool/sql"
@@ -216,13 +213,13 @@ class COracleMode(CIngumaModule):
                 try:
                     exec(res)
                 except:
-                    print "Error:",sys.exc_info()[1]
+                    self.gom.echo("Error:",sys.exc_info()[1])
 
         return True
 
     def run(self):
         if not oracleSupport and self.dad == None:
-            print "No support for cx_Oracle. Please, install it first."
+            self.gom.echo("No support for cx_Oracle. Please, install it first.")
             return False
 
         if self.console:

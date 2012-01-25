@@ -1,12 +1,25 @@
-#!/usr/bin/python
-
 """
 p0f interface module for Inguma
 Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301, USA.
 """
 
 import sys
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 try:
     from scapy.modules.p0f import *
@@ -25,7 +38,7 @@ name = "p0f"
 brief_description = "Inguma's p0f interface -os detection-"
 type = "gather"
 
-class CP0f(CIngumaModule):
+class CP0f(CIngumaGatherModule):
 
     port = 0 # Port to be used
     waitTime = 0 # Time to wait between step and step
@@ -46,7 +59,7 @@ class CP0f(CIngumaModule):
             r = ("UNKNOWN", "[" + ":".join(map(str, packet2p0f(pkt)[1])) + ":?:?]", None)
         else:
             r = r[0]
-            self.addToDict(pkt.sprintf("%IP.src%") + "_os", r[0:1])
+            self.add_data_to_kb(pkt.sprintf("%IP.src%") + "_os", r[0:1])
 
         uptime = None
         try:
@@ -56,33 +69,33 @@ class CP0f(CIngumaModule):
         if uptime == 0:
             uptime = None
         res = pkt.sprintf("%IP.src%:%TCP.sport% - " + r[0] + " " + r[1])
-        self.addToDict("hosts", pkt.sprintf("%IP.src%"))
+        self.add_data_to_kb("hosts", pkt.sprintf("%IP.src%"))
 
         if uptime is not None:
             res += pkt.sprintf(" (up: " + str(uptime/3600) + " hrs)\n  -> %IP.dst%:%TCP.dport%")
-            self.addToDict(pkt.sprintf("%IP.src%") + "_uptime", str(uptime/3600))
+            self.add_data_to_kb(pkt.sprintf("%IP.src%") + "_uptime", str(uptime/3600))
         else:
             res += pkt.sprintf("\n  -> %IP.dst%:%TCP.dport%")
 
         if r[2] is not None:
             res += " (distance " + str(r[2]) + ")"
-            self.addToDict(pkt.sprintf("%IP.src%") + "_distance", str(r[2]))
+            self.add_data_to_kb(pkt.sprintf("%IP.src%") + "_distance", str(r[2]))
 
-        print
-        print "P0F: " + str(res)
-        print 
+        self.gom.echo()
+        self.gom.echo("P0F: " + str(res))
+        self.gom.echo()
 
     def show_help(self):
-        print
-        print "Inguma's p0f Interface Help"
-        print "---------------------------"
-        print
-        print "filter <pcap filter>         Specify a valid pcap filter"
-        print "iface <iface>                Specify which interface will be used"
-        print "run | p0f                    Start p0f-ing"
-        print "help | h | ?                 Show this help"
-        print "exit | quit | ..             Exit from the p0f interface"
-        print
+        self.gom.echo()
+        self.gom.echo("Inguma's p0f Interface Help")
+        self.gom.echo("---------------------------")
+        self.gom.echo()
+        self.gom.echo("filter <pcap filter>         Specify a valid pcap filter")
+        self.gom.echo("iface <iface>                Specify which interface will be used")
+        self.gom.echo("run | p0f                    Start p0f-ing")
+        self.gom.echo("help | h | ?                 Show this help")
+        self.gom.echo("exit | quit | ..             Exit from the p0f interface")
+        self.gom.echo()
 
     def p0fLoop(self):
         import lib.ui.cli.core as CLIcore
@@ -102,25 +115,25 @@ class CP0f(CIngumaModule):
                     buf += word + " "
 
                 self.filter = buf
-                print "Filter is:", buf
+                self.gom.echo("Filter is:", buf)
             elif words[0].lower()  in ["p0f", "run"]:
                 try:
-                    print "Sniffing in iface", self.iface, "..."
+                    self.gom.echo("Sniffing in iface", self.iface, "...")
                     if bScapy:
                         self.data = scapy.sniff(prn = self.prnp0f, filter=self.filter, iface = self.iface)
                     else:
-                        print "No scapy support :("
+                        self.gom.echo("No scapy support :(")
                 except KeyboardInterrupt:
                     break
                 except:
-                    print "Internal error.", sys.exc_info()[1]
+                    self.gom.echo("Internal error.", sys.exc_info()[1])
             elif words[0].lower() == "iface":
                 if len(words) > 1:
                     self.iface = words[1]
-                    
-                print "Interface is:", self.iface
+
+                self.gom.echo("Interface is:", self.iface)
             else:
-                print "Unknown command or options '" + str(res) + "'"
+                self.gom.echo("Unknown command or options '" + str(res) + "'")
 
         return True
 

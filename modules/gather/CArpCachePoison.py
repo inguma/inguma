@@ -25,7 +25,7 @@ except:
 
 import lib.globals as glob
 from lib.core import getMacVendor
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "arppoison"
 brief_description = "Poison target's ARP cache"
@@ -33,7 +33,7 @@ type = "gather"
 
 globals = ["interval", ]
 
-class CArpCachePoison(CIngumaModule):
+class CArpCachePoison(CIngumaGatherModule):
 
     waitTime = 0
     timeout = 2
@@ -43,19 +43,19 @@ class CArpCachePoison(CIngumaModule):
     address = ""
 
     def help(self):
-        print "target = <target host or network>"
-        print "interval = <interval>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("interval = <interval>")
 
     def run(self):
         if self.target == "" or self.target.lower() == "localhost":
-            self.gom.echo( "[!] No target (or valid target) selected." )
+            self.gom.echo("[!] No target (or valid target) selected.")
             return False
 
         conf.verb = 2
         self.address = get_if_addr(get_working_if())
-        self.gom.echo( "[+] Using " + str(self.address) )
-        self.gom.echo( "  --> Cache poisoning, interval " + str(self.interval) )
+        self.gom.echo("[+] Using " + str(self.address))
+        self.gom.echo("  --> Cache poisoning, interval " + str(self.interval))
         if glob.isGui == False:
-            self.gom.echo( "Press Ctrl+C to cancel" )
+            self.gom.echo("Press Ctrl+C to cancel")
         arpcachepoison(self.address, self.target, self.interval)
         return True

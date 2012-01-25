@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Modified version of the CORE's script "rpcdump.py" adapted for Inguma
 #
 # Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
@@ -19,20 +17,47 @@
 # Reference for:
 #  DCE/RPC.
 
-import socket
-import string
-import sys
-import types
-
 from impacket import uuid
 from impacket.dcerpc import dcerpc_v4, dcerpc, transport, epm
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "rpcdump"
 brief_description = "DCE/RPC endpoint mapper dumper"
 type = "gather"
 
-class RPCDump(CIngumaModule):
+class CRpcDump(CIngumaGatherModule):
+
+    waitTime = 0
+    timeout = 1
+    exploitType = 1
+    services = {}
+    results = {}
+    user = ""
+    password = ""
+
+    def help(self):
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <target port>")
+        self.gom.echo()
+        self.gom.echo("Optional:")
+        self.gom.echo("user = <username>")
+        self.gom.echo("password = <password>")
+
+    def run(self):
+        self.gom.echo("[+] Trying an anonymous connection ... ")
+        self._dumper = RPCDump(username=self.user, password=self.password)
+        self._dumper.dict = self.dict
+
+        return True
+
+    def print_summary(self):
+        self.gom.echo()
+        self.gom.echo("Gathered data")
+        self.gom.echo("-------------")
+        self.gom.echo()
+        self._dumper.dump(self.target, self.gom)
+
+class RPCDump:
     KNOWN_PROTOCOLS = {
         '139/SMB': (r'ncacn_np:%s[\pipe\epmapper]', 139),
         '445/SMB': (r'ncacn_np:%s[\pipe\epmapper]', 445),
@@ -59,7 +84,7 @@ class RPCDump(CIngumaModule):
         """
 
         self.gom = gom
-        self.gom.echo( '[+] Retrieving endpoint list from %s' % addr )
+        self.gom.echo('[+] Retrieving endpoint list from %s' % addr)
 
         # Try all requested protocols until one works.
         entries = []
@@ -67,7 +92,7 @@ class RPCDump(CIngumaModule):
             protodef = RPCDump.KNOWN_PROTOCOLS[protocol]
             port = protodef[1]
 
-            self.gom.echo( "[+] Trying protocol %s..." % protocol )
+            self.gom.echo("[+] Trying protocol %s..." % protocol)
             stringbinding = protodef[0] % addr
 
             rpctransport = transport.DCERPCTransportFactory(stringbinding)
@@ -79,49 +104,47 @@ class RPCDump(CIngumaModule):
             try:
                 entries = self.__fetchList(rpctransport)
             except Exception, e:
-                self.gom.echo( '[!] Protocol failed: %s' % e )
+                self.gom.echo('[!] Protocol failed: %s' % e)
             else:
                 # Got a response. No need for further iterations.
                 break
 
-
         # Display results.
-        self.gom.echo( "" )
+        self.gom.echo()
 
         for entry in entries:
             base = entry.getUUID()
-            self.addToDict(addr + "_rpc_endpoints", base)
+            self.add_data_to_kb(addr + "_rpc_endpoints", base)
 
             if 'unknown' != entry.getProviderName():
-                self.gom.echo( base + '/Provider: ' + entry.getProviderName() )
-                self.addToDict(addr + "_rpc_endpoints", ["provider", entry.getProviderName()])
+                self.gom.echo(base + '/Provider: ' + entry.getProviderName())
+                self.add_data_to_kb(addr + "_rpc_endpoints", ["provider", entry.getProviderName()])
 
-            self.gom.echo( base + '/Version: ' + entry.getVersion() )
-            self.addToDict(addr + "_rpc_endpoints", ["version", entry.getVersion()])
+            self.gom.echo(base + '/Version: ' + entry.getVersion())
+            self.add_data_to_kb(addr + "_rpc_endpoints", ["version", entry.getVersion()])
 
             if entry.getAnnotation():
-                self.gom.echo( base + '/Annotation: ' + entry.getAnnotation() )
-                self.addToDict(addr + "_rpc_endpoints", ["annotation", entry.getAnnotation()])
+                self.gom.echo(base + '/Annotation: ' + entry.getAnnotation())
+                self.add_data_to_kb(addr + "_rpc_endpoints", ["annotation", entry.getAnnotation()])
 
             objbase = base
             if not entry.isZeroObjUUID():
                 objbase += '/' + entry.getObjUUID()
-                self.addToDict(addr + "_rpc_endpoints", ["obj_uuid", entry.getObjUUID()])
+                self.add_data_to_kb(addr + "_rpc_endpoints", ["obj_uuid", entry.getObjUUID()])
 
             stringbinding = transport.DCERPCStringBindingCompose('', entry.getProtocol(), '', entry.getEndpoint())
-            self.gom.echo( objbase + '/StringBindings: ' + stringbinding )
-            self.addToDict(addr + "_rpc_endpoints", ["stringbindings", stringbinding])
-            self.gom.echo( "" )
+            self.gom.echo(objbase + '/StringBindings: ' + stringbinding)
+            self.add_data_to_kb(addr + "_rpc_endpoints", ["stringbindings", stringbinding])
+            self.gom.echo()
 
         if entries:
             num = len(entries)
             if 1 == num:
-                self.gom.echo( 'Received one endpoint.' )
+                self.gom.echo('Received one endpoint.')
             else:
-                self.gom.echo( 'Received %d endpoints.' % num )
+                self.gom.echo('Received %d endpoints.' % num)
         else:
-            self.gom.echo( 'No endpoints found.' )
-
+            self.gom.echo('No endpoints found.')
 
     def __fetchList(self, rpctransport):
         # UDP only works over DCE/RPC version 4.
@@ -153,53 +176,3 @@ class RPCDump(CIngumaModule):
         dce.disconnect()
 
         return entries
-
-class CRpcDump:
-
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    services = {}
-    results = {}
-    user = ""
-    password = ""
-
-    def help(self):
-        print "target = <target host or network>"
-        print "port = <target port>"
-        print
-        print "Optional:"
-        print "user = <username>"
-        print "password = <password>"
-
-    def run(self):
-        self.gom.echo( "[+] Trying an anonymous connection ... " )
-        self._dumper = RPCDump(username=self.user, password=self.password)
-        self._dumper.dict = self.dict
-
-        return True
-
-    def printSummary(self):
-        self.gom.echo( "" )
-        self.gom.echo( "Gathered data" )
-        self.gom.echo( "-------------" )
-        self.gom.echo( "" )
-        self._dumper.dump(self.target, self.gom)
-
-# Process command-line arguments.
-if __name__ == '__main__':
-    if len(sys.argv) <= 1:
-        print "Usage: %s [username[:password]@]<address> [protocol list...]" % sys.argv[0]
-        print "Available protocols: %s" % RPCDump.KNOWN_PROTOCOLS.keys()
-        print "Username and password are only required for certain transports, eg. SMB."
-        sys.exit(1)
-
-    import re
-
-    username, password, address = re.compile('(?:([^@:]*)(?::([^@]*))?@)?(.*)').match(sys.argv[1]).groups('')
-
-    if len(sys.argv) > 2:
-        dumper = RPCDump(sys.argv[2:], username, password)
-    else:
-        dumper = RPCDump(username = username, password = password)
-    dumper.dump(address)

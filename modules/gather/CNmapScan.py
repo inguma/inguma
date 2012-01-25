@@ -1,17 +1,17 @@
 ##      CNmapScan.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -52,7 +52,7 @@ class CNmapScan(CIngumaGatherModule):
             res = CLIcore.unified_input_prompt(self, 'nmapscan')
             if res == None:
                 break
-            
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
@@ -70,13 +70,13 @@ class CNmapScan(CIngumaGatherModule):
     def run_nmap(self, options):
         os.popen(options + " -oX /tmp/nmapxml.xml")
         nmapxml = open('/tmp/nmapxml.xml')
-        
+
         outputs = nmapParser.parseNmap('/tmp/nmapxml.xml')
         nmapxml.close()
         os.remove('/tmp/nmapxml.xml')
-        
+
         for output in outputs:
-            
+
             # Add a new target, hostname and OS
             self.add_data_to_kb( 'targets', output['hostip'] )
             self.gom.echo("Host IP:\t" + output['hostip'])
@@ -86,7 +86,7 @@ class CNmapScan(CIngumaGatherModule):
             if 'os' in output.keys():
                 self.add_data_to_kb( output['hostip'] + '_os', output['os'] )
                 self.gom.echo("Host OS:\t" + output['os'])
-        
+
             # Add open ports and services.
             self.gom.echo("Host Ports:")
             for port in output['ports'].keys():
@@ -100,7 +100,7 @@ class CNmapScan(CIngumaGatherModule):
                         self.gom.echo("\tInfo 2: " + output['ports'][port][2])
                     except:
                         pass
-        
+
             # Add traceroute
             self.gom.echo("\nTraceroute:")
             for host in output['hops']:
