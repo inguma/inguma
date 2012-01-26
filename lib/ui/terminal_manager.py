@@ -35,11 +35,12 @@ class TerminalNotebook(gtk.Notebook):
         gtk.Notebook.__init__(self)
 
         self.pid = None
+        self.pids = []
         self.main = main
 
         #set the tab properties
         self.set_property('homogeneous', True)
-#       self.set_tab_pos(gtk.POS_BOTTOM)
+        self.set_tab_pos(gtk.POS_BOTTOM)
 
         # Add a tab from the begining
         self.add_new_tab(self)
@@ -58,6 +59,7 @@ class TerminalNotebook(gtk.Notebook):
             self.pid = term.fork_command(command=command, argv=args)
         else:
             self.pid = term.fork_command()
+        self.pids.append(self.pid)
         term.set_scrollback_lines(500)
         term.set_scroll_on_output = True
         term.connect("child-exited", lambda w: term.destroy())
@@ -94,6 +96,7 @@ class TerminalNotebook(gtk.Notebook):
     def close_tab(self, widget, child):
         box = child.get_parent()
         pagenum = self.page_num(box)
+        self.pids.pop(pagenum)
 
         if pagenum != -1 and self.get_n_pages() > 1:
             self.remove_page(pagenum)
@@ -168,7 +171,8 @@ class TerminalNotebook(gtk.Notebook):
         term.select_none()
 
     def browse_directory(self, button, terminal):
-        cwd = psutil.Process(self.pid).getcwd()
+        tab = self.get_current_page()
+        cwd = psutil.Process(self.pids[tab]).getcwd()
         self.main.file_notebook.fill_file_list(cwd)
 
     def get_default_shell():

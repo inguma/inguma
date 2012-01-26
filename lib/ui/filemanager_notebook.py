@@ -33,6 +33,7 @@ class FileManagerNotebook(gtk.Notebook):
         self.main = main
         self.uicore = main.uicore
 
+        self.set_tab_pos(gtk.POS_BOTTOM)
         self.handler = None
 
         # Tree icons
