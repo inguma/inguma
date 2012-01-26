@@ -62,7 +62,8 @@ class TerminalNotebook(gtk.Notebook):
         self.pids.append(self.pid)
         term.set_scrollback_lines(500)
         term.set_scroll_on_output = True
-        term.connect("child-exited", lambda w: term.destroy())
+        #term.connect("child-exited", lambda w: term.destroy())
+        term.connect("child-exited", self.on_terminal_child_exit)
         term.show_all()
         self._create_term_buttons(term)
         hbox.pack_start(self.tools, False, False, 0)
@@ -96,10 +97,10 @@ class TerminalNotebook(gtk.Notebook):
     def close_tab(self, widget, child):
         box = child.get_parent()
         pagenum = self.page_num(box)
-        self.pids.pop(pagenum)
 
         if pagenum != -1 and self.get_n_pages() > 1:
             self.remove_page(pagenum)
+            self.pids.pop(pagenum)
             child.destroy()
 
     def _create_term_buttons(self, term):
@@ -219,6 +220,15 @@ class TerminalNotebook(gtk.Notebook):
         signum = menuitem.get_data('signum')
         pid = self.pids[self.get_current_page()]
         psutil.Process(pid).send_signal(signum)
+
+    def on_terminal_child_exit(self, terminal):
+        box = terminal.get_parent()
+        pagenum = self.page_num(box)
+
+#        if pagenum != -1 and self.get_n_pages() > 1:
+        self.remove_page(pagenum)
+        self.pids.pop(pagenum)
+        terminal.destroy()
 
     def get_default_shell():
         """Returns the default shell for the user"""
