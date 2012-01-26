@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CServiceIdentify.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -31,22 +29,22 @@ import socket
 from impacket import smb
 
 from lib.libtns import *
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "identify"
 brief_description = "Identify services using discovered ports"
 type = "gather"
 
-class CServiceIdentify(CIngumaModule):
+class CServiceIdentify(CIngumaGatherModule):
     verbose = False
 
     def help(self):
-        print "target = <target host or network>"
-        print
-        print "Optional:"
-        print "port = <target port>"
-        print
-        print "Note: If port is equal to 0 you need to execute a portscanner prior to identify services."
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo()
+        self.gom.echo("Optional:")
+        self.gom.echo("port = <target port>")
+        self.gom.echo()
+        self.gom.echo("Note: If port is equal to 0 you need to execute a portscanner prior to identify services.")
 
     def tryVmware(self, port):
         try:
@@ -56,7 +54,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(4096)
 
             if data.lower().find("vmware authentication daemon version") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/vmware")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/vmware")
                 return "VMWare Server"
             else:
                 return False
@@ -70,11 +68,11 @@ class CServiceIdentify(CIngumaModule):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((self.target, int(port)))
             data = s.recv(4096)
-            
+
             stoneRe = re.compile("(StoneGate firewall|SG login:)", re.IGNORECASE)
 
             if stoneRe.match(data) > -1:
-                self.addToDict(self.target + "_services", str(port) + "/stonegate")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/stonegate")
                 return "Stonegate Firewall"
             else:
                 return False
@@ -88,11 +86,11 @@ class CServiceIdentify(CIngumaModule):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((self.target, int(port)))
             data = s.recv(64)
-            
+
             citrixRe = re.compile(".*ICA.*", re.IGNORECASE)
 
             if citrixRe.match(data) > -1:
-                self.addToDict(self.target + "_services", str(port) + "/citrix")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/citrix")
                 return "Citrix Server"
             else:
                 return False
@@ -109,7 +107,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(1024)
 
             if data.find("ST") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/pcanywhere")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/pcanywhere")
                 return "PC Anywhere"
             else:
                 return False
@@ -125,7 +123,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(1024)
 
             if data.find("RFB 00") == 0:
-                self.addToDict(self.target + "_services", str(port) + "/vnc")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/vnc")
                 return "VNC Server"
             else:
                 return False
@@ -143,7 +141,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(1024)
 
             if data.find("HTTP/1.0 400 msg=Bad%20Request&rc=%") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/timesten")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/timesten")
                 return "Oracle TimesTen Web Server"
             else:
                 return False
@@ -161,7 +159,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(1024)
 
             if data == "\x03\x00\x00\x0b\x06\xd0\x00\x00\x124\x00":
-                self.addToDict(self.target + "_services", str(port) + "/rdp")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/rdp")
                 return "Remote Desktop Server"
             else:
                 return False
@@ -177,7 +175,7 @@ class CServiceIdentify(CIngumaModule):
             s.send("\r\n"*3)
             data = s.recv(1024)
             if data.lower().find("1.3.6.1.4.1.1466.20036") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/ldaps")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/ldaps")
                 return "SSL LDAP Server"
             else:
                 return False
@@ -195,7 +193,7 @@ class CServiceIdentify(CIngumaModule):
             data = ssl_sock.read(1024)
             del ssl_sock
             if data.lower().find("1.3.6.1.4.1.1466.20036") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/ldap")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/ldap")
                 return "LDAP Server"
             else:
                 return False
@@ -214,10 +212,10 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("illegal ormi request") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/ormi")
-                
+                self.add_data_to_kb(self.target + "_services", str(port) + "/ormi")
+
                 if self.verbose:
-                    self.gom.echo( "Response: %s" % repr(data) )
+                    self.gom.echo("Response: %s" % repr(data))
 
                 return "Oracle RMI (OC4J ORMI)"
             else:
@@ -238,7 +236,7 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data[0:2] == "\xfa\x58":
-                self.addToDict(self.target + "_services", str(port) + "/ocfs2")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/ocfs2")
                 return "OCFS2"
             else:
                 return False
@@ -255,11 +253,11 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("http/") == 0:
-                self.addToDict(self.target + "_services", str(port) + "/http")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/http")
                 pos = data.lower().find("server:")
 
                 if self.verbose:
-                    self.gom.echo( "Response: %s" % repr(data) )
+                    self.gom.echo("Response: %s" % repr(data))
 
                 if pos > -1:
                     data = data[pos+len("server:"):]
@@ -275,11 +273,11 @@ class CServiceIdentify(CIngumaModule):
                 return False
         except:
             s.close()
-            
+
             try:
                 import urllib
                 a = urllib.urlopen("http://" + self.target + ":" + str(self.port))
-                self.addToDict(self.target + "_services", str(port) + "/http")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/http")
 
                 if a.headers.has_key("server"):
                     return a.headers["server"]
@@ -300,11 +298,11 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("rtsp/") == 0:
-                self.addToDict(self.target + "_services", str(port) + "/rtsp")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/rtsp")
                 pos = data.lower().find("server:")
 
                 if self.verbose:
-                    self.gom.echo( "Response: %s" % repr(data) )
+                    self.gom.echo("Response: %s" % repr(data))
 
                 if pos > -1:
                     data = data[pos+len("server:"):]
@@ -327,10 +325,10 @@ class CServiceIdentify(CIngumaModule):
             socket.setdefaulttimeout(self.timeout)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((self.target, int(port)))
-            
+
             ssl_sock = socket.ssl(s)
-            #print "Server:", ssl_sock.server()
-            #print "Issuer:", ssl_sock.issuer()
+            #self.gom.echo("Server:", ssl_sock.server())
+            #self.gom.echo("Issuer:", ssl_sock.issuer())
 
             ssl_sock.write("GET / HTTP/1.0\n\n\n")
             data = ssl_sock.read(1024)
@@ -338,11 +336,11 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("http/") == 0:
-                self.addToDict(self.target + "_services", str(port) + "/https")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/https")
                 pos = data.lower().find("server:")
 
                 if self.verbose:
-                    self.gom.echo( "Response: %s" % repr(data) )
+                    self.gom.echo("Response: %s" % repr(data))
 
                 if pos > -1:
                     data = data[pos+len("server:"):]
@@ -364,17 +362,17 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("server") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/telnet")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/telnet")
                 tmp = data[:data.find("\n")]
                 tmp = data[4:]
-                
+
                 if tmp.lower().find("ready") > -1:
                     tmp = tmp[:tmp.lower().find("ready")]
 
                 return tmp
             else:
                 if port == "23":
-                    self.addToDict(self.target + "_services", str(port) + "/telnet")
+                    self.add_data_to_kb(self.target + "_services", str(port) + "/telnet")
                     return "Telnet Server"
                 else:
                     return False
@@ -393,13 +391,13 @@ class CServiceIdentify(CIngumaModule):
             if data.lower().find("ftp") > -1:
                 tmp = data[:data.find("\n")]
                 tmp = data[4:]
-                
+
                 if tmp.lower().find("ready") > -1:
                     tmp = tmp[:tmp.lower().find("ready")]
 
                 if len(tmp) > 0:
                     # Is really an FTP server?
-                    self.addToDict(self.target + "_services", str(port) + "/ftp")
+                    self.add_data_to_kb(self.target + "_services", str(port) + "/ftp")
 
                 return tmp
             else:
@@ -422,7 +420,7 @@ class CServiceIdentify(CIngumaModule):
 
                 if len(tmp) > 0:
                     # Is really an SSH server?
-                    self.addToDict(self.target + "_services", str(port) + "/ssh")
+                    self.add_data_to_kb(self.target + "_services", str(port) + "/ssh")
 
                 return tmp
             else:
@@ -453,7 +451,7 @@ class CServiceIdentify(CIngumaModule):
             else:
                 data = "Oracle TNS Listener (!???) v"+ str(tns.assignVersion(versionora)) + " (" + hex(int(vsnnum)) + ")"
 
-            self.addToDict(self.target + "_services", str(port) + "/tns")
+            self.add_data_to_kb(self.target + "_services", str(port) + "/tns")
             return data
             data = s.recv(1024)
             s.close()
@@ -468,7 +466,7 @@ class CServiceIdentify(CIngumaModule):
                 return False
 
             self.smb = smb.SMB("*SMBSERVER", self.target, port)
-            self.addToDict(self.target + "_services", str(port) + "/smb")
+            self.add_data_to_kb(self.target + "_services", str(port) + "/smb")
 
             try:
                 self.smb.login("", "")
@@ -490,7 +488,7 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("lpd") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/lpd")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/lpd")
                 if data.find(":") > -1:
                     data = split(data, ":")
                     return data[0]
@@ -513,7 +511,7 @@ class CServiceIdentify(CIngumaModule):
             s.close()
 
             if data.lower().find("@pjl info id") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/jetdirect")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/jetdirect")
                 if data.find("\n") > -1:
                     data = split(data, "\n")
                     return data[1].replace("\n", "").replace("\r", "").replace('"', '')
@@ -534,7 +532,7 @@ class CServiceIdentify(CIngumaModule):
             data = s.recv(1024)
 
             if data.lower().find("220 ") == 0:
-                self.addToDict(self.target + "_services", str(port) + "/smtp")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/smtp")
                 return data[4:]
             else:
                 return False
@@ -548,9 +546,9 @@ class CServiceIdentify(CIngumaModule):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((self.target, int(port)))
             data = s.recv(1024)
-            
+
             if data.lower().find("mysql") > -1:
-                self.addToDict(self.target + "_services", str(port) + "/mysql")
+                self.add_data_to_kb(self.target + "_services", str(port) + "/mysql")
                 return "MySQL"
             else:
                 return False
@@ -575,19 +573,19 @@ class CServiceIdentify(CIngumaModule):
             """
         elif port == "11":
             data = "systat"
-            self.addToDict(self.target + "_services", "11/systat")
+            self.add_data_to_kb(self.target + "_services", "11/systat")
             return data
         elif port == "15":
             data = "netstat"
-            self.addToDict(self.target + "_services", "11/netstat")
+            self.add_data_to_kb(self.target + "_services", "11/netstat")
             return data
         elif port == "37":
             data = "time"
-            self.addToDict(self.target + "_services", "37/time")
+            self.add_data_to_kb(self.target + "_services", "37/time")
             return data
         elif port == "79":
             data = "finger"
-            self.addToDict(self.target + "_services", "79/finger")
+            self.add_data_to_kb(self.target + "_services", "79/finger")
             return data
         elif port == "25":
             data = self.trySmtpServer(port)
@@ -631,15 +629,15 @@ class CServiceIdentify(CIngumaModule):
                 return data
         elif port == "1723":
             data = "PPTP"
-            self.addToDict(self.target + "_services", str(port) + "/pptp")
+            self.add_data_to_kb(self.target + "_services", str(port) + "/pptp")
             return data
         elif port == "6000":
             data = "X11 Window System"
-            self.addToDict(self.target + "_services", str(port) + "/x11")
+            self.add_data_to_kb(self.target + "_services", str(port) + "/x11")
             return data
         elif port == "24800":
             data = "Synergy"
-            self.addToDict(self.target + "_services", str(port) + "/synergy")
+            self.add_data_to_kb(self.target + "_services", str(port) + "/synergy")
             return data
         elif port == "5520":
             data = self.tryOrmiServer(port)
@@ -648,7 +646,7 @@ class CServiceIdentify(CIngumaModule):
         elif port == "7777":
             data = self.tryOcfs2Service(port)
             if data:
-                return data 
+                return data
 
             data = self.tryHttpServer(port)
             if data:
@@ -695,13 +693,13 @@ class CServiceIdentify(CIngumaModule):
                 except:
                     if str(sys.exc_info()[1][0]) == "10061":
                         if bTried and bContinue:
-                            self.gom.echo( "[!] Warning! I can't connect with the server after previous sucessfull communications." )
-                            self.gom.echo( "[!] Waiting for a while ..." )
+                            self.gom.echo("[!] Warning! I can't connect with the server after previous sucessfull communications.")
+                            self.gom.echo("[!] Waiting for a while ...")
                             time.sleep(5)
                             bContinue = False
                             continue
                         else:
-                            self.gom.echo( "[!] Can't connect with target at specified port. " +  sys.exc_info()[1] )
+                            self.gom.echo("[!] Can't connect with target at specified port. " +  sys.exc_info()[1])
                             return False
 
         try:
@@ -716,16 +714,16 @@ class CServiceIdentify(CIngumaModule):
             mList = self.dict[self.target + "_tcp_ports"]
             for service in mList:
                 srv = self.identifyService(service).strip()
-                self.gom.echo( "Port " + str(service) + ": " + srv )
-                self.addToDict(self.target + '_' + str(service) + '-info', srv)
+                self.gom.echo("Port " + str(service) + ": " + srv)
+                self.add_data_to_kb(self.target + '_' + str(service) + '-info', srv)
         else:
             if self.port == 0:
-                self.gom.echo( "No ports detected with a portscanner and the value of port is 0." )
+                self.gom.echo("No ports detected with a portscanner and the value of port is 0.")
                 return False
             else:
                 srv = self.identifyService(self.port).strip()
-                self.gom.echo( "Port " + str(self.port) + ": " + srv )
-                self.addToDict(self.target + '_' + str(service) + '-info', srv)
-                print srv
+                self.gom.echo("Port " + str(self.port) + ": " + srv)
+                self.add_data_to_kb(self.target + '_' + str(service) + '-info', srv)
+                self.gom.echo(srv)
 
         return True

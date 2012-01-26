@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CSniffer.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -23,9 +21,8 @@
 NOTE: Can it be enhanced with an automatic fuzzer and traffic's graphics generator?
 """
 
-import os
 import sys
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 try:
     from scapy.modules.p0f import *
@@ -45,7 +42,7 @@ name = "sniffer"
 brief_description = "A simple sniffer"
 type = "gather"
 
-class CSniffer(CIngumaModule):
+class CSniffer(CIngumaGatherModule):
 
     waitTime = 0
     timeout = 1
@@ -74,84 +71,82 @@ class CSniffer(CIngumaModule):
         if uptime == 0:
             uptime = None
         res = pkt.sprintf("%IP.src%:%TCP.sport% - " + r[0] + " " + r[1])
-        self.addToDict("hosts", pkt.sprintf("%IP.src%"))
+        self.add_data_to_kb("hosts", pkt.sprintf("%IP.src%"))
 
         if uptime is not None:
             res += pkt.sprintf(" (up: " + str(uptime/3600) + " hrs)\n  -> %IP.dst%:%TCP.dport%")
-            self.addToDict(pkt.sprintf("%IP.src%") + "_uptime", str(uptime/3600))
+            self.add_data_to_kb(pkt.sprintf("%IP.src%") + "_uptime", str(uptime/3600))
         else:
             res += pkt.sprintf("\n  -> %IP.dst%:%TCP.dport%")
 
         if r[2] is not None:
             res += " (distance " + str(r[2]) + ")"
-            self.addToDict(pkt.sprintf("%IP.src%") + "_distance", str(r[2]))
+            self.add_data_to_kb(pkt.sprintf("%IP.src%") + "_distance", str(r[2]))
 
-        print
-        print "P0F: " + str(res)
-        print 
+        self.gom.echo()
+        self.gom.echo("P0F: " + str(res))
+        self.gom.echo()
 
     def showPacket(self, packet):
-        buf = None
-
         for x in packet:
-            print x.summary()
+            self.gom.echo(x.summary())
             aux = scapy.PacketList(x, "packet")
             aux.rawhexdump()
 
         self.prnp0f(packet)
 
-    def showHelp(self):
-        print 
-        print "Inguma's Sniffer Help"
-        print "---------------------"
-        print
-        print "filter <pcap filter>         Specify a valid pcap filter"
-        print "iface <iface>                Specify which iface will be used"
-        print "run                          Start sniffing"
-        print "save                         Save the packets to a file"
-        print "help                         Show this help"
-        print "exit                         Exit from the sniffer"
-        print
-        print "Sniffed packets commands"
-        print "------------------------"
-        print
+    def help_interactive(self):
+        self.gom.echo()
+        self.gom.echo("Inguma's Sniffer Help")
+        self.gom.echo("---------------------")
+        self.gom.echo()
+        self.gom.echo("filter <pcap filter>         Specify a valid pcap filter")
+        self.gom.echo("iface <iface>                Specify which iface will be used")
+        self.gom.echo("run                          Start sniffing")
+        self.gom.echo("save                         Save the packets to a file")
+        self.gom.echo("help                         Show this help")
+        self.gom.echo("exit                         Exit from the sniffer")
+        self.gom.echo()
+        self.gom.echo("Sniffed packets commands")
+        self.gom.echo("------------------------")
+        self.gom.echo()
 
         if not self.data:
-            print "No sniffed data"
-            print
+            self.gom.echo("No sniffed data")
+            self.gom.echo()
         else:
             for command in dir(self.data):
                 if command.startswith("_"):
                     continue
                 else:
-                    print "packets " + str(command)
-            
-            print 
-            print "Commonly used commands are 'packets afterglow' and 'packets conversations'"
-            print
+                    self.gom.echo("packets " + str(command))
+
+            self.gom.echo()
+            self.gom.echo("Commonly used commands are 'packets afterglow' and 'packets conversations'")
+            self.gom.echo()
 
             if hasScapereal:
-                print "Scapereal commands (needs PyGTK)"
-                print "--------------------------------"
-                print
-                print "ethereal                 Show in an ethereal like window"
-                print
+                self.gom.echo("Scapereal commands (needs PyGTK)")
+                self.gom.echo("--------------------------------")
+                self.gom.echo()
+                self.gom.echo("ethereal                 Show in an ethereal like window")
+                self.gom.echo()
 
     def runPacketListCommand(self, args):
         try:
             if callable(eval("self.data." + args[0])):
                 exec("self.data." + args[0] + "()")
             else:
-                print eval("self.data." + args[0])
+                self.gom.echo(eval("self.data." + args[0]))
         except:
-            print "Error.", sys.exc_info()[1]
+            self.gom.echo("Error.", sys.exc_info()[1])
 
     def doSaveFile(self):
         try:
             filename = raw_input("Output filename:")
             scapy.wrpcap(filename, self.data)
         except:
-            print sys.exc_info()[1]
+            self.gom.echo(sys.exc_info()[1])
 
     def run(self):
         while 1:
@@ -162,8 +157,8 @@ class CSniffer(CIngumaModule):
             except EOFError:
                 break
             except:
-                print "raw_input:", sys.exc_info()[1]
-            
+                self.gom.echo("raw_input:", sys.exc_info()[1])
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
@@ -174,25 +169,25 @@ class CSniffer(CIngumaModule):
                     buf += word + " "
 
                 self.filter = buf
-                print "Filter is:", buf
+                self.gom.echo("Filter is:", buf)
             elif words[0].lower() == "sniff" or words[0] == "run":
                 try:
-                    print "Sniffing in iface", self.iface, "..."
+                    self.gom.echo("Sniffing in iface", self.iface, "...")
                     self.data = scapy.sniff(prn = self.showPacket, filter=self.filter, iface = self.iface)
                 except KeyboardInterrupt:
                     break
                 except:
-                    print "Internal error.", sys.exc_info()[1]
+                    self.gom.echo("Internal error.", sys.exc_info()[1])
             elif words[0].lower() == "iface":
                 if len(words) > 1:
                     self.iface = words[1]
-                    
+
                     if self.iface == "":
                         self.iface = None
 
-                    print "Interface is:", self.iface
+                    self.gom.echo("Interface is:", self.iface)
             elif words[0].lower() == "help":
-                self.showHelp()
+                self.help_interactive()
             elif words[0].lower() == "quit" or words[0].lower() == "exit":
                 break
             elif words[0].lower() == "packets":
@@ -202,13 +197,13 @@ class CSniffer(CIngumaModule):
             elif words[0].lower() == "save":
                 self.doSaveFile()
             else:
-                print "Unknown command or options '" + str(res) + "'"
+                self.gom.echo("Unknown command or options '" + str(res) + "'")
 
         return True
 
-    def printSummary(self):
+    def print_summary(self):
         if self.data:
             self.data.show()
-            print
-            print "Sniffed a total of", len(self.data), "packet(s)"
+            self.gom.echo()
+            self.gom.echo("Sniffed a total of", len(self.data), "packet(s)")
 

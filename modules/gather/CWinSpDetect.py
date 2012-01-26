@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CWinSpDetect.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -24,35 +22,31 @@ NOTE: If the module works the Administrator's password is blank.
 """
 
 import os
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 try:
     if os.name == "nt":
         import _winreg
 except:
-    self.gom.echo( "No Winreg support." )
+    print("No Winreg support.")
 
 name = "winspdetect"
 brief_description = "Detect service pack using remote registry (LAME)"
 type = "gather"
 
-class CWinSpDetect(CIngumaModule):
+class CWinSpDetect(CIngumaGatherModule):
 
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
-    wizard = False
     services = {}
     results = {}
     string = ""
     interactive = True
 
     def help(self):
-        print "target = <target host or network>"
+        self.gom.echo("target = <target host or network>")
 
     def run(self):
         if os.name != "nt":
-            self.gom.echo( "Only supported under Win32 platforms" )
+            self.gom.echo("Only supported under Win32 platforms")
             return False
 
         self.results = {}
@@ -63,13 +57,5 @@ class CWinSpDetect(CIngumaModule):
 
         return True
 
-    def printSummary(self):
-        self.gom.echo( self.string )
-
-
-if __name__ == "__main__":
-
-    objSp = CSpDetect()
-    objSp.target = "127.0.0.1"
-    objSp.run()
-    objSp.printSummary()
+    def print_summary(self):
+        self.gom.echo(self.string)

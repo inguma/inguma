@@ -1,19 +1,17 @@
-#!/usr/bin/python
-
 ##      CTnsCmd.py
-#       
+#
 #       Copyright 2010 Joxean Koret <joxeankoret@yahoo.es>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -26,7 +24,7 @@ NOTE: Check for bugs!
 import sys
 import socket
 
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 from lib.libtns import *
 
 from lib import libfuzz
@@ -35,66 +33,64 @@ name = "tnscmd"
 brief_description = "Interact with an Oracle TNS Listener"
 type = "gather"
 
-class CTnsCmd(CIngumaModule):
+class CTnsCmd(CIngumaGatherModule):
 
-    target = "192.168.1.10"
     port = 1521
     sid = ""
     serviceName = ""
     vsnnum = ""
     version = 9
-    exploitType = 1
 
     _lastError = None
 
     def help(self):
-        print "target = <target host or network>"
-        print "port = <target port>"
-        print "sid = <sid name>"
+        self.gom.echo("target = <target host or network>")
+        self.gom.echo("port = <target port>")
+        self.gom.echo("sid = <sid name>")
 
     def processVersionResponse(self, res):
         pos = res.find("TNSLSNR")
         end = res.find("@")
 
-        print
+        self.gom.echo()
 
         if end > 0:
-            print "\t", res[pos:end]
-            self.addToDict(self.target + "_tnsversion", res[pos:end])
+            self.gom.echo("\t", res[pos:end])
+            self.add_data_to_kb(self.target + "_tnsversion", res[pos:end])
         else:
-            print "\t", res[pos:]
-            self.addToDict(self.target + "_tnsversion", res[pos:])
+            self.gom.echo("\t", res[pos:])
+            self.add_data_to_kb(self.target + "_tnsversion", res[pos:])
 
     def run(self):
-        print
+        self.gom.echo()
         return self.tnscmdLoop()
 
     def processTnsCode(self, code):
         if code == 32:
-            print "No error. Command Succesfull."
+            self.gom.echo("No error. Command succesful.")
         elif code == 33:
-            print "Bad syntax"
+            self.gom.echo("Bad syntax")
         elif code == 35:
-            print "Unknow command"
+            self.gom.echo("Unknow command")
         else:
-            print "Unknow return code"
+            self.gom.echo("Unknow return code")
 
     def showTnsError(self, res):
         pos = res.find("DESCRIPTION")
-        print "TNS Listener returns an error:"
-        print
-        print "Raw response:"
-        print repr(res)
-        print
-        print "Formated response:"
+        self.gom.echo("TNS Listener returns an error:")
+        self.gom.echo()
+        self.gom.echo("Raw response:")
+        self.gom.echo(repr(res))
+        self.gom.echo()
+        self.gom.echo("Formatted response:")
         formatter = TNSDataFormatter(res[pos-1:])
-        print formatter.format()
+        self.gom.echo(formatter.format())
 
         tns = TNS()
         errCode = tns.extractErrorcode(res)
 
         if errCode:
-            print "TNS-%s: %s" % (errCode, tns.getTnsError(errCode))
+            self.gom.echo("TNS-%s: %s" % (errCode, tns.getTnsError(errCode)))
 
     def getBaseCommand(self):
         if self.version < 10:
@@ -117,7 +113,7 @@ class CTnsCmd(CIngumaModule):
         pos = res.find("DESCRIPTION=")
         data = res[pos-1:]
         formatter = TNSDataFormatter(data)
-        print formatter.format()
+        self.gom.echo(formatter.format())
 
     def doPing(self):
         res = self.runInternalCommand(self.getBaseCommand() % "ping", 1)
@@ -147,8 +143,8 @@ class CTnsCmd(CIngumaModule):
 
     def runRawCommand(self, cmd, times = 1):
         data = self.getBaseCommand() % cmd
-        print "Running '" + data + "' ... "
-        print
+        self.gom.echo("Running '" + data + "' ... ")
+        self.gom.echo()
 
         """
         if self.version < 10:
@@ -185,40 +181,40 @@ class CTnsCmd(CIngumaModule):
             return res
 
         except:
-            print "TNSCMD Error.",sys.exc_info()[1]
+            self.gom.echo("TNSCMD Error.",sys.exc_info()[1])
 
     def showCommands(self):
-        print "Inguma's TNSCMD Help"
-        print "--------------------"
-        print
-        print "Commands:"
-        print "resolve      Resolve database version"
-        print "ping         Ping the database"
-        print "version      Show version information"
-        print "services     Show available services"
-        print "status       Show instance's status"
-        print "sid          Get the Oracle SID list"
-        print "raw          Send a raw command"
-        print "cmd          Send one tnslsnr command"
-        print "fuzz         Fuzz all tokens from a given NV command string"
-        print "help         Show this help"
-        print "quit         Exits from tnscmd mode"
-        print
-        print "Any other typed command will be sended to the TNS Listener."
-        print "The following is a list of raw interesting commands:"
-        print
-        print "'stop', 'reload', 'status', 'spawn' and 'services'"
-        print
+        self.gom.echo("Inguma's TNSCMD Help")
+        self.gom.echo("--------------------")
+        self.gom.echo()
+        self.gom.echo("Commands:")
+        self.gom.echo("resolve      Resolve database version")
+        self.gom.echo("ping         Ping the database")
+        self.gom.echo("version      Show version information")
+        self.gom.echo("services     Show available services")
+        self.gom.echo("status       Show instance's status")
+        self.gom.echo("sid          Get the Oracle SID list")
+        self.gom.echo("raw          Send a raw command")
+        self.gom.echo("cmd          Send one tnslsnr command")
+        self.gom.echo("fuzz         Fuzz all tokens from a given NV command string")
+        self.gom.echo("help         Show this help")
+        self.gom.echo("quit         Exits from tnscmd mode")
+        self.gom.echo()
+        self.gom.echo("Any other typed command will be sent to the TNS Listener.")
+        self.gom.echo("The following is a list of raw interesting commands:")
+        self.gom.echo()
+        self.gom.echo("'stop', 'reload', 'status', 'spawn' and 'services'")
+        self.gom.echo()
 
     def rawCommandLoop(self, mtimes = 1):
         buf = ""
-        print "Type '.' in a single line to end raw command."
-        print
+        self.gom.echo("Type '.' in a single line to end raw command.")
+        self.gom.echo()
         while 1:
             res = raw_input()
-            
+
             if res == ".":
-                print "Sending '" + buf + "' ..."
+                self.gom.echo("Sending '" + buf + "' ...")
                 self.runInternalCommand(theCommand=buf, times = mtimes)
                 break
             else:
@@ -235,13 +231,13 @@ class CTnsCmd(CIngumaModule):
 
         if version:
             self.version = int(tns.assignVersion(vsnnum))
-    
-            print "Oracle Decimal version    : ", vsnnum
-            print "Oracle Hexadecimal version: ", hex(int(vsnnum))
-            print "Major Oracle version      : ", self.version
-            self.addToDict(self.target + "_tnsvsnnum", vsnnum)
+
+            self.gom.echo("Oracle Decimal version    : ", vsnnum)
+            self.gom.echo("Oracle Hexadecimal version: ", hex(int(vsnnum)))
+            self.gom.echo("Major Oracle version      : ", self.version)
+            self.add_data_to_kb(self.target + "_tnsvsnnum", vsnnum)
         else:
-            print "Couldn't resolve Server Version"
+            self.gom.echo("Couldn't resolve Server Version")
 
     def fuzzCallback(self, data, idx):
         res = self.runInternalCommand(data)
@@ -251,10 +247,10 @@ class CTnsCmd(CIngumaModule):
             errCode = tns.extractErrorcode(res)
 
             if errCode:
-            
+
                 if errCode != self._lastError:
                     self.formatResponse(res)
-                    print "TNS-%s: %s" % (errCode, tns.getTnsError(errCode))
+                    self.gom.echo("TNS-%s: %s" % (errCode, tns.getTnsError(errCode)))
 
                 self._lastError = errCode
 
@@ -263,27 +259,27 @@ class CTnsCmd(CIngumaModule):
             cmd = raw_input("Base NV string: ")
             idx = raw_input("Start index: ")
             var = raw_input("Variable: ")
-            
+
             if idx == "" or not idx:
                 idx = 0
             else:
                 idx = int(idx)
-                
+
             if var == "" or not var:
                 var = 0
             else:
                 var = int(var)
 
         except KeyboardInterrupt:
-            print "Aborted."
+            self.gom.echo("Aborted.")
         except:
             raise
 
         libfuzz.fuzzCallback(self.fuzzCallback, cmd, idx)
 
-        print
-        print "Fuzzing finished. Any luck?"
-        print
+        self.gom.echo()
+        self.gom.echo("Fuzzing finished. Any luck?")
+        self.gom.echo()
 
     def getSIDList(self):
         if self.version < 10:
@@ -294,7 +290,7 @@ class CTnsCmd(CIngumaModule):
         res = self.runInternalCommand(self.getBaseCommand() % "services", times)
 
         if not res:
-            print "*** Internal Error!", sys.exc_info()[1]
+            self.gom.echo("*** Internal Error!", sys.exc_info()[1])
             return
 
         pos = res.find("DESCRIPTION=")
@@ -304,23 +300,23 @@ class CTnsCmd(CIngumaModule):
         values = parser.getValueFor("INSTANCE_NAME")
 
         banner = "Oracle SID List at %s" % self.target
-        print banner
-        print "-" * len(banner)
-        print
+        self.gom.echo(banner)
+        self.gom.echo("-" * len(banner))
+        self.gom.echo()
         i = 0
         for value in values:
             i += 1
-            print i, value
-            self.addToDict(self.target + "_sidlist", value)
+            self.gom.echo(i, value)
+            self.add_data_to_kb(self.target + "_sidlist", value)
 
     def tryCmd(self):
         try:
             cmd = raw_input("Command to run: ")
         except KeyboardInterrupt:
-            print "Aborted."
+            self.gom.echo("Aborted.")
 
         res = self.runInternalCommand(self.getBaseCommand() % cmd, 1)
-        
+
         if res:
             self.formatResponse(res)
 
@@ -333,23 +329,23 @@ class CTnsCmd(CIngumaModule):
                 while 1:
                     data = raw_input("TNSCMD> ")
                     words = data.split(" ")
-    
+
                     if len(words) > 0:
                         cmd = words[0]
                         args = []
-    
+
                         for arg in words[1:]:
                             args += arg
-                        
+
                         if len(args) > 0:
                             try:
                                 times = int(args[0])
                             except:
-                                print "Invalid number.", sys.exc_info()[1]
+                                self.gom.echo("Invalid number.", sys.exc_info()[1])
                     else:
                         cmd = ""
                         times = 1
-    
+
                     if cmd.lower() == "resolve":
                         self.resolveVersion()
                     elif cmd.lower() == "version":
@@ -377,16 +373,16 @@ class CTnsCmd(CIngumaModule):
                     else:
                         self.runRawCommand(cmd)
             else:
-                print
-                print "Ping"
-                print "----"
+                self.gom.echo()
+                self.gom.echo("Ping")
+                self.gom.echo("----")
                 self.doPing()
 
-                print "Version"
-                print "-------"
+                self.gom.echo("Version")
+                self.gom.echo("-------")
                 self.doVersion()
 
-                print
+                self.gom.echo()
                 self.getSIDList()
 
         except KeyboardInterrupt:
@@ -394,6 +390,6 @@ class CTnsCmd(CIngumaModule):
         except EOFError:
             pass
         except:
-            print "TNSCMD Error.", sys.exc_info()[1]
-    
+            self.gom.echo("TNSCMD Error.", sys.exc_info()[1])
+
         return True

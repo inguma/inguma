@@ -1,12 +1,11 @@
-#
 # Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 # Copyright (c) 2002, Core SDI S.A., Argentina
 # All rights reserved
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright
@@ -32,49 +31,46 @@ import sys
 import time
 import string
 from impacket import smb
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "smbclient"
 brief_description = "A simple SMB Client"
 type = "gather"
 
-class CSmbClient(CIngumaModule):
+class CSmbClient(CIngumaGatherModule):
 
-    waitTime = 0
-    timeout = 1
-    exploitType = 1
     services = {}
     results = {}
     interactive = True
 
     def help(self):
-        print "target = <target host or network>"
+        self.gom.echo("target = <target host or network>")
 
     def eval(self, s):
         l = string.split(s, ' ')
         cmd = l[0]
-        
-        try:        
+
+        try:
             f = CSmbClient.__dict__[cmd]
             l[0] = self
             f(*l)
         except Exception, e:
-            print "Error %s" % e
+            self.gom.echo("Error %s" % e)
 
     def run(self):
         # Open the connection
         s = "open %s %d" % (self.target, self.port)
         self.eval(s)
 
-        print "[+] Trying a NULL connection ... "
+        self.gom.echo("[+] Trying a NULL connection ... ")
         try:
             self.login("", "")
-            print "[+] Ok. It works."
+            self.gom.echo("[+] Ok. It works.")
             self.info()
-            print
+            self.gom.echo()
         except:
-            print "[!]", sys.exc_info()[1]
-            print "You will need to login first :("
+            self.gom.echo("[!]", sys.exc_info()[1])
+            self.gom.echo("You will need to login first :(")
 
         if self.interactive:
             try:
@@ -84,7 +80,7 @@ class CSmbClient(CIngumaModule):
             except EOFError:
                 return True
             except:
-                print "Error.", sys.exc_info()[1]
+                self.gom.echo("Error.", sys.exc_info()[1])
                 return False
 
         return True
@@ -98,14 +94,14 @@ class CSmbClient(CIngumaModule):
             elif s.lower() == "close":
                 self.smb.close(0, 0)
             elif s.lower() == "test":
-                print dir(self.smb)
+                self.gom.echo(dir(self.smb))
             elif s.lower() == "info":
                 self.info()
             else:
                 self.eval(s)
 
-    def help(self):
-        print """
+    def help_interactive(self):
+        self.gom.echo("""
  open hosport - opens a SMB connection against the target host/port
  login username passwd - logs into the current SMB connection
  login_hash username lmhash nthash - logs into the current SMB connection using the password hashes
@@ -127,46 +123,46 @@ class CSmbClient(CIngumaModule):
 
  An empty line finishes the session
  NOTE: the server is not terminated, although it is left unusable
-"""
+""")
 
     def open(self,host,port):
         self.smb = smb.SMB("*SMBSERVER", host, port)
 
     def login(self,username, password):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         self.smb.login(username, password)
 
     def login_hash(self,username, lmhash, nthash):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         self.smb.login(username, '', lmhash=lmhash, nthash=nthash)
 
     def logoff(self):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         self.smb.logoff()
         self.smb = None
 
     def shares(self):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
-        print "List of remote shares"
-        print "---------------------"
-        print
+        self.gom.echo("List of remote shares")
+        self.gom.echo("---------------------")
+        self.gom.echo()
         for share in self.smb.list_shared():
-            print "Name:", share.get_name()
-            print "Type:", share.get_type()
-            print "Comment:", share.get_comment()
-            print
+            self.gom.echo("Name:", share.get_name())
+            self.gom.echo("Type:", share.get_type())
+            self.gom.echo("Comment:", share.get_comment())
+            self.gom.echo()
 
     def use(self,sharename):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         self.share = sharename
         self.tid = self.smb.tree_connect(sharename)
@@ -179,41 +175,41 @@ class CSmbClient(CIngumaModule):
            self.pwd += '/' + path
 
     def pwd(self):
-        print self.pwd
+        self.gom.echo(self.pwd)
 
     def ls(self, wildcard = None):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
 
         if wildcard == None:
            pwd = self.pwd + '/*'
         else:
            pwd = self.pwd + '/' + wildcard
-        print "self.share", self.share
-        print "pwd", pwd
+        self.gom.echo("self.share", self.share)
+        self.gom.echo("pwd", pwd)
 
         for f in self.smb.list_path(self.share, pwd):
-           print f.get_longname()
+           self.gom.echo(f.get_longname())
 
     def rm(self, filename):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
 
         f = self.pwd + '/' + filename
         file = string.replace(f,'/','\\')
         self.smb.remove(self.share, file)
- 
+
     def mkdir(self, path):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         p = self.pwd + '/' + path
         pathname = string.replace(p,'/','\\')
@@ -221,24 +217,24 @@ class CSmbClient(CIngumaModule):
 
     def rmdir(self, path):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
-        
+
         p = self.pwd + '/' + path
         pathname = string.replace(p,'/','\\')
         self.smb.rmdir(self.share, pathname)
 
     def put(self, filename):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
-        
+
         fh = open(filename, 'rb')
         f = self.pwd + '/' + filename
         pathname = string.replace(f,'/','\\')
@@ -247,12 +243,12 @@ class CSmbClient(CIngumaModule):
 
     def get(self, filename):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
-        
+
         fh = open(filename,'wb')
         f = self.pwd + '/' + filename
         pathname = string.replace(f,'/','\\')
@@ -261,7 +257,7 @@ class CSmbClient(CIngumaModule):
 
     def info(self):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         domain = self.smb.get_server_domain()
         lanman = self.smb.get_server_lanman()
@@ -271,17 +267,17 @@ class CSmbClient(CIngumaModule):
         sessionKey = self.smb.get_session_key()
         loginRequired = self.smb.is_login_required()
 
-        print "Current connection information"
-        print "------------------------------"
-        print
-        print "Domain name      :", domain
-        print "Lanman           :", lanman
-        print "Server name      :", serverName
-        print "Operative System :", serverOs
-        print "Server Time      :", serverTime
-        print "Session Key      :", sessionKey
-        print
-        print "Is login required?", loginRequired
+        self.gom.echo("Current connection information")
+        self.gom.echo("------------------------------")
+        self.gom.echo()
+        self.gom.echo("Domain name      :", domain)
+        self.gom.echo("Lanman           :", lanman)
+        self.gom.echo("Server name      :", serverName)
+        self.gom.echo("Operative System :", serverOs)
+        self.gom.echo("Server Time      :", serverTime)
+        self.gom.echo("Session Key      :", sessionKey)
+        self.gom.echo()
+        self.gom.echo("Is login required?", loginRequired)
 
         data = {}
         data["domain"] = domain
@@ -292,30 +288,23 @@ class CSmbClient(CIngumaModule):
         data["key"] = sessionKey
         data["login_required"] = loginRequired
 
-        self.addToDict(self.target + "_os", serverOs)
-        self.addToDict(self.target + "_smb", data)
+        self.add_data_to_kb(self.target + "_os", serverOs)
+        self.add_data_to_kb(self.target + "_smb", data)
 
     def cat(self, filename):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         if self.share == "" or self.share == None:
-            print "No active share."
+            self.gom.echo("No active share.")
             return
 
         f = self.pwd + '/' + filename
         pathname = string.replace(f,'/','\\')
-        print self.smb.retr_file(self.share, pathname, None)
+        self.gom.echo(self.smb.retr_file(self.share, pathname, None))
 
     def close(self):
         if not self.smb:
-            print "Open a connection first."
+            self.gom.echo("Open a connection first.")
 
         self.smb.close();
-
-def main():
-    shell = CSmbClient()
-    shell.runLoop()
-
-if __name__ == "__main__":
-    main()

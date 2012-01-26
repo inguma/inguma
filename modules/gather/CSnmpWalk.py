@@ -1,33 +1,42 @@
-#!/usr/bin/python
-
 """
 Module snmpwalk for Inguma
 Copyright (c) 2007 Joxean Koret <joxeankoret@yahoo.es>
 
-License is GPL version 2
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301, USA.
 """
 
 """
-NOTE: Must be enhanced with, in example, an SNMP fuzzer.
+NOTE: Must be enhanced with, for example, an SNMP fuzzer.
 """
 
 import sys
 
-from pysnmp import asn1, v1, v2c
+from pysnmp import asn1, v1
 from pysnmp import role
 
 from lib.libsnmp import oidToHuman, rootMibs
-from lib.module import CIngumaModule
+from lib.module import CIngumaGatherModule
 
 name = "snmpwalk"
 brief_description = "Snmp walk module for Inguma"
 type = "gather"
 
-class CSnmpWalk(CIngumaModule):
+class CSnmpWalk(CIngumaGatherModule):
     port = 161
-    waitTime = 0
     timeout = 1
-    exploitType = 1
     services = {}
     results = {}
     community = "public"
@@ -35,23 +44,23 @@ class CSnmpWalk(CIngumaModule):
     retries = 1
     interactive = True
 
-    def showHelp(self):
-        print 
-        print "Inguma's SNMP Tool Help"
-        print "-----------------------"
-        print
-        print "run                          Walk over the complete tree"
-        print "raw <tree>                   Walk over the specified tree"
-        print "help                         Show this help"
-        print "exit                         Exit from the snmp interface"
-        print
-        print "Other commands to see special trees:"
-        print
+    def help_interactive(self):
+        self.gom.echo()
+        self.gom.echo("Inguma's SNMP Tool Help")
+        self.gom.echo("-----------------------")
+        self.gom.echo()
+        self.gom.echo("run                          Walk over the complete tree")
+        self.gom.echo("raw <tree>                   Walk over the specified tree")
+        self.gom.echo("help                         Show this help")
+        self.gom.echo("exit                         Exit from the snmp interface")
+        self.gom.echo()
+        self.gom.echo("Other commands to see special trees:")
+        self.gom.echo()
 
         for x in rootMibs:
-            print "  " + rootMibs[x]
+            self.gom.echo("  " + rootMibs[x])
 
-        print
+        self.gom.echo()
     def snmpLoop(self):
         while 1:
             try:
@@ -61,8 +70,8 @@ class CSnmpWalk(CIngumaModule):
             except EOFError:
                 break
             except:
-                print "raw_input:", sys.exc_info()[1]
-            
+                self.gom.echo("raw_input:", sys.exc_info()[1])
+
             words = res.split(" ")
 
             if len(words) == 1 and words[0] == "":
@@ -74,10 +83,10 @@ class CSnmpWalk(CIngumaModule):
             elif words[0].lower() == "raw":
                 if len(words) > 1:
                     data = words[1:]
-                    print data
+                    self.gom.echo(data)
                     self.showOid(data)
             elif words[0].lower() == "help":
-                self.showHelp()
+                self.help_interactive()
             else:
                 flag = False
                 for x in rootMibs:
@@ -87,12 +96,12 @@ class CSnmpWalk(CIngumaModule):
                         break
 
                 if not flag:
-                    print "Unknow command or option '%s'" % res
+                    self.gom.echo("Unknow command or option '%s'" % res)
 
     def run(self):
-    
+
         if self.port == 0:
-            self.port = 161 
+            self.port = 161
 
         if self.interactive:
             return self.snmpLoop()
@@ -106,11 +115,11 @@ class CSnmpWalk(CIngumaModule):
     def showOid(self, head_oids):
         # Create SNMP manager object
         client = role.manager((self.target, self.port))
-        
+
         # Pass it a few options
         client.timeout = self.timeout
         client.retries = self.retries
-        
+
         # Create a SNMP request&response objects from protocol version
         # specific module.
         try:
@@ -119,17 +128,17 @@ class CSnmpWalk(CIngumaModule):
             rsp = v1.GETRESPONSE()
 
         except (NameError, AttributeError):
-            print sys.exc_info()[1]
+            self.gom.echo(sys.exc_info()[1])
             return False
-        
+
         # Store tables headers
         #head_oids = ["1.3.6.1."]
-        
+
         try:
             # BER encode initial SNMP Object IDs to query
             encoded_oids = map(asn1.OBJECTID().encode, head_oids)
         except:
-            print "Error.", sys.exc_info()[1]
+            self.gom.echo("Error.", sys.exc_info()[1])
             return
 
         # Traverse agent MIB
@@ -138,21 +147,21 @@ class CSnmpWalk(CIngumaModule):
             # and receive a response
             (answer, src) = client.send_and_receive(\
                             req.encode(community=self.community, encoded_oids=encoded_oids))
-        
+
             # Attempt to decode SNMP response
             rsp.decode(answer)
-        
+
             # Make sure response matches request (request IDs, communities, etc)
             if req != rsp:
                 raise Exception('Unmatched response: %s vs %s' % (str(req), str(rsp)))
-        
+
             # Decode BER encoded Object IDs.
             oids = map(lambda x: x[0], map(asn1.OBJECTID().decode, \
                                            rsp['encoded_oids']))
-        
+
             # Decode BER encoded values associated with Object IDs.
             vals = map(lambda x: x[0](), map(asn1.decode, rsp['encoded_vals']))
-        
+
             # Check for remote SNMP agent failure
             if rsp['error_status']:
                 # SNMP agent reports 'no such name' when walk is over
@@ -160,7 +169,7 @@ class CSnmpWalk(CIngumaModule):
                     # Switch over to GETNEXT req on error
                     # XXX what if one of multiple vars fails?
                     if not (req is nextReq):
-                        req = nextReq                
+                        req = nextReq
                         continue
                     # One of the tables exceeded
                     for l in oids, vals, head_oids:
@@ -168,7 +177,7 @@ class CSnmpWalk(CIngumaModule):
                 else:
                     raise Exception('SNMP error #' + str(rsp['error_status']) + ' for OID #' \
                           + str(rsp['error_index']))
-        
+
             # Exclude completed OIDs
             while 1:
                 for idx in range(len(head_oids)):
@@ -179,21 +188,21 @@ class CSnmpWalk(CIngumaModule):
                         break
                 else:
                     break
-        
+
             if not head_oids:
                 return False
 
             # Print out results
             for (oid, val) in map(None, oids, vals):
                 if str(val) != "":
-                    print oidToHuman(oid) + ' = ' + str(val)
+                    self.gom.echo(oidToHuman(oid) + ' = ' + str(val))
 
             # BER encode next SNMP Object IDs to query
             encoded_oids = map(asn1.OBJECTID().encode, oids)
 
             # Update request object
             req['request_id'] = req['request_id'] + 1
-        
+
             # Switch over GETNEXT PDU for if not done
             if not (req is nextReq):
                 req = nextReq
