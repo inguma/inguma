@@ -138,6 +138,8 @@ class TerminalNotebook(gtk.Notebook):
         self.tools2.pack_start(self.selectnone_button, expand=False)
         #self.copy_button.set_sensitive(False)
 
+        self.create_killer()
+
         self.shell_button.connect('clicked', self.add_new_tab)
         self.close_button.connect('clicked', self.close_tab, term)
         self.copy_button.connect('clicked', self.copy_clipboard, term)
@@ -145,6 +147,32 @@ class TerminalNotebook(gtk.Notebook):
         self.selectall_button.connect('clicked', self.select_all, term)
         self.selectnone_button.connect('clicked', self.select_none, term)
         self.browse_button.connect('clicked', self.browse_directory, term)
+        self.killer_button.connect('button-press-event', self.on_killer_button__button_press_event)
+        self.killer_shell_button.connect('button-press-event', self.on_killer_shell_button__button_press_event)
+
+    def create_killer(self):
+        self.killer_menu = gtk.Menu()
+        signums = [
+            ('SIGTERM', 15),
+            ('SIGKILL', 9),
+            ('SIGINT', 2),
+            ('SIGABRT', 6),
+        ]
+        for signame, signum in signums:
+            menuitem = gtk.MenuItem()
+            menuitem.set_label('{0} ({1})'.format(signame, signum))
+            self.killer_menu.append(menuitem)
+            menuitem.set_data('signum', signum)
+            menuitem.connect('activate', self.on_killer_activate)
+        self.killer_menu.show_all()
+        self.killer_shell_menu = gtk.Menu()
+        for signame, signum in signums:
+            menuitem = gtk.MenuItem()
+            menuitem.set_label('{0} ({1})'.format(signame, signum))
+            self.killer_shell_menu.append(menuitem)
+            menuitem.set_data('signum', signum)
+            menuitem.connect('activate', self.on_killer_shell_activate)
+        self.killer_shell_menu.show_all()
 
     def load_button(self, icon, tip):
         button = gtk.Button()
@@ -174,6 +202,23 @@ class TerminalNotebook(gtk.Notebook):
         tab = self.get_current_page()
         cwd = psutil.Process(self.pids[tab]).getcwd()
         self.main.file_notebook.fill_file_list(cwd)
+
+    def on_killer_button__button_press_event(self, button, event):
+        self.killer_menu.popup(None, None, None, event.button, event.time)
+
+    def on_killer_shell_button__button_press_event(self, button, event):
+        self.killer_shell_menu.popup(None, None, None, event.button, event.time)
+
+    def on_killer_activate(self, menuitem):
+        signum = menuitem.get_data('signum')
+        pid = self.pids[self.get_current_page()]
+        for child in psutil.Process(pid).get_children():
+            child.send_signal(signum)
+
+    def on_killer_shell_activate(self, menuitem):
+        signum = menuitem.get_data('signum')
+        pid = self.pids[self.get_current_page()]
+        psutil.Process(pid).send_signal(signum)
 
     def get_default_shell():
         """Returns the default shell for the user"""
