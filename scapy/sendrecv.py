@@ -13,6 +13,7 @@ from utils import warning,get_temp_file,PcapReader
 import plist
 from error import log_runtime,log_interactive
 from base_classes import SetGen
+import errno
 
 #################
 ## Debug class ##
@@ -122,7 +123,11 @@ def sndrcv(pks, pkt, timeout = None, inter = 0, verbose=None, chainCC=0, retry=0
                                 if len(inp) == 0 or pks in inp:
                                     r = pks.nonblock_recv()
                             else:
-                                inp, out, err = select(inmask,[],[], remaintime)
+                                inp = [] 
+                                try: 
+                                    inp, out, err = select(inmask,[],[], remaintime) 
+                                except Exception,e: 
+                                    if e[0] != errno.EINTR: raise
                                 if len(inp) == 0:
                                     break
                                 if pks in inp:
