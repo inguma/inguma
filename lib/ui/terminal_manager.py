@@ -49,8 +49,8 @@ class TerminalNotebook(gtk.Notebook):
 
     def new_tab(self, command='', args=[]):
         hbox = gtk.HBox(False, 3)
-        self.tools = gtk.VBox()
-        self.tools2 = gtk.VBox()
+        self.tools = gtk.VBox(False)
+        self.tools2 = gtk.VBox(False)
 
         term = vte.Terminal()
 
@@ -60,10 +60,10 @@ class TerminalNotebook(gtk.Notebook):
         else:
             self.pid = term.fork_command()
         self.pids.append(self.pid)
-        term.set_scrollback_lines(500)
+        term.set_scrollback_lines(1000)
         term.set_scroll_on_output = True
-        #term.connect("child-exited", lambda w: term.destroy())
         term.connect("child-exited", self.on_terminal_child_exit)
+        term.set_size_request(200,200)
         term.show_all()
         self._create_term_buttons(term)
         hbox.pack_start(self.tools, False, False, 0)

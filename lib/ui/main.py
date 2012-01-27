@@ -311,8 +311,8 @@ class MainApp(gtk.Window):
         self.file_notebook = filemanager_notebook.FileManagerNotebook(self)
 
         # Pack all terminals stuff
-        self.terms_paned.pack1(self.file_notebook, resize=False, shrink=True)
-        self.terms_paned.pack2(self.term_notebook, resize=False, shrink=True)
+        self.terms_paned.pack1(self.file_notebook, resize=False, shrink=False)
+        self.terms_paned.pack2(self.term_notebook, resize=True, shrink=False)
         self.terms_paned.show_all()
         self.notebook.append_page(self.terms_paned, b)
 
