@@ -47,7 +47,7 @@ class TerminalNotebook(gtk.Notebook):
 
         self.show_all()
 
-    def new_tab(self, command='', args=[]):
+    def new_tab(self, command='', cwd='', args=[]):
         hbox = gtk.HBox(False, 3)
         self.tools = gtk.VBox(False)
         self.tools2 = gtk.VBox(False)
@@ -56,9 +56,9 @@ class TerminalNotebook(gtk.Notebook):
 
         term.set_font(pango.FontDescription('mono 8'))
         if command:
-            self.pid = term.fork_command(command=command, argv=args)
+            self.pid = term.fork_command(command=command, argv=args, directory=cwd)
         else:
-            self.pid = term.fork_command()
+            self.pid = term.fork_command(directory=cwd)
         self.pids.append(self.pid)
         term.set_scrollback_lines(1000)
         term.set_scroll_on_output = True
@@ -89,8 +89,8 @@ class TerminalNotebook(gtk.Notebook):
         box.pack_start(label, True, True)
         return box
 
-    def add_new_tab(self, widget, command=''):
-        self.new_tab(command)
+    def add_new_tab(self, widget, command='', cwd=''):
+        self.new_tab(command, cwd=cwd)
         self.show_all()
         self.set_current_page(-1)
 

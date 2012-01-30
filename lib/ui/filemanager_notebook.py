@@ -29,12 +29,15 @@ class FileManagerNotebook(gtk.Notebook):
         # create the TreeView using liststore
         self.file_tree = gtk.TreeView(self.liststore)
         self.file_tree.set_headers_visible(False)
+        self.handler = self.file_tree.connect('button-press-event', self.on_dir__button_press_event)
 
         self.main = main
+        self.term_nb = self.main.term_notebook
         self.uicore = main.uicore
 
         self.set_tab_pos(gtk.POS_BOTTOM)
         self.handler = None
+        self.path = os.getcwd()
 
         # Tree icons
         self.folder_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'folder.png')
@@ -67,6 +70,31 @@ class FileManagerNotebook(gtk.Notebook):
         self.file_sw.add_with_viewport(self.file_tree)
 
         self._create_tabs()
+        #self.create_dir_menu()
+
+    def on_dir__button_press_event(self, terminal, event):
+        if event.button == 3:
+            (path, column, x, y) = self.file_tree.get_path_at_pos(int(event.x), int(event.y))
+            if path is not None:
+                node = self.liststore[path][1]
+                dir = os.path.join(self.path, node)
+                if os.path.isdir(dir):
+                    self.create_dir_menu(dir)
+                    self.dir_menu.popup(None, None, None, 1, event.time)
+
+    def create_dir_menu(self, dir):
+        self.dir_menu = gtk.Menu()
+        actions = ['Open terminal in directory']
+
+        for action in actions:
+            menuitem = gtk.MenuItem()
+            menuitem.set_label('{0}'.format(action))
+            menuitem.connect('activate', self._start_term, dir)
+            self.dir_menu.append(menuitem)
+        self.dir_menu.show_all()
+
+    def _start_term(self, widget, dir):
+        self.term_nb.add_new_tab(widget, '', dir)
 
     def _create_tabs(self):
         icon = gtk.Image()
@@ -131,5 +159,7 @@ class FileManagerNotebook(gtk.Notebook):
         for file in files:
             icon = self.file_icon
             self.liststore.append([icon, file])
+
+        self.path = path
 
 #        self.handler = self.connect('button-press-event', self.listener_menu)
