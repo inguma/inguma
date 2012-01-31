@@ -19,6 +19,7 @@
 
 import os
 import gtk, pango
+import gobject
 import pwd
 import psutil
 import lib.ui.config as config
@@ -44,7 +45,7 @@ class TerminalNotebook(gtk.Notebook):
 
         # Add a tab from the begining
         self.add_new_tab(self)
-
+        gobject.timeout_add(500, self._update_cwd)
         self.show_all()
 
     def new_tab(self, command='', cwd='', args=[]):
@@ -79,11 +80,20 @@ class TerminalNotebook(gtk.Notebook):
         self.set_tab_label_packing(image, True, True, gtk.PACK_START)
         self.set_tab_label(hbox, label)
         term.show_all()
+        if self.get_current_page() == -1:
+            gobject.timeout_add(500, self._update_cwd)
 
     def create_tab_label(self, title, tab_child):
-        box = gtk.HBox(False, 3)
+        box = gtk.HBox(False, 1)
         # Tab text label
         label = gtk.Label('Terminal')
+        small = pango.AttrScale(pango.SCALE_SMALL, 0, -1)
+        label_attributes = pango.AttrList()
+        label_attributes.insert(small)
+        label.set_attributes(label_attributes)
+        label.set_ellipsize(pango.ELLIPSIZE_START)
+        label.set_width_chars(9)
+
         # Tab terminal icon
         icon = gtk.Image()
         icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
@@ -110,6 +120,7 @@ class TerminalNotebook(gtk.Notebook):
         self.new_tab(command, cwd=cwd)
         self.show_all()
         self.set_current_page(-1)
+        self._update_cwd()
 
     def close_tab(self, widget, event):
         pagenum = self.get_current_page()
@@ -214,6 +225,26 @@ class TerminalNotebook(gtk.Notebook):
 
     def select_none(self, button, term):
         term.select_none()
+
+    def _update_cwd(self):
+        """Calculate and update the CWD for the running process."""
+        pagenum = self.get_current_page()
+        if pagenum > -1:
+            pid = self.pids[pagenum]
+            if pid is None:
+                # The return value indicates whether gobject should continue polling.
+                return False
+            else:
+                try:
+                    cwd = psutil.Process(pid).getcwd()
+                    tab = self.get_nth_page(pagenum)
+                    box = self.get_tab_label(tab)
+                    label = box.get_children()[1]
+                    label.set_text(cwd)
+                    return True
+                except psutil.error.AccessDenied:
+                    # The process already vanished
+                    return False
 
     def browse_directory(self, button, terminal):
         tab = self.get_current_page()
