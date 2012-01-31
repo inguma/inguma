@@ -82,30 +82,47 @@ class TerminalNotebook(gtk.Notebook):
 
     def create_tab_label(self, title, tab_child):
         box = gtk.HBox(False, 3)
+        # Tab text label
         label = gtk.Label('Terminal')
+        # Tab terminal icon
         icon = gtk.Image()
         icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        # Tab pseudo-close button
+        eb = gtk.EventBox()
+        cross = gtk.Image()
+        cross.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'cross.png')
+        cross.connect("realize", self._realize_cb)
+        eb.add(cross)
+        eb.connect('button_press_event', self.close_tab)
+
+        # Pack en return the box
         box.pack_start(icon, False, False)
         box.pack_start(label, True, True)
+        box.pack_start(eb, True, True)
         return box
+
+    def _realize_cb(self, widget):
+        """ method used to change mouse cursor for close pseudo-button """
+        hand = gtk.gdk.Cursor(gtk.gdk.HAND2)
+        widget.window.set_cursor(hand)
 
     def add_new_tab(self, widget, command='', cwd=''):
         self.new_tab(command, cwd=cwd)
         self.show_all()
         self.set_current_page(-1)
 
-    def close_tab(self, widget, child):
-        box = child.get_parent()
-        pagenum = self.page_num(box)
+    def close_tab(self, widget, event):
+        pagenum = self.get_current_page()
+        tab = self.get_nth_page(pagenum)
+        child = tab.get_children()
 
         if pagenum != -1 and self.get_n_pages() > 1:
             self.remove_page(pagenum)
             self.pids.pop(pagenum)
-            child.destroy()
+            # Destroy terminal
+            child[1].destroy()
 
     def _create_term_buttons(self, term):
-        self.close_button = self.load_button('cross.png',
-          'Close terminal window')
         self.browse_button = self.load_button('folder.png',
           'Browse working directory')
         self.shell_button = self.load_button('terminal.png',
@@ -128,7 +145,6 @@ class TerminalNotebook(gtk.Notebook):
 #        self.find_button = self.load_button('find.png',
 #          'Search for text', gtk.ToggleButton)
 
-        self.tools2.pack_start(self.close_button, expand=False)
         self.tools.pack_start(self.browse_button, expand=False)
         self.tools.pack_start(self.shell_button, expand=False)
         self.tools.pack_start(self.bookmark_button, expand=False)
@@ -143,7 +159,6 @@ class TerminalNotebook(gtk.Notebook):
         self.create_killer()
 
         self.shell_button.connect('clicked', self.add_new_tab)
-        self.close_button.connect('clicked', self.close_tab, term)
         self.copy_button.connect('clicked', self.copy_clipboard, term)
         self.paste_button.connect('clicked', self.paste_clipboard, term)
         self.selectall_button.connect('clicked', self.select_all, term)
