@@ -30,6 +30,7 @@ class FileManagerNotebook(gtk.Notebook):
         self.file_tree = gtk.TreeView(self.liststore)
         self.file_tree.set_headers_visible(False)
         self.handler = self.file_tree.connect('button-press-event', self.on_dir__button_press_event)
+        self.handler = self.file_tree.connect('row-activated', self.on_dir__key_press_event)
 
         self.main = main
         self.term_nb = self.main.term_notebook
@@ -71,6 +72,13 @@ class FileManagerNotebook(gtk.Notebook):
 
         self._create_tabs()
         #self.create_dir_menu()
+
+    def on_dir__key_press_event(self, tree, path, column):
+        if path is not None:
+            node = self.liststore[path][1]
+            dir = os.path.join(self.path, node)
+            if os.path.isdir(dir):
+                self.fill_file_list(dir)
 
     def on_dir__button_press_event(self, terminal, event):
         if event.button == 3:
