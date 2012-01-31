@@ -81,6 +81,13 @@ class FileManagerNotebook(gtk.Notebook):
                 if os.path.isdir(dir):
                     self.create_dir_menu(dir)
                     self.dir_menu.popup(None, None, None, 1, event.time)
+        elif event.type == gtk.gdk._2BUTTON_PRESS:
+            (path, column, x, y) = self.file_tree.get_path_at_pos(int(event.x), int(event.y))
+            if path is not None:
+                node = self.liststore[path][1]
+                dir = os.path.join(self.path, node)
+                if os.path.isdir(dir):
+                    self.fill_file_list(dir)
 
     def create_dir_menu(self, dir):
         self.dir_menu = gtk.Menu()

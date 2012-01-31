@@ -112,6 +112,7 @@ class TerminalNotebook(gtk.Notebook):
           'Open a shell in working directory')
         self.bookmark_button = self.load_button('star.png',
           'Bookmark working directory')
+        self.bookmark_button.set_sensitive(False)
         self.killer_button = self.load_button(
           'script_lightning.png', 'Send signal to children')
         self.killer_shell_button = self.load_button(
