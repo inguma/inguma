@@ -91,12 +91,15 @@ class FileManagerNotebook(gtk.Notebook):
 
     def create_dir_menu(self, dir):
         self.dir_menu = gtk.Menu()
-        actions = ['Open terminal in directory']
+        actions = [[self.term_icon, 'Terminal in directory', self._start_term], [self.folder_icon, 'Browse directory', self.update_file_list]]
 
         for action in actions:
-            menuitem = gtk.MenuItem()
-            menuitem.set_label('{0}'.format(action))
-            menuitem.connect('activate', self._start_term, dir)
+            menuitem = gtk.ImageMenuItem()
+            menuitem.set_label('{0}'.format(action[1]))
+            icon = gtk.Image()
+            icon.set_from_pixbuf(action[0])
+            menuitem.set_image(icon)
+            menuitem.connect('activate', action[2], dir)
             self.dir_menu.append(menuitem)
         self.dir_menu.show_all()
 
@@ -144,6 +147,9 @@ class FileManagerNotebook(gtk.Notebook):
         self.file_tree.append_column(column)
 
         self.file_tree.set_model(self.liststore)
+
+    def update_file_list(self, widget, path):
+        self.fill_file_list(path)
 
     def fill_file_list(self, path=os.getcwd()):
         self.liststore.clear()
