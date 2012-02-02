@@ -34,9 +34,13 @@ class CAsnQuery(CIngumaDiscoverModule):
         if self.timeout < 5:
             self.timeout = 5
 
-        targets = []
-        for i in self.target:
-            targets.append(i)
+        if not isinstance(self.target, tuple):
+            # Python will iterate on the string character by character if I don't do this.
+            targets = [ self.target ]
+        else:
+            targets = []
+            for i in self.target:
+                targets.append(i)
 
         ips = {}
         for x in targets:
