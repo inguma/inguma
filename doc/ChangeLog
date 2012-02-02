@@ -1,14 +1,15 @@
 Long development on road to 1.0...
 ----------------------------------
 
-Version 0.5 (released ??-Feb-2012)
-    * REST HTTP UI server (still experimental).
+Version 0.5 (released ??-Mar-2012)
+    * REST HTTP UI server (still experimental), based on webpy.
     * Big revamp to the UI:
       - Right KB tree totally redone, added icons and filtering capabilities.
       - New toolbar.
       - New status bar.
     * Code cleanups (an ongoing effort).
-    * Discover modules converted to CIngumaDiscoverModule.
+    * All modules have cleaned up and converted to a new version of
+      CIngumaModule more modular and extensible.
     * Integration of Bokken 1.5.
 
 Version 0.4 (released 14-Sep-2011)
