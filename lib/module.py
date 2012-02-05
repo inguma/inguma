@@ -31,6 +31,7 @@ class CIngumaModule:
     target = ''
     timeout = 1
     dict = None
+    iface = "eth0"
     module_type = None
 
     # Legacy properties follow.
@@ -43,7 +44,6 @@ class CIngumaModule:
     #services = {}
     #waitTime = 0
     #randomizeWaitTime = False
-    #iface = "eth0"
     #results = {}
     #interactive = True
 
