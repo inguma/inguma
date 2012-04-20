@@ -57,4 +57,7 @@ class RestIndex:
 class RestKB:
 
     def GET(self, path):
-        return "KB"
+        #raise web.forbidden()
+        response = """
+        """
+        return response
