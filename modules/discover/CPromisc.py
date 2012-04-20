@@ -43,7 +43,7 @@ class CPromisc(CIngumaDiscoverModule):
     def run(self):
         if hasScapy:
             self.ret = scapy.is_promisc(self.target)
-            self.addToDict(self.target + "_promisc", self.ret)
+            self.add_data_to_kb(self.target + "_promisc", self.ret)
             self.gom.echo('Target ' + self.target + ' is promiscuous: ' + str(self.ret) )
 
             return True

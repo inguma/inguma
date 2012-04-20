@@ -91,11 +91,6 @@ class CIngumaModule:
 
     # Legacy methods follow.
 
-    def addToDict(self, element, value):
-        """ Legacy method for adding data to the current KB.  Superseded by
-        add_data_to_kb(). """
-        self.add_data_to_kb(element, value)
-
     def printSummary(self):
         """ Method called when run() has returned True.  It's used for showing
         a summary of the execution to the user. Superseded by
