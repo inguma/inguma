@@ -91,12 +91,6 @@ class CIngumaModule:
 
     # Legacy methods follow.
 
-    def printSummary(self):
-        """ Method called when run() has returned True.  It's used for showing
-        a summary of the execution to the user. Superseded by
-        print_summary(). """
-        self.print_summary()
-
     def show_help(self):
         """ Method called when the module is interactive and 'help' is executed
         from the command line. Superseded by help_interactive()."""

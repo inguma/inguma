@@ -37,7 +37,7 @@ def runModule(vars, module, dict, om=None):
                 print "ERROR", sys.exc_info()[1]
 
     if objModule.run():
-        objModule.printSummary()
+        objModule.print_summary()
 
         if glob.isGui == True:
             objModule.gom.uicore.getDot(False)
