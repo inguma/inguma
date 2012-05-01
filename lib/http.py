@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 """ This library has HTTP functions used in the web UI server. """
 
 import threading
-import web
+import extlib.web as web
 import lib.globals as glob
 
 def html_skeleton(header='', body=''):
@@ -57,13 +57,10 @@ class IngumaHttpServer(threading.Thread):
                )
 
         self.http = web.application(urls, globals())
-        web.httpserver.runsimple(self.http.wsgifunc(), ('0.0.0.0', self.port))
-        #self.http = HTTPServer(('', self.port), HttpHandler)
-        #self.http.serve_forever()
+        web.httpserver.runsimple(self.http.wsgifunc(), self.http, ('0.0.0.0', self.port))
 
     def terminate(self):
-        pass
-        #self.http.stop()
+        self.http.stop()
 
 class RestIndex:
     """Main index, path seems to be optional in GET."""
