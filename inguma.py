@@ -1040,9 +1040,7 @@ def main():
         import lib.http as httpd
         http = httpd.IngumaHttpServer()
         glob.gom.echo("\nBringing up HTTP server.")
-        # We start the thread.
         http.start()
-        time.sleep(0.2)
 
     # Display banner.
     glob.gom.echo("\nType 'help' for a short usage guide.")
@@ -1052,7 +1050,7 @@ def main():
     main_loop()
     if glob.http_server:
         glob.gom.echo("Shutting down HTTP server.")
-        #http.terminate()
+        http.terminate()
 
 if __name__ == "__main__":
     main()

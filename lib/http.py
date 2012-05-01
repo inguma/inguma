@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Inguma Penetration Testing Toolkit
-Copyright (c) 2011-2012 David Martínez Moreno <ender@debian.org>
+Copyright (c) 2011 David Martínez Moreno <ender@debian.org>
 
 I am providing code in this repository to you under an open source license.
 Because this is a personal repository, the license you receive to my code
@@ -25,8 +25,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 """ This library has HTTP functions used in the web UI server. """
 
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import threading
-import web
+import lib.globals as glob
+import lib.ui.cli.core as uicore
 
 class IngumaHttpServer(threading.Thread):
 
@@ -35,26 +37,25 @@ class IngumaHttpServer(threading.Thread):
         self.port = port
 
     def run(self):
-        urls = (
-                '/', 'RestIndex',
-                '/kb(|/.*)', 'RestKB',
-               )
-
-        self.http = web.application(urls, globals())
-        web.httpserver.runsimple(self.http.wsgifunc(), ('0.0.0.0', self.port))
-        #self.http = HTTPServer(('', self.port), HttpHandler)
-        #self.http.serve_forever()
+        self.http = HTTPServer(('', self.port), HttpHandler)
+        self.http.serve_forever()
 
     def terminate(self):
-        raise KeyboardInterrupt
-        #self.http.shutdown()
+        self.http.shutdown()
 
-class RestIndex:
+class HttpHandler(BaseHTTPRequestHandler):
 
-    def GET(self, path):
-        return "Inguma"
+    def do_GET(self):
 
-class RestKB:
+        uicore.debug_print('Request from %s' % self.client_address[0])
+        self.send_response(200)
+        self.send_header('Content-type:', 'text/html')
+        self.end_headers()
+        self.wfile.write('<b>You are %s on port %d</b>\n' % self.client_address)
+        self.wfile.flush()
 
-    def GET(self, path):
-        return "KB"
+    def log_message(self, format, *args):
+        if not glob.debug:
+            pass
+        else:
+            BaseHTTPRequestHandler.log_message(self, format, *args)
