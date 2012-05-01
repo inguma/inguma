@@ -21,7 +21,6 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
-inguma_version = '0.5-dev'
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *
@@ -156,5 +155,6 @@ def check_distorm_lib(path):
 
 def get_inguma_version():
     """ Returns the current version. """
+    import lib.globals as glob
 
-    return inguma_version
+    return glob.version

@@ -1,7 +1,7 @@
 Long development on road to 1.0...
 ----------------------------------
 
-Version 0.5 (released ??-Mar-2012)
+Version 0.5 (released ??-Jun-2012)
     * REST HTTP UI server (still experimental), based on webpy.
     * Big revamp to the UI:
       - Right KB tree totally redone, added icons and filtering capabilities.

@@ -1052,7 +1052,7 @@ def main():
     main_loop()
     if glob.http_server:
         glob.gom.echo("Shutting down HTTP server.")
-        #http.terminate()
+        http.terminate()
 
 if __name__ == "__main__":
     main()

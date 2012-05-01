@@ -27,6 +27,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 import threading
 import web
+import lib.globals as glob
+
+def html_skeleton(header='', body=''):
+    skeleton="""
+    <html>
+    <head><title>Inguma """ + glob.version
+    if header:
+        skeleton += ' -' + header
+    skeleton += """
+    </title></head>
+    <body>""" + body + """
+    </body>
+    </html>
+    """
+    return skeleton
+
 
 class IngumaHttpServer(threading.Thread):
 
@@ -46,18 +62,18 @@ class IngumaHttpServer(threading.Thread):
         #self.http.serve_forever()
 
     def terminate(self):
-        raise KeyboardInterrupt
-        #self.http.shutdown()
+        pass
+        #self.http.stop()
 
 class RestIndex:
+    """Main index, path seems to be optional in GET."""
 
-    def GET(self, path):
-        return "Inguma"
+    def GET(self, path=''):
+        return html_skeleton(body='Inguma')
 
 class RestKB:
+    """KB control."""
 
     def GET(self, path):
         #raise web.forbidden()
-        response = """
-        """
-        return response
+        return html_skeleton('Knowledge Base', 'KB')
