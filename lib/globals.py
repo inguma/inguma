@@ -30,6 +30,7 @@ commands = {}
 debug = False
 http_server = False
 isGui = False
+ports = []
 
 discovers = []
 gathers = []
