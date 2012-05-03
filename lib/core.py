@@ -126,12 +126,10 @@ def getProtocolName(proto):
 
     return proto
 
-def get_profile_file_path(item):
-    """ This function returns the proper file path for loading/saving personal
-    data in user's homedir. """
+def check_distorm_lib(path):
+    """Returns True if the distorm library exists at the supplied path"""
     import os
-
-    return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)
+    return os.path.isfile(path + 'libdistorm64.so')
 
 def create_profile_dir():
     """ Tries to create ~/.inguma in the user's homedir. """
@@ -149,12 +147,15 @@ def create_profile_dir():
         print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
         return False
 
-def check_distorm_lib(path):
-    import os
-    return os.path.isfile(path + 'libdistorm64.so')
-
 def get_inguma_version():
     """ Returns the current version. """
     import lib.globals as glob
 
     return glob.version
+
+def get_profile_file_path(item):
+    """ This function returns the proper file path for loading/saving personal
+    data in user's homedir. """
+    import os
+
+    return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)

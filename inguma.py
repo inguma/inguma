@@ -1043,6 +1043,9 @@ def main():
         # We start the thread.
         http.start()
         time.sleep(0.2)
+        # We put the http structure in glob to have it accessible in the global
+        # __main__ handler.
+        glob.http = http
 
     # Display banner.
     glob.gom.echo("\nType 'help' for a short usage guide.")
@@ -1055,4 +1058,13 @@ def main():
         http.terminate()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        # We have to stop the HTTP server just in case.
+        if glob.http_server:
+            glob.gom.echo("Shutting down HTTP server.")
+            glob.http.terminate()
+
+        import traceback
+        traceback.print_exc()
