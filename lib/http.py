@@ -52,8 +52,9 @@ class IngumaHttpServer(threading.Thread):
 
     def run(self):
         urls = (
-                '/', 'RestIndex',
-                '/kb(|/.*)', 'RestKB',
+                '/', 'Index',
+                '/kb(|/)', 'KB',
+                '/kb/get(|/)', 'RestKB',
                )
 
         self.http = web.application(urls, globals())
@@ -62,15 +63,20 @@ class IngumaHttpServer(threading.Thread):
     def terminate(self):
         self.http.stop()
 
-class RestIndex:
+class Index:
     """Main index, path seems to be optional in GET."""
 
     def GET(self, path=''):
         return html_skeleton(body='Inguma')
 
-class RestKB:
-    """KB control."""
+class KB:
+    """KB HTML page."""
 
     def GET(self, path):
-        #raise web.forbidden()
         return html_skeleton('Knowledge Base', 'KB')
+
+class RestKB:
+    """Returns the current KB."""
+
+    def GET(self, path):
+        return glob.kb.format_json()

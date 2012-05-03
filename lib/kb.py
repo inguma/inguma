@@ -41,6 +41,13 @@ class KnowledgeBase:
         self._kb.clear()
         self.set_defaults()
 
+    def format_json(self):
+        """Returns the KB in JSON format."""
+
+        import json
+
+        return json.dumps(self._kb)
+
     def format_text(self):
         """Returns the KB in a suitable plain text format."""
 
