@@ -998,7 +998,6 @@ def main():
     setup_auto_completion()
     main_loop()
     if glob.http_server:
-        glob.gom.echo("Shutting down HTTP server.")
         glob.http.terminate()
 
 if __name__ == "__main__":
@@ -1007,7 +1006,6 @@ if __name__ == "__main__":
     except:
         # We have to stop the HTTP server just in case.
         if glob.http_server:
-            glob.gom.echo("Shutting down HTTP server.")
             glob.http.terminate()
 
         import traceback

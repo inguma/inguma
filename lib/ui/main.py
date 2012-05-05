@@ -658,7 +658,6 @@ class MainApp(gtk.Window):
         self.gom.echo( 'Exit!', False)
         gtk.main_quit()
         if glob.http_server:
-            glob.gom.echo("Shutting down HTTP server.")
             glob.http.terminate()
 
         return False
@@ -675,7 +674,6 @@ def main():
     except:
         # We have to stop the HTTP server just in case.
         if glob.http_server:
-            glob.gom.echo("Shutting down HTTP server.")
             glob.http.terminate()
 
         import traceback

@@ -7,9 +7,10 @@ Version 0.5 (released ??-Jun-2012)
       - Right KB tree totally redone, added icons and filtering capabilities.
       - New toolbar.
       - New status bar.
-    * Code cleanups (an ongoing effort).
+    * TONS of code cleanups (an ongoing effort).  There are more shared code
+      now between the CLI and GUI versions.
     * All modules have cleaned up and converted to a new version of
-      CIngumaModule more modular and extensible.
+      CIngumaModule, more modular and extensible.
     * Integration of Bokken 1.5.
 
 Version 0.4 (released 14-Sep-2011)

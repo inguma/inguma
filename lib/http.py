@@ -61,6 +61,7 @@ class IngumaHttpServer(threading.Thread):
         web.httpserver.runsimple(self.http.wsgifunc(), self.http, ('0.0.0.0', self.port))
 
     def terminate(self):
+        glob.gom.echo('Shutting down HTTP server on port %d.' % self.port)
         self.http.stop()
 
 class Index:
