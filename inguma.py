@@ -747,9 +747,6 @@ def main_loop():
     global timeout
     global waittime
 
-    # Main initialization.
-    inguma_init()
-
     oldPrompt = ""
     prevRes = ""
     inguma = Inguma(hasScapy)
@@ -926,6 +923,7 @@ def setup_auto_completion():
 
 def inguma_init():
     """Initializes very basic Inguma data structures."""
+    #FIXME: This should go into the __init__ section of a future Inguma class.
     """NOTE: This function cannot be moved to lib/core.py.
     TL;DR; If this function is in another module, i.e. lib/core.py, 'global'
     won't be able to see global variables from this module.
@@ -937,6 +935,22 @@ def inguma_init():
     """
 
     import lib.globals as glob
+    import lib.kb as kb
+
+    # We init the KB.
+    glob.kb = kb.KnowledgeBase()
+
+    # Start up the HTTP server.
+    if glob.http_server:
+        import lib.http as httpd
+        http = httpd.IngumaHttpServer()
+        glob.gom.echo("\nBringing up HTTP server.")
+        # We start the thread.
+        http.start()
+        time.sleep(0.2)
+        # We put the http structure in glob to have it accessible in the global
+        # __main__ handler.
+        glob.http = http
 
     # GLUE CODE.
     # This code will try to deal with the horrible spaghetti that global
@@ -952,7 +966,6 @@ def inguma_init():
     ports = glob.ports
     user_data = glob.kb._kb
 
-    #FIXME: This should go into the __init__ section of a future Inguma class.
     try:
         # FIXME: This should have look up into the binary directory and not the actual one.
         f = file("data/ports", "r")
@@ -967,8 +980,6 @@ def inguma_init():
 
 def main():
     """ Main program loop. """
-
-    import lib.kb as kb
 
     # Set OutputManager for modules
     set_om(debug=glob.debug)
@@ -992,20 +1003,8 @@ def main():
 
     readCommands()
 
-    # Start up HTTP server.
-    if glob.http_server:
-        import lib.http as httpd
-        http = httpd.IngumaHttpServer()
-        glob.gom.echo("\nBringing up HTTP server.")
-        # We start the thread.
-        http.start()
-        time.sleep(0.2)
-        # We put the http structure in glob to have it accessible in the global
-        # __main__ handler.
-        glob.http = http
-
-    # We init the KB.
-    glob.kb = kb.KnowledgeBase()
+    # Main initialization.
+    inguma_init()
 
     # Display banner.
     glob.gom.echo("\nType 'help' for a short usage guide.")
@@ -1015,7 +1014,7 @@ def main():
     main_loop()
     if glob.http_server:
         glob.gom.echo("Shutting down HTTP server.")
-        http.terminate()
+        glob.http.terminate()
 
 if __name__ == "__main__":
     try:

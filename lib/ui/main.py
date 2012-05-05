@@ -1,17 +1,17 @@
 ##      main.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -52,7 +52,7 @@ if sys.platform == "win32":
 else:
     gtk.gdk.threads_init()
 
-# Load the theme (this fixes a bug on windows)
+# Load the theme (this fixes a bug on Windows)
 if sys.platform == "win32":
     gtk.rc_add_default_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'inguma_gtkrc')
 
@@ -111,6 +111,8 @@ class MainApp(gtk.Window):
 
         from lib.core import create_profile_dir
         create_profile_dir()
+        from inguma import inguma_init
+        inguma_init()
 
         self.ing = self
 
@@ -629,12 +631,12 @@ class MainApp(gtk.Window):
         scroll.set_vadjustment(adj)
 
     def do_configure_event(self, event):
-        '''Method used to coordinat main window and popup movement'''
+        '''Method used to coordinate main window and popup movement'''
 
         if self.toolbar.popup_dialogs:
             for dialog in self.toolbar.popup_dialogs:
                 dialog.update_position()
-        
+
         gtk.Window.do_configure_event(self, event)
 
     def _quit(self, widget, event, data=None):

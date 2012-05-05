@@ -32,20 +32,24 @@ import lib.IPy as IPy
 import lib.liblistener as liblistener
 import lib.globals as glob
 
-#inguma.debug = True
-inguma.user_data["isGui"] = True
-inguma.user_data["interactive"] = False
-glob.isGui = True
-
-# Fix for bug 1807529 (andresriancho)
-inguma.user_data["base_path"] = '.'
-
-inguma.readCommands()
-inguma.interactive = False
-
 class UIcore():
 
     def __init__(self, om):
+
+        # FIXME: OMG.  Stop this use of user_data as soon as possible.  In the
+        # meantime, attach the glob object to inguma as it was before.
+        inguma.user_data = glob.kb._kb
+
+        #inguma.debug = True
+        inguma.user_data["isGui"] = True
+        inguma.user_data["interactive"] = False
+        glob.isGui = True
+
+        # Fix for bug 1807529 (andresriancho)
+        inguma.user_data["base_path"] = '.'
+
+        inguma.readCommands()
+        inguma.interactive = False
 
         self.gom = glob.gom
 
