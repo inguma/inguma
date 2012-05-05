@@ -62,7 +62,7 @@ splash = Splash()
 
 # Import ui modules
 splash.push(("Loading UI modules"))
-import lib.ui.core as core
+import lib.ui.core as uicore
 import lib.ui.output_manager as om
 import lib.ui.graphTBar as graphTBar
 import lib.ui.right_tree as right_tree
@@ -85,7 +85,7 @@ import lib.ui.systray as systray
 # Fuzzers
 import lib.ui.fuzzing.fuzz_frame as fuzz_frame
 
-from lib.core import check_distorm_lib
+import lib.core as core
 import lib.globals as glob
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
@@ -109,16 +109,17 @@ class MainApp(gtk.Window):
 #        gtk.rc_parse('gtkrc')
 #        os.chdir(ORIGDIR)
 
-        from lib.core import create_profile_dir
-        create_profile_dir()
         from inguma import inguma_init
-        inguma_init()
 
         self.ing = self
 
         # Load Output Manager
         self.gom = om.OutputManager('gui', self.ing)
         glob.gom = self.gom
+
+        core.check_args()
+        core.create_profile_dir()
+        inguma_init()
 
         # Create config
         self.config = config
@@ -143,11 +144,11 @@ class MainApp(gtk.Window):
         self.maximize()
 
         #################################################################################################################################
-        # Load core...
+        # Load UIcore...
         #################################################################
         #Initialize KB
         splash.push(("Loading KB..."))
-        self.uicore = core.UIcore(self.gom)
+        self.uicore = uicore.UIcore(self.gom)
         self.uicore.add_local_asn()
         self.gom.set_core(self.uicore)
 
@@ -438,7 +439,7 @@ class MainApp(gtk.Window):
         #Always on bottom on change
         self.vajd = self.log_scrolled_window.get_vadjustment()
         self.vajd.connect('changed', lambda a, s=self.log_scrolled_window: self.rescroll(a,s))
-        
+
         # Add Textview to Scrolled Window
         self.log_scrolled_window.add_with_viewport(self.logtext)
 
@@ -515,14 +516,13 @@ class MainApp(gtk.Window):
         #################################################################################################################################
         #StatusBar
         #################################################################
-        self.statusbar = statusbar.Statusbar() 
+        self.statusbar = statusbar.Statusbar()
         self.statusbar.create_statusbar()
-        from lib.core import get_inguma_version
-        self.statusbar.add_text(None, get_inguma_version())
+        self.statusbar.add_text(None, core.get_inguma_version())
         mainvbox.pack_end(self.statusbar, False, False, 1)
 
         if self.config.HAS_SOURCEVIEW:
-            self.bokken_statusbar = bokken_statusbar.Statusbar(self.bokken.uicore, self.bokken.tviews) 
+            self.bokken_statusbar = bokken_statusbar.Statusbar(self.bokken.uicore, self.bokken.tviews)
             self.bokken_statusbar.create_statusbar()
             mainvbox.pack_end(self.bokken_statusbar, False, False, 1)
 
@@ -548,10 +548,10 @@ class MainApp(gtk.Window):
                 kbpath = libAutosave.get_kb_path()
                 self.uicore.loadKB(kbpath)
                 libAutosave.remove_kb()
-                
+
                 # Update KB Tree
                 self.treeview.update_targets_tree()
-    
+
                 # Adding text to Log window
                 self.gom.echo( 'Loaded' , False)
             else:
@@ -576,13 +576,12 @@ class MainApp(gtk.Window):
         self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
 
     def on_switch(self, widget, data, more):
-        from lib.core import get_profile_file_path
         if more == 2:
             # Check if the disassembly library is present
             # Check only for Linux platform
             if platform.system() == 'Linux':
-                path = get_profile_file_path('data' + os.sep)
-                has_distorm = check_distorm_lib(path)
+                path = core.get_profile_file_path('data' + os.sep)
+                has_distorm = core.check_distorm_lib(path)
                 if not has_distorm:
                     md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='distorm64 library not found.\nDownload it at the preferences dialog, on the "Update" tab.')
                     md.run()
@@ -658,6 +657,10 @@ class MainApp(gtk.Window):
         self.uicore.kill_all_listeners()
         self.gom.echo( 'Exit!', False)
         gtk.main_quit()
+        if glob.http_server:
+            glob.gom.echo("Shutting down HTTP server.")
+            glob.http.terminate()
+
         return False
 
     def run_debugger(self, widget):
@@ -667,4 +670,13 @@ class MainApp(gtk.Window):
         t.start()
 
 def main():
-    MainApp()
+    try:
+        MainApp()
+    except:
+        # We have to stop the HTTP server just in case.
+        if glob.http_server:
+            glob.gom.echo("Shutting down HTTP server.")
+            glob.http.terminate()
+
+        import traceback
+        traceback.print_exc()

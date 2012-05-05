@@ -126,6 +126,21 @@ def getProtocolName(proto):
 
     return proto
 
+def check_args():
+    '''Checks arguments in the command line to trigger special options.'''
+    import lib.globals as glob
+
+    for arg in sys.argv:
+        if arg.lower() == "-d" or arg.lower() == "--debug":
+            glob.debug = True
+        elif arg.lower() == "-w":
+            glob.http_server = True
+        elif arg.lower() == "-h" or arg.lower() == "--help":
+            uicore.usage(gom)
+            sys.exit(0)
+
+    return True
+
 def check_distorm_lib(path):
     """Returns True if the distorm library exists at the supplied path"""
     import os

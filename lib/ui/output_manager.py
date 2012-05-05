@@ -44,6 +44,10 @@ class OutputManager:
             print "Output interface not valid, must be 'gui' or 'console'"
             sys.exit(0)
 
+    def console(self, data=''):
+        '''Helper to force output by console.'''
+        print(data)
+
     def debug(self, data = '', window=True, newline=True):
         """ Function that will print debug messages if we enabled -d on the command line."""
 
@@ -51,29 +55,37 @@ class OutputManager:
             print data
 
     def echo(self, data = "", window=True, newline=True):
+        '''Generic method for printing stuff on the UI'''
 
         if window == True and glob.isGui:
             window = self.SHOW_MODULE_WIN
 
-        if self.iface == 'gui' and not window:
-            #print "GTK UI: ", data
-            enditer = self.omwidget.get_end_iter()
-            if newline:
-                self.omwidget.insert(enditer, data + '\n')
-            else:
-                self.omwidget.insert(enditer, data)
-            #self.omwidget.set_text(data + '\n')
-            self.update_helpers()
-            self.alert_tab()
+        if self.iface == 'gui':
+            if not window:
+                #print "GTK UI: ", data
+                enditer = self.omwidget.get_end_iter()
+                if newline:
+                    self.omwidget.insert(enditer, data + '\n')
+                else:
+                    self.omwidget.insert(enditer, data)
+                #self.omwidget.set_text(data + '\n')
+                self.update_helpers()
+                self.alert_tab()
 
-        elif self.iface == 'gui' and window:
-            enditer = self.module_dialog.output_buffer.get_end_iter()
-            if newline:
-                self.module_dialog.output_buffer.insert(enditer, data + '\n')
             else:
-                self.module_dialog.output_buffer.insert(enditer, data)
-            self.update_helpers()
-            #self.omwidget.set_text(data + '\n')
+                if not hasattr(self, 'module_dialog'):
+                    # The main window hasn't got yet proper widgets, so we fallback
+                    # to console.
+                    self.console(data)
+                    return False
+
+                enditer = self.module_dialog.output_buffer.get_end_iter()
+                if newline:
+                    self.module_dialog.output_buffer.insert(enditer, data + '\n')
+                else:
+                    self.module_dialog.output_buffer.insert(enditer, data)
+                self.update_helpers()
+                #self.omwidget.set_text(data + '\n')
 
         elif self.iface == 'console':
             print data

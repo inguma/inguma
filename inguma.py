@@ -25,12 +25,12 @@ import os
 import sys
 import time
 import readline
+import lib.core as core
 import lib.globals as glob
 import lib.ui.cli.core as uicore
 
 from reports import generateReport
 
-from lib.core import isIpAddr4, create_profile_dir
 from lib.printwrapper import CPrintWrapper
 
 # Import Output Manager
@@ -155,19 +155,6 @@ class Inguma:
         glob.gom.echo()
 
 # ------------------------------ End of Inguma class ------------------------------
-
-def check_args():
-
-    for arg in sys.argv:
-        if arg.lower() == "-d" or arg.lower() == "--debug":
-            glob.debug = True
-        elif arg.lower() == "-w":
-            glob.http_server = True
-        elif arg.lower() == "-h" or arg.lower() == "--help":
-            uicore.usage(gom)
-            sys.exit(0)
-
-    return True
 
 def load_module(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
@@ -602,7 +589,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                 else:
                     user_data["hosts"] = [target]
 
-            if not isIpAddr4(target) and target.lower().strip(" ") != "localhost":
+            if not core.isIpAddr4(target) and target.lower().strip(" ") != "localhost":
                 showLaunch("whois", "Getting whois database information target %s\n" % target)
 
             if target.find("/") == -1:
@@ -865,9 +852,8 @@ def printPayloads():
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
-    from lib.core import get_profile_file_path
 
-    historyFile = get_profile_file_path("history")
+    historyFile = core.get_profile_file_path("history")
 
     try:
         if os.path.exists(historyFile):
@@ -878,9 +864,8 @@ def saveHistory():
 
 def loadHistory():
     """ Loads previous history commands and creates an empty history file. """
-    from lib.core import get_profile_file_path
 
-    historyFile = get_profile_file_path("history")
+    historyFile = core.get_profile_file_path("history")
 
     if os.path.exists(historyFile):
         readline.read_history_file(historyFile)
@@ -987,7 +972,7 @@ def main():
     uicore.print_banner(glob.gom)
 
     # Check args and enable debug if requested
-    if not check_args():
+    if not core.check_args():
         uicore.usage(glob.gom)
         sys.exit(0)
 
@@ -999,7 +984,7 @@ def main():
             scapy.conf.verb = 1
 
     # Create .inguma directory.
-    create_profile_dir()
+    core.create_profile_dir()
 
     readCommands()
 
