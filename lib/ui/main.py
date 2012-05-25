@@ -541,12 +541,12 @@ class MainApp(gtk.Window):
 
         # Check for autosaved KB and ask for loading
         if not libAutosave.check_kb():
-            print "Autosaved KB not found, skipping..."
+            self.gom.echo('Autosaved KB not found, skipping...')
         else:
             toload = libAutosave.ask_dialog()
             if toload:
                 kbpath = libAutosave.get_kb_path()
-                self.uicore.loadKB(kbpath)
+                glob.kb.load(kbpath)
                 libAutosave.remove_kb()
 
                 # Update KB Tree

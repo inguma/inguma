@@ -741,7 +741,7 @@ def main_loop():
     while 1:
         res = uicore.unified_input_prompt(inguma)
         if res == None:
-            print "Exit."
+            glob.gom.echo("Exit.")
             return False
 
         if res == "" and prevRes == "":
@@ -751,7 +751,11 @@ def main_loop():
             # we have to assign the 'target' global variable to a glob attribute
             # prior to calling the class method.
             glob.target = target
-            glob.kb.save()
+            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+            if res:
+                glob.kb.save(res)
+            else:
+                glob.kb.save()
             # FIXME: We cannot use globals inside the KnowledgeBase class, so
             # we have to reassign the 'target' global variable after calling
             # it. 'global target' is defined above in the function,
@@ -763,13 +767,20 @@ def main_loop():
             # we have to assign the 'target' global variable to a glob attribute
             # prior to calling the class method.
             glob.target = target
-            glob.kb.load()
+            glob.gom.echo('* Warning! Warning! Warning! Warning! Warning! Warning! *')
+            glob.gom.echo('*** Never load KB files received from untrusted sources ***')
+            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+
+            if res:
+                glob.kb.load(res)
+            else:
+                glob.kb.load()
             # FIXME: We cannot use globals inside the KnowledgeBase class, so
             # we have to reassign the 'target' global variable after calling
             # it. 'global target' is defined above in the function,
             target = glob.target
         elif res.lower() == "show kb":
-            print(glob.kb.format_text())
+            glob.gom.echo(glob.kb.format_text())
         elif res.lower() == "show discover":
             showDiscover()
         elif res.lower() == "show gather":

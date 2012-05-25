@@ -20,7 +20,7 @@ import sys
 sys.path.append('../..')
 import gobject
 
-import pickle, os, platform
+import os, platform
 import inguma
 
 import threading
@@ -88,25 +88,6 @@ class UIcore():
     def loadUserPasswords(self):
         users = file(inguma.user_data["base_path"] + "/data/users", "r").readlines()
         passwds = file(inguma.user_data["base_path"] + "/data/dict", "r").readlines()
-
-    def loadKB(self, res):
-
-        input = open(res, 'r')
-        inguma.user_data = pickle.load(input)
-        self.user_data = inguma.user_data
-
-        if inguma.target == "":
-            if inguma.user_data.has_key("target"):
-                #print "Setting target (%s)" % inguma.user_data["target"]
-                inguma.target = inguma.user_data["target"]
-
-        input.close()
-
-    def saveKB(self, res):
-
-        output = open(res, 'wb')
-        pickle.dump(inguma.user_data, output)
-        output.close()
 
     def get_modules(self, category):
         '''Returns an array with the modules for one category.'''

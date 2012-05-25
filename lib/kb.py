@@ -36,6 +36,8 @@ class KnowledgeBase:
         self._kb = {}
         self.set_defaults()
 
+        self.default_filename = 'data.kb'
+
     def reset(self):
         """Clears the KB and resets it with a fresh set of default values."""
         self._kb.clear()
@@ -69,7 +71,7 @@ class KnowledgeBase:
         """Generic getter.  Right now it just gives you a dictionary."""
         return self._kb
 
-    def load(self):
+    def load(self, filename=''):
         """Loads a new KB into the global space"""
         # FIXME: This version of the function is just for console.  Pretty
         # lame, I know, but I brought it from inguma.py.  We'll have to extend
@@ -78,16 +80,10 @@ class KnowledgeBase:
         import pickle
         import sys
 
-        filename = 'data.kb'
+        if not filename:
+            filename = self.default_filename
 
         try:
-            print '* Warning! Warning! Warning! Warning! Warning! Warning! *'
-            print '*** Never load KB files received from untrusted sources ***'
-            res = raw_input('Filename [%s]: ' % filename)
-
-            if res:
-                filename = res
-
             input = open(filename, 'r')
             # Update has to be careful, as we have references to this object
             # in the globals module.
@@ -96,7 +92,7 @@ class KnowledgeBase:
 
             if not glob.target:
                 if self._kb.has_key('target'):
-                    print 'Setting target (%s)' % self._kb['target']
+                    glob.gom.echo('Setting target (%s)' % self._kb['target'])
                     glob.target = self._kb['target']
 
             input.close()
@@ -104,21 +100,16 @@ class KnowledgeBase:
             # FIXME: Only for console!!
             print 'Error loading knowledge base:', sys.exc_info()[1]
 
-    def save(self):
+    def save(self, filename=''):
         """Saves a KB to disk"""
 
         import pickle
         import sys
 
-        filename = 'data.kb'
+        if not filename:
+            filename = self.default_filename
 
         try:
-            # FIXME: Only for console!!
-            res = raw_input('Filename [%s]: ' % filename)
-
-            if res:
-                filename = res
-
             if glob.target:
                 self._kb['target'] = glob.target
 
