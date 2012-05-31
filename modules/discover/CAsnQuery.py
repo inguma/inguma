@@ -60,5 +60,5 @@ class CAsnQuery(CIngumaDiscoverModule):
         self.gom.echo()
         for x in self.data:
             self.gom.echo( str(x[0]) + "\t" + str(x[1]) + "\t" + str(x[2]) )
-            self.addToDict(str(x[0]) + "_asn", str(x[1]) + " " + str(x[2]))
+            self.add_data_to_kb(str(x[0]) + "_asn", str(x[1]) + " " + str(x[2]))
     	self.gom.echo()

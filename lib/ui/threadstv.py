@@ -117,6 +117,7 @@ class ThreadsTv:
         return "%02d:%02d:%02d" % (hours, minutes, seconds)
 
     def check_thread(self, threadid, iter):
+        import lib.globals as glob
         model = self.treeview.get_model()
         if threadid.is_alive():
             model.set_value(iter, 1, 75)
@@ -139,7 +140,7 @@ class ThreadsTv:
             self.throbber.running(False)
 
             kbpath = libAutosave.get_kb_path()
-            self.uicore.saveKB(kbpath)
+            glob.kb.save(kbpath)
             return False
 
     def get_widget(self):

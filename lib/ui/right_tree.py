@@ -431,43 +431,51 @@ class KBtree(gtk.TreeView):
     def popup_menu(self, tree, event):
         if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
             #(path, column) = tree.get_cursor()
-            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
-            # Is it over a plugin name ?
-            # Ge the information about the click
-            if path is not None and len(path) == 1 and self.nodes:
-                node = self.treestore[path][1]
-                if node in self.nodes:
-                    self.xdot.animate_to( int(self.nodes[node][0]), int(self.nodes[node][1]) )
+            var = tree.get_path_at_pos(int(event.x), int(event.y))
+            if var:
+                (path, column, x, y) = var
+                # Is it over a plugin name ?
+                # Ge the information about the click
+                if path is not None and len(path) == 1 and self.nodes:
+                    node = self.treestore[path][1]
+                    if node in self.nodes:
+                        self.xdot.animate_to( int(self.nodes[node][0]), int(self.nodes[node][1]) )
         elif event.button == 3:
             #(path, column) = tree.get_cursor()
-            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
-            # Is it over a plugin name ?
-            # Ge the information about the click
-            if path is not None and len(path) == 1:
-                node = self.treestore[path][1]
-                self.node_menu.set_data(node)
-                self.node_menu.popmenu.popup(None, None, None, 1, event.time)
+            var = tree.get_path_at_pos(int(event.x), int(event.y))
+            if var:
+                (path, column, x, y) = var
+                # Is it over a plugin name ?
+                # Ge the information about the click
+                if path is not None and len(path) == 1:
+                    node = self.treestore[path][1]
+                    self.node_menu.set_data(node)
+                    self.node_menu.popmenu.popup(None, None, None, 1, event.time)
 
     def popup_vuln_menu(self, tree, event):
         if event.button == 3:
             #(path, column) = tree.get_cursor()
-            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
-            # Is it over a plugin name ?
-            # Ge the information about the click
-            if path is not None and len(path) == 4:
-                node = self.treestore[path][1]
-                menu = self.vuln_popup.create_menu(node, self.treestore[path][2])
-                menu.popup(None, None, None, 1, event.time)
-                menu.show_all()
+            var = tree.get_path_at_pos(int(event.x), int(event.y))
+            if var:
+                (path, column, x, y) = var
+                # Is it over a plugin name ?
+                # Ge the information about the click
+                if path is not None and len(path) == 4:
+                    node = self.treestore[path][1]
+                    menu = self.vuln_popup.create_menu(node, self.treestore[path][2])
+                    menu.popup(None, None, None, 1, event.time)
+                    menu.show_all()
 
     def listener_menu(self, tree, event):
         if event.button == 3:
             #(path, column) = tree.get_cursor()
-            (path, column, x, y) = tree.get_path_at_pos(int(event.x), int(event.y))
-            # Is it over a plugin name ?
-            # Ge the information about the click
-            if path is not None and self.uicore.listeners:
-                node = self.liststore[path][1]
-                menu = self.listener_popup.create_menu(node, self.liststore[path][2])
-                menu.popup(None, None, None, 1, event.time)
-                menu.show_all()
+            var = tree.get_path_at_pos(int(event.x), int(event.y))
+            if var:
+                (path, column, x, y) = var
+                # Is it over a plugin name ?
+                # Ge the information about the click
+                if path is not None and self.uicore.listeners:
+                    node = self.liststore[path][1]
+                    menu = self.listener_popup.create_menu(node, self.liststore[path][2])
+                    menu.popup(None, None, None, 1, event.time)
+                    menu.show_all()

@@ -98,7 +98,7 @@ class CNetcraft(CIngumaDiscoverModule):
         for x in range(start, end):
             try:
                 self.gom.echo(str(self.data[start]) + ':\t\t' + str(self.data[start + 1]))
-                self.addToDict(self.target + "_netcraft", [self.data[start], self.data[start + 1]])
+                self.add_data_to_kb(self.target + "_netcraft", [self.data[start], self.data[start + 1]])
                 start = start + 2
             except:
                 return False

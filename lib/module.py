@@ -31,6 +31,7 @@ class CIngumaModule:
     target = ''
     timeout = 1
     dict = None
+    iface = "eth0"
     module_type = None
 
     # Legacy properties follow.
@@ -43,7 +44,6 @@ class CIngumaModule:
     #services = {}
     #waitTime = 0
     #randomizeWaitTime = False
-    #iface = "eth0"
     #results = {}
     #interactive = True
 
@@ -90,17 +90,6 @@ class CIngumaModule:
         pass
 
     # Legacy methods follow.
-
-    def addToDict(self, element, value):
-        """ Legacy method for adding data to the current KB.  Superseded by
-        add_data_to_kb(). """
-        self.add_data_to_kb(element, value)
-
-    def printSummary(self):
-        """ Method called when run() has returned True.  It's used for showing
-        a summary of the execution to the user. Superseded by
-        print_summary(). """
-        self.print_summary()
 
     def show_help(self):
         """ Method called when the module is interactive and 'help' is executed

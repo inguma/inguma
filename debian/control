@@ -12,7 +12,7 @@ Vcs-Browser: http://inguma.eu/projects/inguma/repository
 
 Package: inguma
 Architecture: all
-Depends: python, python-gtk2, pyew (>> 2.0), pyew (<< 2.1), ${misc:Depends}, ${python:Depends}
+Depends: python, python-gtk2, pyew (>> 2.0), pyew (<< 2.1), python-gtksourceview2, python-vte, python-psutil, ${misc:Depends}, ${python:Depends}
 Recommends: python-scapy, python-geoip, tcpdump
 Suggests: python-gnuplot
 Description: Open source penetration testing toolkit

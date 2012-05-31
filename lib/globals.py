@@ -25,10 +25,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Global configuration object for Inguma.  It replaces all the 'global'
 usage that has become a nightmare in the code."""
 
+version = '0.5-dev'
 commands = {}
 debug = False
 http_server = False
 isGui = False
+ports = []
 
 discovers = []
 gathers = []
@@ -38,6 +40,7 @@ brutes = []
 classes = []
 others = []
 exploits = []
+target=''
 
 GLOBAL_VARIABLES = """
 global target; global targets; global port; global covert; global timeout; global waittime;

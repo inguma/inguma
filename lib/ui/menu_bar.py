@@ -1,17 +1,17 @@
 #       menu_bar.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -42,7 +42,7 @@ class MenuBar(gtk.Menu):
         newi = gtk.ImageMenuItem(gtk.STOCK_NEW, agr)
         #newi.connect("activate", self.new_file)
         key, mod = gtk.accelerator_parse("<Control>N")
-        newi.add_accelerator("activate", agr, key, 
+        newi.add_accelerator("activate", agr, key,
             mod, gtk.ACCEL_VISIBLE)
         newi.set_sensitive(False)
         self.append(newi)
@@ -51,7 +51,7 @@ class MenuBar(gtk.Menu):
         savei = gtk.ImageMenuItem(gtk.STOCK_SAVE)
         savei.get_children()[0].set_label('Save')
         key, mod = gtk.accelerator_parse("<Control>S")
-        savei.add_accelerator("activate", agr, key, 
+        savei.add_accelerator("activate", agr, key,
             mod, gtk.ACCEL_VISIBLE)
         savei.connect("activate", self.save_kb)
 
@@ -61,7 +61,7 @@ class MenuBar(gtk.Menu):
         loadi = gtk.ImageMenuItem(gtk.STOCK_OPEN)
         loadi.get_children()[0].set_label('Load')
         key, mod = gtk.accelerator_parse("<Control>O")
-        loadi.add_accelerator("activate", agr, key, 
+        loadi.add_accelerator("activate", agr, key,
             mod, gtk.ACCEL_VISIBLE)
         loadi.connect("activate", self.load_kb)
 
@@ -126,7 +126,7 @@ class MenuBar(gtk.Menu):
         helpi = gtk.ImageMenuItem(gtk.STOCK_HELP, agr)
         helpi.get_children()[0].set_label('Documentation')
 #        key, mod = gtk.accelerator_parse("<Control>Q")
-#        helpi.add_accelerator("activate", agr, key, 
+#        helpi.add_accelerator("activate", agr, key,
 #            mod, gtk.ACCEL_VISIBLE)
         helpi.connect("activate", self.show_wiki)
 
@@ -135,7 +135,7 @@ class MenuBar(gtk.Menu):
         # About item
         abouti = gtk.ImageMenuItem(gtk.STOCK_ABOUT, agr)
         key, mod = gtk.accelerator_parse("<Control>A")
-        abouti.add_accelerator("activate", agr, key, 
+        abouti.add_accelerator("activate", agr, key,
             mod, gtk.ACCEL_VISIBLE)
         abouti.connect("activate", self.create_about_dialog)
 
@@ -148,11 +148,11 @@ class MenuBar(gtk.Menu):
         # Exit item
         exit = gtk.ImageMenuItem(gtk.STOCK_QUIT, agr)
         key, mod = gtk.accelerator_parse("<Control>Q")
-        exit.add_accelerator("activate", agr, key, 
+        exit.add_accelerator("activate", agr, key,
             mod, gtk.ACCEL_VISIBLE)
 
         exit.connect("activate", self._bye)
-        
+
         self.append(exit)
 
     #
@@ -185,6 +185,9 @@ class MenuBar(gtk.Menu):
         self.load_kb(None, file_to_open)
 
     def load_kb(self, widget, file=''):
+        '''Creates dialogs to load a KB.'''
+
+        import lib.globals as glob
 
 #        self.textview = self.main.textview
         self.treeview = self.main.treeview
@@ -216,15 +219,15 @@ class MenuBar(gtk.Menu):
         self.gom.echo( 'Loading KB...', False)
         self.gom.echo(  res + ' selected' , False)
         self.manager.add_item('file://' + res)
-        self.uicore.loadKB(res)
-    
+        glob.kb.load(res)
+
         # Update Map
         self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
         self.xdotw.zoom_image(1.0)
         # Update KB Tree
 #        self.textview.updateWin()
         self.treeview.update_targets_tree()
-    
+
         # Adding text to Log window
         self.gom.echo( 'Loaded' , False)
         self.main.kbfile = res
@@ -233,7 +236,11 @@ class MenuBar(gtk.Menu):
         self.main.statusbar._set_message(res)
 
     def save_kb(self, widget):
+        '''Creates dialogs to save a KB.'''
+
+        import lib.globals as glob
         from lib.core import get_profile_file_path
+
         if self.main.kbfile == '':
             chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
             chooser.set_current_folder(get_profile_file_path('data/'))
@@ -244,17 +251,17 @@ class MenuBar(gtk.Menu):
 
             if response == gtk.RESPONSE_OK:
                 filename = chooser.get_filename()
-                self.uicore.saveKB(filename)
-                self.gom.echo( filename + ' selected' , False)
+                glob.kb.save(filename)
+                self.gom.echo(filename + ' selected' , False)
                 libAutosave.remove_kb()
                 self.manager.add_item('file://' + filename)
                 self.main.kbfile = filename
             elif response == gtk.RESPONSE_CANCEL:
-                self.gom.echo( 'Closed, no files selected' , False)
+                self.gom.echo('Closed, no files selected', False)
             chooser.destroy()
         else:
-            self.uicore.saveKB(self.main.kbfile)
-            self.gom.echo( self.main.kbfile + ' selected' , False)
+            glob.kb.save(self.main.kbfile)
+            self.gom.echo(self.main.kbfile + ' selected', False)
             libAutosave.remove_kb()
 
         # Add text to the statusbar
@@ -269,12 +276,12 @@ class MenuBar(gtk.Menu):
 
         # Choose nmap scan file
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-        
+
         filter = gtk.FileFilter()
         filter.set_name('Nmap scan')
         filter.add_pattern('*.xml')
         chooser.add_filter(filter)
-        
+
         filter = gtk.FileFilter()
         filter.set_name('Host list')
         filter.add_pattern('*.csv')

@@ -24,15 +24,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 import os
 import sys
 import time
-import pickle
 import readline
-import lib.module
+import lib.core as core
 import lib.globals as glob
 import lib.ui.cli.core as uicore
 
 from reports import generateReport
 
-from lib.core import isIpAddr4, create_profile_dir
 from lib.printwrapper import CPrintWrapper
 
 # Import Output Manager
@@ -81,45 +79,16 @@ waittime = 0.1
 user = ""
 password = ""
 url = ""
-ports = []
 ostype = 1
 payload = 2
 listenPort = 4444
 hash = ""
-
-try:
-    f = file("data/ports", "r")
-
-    for line in f:
-        ports.append(int(line))
-
-except:
-    print sys.exc_info()[1]
-    pass
 
 # Colors
 OKGREEN = '\033[92m'
 WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
-
-#global user_data
-
-user_data = {}
-user_data["target"] = ""
-user_data["targets"] = []
-user_data["port"] = ""
-user_data["covert"] = 0
-user_data["timeout"] = 5
-user_data["user"] = ""
-user_data["password"] = ""
-user_data["waittime"] = ""
-user_data["services"] = []
-user_data["hosts"] = []
-user_data["wizard"] = []
-user_data["base_path"] = os.path.dirname (sys.argv[0])
-user_data["dict"] = user_data["base_path"] + "data" + os.sep + "dict"
-user_data["ports"] = ports
 
 discovers = []
 gathers = []
@@ -186,19 +155,6 @@ class Inguma:
         glob.gom.echo()
 
 # ------------------------------ End of Inguma class ------------------------------
-
-def check_args():
-
-    for arg in sys.argv:
-        if arg.lower() == "-d" or arg.lower() == "--debug":
-            glob.debug = True
-        elif arg.lower() == "-w":
-            glob.http_server = True
-        elif arg.lower() == "-h" or arg.lower() == "--help":
-            uicore.usage(gom)
-            sys.exit(0)
-
-    return True
 
 def load_module(path, atype, marray, bLoad = True):
     """ Module loader for Inguma.
@@ -318,8 +274,6 @@ def exploitWizard():
     global wizard
 
     i = 0
-
-    global target
 
     if target == "" or target == None:
         if not glob.isGui:
@@ -490,7 +444,7 @@ def showGather():
     print
     for x in gathers:
         cmd = x.name
-        
+
         if len(cmd) < 4:
             cmd += "  "
 
@@ -514,7 +468,7 @@ def showBrutes():
     print
     for x in brutes:
         cmd = x.name
-        
+
         if len(cmd) < 4:
             cmd += "  "
 
@@ -559,78 +513,6 @@ def showFuzzers():
             print " " + x.name + "    \t\t" + x.brief_description
 
     print
-
-def clearKb():
-    global user_data
-    global target
-
-    user_data = {}
-    user_data["target"] = ""
-    user_data["port"] = ""
-    user_data["covert"] = 0
-    user_data["timeout"] = 5
-    user_data["user"] = ""
-    user_data["password"] = ""
-    user_data["waittime"] = ""
-    user_data["services"] = []
-    user_data["wizard"] = []
-    user_data["base_path"] = os.path.dirname (sys.argv[0])
-
-def saveKb(theFile = None):
-    global user_data
-    global target
-
-    try:
-        res = raw_input("Filename [data.kb]: ")
-        
-        if res == "" or res == None:
-            res = "data.kb"
-
-        if target != "":
-            user_data["target"] = target
-
-        output = open(res, 'wb')
-        pickle.dump(user_data, output)
-        output.close()
-    except:
-        print "Error loading knowledge base:", sys.exc_info()[1]
-
-def loadKb():
-    global user_data
-    global target
-
-    try:
-        print "* Warning! Warning! Warning! Warning! Warning! Warning! *"
-        print "*** Never load kb files received from untrusted sources ***"
-        res = raw_input("Filename [data.kb]: ")
-
-        if res == "":
-            res = "data.kb"
-
-        input = open(res, 'r')
-        user_data = pickle.load(input)
-
-        if target == "":
-            if user_data.has_key("target"):
-                print "Setting target (%s)" % user_data["target"]
-                target = user_data["target"]
-
-        input.close()
-    except:
-        print "Error loading knowledge base:", sys.exc_info()[1]
-
-def showKb():
-    global user_data
-    
-    for x in user_data:
-        if type(user_data[x]) == str or type(user_data[x]) == int or type(user_data[x]) == float or type(user_data[x]) == bool:
-            print x, "->", user_data[x]
-        else:
-            print str(x) + ":"
-            data = user_data[x]
-
-            for y in data:
-                print "  ", y
 
 def showLaunch(module, message):
     global target
@@ -707,7 +589,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                 else:
                     user_data["hosts"] = [target]
 
-            if not isIpAddr4(target) and target.lower().strip(" ") != "localhost":
+            if not core.isIpAddr4(target) and target.lower().strip(" ") != "localhost":
                 showLaunch("whois", "Getting whois database information target %s\n" % target)
 
             if target.find("/") == -1:
@@ -859,19 +741,46 @@ def main_loop():
     while 1:
         res = uicore.unified_input_prompt(inguma)
         if res == None:
-            print "Exit."
+            glob.gom.echo("Exit.")
             return False
 
         if res == "" and prevRes == "":
             pass
         elif res.lower() == "save kb":
-            saveKb()
+            # FIXME: We cannot use globals inside the KnowledgeBase class, so
+            # we have to assign the 'target' global variable to a glob attribute
+            # prior to calling the class method.
+            glob.target = target
+            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+            if res:
+                glob.kb.save(res)
+            else:
+                glob.kb.save()
+            # FIXME: We cannot use globals inside the KnowledgeBase class, so
+            # we have to reassign the 'target' global variable after calling
+            # it. 'global target' is defined above in the function,
+            target = glob.target
         elif res.lower() == "clear kb":
-            clearKb()
+            glob.kb.reset()
         elif res.lower() == "load kb":
-            loadKb()
+            # FIXME: We cannot use globals inside the KnowledgeBase class, so
+            # we have to assign the 'target' global variable to a glob attribute
+            # prior to calling the class method.
+            glob.target = target
+            glob.gom.echo('* Warning! Warning! Warning! Warning! Warning! Warning! *')
+            glob.gom.echo('*** Never load KB files received from untrusted sources ***')
+            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+
+            if res:
+                glob.kb.load(res)
+            else:
+                glob.kb.load()
+            # FIXME: We cannot use globals inside the KnowledgeBase class, so
+            # we have to reassign the 'target' global variable after calling
+            # it. 'global target' is defined above in the function,
+            target = glob.target
         elif res.lower() == "show kb":
-            showKb()
+            glob.gom.echo(glob.kb.format_text())
         elif res.lower() == "show discover":
             showDiscover()
         elif res.lower() == "show gather":
@@ -954,9 +863,8 @@ def printPayloads():
 
 def saveHistory():
     """ Saves previous history commands in the history file. """
-    from lib.core import get_profile_file_path
 
-    historyFile = get_profile_file_path("history")
+    historyFile = core.get_profile_file_path("history")
 
     try:
         if os.path.exists(historyFile):
@@ -967,9 +875,8 @@ def saveHistory():
 
 def loadHistory():
     """ Loads previous history commands and creates an empty history file. """
-    from lib.core import get_profile_file_path
 
-    historyFile = get_profile_file_path("history")
+    historyFile = core.get_profile_file_path("history")
 
     if os.path.exists(historyFile):
         readline.read_history_file(historyFile)
@@ -1010,6 +917,63 @@ def setup_auto_completion():
     except:
         print sys.exc_info()[1]
 
+def inguma_init():
+    """Initializes very basic Inguma data structures."""
+    #FIXME: This should go into the __init__ section of a future Inguma class.
+    """NOTE: This function cannot be moved to lib/core.py.
+    TL;DR; If this function is in another module, i.e. lib/core.py, 'global'
+    won't be able to see global variables from this module.
+
+    Explanation: The rationale is that the global keyword only works for every
+    namespace, which sadly spans only to each module.  We will need to kill
+    every global in the code before removing the GLUE CODE and moving this
+    function somewhere else. :-(
+    """
+
+    import lib.globals as glob
+    import lib.kb as kb
+
+    # We init the KB.
+    glob.kb = kb.KnowledgeBase()
+
+    # Start up the HTTP server.
+    if glob.http_server:
+        import lib.http as httpd
+        http = httpd.IngumaHttpServer()
+        glob.gom.echo("\nBringing up HTTP server.")
+        # We start the thread.
+        http.start()
+        time.sleep(0.2)
+        # We put the http structure in glob to have it accessible in the global
+        # __main__ handler.
+        glob.http = http
+
+    # GLUE CODE.
+    # This code will try to deal with the horrible spaghetti that global
+    # variables are in the code.  So what we do is to move them slowly to
+    # lib.globals but leave global references with the old names around to
+    # prevent old (i.e. not yet migrated) code from working.
+    # These are the only global statements that we will add from now on.
+    global ports
+    global target
+    global user_data
+
+    target = ''
+    ports = glob.ports
+    user_data = glob.kb._kb
+
+    try:
+        # FIXME: This should have look up into the binary directory and not the actual one.
+        f = file("data/ports", "r")
+
+        for line in f:
+            ports.append(int(line))
+
+    except:
+        # FIXME: Ugly, only for console version!
+        print sys.exc_info()[1]
+        pass
+
 def main():
     """ Main program loop. """
 
@@ -1019,7 +983,7 @@ def main():
     uicore.print_banner(glob.gom)
 
     # Check args and enable debug if requested
-    if not check_args():
+    if not core.check_args():
         uicore.usage(glob.gom)
         sys.exit(0)
 
@@ -1031,18 +995,12 @@ def main():
             scapy.conf.verb = 1
 
     # Create .inguma directory.
-    create_profile_dir()
+    core.create_profile_dir()
 
     readCommands()
 
-    # Start up HTTP server.
-    if glob.http_server:
-        import lib.http as httpd
-        http = httpd.IngumaHttpServer()
-        glob.gom.echo("\nBringing up HTTP server.")
-        # We start the thread.
-        http.start()
-        time.sleep(0.2)
+    # Main initialization.
+    inguma_init()
 
     # Display banner.
     glob.gom.echo("\nType 'help' for a short usage guide.")
@@ -1051,8 +1009,15 @@ def main():
     setup_auto_completion()
     main_loop()
     if glob.http_server:
-        glob.gom.echo("Shutting down HTTP server.")
-        #http.terminate()
+        glob.http.terminate()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        # We have to stop the HTTP server just in case.
+        if glob.http_server:
+            glob.http.terminate()
+
+        import traceback
+        traceback.print_exc()

@@ -27,7 +27,7 @@ import hashlib
 import urllib
 
 class CVirusTotalScanner:
-    
+
     printResults = False
     filename = None
     baseUrl = "http://www.virustotal.com/vt/en/consultamd5"
@@ -35,48 +35,48 @@ class CVirusTotalScanner:
     md5 = None
 
     def scan(self, filename, argmd5 = None):
-        
+
         if argmd5:
             strmd5 = argmd5
         else:
             strmd5 = md5.md5(file(filename, "rb").read()).hexdigest()
-        
+
         params = urllib.urlencode({"hash":strmd5})
         headers = {"Content-type": "application/x-www-form-urlencoded", "accept":"Text/Plain"}
         data = urllib.urlopen(self.baseUrl, params).read()
-        
+
         self.filename = filename
         self.md5 = strmd5
         matches = {}
-        
+
         if data.find("<b>Error:</b>") > -1:
             if self.printResults:
                 print "***No match"
             else:
                 return
         else:
-            
+
             matches = re.findall("""\<td\>(.*)\<\/td\>\s*\<td\>.*\<\/td\>\s*\<td\>.*\<\/td\>\s*\<td class=\"positive\"\>(.*)\<\/td\>""",
                                  data, re.MULTILINE or re.IGNORECASE)
             self.matches = {}
-            
+
             for match in matches:
                 self.matches[match[0]] = match[1]
-            
+
             if self.printResults:
-                self.printSummary()
-        
+                self.print_summary()
+
         return matches
 
-    def printSummary(self):
+    def print_summary(self):
         msg = "File %s with MD5 %s" % (self.filename, self.md5)
         print msg
         print "-"*len(msg)
         print
-        
+
         for match in self.matches:
             print match.ljust(25) + ": " + self.matches[match]
-        
+
         if match:
             print
 
@@ -84,10 +84,10 @@ def virusTotalSearch(pyew):
     """ Search the sample in Virus Total """
     buf = pyew.getBuffer()
     x = hashlib.md5(buf).hexdigest()
-    
+
     scanner = CVirusTotalScanner()
     scanner.printResults = True
     scanner.scan(pyew.filename, argmd5=x)
 
-functions={"vt":virusTotalSearch}
+    functions={"vt":virusTotalSearch}
 

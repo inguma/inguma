@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-import sys
 import hashlib
 
 from core import str2uni
@@ -29,7 +28,7 @@ class CSQLServerPassword:
     _key = ""
     _password = ""
     _upperPassword = ""
-    
+
     def __init__(self, data = None):
 
         if data:
@@ -46,7 +45,7 @@ class CSQLServerPassword:
             self._password = self.data[8:40]
             self._upperPassword = self.data[40:]
 
-    def printSummary(self):
+    def print_summary(self):
         print "Header           : ", hex(self._header)
         print "Key              : ", self._key
         print "Password         : ", self._password

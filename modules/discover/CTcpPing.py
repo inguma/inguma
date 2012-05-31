@@ -83,7 +83,7 @@ class CTcpPing(CIngumaDiscoverModule):
         self.results = self.up
         return True
 
-    def printSummary(self):
+    def print_summary(self):
         if len(self.results) == 0:
             return
 

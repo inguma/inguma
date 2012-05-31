@@ -1,17 +1,17 @@
 ##      CBluetooth.py
-#       
+#
 #       Copyright 2010 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -56,8 +56,8 @@ class CBluetooth(CIngumaDiscoverModule):
             self.gom.echo("found " + str(len(nearby_devices)) + " devices")
             for name, addr in nearby_devices:
                 self.gom.echo(str(addr) + " " + str(name))
-                self.addToDict("blue_hosts", addr)
-                self.addToDict(addr + "_addr", name)
+                self.add_data_to_kb("blue_hosts", addr)
+                self.add_data_to_kb(addr + "_addr", name)
             return False
 
         elif self.mode=='gather':
@@ -68,7 +68,7 @@ class CBluetooth(CIngumaDiscoverModule):
                 self.gom.echo("")
             else:
                 self.gom.echo("no services found")
-            
+
             for svc in services:
                 self.gom.echo("Service Name: " +  str(svc["name"]))
                 self.gom.echo("    Host:        " + str(svc["host"]))

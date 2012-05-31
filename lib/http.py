@@ -26,7 +26,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 """ This library has HTTP functions used in the web UI server. """
 
 import threading
-import web
+import extlib.web as web
+import lib.globals as glob
+
+def html_skeleton(header='', body=''):
+    skeleton="""
+    <html>
+    <head><title>Inguma """ + glob.version
+    if header:
+        skeleton += ' -' + header
+    skeleton += """
+    </title></head>
+    <body>""" + body + """
+    </body>
+    </html>
+    """
+    return skeleton
+
 
 class IngumaHttpServer(threading.Thread):
 
@@ -36,25 +52,32 @@ class IngumaHttpServer(threading.Thread):
 
     def run(self):
         urls = (
-                '/', 'RestIndex',
-                '/kb(|/.*)', 'RestKB',
+                '/', 'Index',
+                '/kb(|/)', 'KB',
+                '/kb/get(|/)', 'RestKB',
                )
 
         self.http = web.application(urls, globals())
-        web.httpserver.runsimple(self.http.wsgifunc(), ('0.0.0.0', self.port))
-        #self.http = HTTPServer(('', self.port), HttpHandler)
-        #self.http.serve_forever()
+        web.httpserver.runsimple(self.http.wsgifunc(), self.http, ('0.0.0.0', self.port))
 
     def terminate(self):
-        raise KeyboardInterrupt
-        #self.http.shutdown()
+        glob.gom.echo('Shutting down HTTP server on port %d.' % self.port)
+        self.http.stop()
 
-class RestIndex:
+class Index:
+    """Main index, path seems to be optional in GET."""
+
+    def GET(self, path=''):
+        return html_skeleton(body='Inguma')
+
+class KB:
+    """KB HTML page."""
 
     def GET(self, path):
-        return "Inguma"
+        return html_skeleton('Knowledge Base', 'KB')
 
 class RestKB:
+    """Returns the current KB."""
 
     def GET(self, path):
-        return "KB"
+        return glob.kb.format_json()

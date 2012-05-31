@@ -21,7 +21,6 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
-inguma_version = '0.5-dev'
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *
@@ -127,12 +126,25 @@ def getProtocolName(proto):
 
     return proto
 
-def get_profile_file_path(item):
-    """ This function returns the proper file path for loading/saving personal
-    data in user's homedir. """
-    import os
+def check_args():
+    '''Checks arguments in the command line to trigger special options.'''
+    import lib.globals as glob
 
-    return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)
+    for arg in sys.argv:
+        if arg.lower() == "-d" or arg.lower() == "--debug":
+            glob.debug = True
+        elif arg.lower() == "-w":
+            glob.http_server = True
+        elif arg.lower() == "-h" or arg.lower() == "--help":
+            uicore.usage(gom)
+            sys.exit(0)
+
+    return True
+
+def check_distorm_lib(path):
+    """Returns True if the distorm library exists at the supplied path"""
+    import os
+    return os.path.isfile(path + 'libdistorm64.so')
 
 def create_profile_dir():
     """ Tries to create ~/.inguma in the user's homedir. """
@@ -150,11 +162,15 @@ def create_profile_dir():
         print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
         return False
 
-def check_distorm_lib(path):
-    import os
-    return os.path.isfile(path + 'libdistorm64.so')
-
 def get_inguma_version():
     """ Returns the current version. """
+    import lib.globals as glob
 
-    return inguma_version
+    return glob.version
+
+def get_profile_file_path(item):
+    """ This function returns the proper file path for loading/saving personal
+    data in user's homedir. """
+    import os
+
+    return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)

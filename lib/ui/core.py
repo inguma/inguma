@@ -20,7 +20,7 @@ import sys
 sys.path.append('../..')
 import gobject
 
-import pickle, os, platform
+import os, platform
 import inguma
 
 import threading
@@ -32,20 +32,24 @@ import lib.IPy as IPy
 import lib.liblistener as liblistener
 import lib.globals as glob
 
-#inguma.debug = True
-inguma.user_data["isGui"] = True
-inguma.user_data["interactive"] = False
-glob.isGui = True
-
-# Fix for bug 1807529 (andresriancho)
-inguma.user_data["base_path"] = '.'
-
-inguma.readCommands()
-inguma.interactive = False
-
 class UIcore():
 
     def __init__(self, om):
+
+        # FIXME: OMG.  Stop this use of user_data as soon as possible.  In the
+        # meantime, attach the glob object to inguma as it was before.
+        inguma.user_data = glob.kb._kb
+
+        #inguma.debug = True
+        inguma.user_data["isGui"] = True
+        inguma.user_data["interactive"] = False
+        glob.isGui = True
+
+        # Fix for bug 1807529 (andresriancho)
+        inguma.user_data["base_path"] = '.'
+
+        inguma.readCommands()
+        inguma.interactive = False
 
         self.gom = glob.gom
 
@@ -84,25 +88,6 @@ class UIcore():
     def loadUserPasswords(self):
         users = file(inguma.user_data["base_path"] + "/data/users", "r").readlines()
         passwds = file(inguma.user_data["base_path"] + "/data/dict", "r").readlines()
-
-    def loadKB(self, res):
-
-        input = open(res, 'r')
-        inguma.user_data = pickle.load(input)
-        self.user_data = inguma.user_data
-
-        if inguma.target == "":
-            if inguma.user_data.has_key("target"):
-                #print "Setting target (%s)" % inguma.user_data["target"]
-                inguma.target = inguma.user_data["target"]
-
-        input.close()
-
-    def saveKB(self, res):
-
-        output = open(res, 'wb')
-        pickle.dump(inguma.user_data, output)
-        output.close()
 
     def get_modules(self, category):
         '''Returns an array with the modules for one category.'''
