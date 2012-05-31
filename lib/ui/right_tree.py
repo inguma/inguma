@@ -33,6 +33,7 @@ class KBtree(gtk.TreeView):
         super(KBtree,self).__init__(self.treestore)
 
         self.main = main
+        self.gom = self.main.gom
         self.uicore = core
         self.node_menu = main.uiman
 
@@ -44,6 +45,9 @@ class KBtree(gtk.TreeView):
         self.xdot = None
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
+
+        # To keep track of listeners that recived connection
+        self.connections = []
 
         # Tree icons
         self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
@@ -234,13 +238,18 @@ class KBtree(gtk.TreeView):
 
     def fill_listeners_list(self):
         self.liststore.clear()
-        icon = gtk.Image()
-        icon = icon.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
+        conn = gtk.Image()
+        conn = conn.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
+        disconn = gtk.Image()
+        disconn = disconn.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
         if self.uicore.listeners:
             for listener in self.uicore.listeners:
                 print "Adding listener:", listener
                 host, port = listener.split('_')
-                self.liststore.append([icon, host, port])
+                if port in self.connections:
+                    self.liststore.append([conn, host, port])
+                else:
+                    self.liststore.append([disconn, host, port])
         else:
             icon = gtk.Image()
             icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
@@ -249,6 +258,13 @@ class KBtree(gtk.TreeView):
         if self.handler:
             self.disconnect(self.handler)
         self.handler = self.connect('button-press-event', self.listener_menu)
+
+    def update_listener(self, host, port):
+        for row in self.liststore:
+            if row[2] == port:
+                self.gom.echo("Got connection from %s to port %s" %(host, port), False)
+                self.connections.append(port)
+                self.fill_listeners_list()
 
     def create_vulns_tree(self):
         ids = {}

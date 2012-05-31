@@ -32,7 +32,7 @@ class Listener:
         self.HOST = '127.0.0.1'
 
         self.conn = False
-        self.keep = True
+        self.keep = 1
 
     def run(self, port, host, type=''):
         if type == 'local':
@@ -52,7 +52,7 @@ class Listener:
         try:
             self.sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, e:
-            self.gom.echo( "Error in creating socket : ", e, False)
+            self.gom.echo( "Error in creating socket %s: " % e, False)
             return False
 
         self.sockfd.setsockopt(socket.SOL_SOCKET , socket.SO_REUSEADDR , 1)
@@ -60,18 +60,18 @@ class Listener:
         try:
             self.sockfd.bind((host, port))
         except socket.error, e:
-            self.gom.echo( "Error in Binding : ", e, False)
+            self.gom.echo( "Error in Binding : %s" % e, False)
             return False
 
 
         self.gom.echo( "== New Listener created on Port %d ==" % port, False)
 
-#        while self.keep: # listen for connections
         self.sockfd.listen(1)
-#            self.clientsock , clientaddr = self.sockfd.accept()
-#            self.conn = True
-#            self.gom.echo( "Got Connection from " + str(clientaddr), False )
-#
+        while self.keep: # listen for connections
+            self.clientsock, clientaddr = self.sockfd.accept()
+            self.conn = True
+            self.gom.update_listener_status(clientaddr[0], port)
+
 #            while 1:  
 #                try:
 #                    cmd = raw_input('--> ')
@@ -95,11 +95,14 @@ class Listener:
 #        self.gom.echo( ">>>> Server Terminated <<<<<", False)
 
     def exit(self):
-#       if self.conn:
-#            self.clientsock.shutdown(0)
-#            self.conn = False
-        self.keep = False
-        self.sockfd.shutdown(socket.SHUT_WR)
+        self.keep = 0
+        if self.conn:
+            self.clientsock.shutdown(2)
+            self.clientsock.close()
+            self.conn = False
+
+        self.sockfd.shutdown(socket.SHUT_RDWR)
+        self.sockfd.close()
         self.gom.echo( ">>>> Server Terminated <<<<<", False)
 
     def create_remote_listener(self, port, host, platform=''):

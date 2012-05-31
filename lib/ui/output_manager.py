@@ -122,6 +122,14 @@ class OutputManager:
             self.ing.log_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
 
     #
+    # Listeners methods
+    #
+
+    def update_listener_status(self, host, port):
+        self.echo("Updating listener %s at port %s" % (host, port), False)
+        self.ing.treeview.update_listener(host, str(port))
+
+    #
     # Statusbar output methods
     #
     def insert_sb_text(self, text):

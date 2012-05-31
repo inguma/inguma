@@ -60,3 +60,4 @@ class ListenersMenu(gtk.MenuBar):
         self.uicore.listeners.pop(self.host + '_' + self.port)
         self.gom.echo('Killed listener at port: ' + str(self.port), False)
         self.tree.fill_listeners_list()
+        self.tree.connections.remove(self.port)
