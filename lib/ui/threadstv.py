@@ -159,9 +159,9 @@ class ThreadsTv:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
-                treeview.set_cursor( path, col, 0)
+                treeview.set_cursor(path, col, 0)
 
-                print "Right Clicked!"
+#                print "Right Clicked!"
 #                treeiter = self.liststore.get_iter(path)
 #                threadid = self.liststore.get_value(treeiter ,0)
 #
