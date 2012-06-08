@@ -165,6 +165,7 @@ class MenuBar(gtk.Menu):
     def _bye(self, widget):
         msg = ("Do you really want to quit?")
         dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
+        dlg.set_default_response(gtk.RESPONSE_YES)
         opt = dlg.run()
         dlg.destroy()
 
@@ -303,6 +304,7 @@ class MenuBar(gtk.Menu):
                 nmapParser.insertData(self.uicore, nmapData)
 
                 askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
+                askASN.set_default_response(gtk.RESPONSE_YES)
                 do_asn = askASN.run()
 
                 self.gom.echo( 'Loaded\nUpdating Graph', False)

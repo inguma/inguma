@@ -285,7 +285,7 @@ class KBtree(gtk.TreeView):
                 for port in kb[host + '_tcp_ports']:
                     icon = gtk.Image()
                     icon = icon.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
-                    port_iter = self.treestore.append( piter, [icon, port + '/TCP', None])
+                    port_iter = self.treestore.append( piter, [icon, str(port) + '/TCP', None])
                     if host + '_'+ str(port) + '-web-vulns' in kb.keys():
                         for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
                             if id not in ids.keys():
