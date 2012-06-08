@@ -145,7 +145,7 @@ class TargetDialog(popup_dialog.PopupDialog):
 
             # Update graph
             self.uicore.getDot(doASN=False)
-            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            self.xdotw.set_dotcode( self.uicore.get_last_dot() )
             
 
     def run_modules(self, type):
@@ -189,8 +189,8 @@ class TargetDialog(popup_dialog.PopupDialog):
 
             self.uicore.getDot(doASN=False)
 
-            self.gom.kbwin.update_tree()
-            self.gom.update_graph( self.uicore.get_kbfield('dotcode') )
+            self.gom.kbwin.update_targets_tree()
+            self.gom.update_graph()
 
     def get_active_text(self, combobox):
         model = combobox.get_model()

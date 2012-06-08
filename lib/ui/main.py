@@ -216,7 +216,7 @@ class MainApp(gtk.Window):
         setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=False)
 
-        self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
         self.xdotw.zoom_image(1.0)
 
         #################################################################
@@ -561,7 +561,7 @@ class MainApp(gtk.Window):
         self.kbfile = ''
 
         # Update Map
-        self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
         self.treeview.update_targets_tree()
         self.treeview.expand_all()
         self.xdotw.zoom_image(1.0)

@@ -82,18 +82,18 @@ class GraphMenu(gtk.VBox):
     def _dir(self, widg, where):
         ret = self.uicore.set_direction(where)
         if ret:
-            self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            self.graph.set_dotcode( self.uicore.get_last_dot() )
 
     def _on_toggle(self, widget):
         self._zoom(widget, '100')
         if self.clusterBtn.get_active():
             self.clusterBtn.set_property("image", self.img_full)
             self.uicore.getFolded()
-            self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            self.graph.set_dotcode( self.uicore.get_last_dot() )
         else:
             self.clusterBtn.set_property("image", self.img_leave)
             self.uicore.getDot(False)
-            self.graph.set_dotcode( self.uicore.get_kbfield('dotcode') )
+            self.graph.set_dotcode( self.uicore.get_last_dot() )
 
 #    def _addTarget(self, widg):
 #        addw = addtarget.TargetDialog()

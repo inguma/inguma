@@ -41,7 +41,8 @@ def runModule(vars, module, dict, om=None):
 
         if glob.isGui == True:
             objModule.gom.uicore.getDot(False)
-            objModule.gom.map.set_dotcode( dict['dotcode'] )
+            objModule.gom.update_graph()
+            #objModule.gom.map.set_dotcode( dict['dotcode'] )
 
             objModule.gom.kbwin.update_targets_tree()
             #objModule.gom.map.set_filter('twopi')

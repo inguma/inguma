@@ -86,7 +86,7 @@ class UIManager(gtk.UIManager):
 
     def doNormal(self, widget):
         self.uicore.getDot(False)
-        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdot.set_dotcode( self.uicore.get_last_dot() )
 
     def geoIp(self, widget):
         geodb_path = get_profile_file_path( 'data' + os.sep + 'GeoLiteCity.dat')
@@ -114,16 +114,16 @@ class UIManager(gtk.UIManager):
         if thread.isAlive() == True:
             return True
         else:
-            self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.update_tree()
+            self.xdot.set_dotcode( self.uicore.get_last_dot() )
+            self.gom.kbwin.update_targets_tree()
             return False
 
     def doToFrom(self, widget, type):
         self.xdot.on_zoom_100(None)
         self.uicore.getToFromDot(type[0])
-        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdot.set_dotcode( self.uicore.get_last_dot() )
 
     def doWeighted(self, widget, type):
         self.xdot.on_zoom_100(None)
         self.uicore.getWeighted(type[0])
-        self.xdot.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdot.set_dotcode( self.uicore.get_last_dot() )
