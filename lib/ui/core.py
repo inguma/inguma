@@ -20,7 +20,7 @@ import sys
 sys.path.append('../..')
 import gobject
 
-import os, platform, tempfile
+import pickle, os, platform, tempfile
 import inguma
 
 import threading
@@ -57,6 +57,26 @@ class UIcore():
         self.listener = liblistener.Listener(self.gom)
 
         self.listeners = {}
+
+
+    #########################################################
+    # TO REMOVE ONCE lib.kb works for ginguma
+    #########################################################
+
+    def loadKB(self, res):
+        input = open(res, 'r')
+        inguma.user_data = pickle.load(input)
+        self.user_data = inguma.user_data
+        if inguma.target == "":
+            if inguma.user_data.has_key("target"):
+                #print "Setting target (%s)" % inguma.user_data["target"]
+                inguma.target = inguma.user_data["target"]
+        input.close()
+
+    def saveKB(self, res):
+        output = open(res, 'wb')
+        pickle.dump(inguma.user_data, output)
+        output.close()
 
     def add_local_asn(self):
         inguma.user_data['graph'] = { 'ASNs':{}, 'ASDs':{} }
