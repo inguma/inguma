@@ -63,7 +63,7 @@ class Systray(gtk.StatusIcon):
         # add quit item
         quit_item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         quit_item.show()
-        quit_item.connect('activate', self.main.quit, None)
+        quit_item.connect('activate', self.main._quit, None)
         menu.append(quit_item)
 
         menu.popup(None, None, gtk.status_icon_position_menu,

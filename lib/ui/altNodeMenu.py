@@ -1,25 +1,23 @@
 ##      altNodeMenu.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import pygtk
 import gtk, gobject
-
 import threading
 
 class UIManager(gtk.UIManager):
@@ -72,7 +70,8 @@ class UIManager(gtk.UIManager):
 
     def remove_node(self, widget):
 
-        askRemove = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="Are you sure you want ro remove that node?")
+        askRemove = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="Are you sure you want to remove that node?")
+        askRemove.set_default_response(gtk.RESPONSE_YES)
         do_remove = askRemove.run()
 
         if do_remove == gtk.RESPONSE_YES:
@@ -81,7 +80,7 @@ class UIManager(gtk.UIManager):
             t = threading.Thread(target=self.uicore.remove_node, args=(self.ip,))
             t.start()
             self.threadtv.add_action('Removing node', self.ip, t)
-    
+
             gobject.timeout_add(1000, self.update_graph, t)
         else:
             pass

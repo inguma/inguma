@@ -190,6 +190,7 @@ class Toolbar(gtk.HBox):
     def _bye(self, widget):
         msg = ("Do you really want to quit?")
         dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
+        dlg.set_default_response(gtk.RESPONSE_YES)
         opt = dlg.run()
         dlg.destroy()
 

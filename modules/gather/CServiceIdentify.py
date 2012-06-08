@@ -26,8 +26,6 @@ import sys
 import time
 import socket
 
-from impacket import smb
-
 from lib.libtns import *
 from lib.module import CIngumaGatherModule
 
@@ -461,6 +459,12 @@ class CServiceIdentify(CIngumaGatherModule):
             return False
 
     def trySmbServer(self, port):
+        try:
+            from impacket import smb
+        except:
+            self.gom.echo('impacket Python module not found, SMB scanning not available')
+            return False
+
         try:
             if port not in ["135", "139", "445"]:
                 return False

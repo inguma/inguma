@@ -50,6 +50,7 @@ class CPortScan(CIngumaGatherModule):
     exploitType = 1
     results = {}
     dict = None
+    mac = {}
 
     def help(self):
         self.gom.echo("target = <target host or network>")

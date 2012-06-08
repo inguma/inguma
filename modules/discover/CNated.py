@@ -100,13 +100,13 @@ class CNated(CIngumaDiscoverModule):
                 if self.dict.has_key(self.target + "_tcp_ports"):
                     return self.check_is_nated()
                 else:
-                    self.gom.echo("Can't check NATed ports for " + self.target + " without ports scanned")
+                    self.gom.echo("Can't check NATed ports for " + str(self.target) + " without ports scanned")
                     self.gom.echo("Perform a portscan or tcpscan over " + self.target)
             else:
                 if self.is_nated_port(self.port):
-                    self.gom.echo("Port " + self.port + " is NATed")
+                    self.gom.echo("Port " + str(self.port) + " is NATed")
                 else:
-                    self.gom.echo("Port " + self.port + " is NOT NATed")
+                    self.gom.echo("Port " + str(self.port) + " is NOT NATed")
 
             return True
         else:
