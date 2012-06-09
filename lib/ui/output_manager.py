@@ -39,6 +39,7 @@ class OutputManager:
         self.ing = ing
         self.iface = iface
         self.debug = debug
+        self.dot_file = ''
 
         if self.iface != 'gui' and self.iface != 'console':
             print "Output interface not valid, must be 'gui' or 'console'"
@@ -92,9 +93,12 @@ class OutputManager:
 
         return False
 
-    def update_graph(self, dotcode):
+    def update_graph(self):
 
-        self.map.set_dotcode(dotcode)
+        f = open(self.dot_file, 'r')
+        dot = f.read()
+        f.close()
+        self.map.set_dotcode(dot)
 
     def create_module_dialog(self):
 

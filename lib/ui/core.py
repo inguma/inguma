@@ -20,7 +20,7 @@ import sys
 sys.path.append('../..')
 import gobject
 
-import os, platform
+import pickle, os, platform, tempfile
 import inguma
 
 import threading
@@ -57,6 +57,26 @@ class UIcore():
         self.listener = liblistener.Listener(self.gom)
 
         self.listeners = {}
+
+
+    #########################################################
+    # TO REMOVE ONCE lib.kb works for ginguma
+    #########################################################
+
+    def loadKB(self, res):
+        input = open(res, 'r')
+        inguma.user_data = pickle.load(input)
+        self.user_data = inguma.user_data
+        if inguma.target == "":
+            if inguma.user_data.has_key("target"):
+                #print "Setting target (%s)" % inguma.user_data["target"]
+                inguma.target = inguma.user_data["target"]
+        input.close()
+
+    def saveKB(self, res):
+        output = open(res, 'wb')
+        pickle.dump(inguma.user_data, output)
+        output.close()
 
     def add_local_asn(self):
         inguma.user_data['graph'] = { 'ASNs':{}, 'ASDs':{} }
@@ -210,7 +230,7 @@ class UIcore():
                 steps.append(inguma.user_data[target + '_trace'])
             except:
                 pass
-#        print "Steps", steps, "\n"
+        #print "Steps", steps, "\n"
 
         return steps
 
@@ -226,17 +246,39 @@ class UIcore():
     def getWeighted(self, type):
         self.xdot.set_filter('dot')
         dotcode = dotgen.graph_weighted(inguma.user_data, type)
-        inguma.user_data['dotcode'] = dotcode
+        self.save_dot(dotcode)
 
     def getToFromDot(self, type):
         self.xdot.set_filter('neato')
         dotcode = dotgen.graph_to_from(inguma.user_data, type)
-        inguma.user_data['dotcode'] = dotcode
+        self.save_dot(dotcode)
 
     def getFolded(self):
         self.xdot.set_filter('neato')
         dotcode = dotgen.generate_folded(inguma.user_data)
-        inguma.user_data['dotcode'] = dotcode
+        self.save_dot(dotcode)
+
+    def get_last_dot(self):
+        if self.gom.dot_file:
+            f = open(self.gom.dot_file, 'r')
+            dot = f.read()
+            f.close()
+
+            return dot
+        else:
+            return False
+
+    def save_dot(self, dotcode):
+        if self.gom.dot_file:
+            os.unlink(self.gom.dot_file)
+        # We have to call it with False because otherwise the UAC in Win7 won't allow us to access the
+        # temporary file from two different processes.  So we will need to remove the file after closing it.
+        file = tempfile.NamedTemporaryFile(delete=False)
+
+        file.write(dotcode)
+        file.close()
+
+        self.gom.dot_file = file.name
 
     def getDot(self, doASN, direction='TD'):
         ''' Gets new dot code for graph '''
@@ -283,7 +325,7 @@ class UIcore():
             self.add_asds(ASDs)
 
         dotcode = dotgen.generate_dot(inguma.user_data, local, gw, direction)
-        inguma.user_data['dotcode'] = dotcode
+        self.save_dot(dotcode)
 
     def set_threadtv(self, threadtv):
         #print "Creating thread manager on core"

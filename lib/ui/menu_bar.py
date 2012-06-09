@@ -188,7 +188,7 @@ class MenuBar(gtk.Menu):
     def load_kb(self, widget, file=''):
         '''Creates dialogs to load a KB.'''
 
-        import lib.globals as glob
+#        import lib.globals as glob
 
 #        self.textview = self.main.textview
         self.treeview = self.main.treeview
@@ -220,10 +220,11 @@ class MenuBar(gtk.Menu):
         self.gom.echo( 'Loading KB...', False)
         self.gom.echo(  res + ' selected' , False)
         self.manager.add_item('file://' + res)
-        glob.kb.load(res)
+        #glob.kb.load(res)
+        self.uicore.loadKB(res)
 
         # Update Map
-        self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
+        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
         self.xdotw.zoom_image(1.0)
         # Update KB Tree
 #        self.textview.updateWin()
@@ -239,7 +240,7 @@ class MenuBar(gtk.Menu):
     def save_kb(self, widget):
         '''Creates dialogs to save a KB.'''
 
-        import lib.globals as glob
+        #import lib.globals as glob
         from lib.core import get_profile_file_path
 
         if self.main.kbfile == '':
@@ -252,7 +253,8 @@ class MenuBar(gtk.Menu):
 
             if response == gtk.RESPONSE_OK:
                 filename = chooser.get_filename()
-                glob.kb.save(filename)
+                self.uicore.saveKB(filename)
+                #glob.kb.save(filename)
                 self.gom.echo(filename + ' selected' , False)
                 libAutosave.remove_kb()
                 self.manager.add_item('file://' + filename)
@@ -261,7 +263,8 @@ class MenuBar(gtk.Menu):
                 self.gom.echo('Closed, no files selected', False)
             chooser.destroy()
         else:
-            glob.kb.save(self.main.kbfile)
+            self.uicore.saveKB(self.main.kbfile)
+            #glob.kb.save(self.main.kbfile)
             self.gom.echo(self.main.kbfile + ' selected', False)
             libAutosave.remove_kb()
 
@@ -343,8 +346,8 @@ class MenuBar(gtk.Menu):
 
                 # Update graph and KB tree
                 self.uicore.getDot(doASN=False)
-                self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-                self.gom.kbwin.update_tree()
+                self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+                self.gom.kbwin.update_targets_tree()
             except:
                 print "Your lack of faith on my parsing capabilities is disturbing..."
 
@@ -361,8 +364,8 @@ class MenuBar(gtk.Menu):
             self.xdotw = self.main.xdotw
             self.uicore = self.main.uicore
 
-            self.xdotw.set_dotcode( self.uicore.get_kbfield('dotcode') )
-            self.gom.kbwin.update_tree()
+            self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+            self.gom.kbwin.update_targets_tree()
             return False
 
     def show_wiki(self, widget):
