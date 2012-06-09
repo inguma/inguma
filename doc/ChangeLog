@@ -12,6 +12,12 @@ Version 0.5 (released ??-Jun-2012)
     * All modules have cleaned up and converted to a new version of
       CIngumaModule, more modular and extensible.
     * Integration of Bokken 1.5.
+    * Listeners, a new feature to get connected back to exploits in remote
+      servers.
+    * The Terminals tab has been given love ad merged with the Listeners.
+    * Relicensed all the code from original author (Joxean) to GPL 2+ with his
+      blessing.
+    * Bug fixes, bug fixes, bug fixes, bug fixes, and bug fixes.
 
 Version 0.4 (released 14-Sep-2011)
     * Added systray
