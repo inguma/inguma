@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# encoding: utf-8
 """
 Inguma Penetration Testing Toolkit
 Copyright (c) 2006, 2007, 2008 Joxean Koret, joxeankoret [at] yahoo.es

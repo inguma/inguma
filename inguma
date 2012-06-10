@@ -1,0 +1,14 @@
+#!/bin/sh
+
+PYTHON_EXECUTABLE="python"
+PYTHON_VER=`python -V 2>&1 |sed 's,Python \(.\)\..*,\1,'`
+INGUMA_DIR=`dirname $0`
+
+if [ "$PYTHON_VER" -eq 3 ];then
+    # The python executable points to Python 3.
+    PYTHON_EXECUTABLE="python2"
+fi
+
+# distorm in bokken+pyew mode needs this for now.
+export LD_LIBRARY_PATH=$INGUMA_DIR/lib
+$PYTHON_EXECUTABLE $INGUMA_DIR/inguma.py $@
