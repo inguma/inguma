@@ -224,6 +224,7 @@ class MenuBar(gtk.Menu):
         self.uicore.loadKB(res)
 
         # Update Map
+        self.uicore.getDot(doASN=False)
         self.xdotw.set_dotcode( self.uicore.get_last_dot() )
         self.xdotw.zoom_image(1.0)
         # Update KB Tree
@@ -364,6 +365,7 @@ class MenuBar(gtk.Menu):
             self.xdotw = self.main.xdotw
             self.uicore = self.main.uicore
 
+            self.uicore.getDot(doASN=False)
             self.xdotw.set_dotcode( self.uicore.get_last_dot() )
             self.gom.kbwin.update_targets_tree()
             return False
