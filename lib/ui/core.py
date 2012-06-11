@@ -268,6 +268,10 @@ class UIcore():
         else:
             return False
 
+    def remove_dot_file(self):
+        if self.gom.dot_file:
+            os.unlink(self.gom.dot_file)
+
     def save_dot(self, dotcode):
         if self.gom.dot_file:
             os.unlink(self.gom.dot_file)

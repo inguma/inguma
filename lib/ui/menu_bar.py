@@ -174,6 +174,7 @@ class MenuBar(gtk.Menu):
 
         self.gom.echo( 'Killing all listeners', False)
         self.uicore.kill_all_listeners()
+        self.uicore.remove_dot_file()
         gtk.main_quit()
         return False
 

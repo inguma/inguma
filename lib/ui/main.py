@@ -561,6 +561,7 @@ class MainApp(gtk.Window):
         self.kbfile = ''
 
         # Update Map
+        self.uicore.getDot(False)
         self.xdotw.set_dotcode( self.uicore.get_last_dot() )
         self.treeview.update_targets_tree()
         self.treeview.expand_all()
@@ -656,6 +657,7 @@ class MainApp(gtk.Window):
 
         self.gom.echo( 'Killing all listeners', False)
         self.uicore.kill_all_listeners()
+        self.uicore.remove_dot_file()
         self.gom.echo( 'Exit!', False)
         gtk.main_quit()
         if glob.http_server:
