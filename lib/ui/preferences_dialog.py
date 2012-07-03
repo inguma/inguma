@@ -46,29 +46,82 @@ class PropDialog(popup_dialog.PopupDialog):
         #########################################################
         # Main Table
         self.main_table = gtk.Table(rows=3, columns=2, homogeneous=True)
-        self.main_table.set_row_spacings(2)
-        self.main_table.set_col_spacings(2)
+        self.main_table.set_row_spacings(0)
+        self.main_table.set_col_spacings(0)
 
         # Label to add table to Notebook
         self.main_lbl = gtk.Label('Main')
 
         # Choose network iface
-        self.iface_lbl = gtk.Label('Network interface')
-        self.iface_combo = gtk.combo_box_new_text()
+        self.iface_lbl = gtk.Label('Network interface:')
+
+        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
+        self.iface_combo = gtk.ComboBox(store)
+        rendererText = gtk.CellRendererText()
+        rendererPix = gtk.CellRendererPixbuf()
+        self.iface_combo.pack_start(rendererPix, False)
+        self.iface_combo.pack_start(rendererText, True)
+        self.iface_combo.add_attribute(rendererPix, 'pixbuf', 0)
+        self.iface_combo.add_attribute(rendererText, 'text', 1)
+        self.iface_combo_align = gtk.Alignment(yalign=0.5, xalign=0.5)
+        self.iface_combo_align.add(self.iface_combo)
 
         # fill and select interfaces
         count = 0
         active_iface = self.uicore.get_interface()
+        icon = gtk.Image()
+        #icon.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
+        icon = icon.render_icon(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
         for iface in self.uicore.get_interfaces():
-            self.iface_combo.append_text(iface)
+            store.append([icon, iface])
             if iface == active_iface:
                 i = count
             count += 1
         self.iface_combo.set_active(i)
 
+        # IP address label
+        self.ip_label = gtk.Label()
+        model = self.iface_combo.get_model()
+        active = self.iface_combo.get_active()
+        active_iface = model[active][1]
+        ip_addr = self.uicore.get_iface_ip(active_iface)
+        self.ip_label.set_text(ip_addr)
+        #self.ip_label.set_padding(4, 0)
+        ip_halign = gtk.Alignment(xalign=0.5)
+        ip_halign.add(self.ip_label)
+
+        self.iface_combo.connect('changed', self.get_ip)
+
+        # Apply and Cancel buttons
+        btn_hbox = gtk.HBox(False)
+
+        image = gtk.Image()
+        #  (from http://www.pygtk.org/docs/pygtk/gtk-stock-items.html)
+        image.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_MENU)
+        self.apply_btn = gtk.Button()
+        self.apply_btn.set_image(image)
+        self.apply_btn.set_label("")
+        self.apply_btn.connect("clicked", self.set_interface)
+
+        image = gtk.Image()
+        #  (from http://www.pygtk.org/docs/pygtk/gtk-stock-items.html)
+        image.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_MENU)
+        self.cancel_btn = gtk.Button()
+        self.cancel_btn.set_image(image)
+        self.cancel_btn.set_label("")
+        self.cancel_btn.connect("clicked", self._bye)
+
+        btn_hbox.pack_start(self.cancel_btn, False, False, 1)
+        btn_hbox.pack_start(self.apply_btn, False, False, 1)
+
+        btn_halign = gtk.Alignment(yalign=1.0, xalign=1.0)
+        btn_halign.add(btn_hbox)
+
         # Add elements to Table
         self.main_table.attach(self.iface_lbl, 0, 1, 0, 1)
-        self.main_table.attach(self.iface_combo, 1, 2, 0, 1)
+        self.main_table.attach(self.iface_combo_align, 1, 2, 0, 1)
+        self.main_table.attach(ip_halign, 1, 2, 1, 2)
+        self.main_table.attach(btn_halign, 1, 2, 2, 3)
 
         # Add Table to Notebook
         self.prefs_nb.append_page(self.main_table, self.main_lbl)
@@ -115,18 +168,29 @@ class PropDialog(popup_dialog.PopupDialog):
         # Finish
         self.show_all()
 
+    def get_ip(self, widget):
+        '''get IP address of selected iface and change ip label'''
+
+        model = self.iface_combo.get_model()
+        active = self.iface_combo.get_active()
+        active_iface = model[active][1]
+        ip_addr = self.uicore.get_iface_ip(active_iface)
+        self.ip_label.set_text(ip_addr)
+
     def get_selected_iface(self):
         model = self.iface_combo.get_model()
         active = self.iface_combo.get_active()
         if active < 0:
             return None
-        return model[active][0]
+        return model[active][1]
 
     def set_interface(self, widget):
         iface = self.get_selected_iface()
         if iface:
             self.uicore.set_interface(iface)
-        self.dialog.destroy()
+            ip = self.ip_label.get_text()
+            self.gom.echo( "New active network interface: %s (%s)" % (iface, ip) , False)
+        self._quit(widget)
 
     def update_exploits(self, widget):
         import lib.ui.exploits as exploits
@@ -199,3 +263,6 @@ class PropDialog(popup_dialog.PopupDialog):
         else:
             widget.set_sensitive(True)
             return False
+
+    def _bye(self, widget):
+        self._quit(widget)
