@@ -155,7 +155,7 @@ class NmapScan:
             self.uicore.getDot(doASN=False)
 
             self.gom.update_graph()
-            self.gom.kbwin.update_targets_tree()
+            self.gom.kbwin.update_tree()
 
     def show_help(self):
         help = os.popen('nmap --help')

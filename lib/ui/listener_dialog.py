@@ -30,6 +30,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
         # Core instance for manage the KB
         self.main = main
+        self.treeview = self.main.treeview
         self.uicore = main.uicore
         self.gom = main.gom
         self.button = button
@@ -181,6 +182,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
         if port and port != 'Port to listen':
             self.uicore.create_listener(host, int(port))
             self._quit(widget)
+            self.treeview.update_tree()
         else:
             widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
 
@@ -194,5 +196,6 @@ class ListenerDialog(popup_dialog.PopupDialog):
         if port and port != 'Port to listen':
             self.uicore.create_listener(host, int(port))
             self._quit(widget)
+            self.treeview.update_tree()
         else:
             widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)

@@ -37,7 +37,7 @@ class KBtree(gtk.TreeView):
         self.uicore = core
         self.node_menu = main.uiman
 
-        self.active_mode = 'Vulnerabilities'
+        self.active_mode = 'Targets'
 
         self.handler = None
 
@@ -487,3 +487,6 @@ class KBtree(gtk.TreeView):
                     menu = self.listener_popup.create_menu(node, self.liststore[path][2])
                     menu.popup(None, None, None, 1, event.time)
                     menu.show_all()
+
+    def update_tree(self):
+        self.create_model(self.active_mode)

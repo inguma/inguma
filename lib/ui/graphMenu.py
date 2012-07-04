@@ -115,7 +115,7 @@ class UIManager(gtk.UIManager):
             return True
         else:
             self.xdot.set_dotcode( self.uicore.get_last_dot() )
-            self.gom.kbwin.update_targets_tree()
+            self.gom.kbwin.update_tree()
             return False
 
     def doToFrom(self, widget, type):

@@ -550,7 +550,7 @@ class MainApp(gtk.Window):
                 libAutosave.remove_kb()
 
                 # Update KB Tree
-                self.treeview.update_targets_tree()
+                self.treeview.update_tree()
 
                 # Adding text to Log window
                 self.gom.echo( 'Loaded' , False)
@@ -563,7 +563,7 @@ class MainApp(gtk.Window):
         # Update Map
         self.uicore.getDot(False)
         self.xdotw.set_dotcode( self.uicore.get_last_dot() )
-        self.treeview.update_targets_tree()
+        self.treeview.update_tree()
         self.treeview.expand_all()
         self.xdotw.zoom_image(1.0)
 

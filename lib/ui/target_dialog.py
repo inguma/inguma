@@ -189,7 +189,7 @@ class TargetDialog(popup_dialog.PopupDialog):
 
             self.uicore.getDot(doASN=False)
 
-            self.gom.kbwin.update_targets_tree()
+            self.gom.kbwin.update_tree()
             self.gom.update_graph()
 
     def get_active_text(self, combobox):
