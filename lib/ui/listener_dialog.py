@@ -146,7 +146,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
         rendererText = gtk.CellRendererText()
         column = gtk.TreeViewColumn("", rendererText, text=0)
-        column.set_sort_column_id(0)    
+        column.set_sort_column_id(0)
         treeView.append_column(column)
         treeView.set_headers_visible(False)
 

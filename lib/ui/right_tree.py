@@ -1,17 +1,17 @@
 ##      right_tree.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -36,6 +36,8 @@ class KBtree(gtk.TreeView):
         self.gom = self.main.gom
         self.uicore = core
         self.node_menu = main.uiman
+
+        self.active_mode = 'Vulnerabilities'
 
         self.handler = None
 
@@ -185,6 +187,9 @@ class KBtree(gtk.TreeView):
 
         return btn
 
+    def update_model(self):
+        self.create_model(self.active_mode)
+
     def create_model(self, mode):
         # Clear before changing contents
         self.treestore.clear()
@@ -193,18 +198,21 @@ class KBtree(gtk.TreeView):
         if mode == 'Targets':
             self.create_targets_tree()
             self.update_targets_tree()
+            self.active_mode = 'Targets'
         elif mode == 'Vulnerabilities':
             self.create_targets_tree()
             self.create_vulns_tree()
+            self.active_mode = 'Vulnerabilities'
         elif mode == 'Listeners':
             self.create_listeners_list()
             self.fill_listeners_list()
+            self.active_mode = 'Listeners'
 
         # Update all
         self.expand_all()
 
     def remove_columns(self):
-        columns = self.get_columns() 
+        columns = self.get_columns()
         for column in columns:
             self.remove_column(column)
 

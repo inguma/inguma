@@ -87,8 +87,8 @@ class PopupDialog(gtk.Window):
         self.vbox.reorder_child(content, 1)
 
     def _quit(self, widget):
-        self.button.handler_block(self.button.handler)
+        #self.button.handler_block(self.button.handler)
         self.button.set_active(False)
-        self.button.handler_unblock(self.button.handler)
+        #self.button.handler_unblock(self.button.handler)
 
         self.destroy()
