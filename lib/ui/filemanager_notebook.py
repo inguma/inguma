@@ -161,6 +161,7 @@ class FileManagerNotebook(gtk.Notebook):
         files = []
         folders = ['..']
         for filename in elements:
+            #if filename[0] != '.':
             filepath = os.path.join(path, filename)
             if os.path.isdir(filepath):
                 folders.append(filename)

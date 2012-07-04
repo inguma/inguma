@@ -22,7 +22,9 @@ import gtk, pango
 import gobject
 import pwd
 import psutil
+
 import lib.ui.config as config
+import lib.ui.listener_shell as listener_shell
 
 if config.HAS_VTE:
     import vte
@@ -47,6 +49,19 @@ class TerminalNotebook(gtk.Notebook):
         self.add_new_tab(self)
         gobject.timeout_add(500, self._update_cwd)
         self.show_all()
+
+        ####################### FIXME ###########################
+#        # Just for testing!!! WILL BE REMOVED
+#        self.l_shell = listener_shell.ListenerShell()
+#        self.append_page(self.l_shell)
+#        
+#        label = self.create_tab_label('Listener shell', self.l_shell)
+#        label.show_all()
+#        
+#        image = gtk.Image()
+#        self.set_tab_label_packing(image, True, True, gtk.PACK_START)
+#        self.set_tab_label(self.l_shell, label)
+        ####################### FIXME ###########################
 
     def new_tab(self, command='', cwd='', args=[]):
         hbox = gtk.HBox(False, 3)
@@ -86,7 +101,8 @@ class TerminalNotebook(gtk.Notebook):
     def create_tab_label(self, title, tab_child):
         box = gtk.HBox(False, 1)
         # Tab text label
-        label = gtk.Label('Terminal')
+        #label = gtk.Label('Terminal')
+        label = gtk.Label(title)
         small = pango.AttrScale(pango.SCALE_SMALL, 0, -1)
         label_attributes = pango.AttrList()
         label_attributes.insert(small)
