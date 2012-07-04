@@ -51,7 +51,63 @@ class FileManagerNotebook(gtk.Notebook):
         # Scrolled Window and Co
         #################################################################
 
+        # Navigation uuttons and search box
+        self.nav_hbox = gtk.HBox(False)
+
+        self.home_btn = gtk.Button()
+        self.home_icon = gtk.Image()
+        self.home_icon.set_from_stock(gtk.STOCK_HOME, gtk.ICON_SIZE_MENU)
+        self.home_btn.set_image(self.home_icon)
+        self.home_btn.set_relief(gtk.RELIEF_NONE)
+        self.home_btn.set_tooltip_text('Go home directory')
+        self.home_btn.connect('clicked', self._go_home)
+
+        self.go_up_btn = gtk.Button()
+        self.go_up_icon = gtk.Image()
+        self.go_up_icon.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+        self.go_up_btn.set_image(self.go_up_icon)
+        self.go_up_btn.set_relief(gtk.RELIEF_NONE)
+        self.go_up_btn.set_tooltip_text('Go UP one directory')
+        self.go_up_btn.connect('clicked', self._go_up)
+
+        self.hidden_btn = gtk.ToggleButton()
+        self.hidden_icon = gtk.Image()
+        self.hidden_icon.set_from_stock(gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU)
+        self.hidden_btn.set_image(self.hidden_icon)
+        self.hidden_btn.set_relief(gtk.RELIEF_NONE)
+        self.hidden_btn.set_tooltip_text('Show/Hide hidden elements')
+        self.hidden_btn.set_active(True)
+        self.hidden_btn.connect('toggled', self._set_show_hidden)
+
+        sep = gtk.VSeparator()
+
+        self.new_term_btn = gtk.Button()
+        self.new_term_icon = gtk.Image()
+        self.new_term_icon.set_from_pixbuf(self.term_icon)
+        self.new_term_btn.set_image(self.new_term_icon)
+        self.new_term_btn.set_relief(gtk.RELIEF_NONE)
+        self.new_term_btn.set_tooltip_text('Open terminal in current directory')
+        self.new_term_btn.connect('clicked', self._new_term)
+
+        sep2 = gtk.VSeparator()
+
+        self.tgt_entry = gtk.Entry(20)
+        self.tgt_entry.set_icon_from_stock(1, gtk.STOCK_CLEAR)
+        self.tgt_entry.set_icon_tooltip_text(1, 'Clear entry')
+        self.tgt_entry.connect('icon-press', self._clear_entry)
+        #self.tgt_entry.connect('changed', self._do_filter)
+        self.tgt_entry.set_sensitive(False)
+
+        self.nav_hbox.pack_start(self.home_btn, False, False, 0)
+        self.nav_hbox.pack_start(self.go_up_btn, False, False, 0)
+        self.nav_hbox.pack_start(self.hidden_btn, False, False, 0)
+        self.nav_hbox.pack_start(sep, False, False, 2)
+        self.nav_hbox.pack_start(self.new_term_btn, False, False, 0)
+        self.nav_hbox.pack_start(sep2, False, False, 2)
+        self.nav_hbox.pack_start(self.tgt_entry, True, True, 0)
+
         # Scrolledwindow/Treeview
+        self.file_vb = gtk.VBox(False, 0)
         self.file_sw = gtk.ScrolledWindow()
         self.file_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.mark_sw = gtk.ScrolledWindow()
@@ -69,6 +125,8 @@ class FileManagerNotebook(gtk.Notebook):
 
         # Add Textview to Scrolled Window
         self.file_sw.add_with_viewport(self.file_tree)
+        self.file_vb.pack_start(self.nav_hbox, False, False, 1)
+        self.file_vb.pack_start(self.file_sw, True, True, 1)
 
         self._create_tabs()
         #self.create_dir_menu()
@@ -82,13 +140,32 @@ class FileManagerNotebook(gtk.Notebook):
 
     def on_dir__button_press_event(self, terminal, event):
         if event.button == 3:
-            (path, column, x, y) = self.file_tree.get_path_at_pos(int(event.x), int(event.y))
-            if path is not None:
-                node = self.liststore[path][1]
-                dir = os.path.join(self.path, node)
-                if os.path.isdir(dir):
-                    self.create_dir_menu(dir)
-                    self.dir_menu.popup(None, None, None, 1, event.time)
+            var = self.file_tree.get_path_at_pos(int(event.x), int(event.y))
+            if var:
+                (path, column, x, y) = var
+                if path is not None:
+                    node = self.liststore[path][1]
+                    dir = os.path.join(self.path, node)
+                    if os.path.isdir(dir):
+                        self.create_dir_menu(dir)
+                        self.dir_menu.popup(None, None, None, 1, event.time)
+
+    def _go_home(self, widget):
+        home = os.path.expanduser('~')
+        self.fill_file_list(home)
+
+    def _go_up(self, widget):
+        self.update_file_list(widget, os.path.join(self.path, '..'))
+
+    def _set_show_hidden(self, widget):
+        self.update_file_list(widget, self.path)
+
+    def _clear_entry(self, entry, icon_pos, event):
+        entry.set_text('')
+        #self.modelfilter.refilter()
+
+    def _new_term(self, widget):
+        self._start_term(widget, self.path)
 
     def create_dir_menu(self, dir):
         self.dir_menu = gtk.Menu()
@@ -110,7 +187,7 @@ class FileManagerNotebook(gtk.Notebook):
     def _create_tabs(self):
         icon = gtk.Image()
         icon.set_from_pixbuf(self.folder_icon)
-        self.append_page(self.file_sw, icon)
+        self.append_page(self.file_vb, icon)
         icon = gtk.Image()
         icon.set_from_pixbuf(self.mark_icon)
         self.append_page(self.mark_sw, icon)
@@ -161,7 +238,8 @@ class FileManagerNotebook(gtk.Notebook):
         files = []
         folders = ['..']
         for filename in elements:
-            #if filename[0] != '.':
+            if self.hidden_btn.get_active() and filename[0] == '.':
+                continue
             filepath = os.path.join(path, filename)
             if os.path.isdir(filepath):
                 folders.append(filename)
