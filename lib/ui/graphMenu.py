@@ -25,21 +25,35 @@ import lib.ui.config as config
 
 from lib.core import get_profile_file_path
 
+# FIXME
+# Ugly hacks to make MenuItems look better
+# MUST rewrite the whole menu away from UImanager to normal menu widget
+# FIXME
+
 class UIManager(gtk.UIManager):
 
-    def __init__(self, gom, core):
+    def __init__(self, main):
         gtk.UIManager.__init__(self)
 
         self.ui_id = 0
-        self.gom = gom
-        self.uicore = core
+        self.main = main
+        self.gom = main.gom
+        self.uicore = main.uicore
+
+        graph_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation.png')
+        graph_icon_add = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        asn_search = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'asn_group.png')
+        geomap_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map_icon.png')
+        datalist_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'sitemap_color.png')
+        weight_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_line.png')
 
         self.graph_menu = '''
         <ui>
             <popup name="Popup">
-                <menu action="Graph options" position="top"></menu>
-                <menuitem action="options" position="top"/>
+                <menu action="Graph options"></menu>
+                <menuitem action="options"/>
                 <separator/>
+                <menuitem action="add_target"/>
                 <menuitem action="do_asn"/>
                 <separator/>
                 <menuitem action="asn_cluster"/>
@@ -53,8 +67,6 @@ class UIManager(gtk.UIManager):
             </popup>
         </ui>
         '''
-        self.uicore = core
-
         # Add the accelerator group
         self.accel = self.get_accel_group()
 
@@ -62,16 +74,17 @@ class UIManager(gtk.UIManager):
         self.actiongroup = gtk.ActionGroup('Popup')
 
         # Add actions
-        self.actiongroup.add_actions( [('Graph options', None, ' Graph Options ')] )
-        self.actiongroup.add_actions( [('options', None, ' Graph Options ')] )
-        self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, ' Get ASN ', None, 'ToolTip', self.doAsn )] )
-        self.actiongroup.add_actions( [('asn_cluster', gtk.STOCK_CONVERT, ' ASN Clustered ', None, 'ToolTip', self.doNormal )] )
-        self.actiongroup.add_actions( [('geoip', gtk.STOCK_CONVERT, ' GeoIP Map ', None, 'ToolTip', self.geoIp)] )
-        self.actiongroup.add_actions( [('get_to_from', gtk.STOCK_CONVERT, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
-        self.actiongroup.add_actions( [('get_from_to', gtk.STOCK_CONVERT, ' IP per Port ', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
-        self.actiongroup.add_actions( [('get_vulns_ip', gtk.STOCK_CONVERT, ' Vulns per Port ', None, 'ToolTip', self.doToFrom )], ['ports_vuln'] )
-        self.actiongroup.add_actions( [('get_weighted_ip', gtk.STOCK_CONVERT, ' Weighted IP ', None, 'ToolTip', self.doWeighted )], ['ip'] )
-        self.actiongroup.add_actions( [('get_weighted_port', gtk.STOCK_CONVERT, ' Weighted Ports ', None, 'ToolTip', self.doWeighted )], ['port'] )
+        self.actiongroup.add_actions( [('Graph options', None, '')] )
+        self.actiongroup.add_actions( [('options', None, '')] )
+        self.actiongroup.add_actions( [('add_target', gtk.STOCK_ADD, ' Add new target ', None, 'ToolTip', self.add_target )] )
+        self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, ' Get nodes ASN ', None, 'ToolTip', self.doAsn )] )
+        self.actiongroup.add_actions( [('asn_cluster', None, ' ASN Clustered ', None, 'ToolTip', self.doNormal )] )
+        self.actiongroup.add_actions( [('geoip', None, ' GeoIP Map ', None, 'ToolTip', self.geoIp)] )
+        self.actiongroup.add_actions( [('get_to_from', None, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
+        self.actiongroup.add_actions( [('get_from_to', None, ' IP per Port ', None, 'ToolTip', self.doToFrom )], ['ip_ports'] )
+        self.actiongroup.add_actions( [('get_vulns_ip', None, ' Vulns per Port ', None, 'ToolTip', self.doToFrom )], ['ports_vuln'] )
+        self.actiongroup.add_actions( [('get_weighted_ip', None, ' Weighted IP ', None, 'ToolTip', self.doWeighted )], ['ip'] )
+        self.actiongroup.add_actions( [('get_weighted_port', None, ' Weighted Ports ', None, 'ToolTip', self.doWeighted )], ['port'] )
 
         # Add the actiongroup to the uimanager
         self.insert_action_group(self.actiongroup, 0)
@@ -80,9 +93,24 @@ class UIManager(gtk.UIManager):
         self.add_ui_from_string(self.graph_menu)
 
         # Menu
-        ui_id = self.add_ui_from_string(self.graph_menu)
+        #ui_id = self.add_ui_from_string(self.graph_menu)
         #self.set_uiID(ui_id)
         self.popmenu = self.get_widget('/Popup')
+
+        # Decorate Menu items...
+        items = self.popmenu.get_children()
+        bold_title = items[1].get_children()[0]
+        bold_title.set_markup("<b> Graph options </b>")
+        items[3].set_image(gtk.image_new_from_pixbuf(graph_icon_add))
+        items[4].set_image(gtk.image_new_from_pixbuf(asn_search))
+        items[6].set_image(gtk.image_new_from_pixbuf(graph_icon))
+        items[7].set_image(gtk.image_new_from_pixbuf(geomap_icon))
+        for item in items[8:11]:
+            if type(item) is not gtk.SeparatorMenuItem:
+                item.set_image(gtk.image_new_from_pixbuf(datalist_icon))
+        for item in items[11:]:
+            if type(item) is not gtk.SeparatorMenuItem:
+                item.set_image(gtk.image_new_from_pixbuf(weight_icon))
 
     def doNormal(self, widget):
         self.uicore.getDot(False)
@@ -105,7 +133,7 @@ class UIManager(gtk.UIManager):
 
         t = threading.Thread(target=self.uicore.getDot, args=(True,))
         t.start()
-        self.threadtv.add_action('Get ASN', 'all nodes', t)
+        self.threadtv.add_action('Get nodes ASN', 'all nodes', t)
 
         gobject.timeout_add(1000, self.update_graph, t)
 
@@ -127,3 +155,6 @@ class UIManager(gtk.UIManager):
         self.xdot.on_zoom_100(None)
         self.uicore.getWeighted(type[0])
         self.xdot.set_dotcode( self.uicore.get_last_dot() )
+
+    def add_target(self, widget):
+        self.main.toolbar.add_tb.set_active(True)
