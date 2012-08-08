@@ -46,6 +46,7 @@ class FileManagerNotebook(gtk.Notebook):
         self.term_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
         self.mark_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'star.png')
         self.shell_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'computer_link.png')
+        self.import_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'arrow_join.png')
 
         #################################################################
         # Scrolled Window and Co
@@ -149,6 +150,9 @@ class FileManagerNotebook(gtk.Notebook):
                     if os.path.isdir(dir):
                         self.create_dir_menu(dir)
                         self.dir_menu.popup(None, None, None, 1, event.time)
+                    else:
+                        self.create_file_menu(dir)
+                        self.file_menu.popup(None, None, None, 1, event.time)
 
     def _go_home(self, widget):
         home = os.path.expanduser('~')
@@ -166,6 +170,20 @@ class FileManagerNotebook(gtk.Notebook):
 
     def _new_term(self, widget):
         self._start_term(widget, self.path)
+
+    def create_file_menu(self, file):
+        self.file_menu = gtk.Menu()
+        actions = [[self.import_icon, 'Import Nmap scan', self._import_scan_file], [self.import_icon, 'Import Hosts list', self._import_scan_file]]
+
+        for action in actions:
+            menuitem = gtk.ImageMenuItem()
+            menuitem.set_label('{0}'.format(action[1]))
+            icon = gtk.Image()
+            icon.set_from_pixbuf(action[0])
+            menuitem.set_image(icon)
+            menuitem.connect('activate', action[2], file)
+            self.file_menu.append(menuitem)
+        self.file_menu.show_all()
 
     def create_dir_menu(self, dir):
         self.dir_menu = gtk.Menu()
@@ -256,3 +274,10 @@ class FileManagerNotebook(gtk.Notebook):
         self.path = path
 
 #        self.handler = self.connect('button-press-event', self.listener_menu)
+
+    def _import_scan_file(self, widget, file):
+        type = widget.get_children()[0].get_text()
+        if 'Nmap' in type:
+            self.main.toolbar.menu.import_scan(self, 'nmap', file)
+        else:
+            self.main.toolbar.menu.import_scan(self, 'hosts', file)

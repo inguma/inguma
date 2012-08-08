@@ -200,7 +200,7 @@ class MainApp(gtk.Window):
         self.add_accel_group(accel)
 
         # graphMenu initialization stuff
-        self.graph_uiman = graphMenu.UIManager(self.gom, self.uicore)
+        self.graph_uiman = graphMenu.UIManager(self.ing)
         graph_accel = self.graph_uiman.get_accel_group()
         self.add_accel_group(graph_accel)
 

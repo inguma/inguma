@@ -96,13 +96,13 @@ class MenuBar(gtk.Menu):
 
         # Host list
         imp_hostsi = gtk.MenuItem('Host list')
-        imp_hostsi.connect('activate', self.import_scan, 'csv')
+        imp_hostsi.connect('activate', self.import_scan, 'hosts')
 
         self.append(imp_hostsi)
 
         # Nmap scan
         imp_nmapi = gtk.MenuItem('Nmap XML')
-        imp_nmapi.connect('activate', self.import_scan, 'namp')
+        imp_nmapi.connect('activate', self.import_scan, 'nmap')
 
         self.append(imp_nmapi)
 
@@ -272,7 +272,7 @@ class MenuBar(gtk.Menu):
         # Add text to the statusbar
         self.main.statusbar._set_message(self.main.kbfile)
 
-    def import_scan(self, widget, type = None):
+    def import_scan(self, widget, type = None, file = None):
         """ Parse and import nmap scan """
 
         self.gom = self.main.gom
@@ -282,20 +282,13 @@ class MenuBar(gtk.Menu):
         # Choose nmap scan file
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
 
-        filter = gtk.FileFilter()
-        filter.set_name('Nmap scan')
-        filter.add_pattern('*.xml')
-        chooser.add_filter(filter)
-
-        filter = gtk.FileFilter()
-        filter.set_name('Host list')
-        filter.add_pattern('*.csv')
-        chooser.add_filter(filter)
+        if file:
+            chooser.set_filename(file)
 
         # Try to parse and import data
         response = chooser.run()
         filter = chooser.get_filter()
-        if response == gtk.RESPONSE_OK and filter.get_name() == 'Nmap scan':
+        if response == gtk.RESPONSE_OK and type == 'nmap':
             self.gom.echo( 'Loading Nmap Scan...', False)
             self.gom.echo(  chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
@@ -330,7 +323,7 @@ class MenuBar(gtk.Menu):
                 md.run()
                 md.destroy()
 
-        elif response == gtk.RESPONSE_OK and filter.get_name() == 'Host list':
+        elif response == gtk.RESPONSE_OK and type == 'hosts':
             self.gom.echo( 'Loading Host list...', False)
             self.gom.echo(  chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
