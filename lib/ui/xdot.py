@@ -477,7 +477,7 @@ class XDotAttrParser:
 
     def __init__(self, parser, buf):
         self.parser = parser
-        self.buf = self.unescape(buf)
+        self.buf = buf
         self.pos = 0
         
         self.pen = Pen()
@@ -485,11 +485,6 @@ class XDotAttrParser:
 
     def __nonzero__(self):
         return self.pos < len(self.buf)
-
-    def unescape(self, buf):
-        buf = buf.replace('\\"', '"')
-        buf = buf.replace('\\n', '\n')
-        return buf
 
     def read_code(self):
         pos = self.buf.find(" ", self.pos)
@@ -599,7 +594,7 @@ class XDotAttrParser:
                     lw = style.split("(")[1].split(")")[0]
                     lw = float(lw)
                     self.handle_linewidth(lw)
-                elif style in ("solid", "dashed"):
+                elif style in ("solid", "dashed", "dotted"):
                     self.handle_linestyle(style)
             elif op == "F":
                 size = s.read_float()
@@ -665,6 +660,8 @@ class XDotAttrParser:
             self.pen.dash = ()
         elif style == "dashed":
             self.pen.dash = (6, )       # 6pt on, 6pt off
+        elif style == "dotted":
+            self.pen.dash = (2, 4)       # 2pt on, 4pt off
 
     def handle_font(self, size, name):
         self.pen.fontsize = size
@@ -957,10 +954,11 @@ class DotLexer(Lexer):
             text = text.replace('\\\r', '')
             text = text.replace('\\\n', '')
             
-            text = text.replace('\\r', '\r')
-            text = text.replace('\\n', '\n')
-            text = text.replace('\\t', '\t')
-            text = text.replace('\\', '')
+            # quotes
+            text = text.replace('\\"', '"')
+
+            # layout engines recognize other escape codes (many non-standard)
+            # but we don't translate them here
 
             type = ID
 
@@ -1122,8 +1120,8 @@ class XDotParser(DotParser):
             self.yscale = -1.0
             # FIXME: scale from points to pixels
 
-            self.width = xmax - xmin
-            self.height = ymax - ymin
+            self.width  = max(xmax - xmin, 1)
+            self.height = max(ymax - ymin, 1)
 
             self.top_graph = False
         
@@ -1434,6 +1432,9 @@ class DotWidget(gtk.DrawingArea):
         self.connect("size-allocate", self.on_area_size_allocate)
 
         self.connect('key-press-event', self.on_key_press_event)
+        self.last_mtime = None
+
+        gobject.timeout_add(1000, self.update)
 
         self.x, self.y = 0.0, 0.0
         self.zoom_ratio = 1.0
@@ -1446,9 +1447,9 @@ class DotWidget(gtk.DrawingArea):
     def set_filter(self, filter):
         self.filter = filter
 
-    def set_dotcode(self, dotcode, filename='<stdin>'):
-        if isinstance(dotcode, unicode):
-            dotcode = dotcode.encode('utf8')
+    def run_filter(self, dotcode):
+        if not self.filter:
+            return dotcode
         p = subprocess.Popen(
             [self.filter, '-Txdot'],
             stdin=subprocess.PIPE,
@@ -1458,6 +1459,7 @@ class DotWidget(gtk.DrawingArea):
             universal_newlines=True
         )
         xdotcode, error = p.communicate(dotcode)
+        sys.stderr.write(error)
         if p.returncode != 0:
             dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
                                        message_format=error,
@@ -1465,6 +1467,15 @@ class DotWidget(gtk.DrawingArea):
             dialog.set_title('Dot Viewer')
             dialog.run()
             dialog.destroy()
+            return None
+        return xdotcode
+
+    def set_dotcode(self, dotcode, filename=None):
+        self.openfilename = None
+        if isinstance(dotcode, unicode):
+            dotcode = dotcode.encode('utf8')
+        xdotcode = self.run_filter(dotcode)
+        if xdotcode is None:
             return False
         try:
             self.set_xdotcode(xdotcode)
@@ -1477,6 +1488,10 @@ class DotWidget(gtk.DrawingArea):
             dialog.destroy()
             return False
         else:
+            if filename is None:
+                self.last_mtime = None
+            else:
+                self.last_mtime = os.stat(filename).st_mtime
             self.openfilename = filename
             return True
 
@@ -1494,6 +1509,14 @@ class DotWidget(gtk.DrawingArea):
                 fp.close()
             except IOError:
                 pass
+
+    def update(self):
+        if self.openfilename is not None:
+            current_mtime = os.stat(self.openfilename).st_mtime
+            if current_mtime != self.last_mtime:
+                self.last_mtime = current_mtime
+                self.reload()
+        return True
 
     def do_expose_event(self, event):
         cr = self.window.cairo_create()
@@ -1609,11 +1632,16 @@ class DotWidget(gtk.DrawingArea):
             self.y += self.POS_INCREMENT/self.zoom_ratio
             self.queue_draw()
             return True
-        if event.keyval == gtk.keysyms.Page_Up:
+        if event.keyval in (gtk.keysyms.Page_Up,
+                            gtk.keysyms.plus,
+                            gtk.keysyms.equal,
+                            gtk.keysyms.KP_Add):
             self.zoom_image(self.zoom_ratio * self.ZOOM_INCREMENT)
             self.queue_draw()
             return True
-        if event.keyval == gtk.keysyms.Page_Down:
+        if event.keyval in (gtk.keysyms.Page_Down,
+                            gtk.keysyms.minus,
+                            gtk.keysyms.KP_Subtract):
             self.zoom_image(self.zoom_ratio / self.ZOOM_INCREMENT)
             self.queue_draw()
             return True
@@ -1671,14 +1699,10 @@ class DotWidget(gtk.DrawingArea):
             url = self.get_url(x, y)
             if url is not None:
                 self.emit('clicked', unicode(url.url), event)
-#            else:
-#                jump = self.get_jump(x, y)
-#                if jump is not None:
-#                    self.animate_to(jump.x, jump.y)
-            jump = self.get_jump(x, y)
-            if jump is not None:
-                self.animate_to(jump.x, jump.y)
-
+            else:
+                jump = self.get_jump(x, y)
+                if jump is not None:
+                    self.animate_to(jump.x, jump.y)
 
             return True
         if event.button == 1 or event.button == 2:
@@ -1743,6 +1767,8 @@ class DotWindow(gtk.Window):
     </ui>
     '''
 
+    base_title = 'Dot Viewer'
+
     def __init__(self):
         gtk.Window.__init__(self)
 
@@ -1750,7 +1776,7 @@ class DotWindow(gtk.Window):
 
         window = self
 
-        window.set_title('Dot Viewer')
+        window.set_title(self.base_title)
         window.set_default_size(512, 512)
         vbox = gtk.VBox()
         window.add(vbox)
@@ -1794,30 +1820,24 @@ class DotWindow(gtk.Window):
 
         self.show_all()
 
-    def update(self, filename):
-        import os
-        if not hasattr(self, "last_mtime"):
-            self.last_mtime = None
-
-        current_mtime = os.stat(filename).st_mtime
-        if current_mtime != self.last_mtime:
-            self.last_mtime = current_mtime
-            self.open_file(filename)
-
-        return True
-
     def set_filter(self, filter):
         self.widget.set_filter(filter)
 
-    def set_dotcode(self, dotcode, filename='<stdin>'):
+    def set_dotcode(self, dotcode, filename=None):
         if self.widget.set_dotcode(dotcode, filename):
-            self.set_title(os.path.basename(filename) + ' - Dot Viewer')
+            self.update_title(filename)
             self.widget.zoom_to_fit()
 
-    def set_xdotcode(self, xdotcode, filename='<stdin>'):
+    def set_xdotcode(self, xdotcode, filename=None):
         if self.widget.set_xdotcode(xdotcode):
-            self.set_title(os.path.basename(filename) + ' - Dot Viewer')
+            self.update_title(filename)
             self.widget.zoom_to_fit()
+        
+    def update_title(self, filename=None):
+        if filename is None:
+            self.set_title(self.base_title)
+        else:
+            self.set_title(os.path.basename(filename) + ' - ' + self.base_title)
 
     def open_file(self, filename):
         try:
@@ -1828,7 +1848,7 @@ class DotWindow(gtk.Window):
             dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
                                     message_format=str(ex),
                                     buttons=gtk.BUTTONS_OK)
-            dlg.set_title('Dot Viewer')
+            dlg.set_title(self.base_title)
             dlg.run()
             dlg.destroy()
 
@@ -1870,6 +1890,10 @@ def main():
         type='choice', choices=('dot', 'neato', 'twopi', 'circo', 'fdp'),
         dest='filter', default='dot',
         help='graphviz filter: dot, neato, twopi, circo, or fdp [default: %default]')
+    parser.add_option(
+        '-n', '--no-filter',
+        action='store_const', const=None, dest='filter',
+        help='assume input is already filtered into xdot format (use e.g. dot -Txdot)')
 
     (options, args) = parser.parse_args(sys.argv[1:])
     if len(args) > 1:
@@ -1878,12 +1902,14 @@ def main():
     win = DotWindow()
     win.connect('destroy', gtk.main_quit)
     win.set_filter(options.filter)
-    if len(args) >= 1:
+    if len(args) == 0:
+        if not sys.stdin.isatty():
+            win.set_dotcode(sys.stdin.read())
+    else:
         if args[0] == '-':
             win.set_dotcode(sys.stdin.read())
         else:
             win.open_file(args[0])
-            gobject.timeout_add(1000, win.update, args[0])
     gtk.main()
 
 
