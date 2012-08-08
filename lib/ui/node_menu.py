@@ -17,6 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import os
 import gtk
 
 from . import discover_dialog
@@ -24,6 +25,11 @@ from . import bruteDialog
 from . import gather_dialog
 from . import config
 from . import reportWin
+
+# FIXME
+# Ugly hacks to make MenuItems look better
+# MUST rewrite the whole menu away from UImanager to normal menu widget
+# FIXME
 
 class NodeMenu(gtk.UIManager):
 
@@ -34,6 +40,39 @@ class NodeMenu(gtk.UIManager):
         self.ui_id = 0
         self.gom = gom
         self.uicore = core
+
+        # Icons
+        # FIXME
+        # Move custom stock icons to global library for all the project
+        # FIXME
+        self.report_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'report.png')
+        self.bug_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
+        self.discover_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        self.gather_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
+
+        factory = gtk.IconFactory()
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-discovers', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-gathers', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'plugin_exec.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-plugin', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-term', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'world_go.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-browser', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-buggo', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-bug', iconset)
+        factory.add_default()
 
         # Add the accelerator group
         self.accel = self.get_accel_group()
@@ -58,16 +97,16 @@ class NodeMenu(gtk.UIManager):
             subcategories = getattr(config, 'sub' + category)
             for subcat in subcategories.keys():
                 self.menu_base += '<menu action="' + subcat + '">'
-                self.actiongroup.add_actions( [(subcat, None, '  ' + subcat.capitalize() + '  ')] )
+                self.actiongroup.add_actions( [(subcat, 'my-' + category, '  ' + subcat.capitalize() + '  ')] )
                 #print '\t' + subcat
 
                 for element in subcategories[subcat]:
                     self.menu_base += '<menuitem action="' + element + '">'
                     if category == 'discovers':
                         # xml_name, icon, real_menu_text, accelerator, tooltip, callback
-                        self.actiongroup.add_actions([(element, gtk.STOCK_QUIT, element, None, element, self.showDialog)])
+                        self.actiongroup.add_actions([(element, 'my-plugin', element, None, element, self.showDialog)])
                     elif category == 'gathers':
-                        self.actiongroup.add_actions([(element, gtk.STOCK_QUIT, element, None, element, self.showGather)])
+                        self.actiongroup.add_actions([(element, 'my-plugin', element, None, element, self.showGather)])
 
                     self.menu_base += '</menuitem>'
                     #print '\t\t' + element
@@ -126,22 +165,22 @@ class NodeMenu(gtk.UIManager):
                     self.target_menu += '<menu action="' + str(port) + '">'
 
                     # Menuitems for connect and browser
-                    self.actiongroup2.add_actions( [(str(port) + '_browser', gtk.STOCK_YES, 'Open with browser', None, None, self.show_browser)], [str(port), ip] )
+                    self.actiongroup2.add_actions( [(str(port) + '_browser', 'my-browser', 'Open with browser', None, None, self.show_browser)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_browser"/>'
-                    self.actiongroup2.add_actions( [(str(port) + '_connect', gtk.STOCK_CONNECT, 'Open with terminal', None, None, self.open_terminal)], [str(port), ip] )
+                    self.actiongroup2.add_actions( [(str(port) + '_connect', 'my-term', 'Open with terminal', None, None, self.open_terminal)], [str(port), ip] )
                     self.target_menu += '<menuitem action="' + str(port) + '_connect"/>'
 
                     # Add web vulns...
                     if kb.__contains__(ip + "_" + str(port) + '-web-vulns'):
                         #print "* We have port %s with vulns!" % port
                         # Menu for vulnerabilities
-                        self.actiongroup2.add_actions( [(str(port) + '_vulns', gtk.STOCK_DIALOG_WARNING, 'Vulns')] )
+                        self.actiongroup2.add_actions( [(str(port) + '_vulns', 'my-bug', 'Vulns')] )
                         self.target_menu += '<menu action="' + str(port) + '_vulns' + '">'
 
                         # Menuitems for each vuln
                         vuln_id = 0
                         for vuln in kb[ip + '_' + str(port) + '-web-vulns']:
-                            self.actiongroup2.add_actions( [(str(port) + '_' + vuln[0] + str(vuln_id), gtk.STOCK_YES, 'OSVDB:' + vuln[0] + ' ' + vuln[1], None, None, self.show_browser)], [str(port), ip, vuln[1]] )
+                            self.actiongroup2.add_actions( [(str(port) + '_' + vuln[0] + str(vuln_id), 'my-buggo', 'OSVDB:' + vuln[0] + ' ' + vuln[1], None, None, self.show_browser)], [str(port), ip, vuln[1]] )
                             self.target_menu += '<menuitem action="' + str(port) + '_' + vuln[0] + str(vuln_id) + '"/>'
                             vuln_id += 1
                         self.target_menu += '</menu>'
@@ -230,8 +269,8 @@ self.showBrute )], user_data=[ip, port] )
    
             # Add IP Address
             self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
-            self.target_menu += '<menuitem action="' + ip + '" position="top">'
-            self.target_menu += '</menuitem>'
+            self.target_menu += '<separator position="top"/>'
+            self.target_menu += '<menuitem action="' + ip + '" position="top"/>'
     
             self.target_menu += self.menu_base
 
@@ -242,6 +281,18 @@ self.showBrute )], user_data=[ip, port] )
         ui_id = self.add_ui_from_string(self.target_menu)
         self.set_uiID(ui_id)
         self.popmenu = self.get_widget('/Popup')
+
+        # Decorate Menu items...
+        items = self.popmenu.get_children()
+        if ip:
+            bold_title = items[0].get_children()[0]
+            bold_title.set_markup("<b> " + ip + " </b>")
+
+        if len(items) > 2:
+            items[2].set_image(gtk.image_new_from_pixbuf(self.report_icon))
+            items[6].set_image(gtk.image_new_from_pixbuf(self.bug_icon))
+            items[7].set_image(gtk.image_new_from_pixbuf(self.discover_icon))
+            items[8].set_image(gtk.image_new_from_pixbuf(self.gather_icon))
 
     def _fuzz_target(self, widget, data):
         self.notebook.set_current_page(3)
