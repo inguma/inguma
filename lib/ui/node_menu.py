@@ -57,6 +57,9 @@ class NodeMenu(gtk.UIManager):
         pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
         iconset = gtk.IconSet(pixbuf)
         factory.add('my-gathers', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_lightning.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-services', iconset)
         pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'plugin_exec.png')
         iconset = gtk.IconSet(pixbuf)
         factory.add('my-plugin', iconset)
@@ -72,6 +75,15 @@ class NodeMenu(gtk.UIManager):
         pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
         iconset = gtk.IconSet(pixbuf)
         factory.add('my-bug', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'application_link.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-serviceinfo', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'lock_break.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-bruteforces', iconset)
+        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'key_go.png')
+        iconset = gtk.IconSet(pixbuf)
+        factory.add('my-dobrute', iconset)
         factory.add_default()
 
         # Add the accelerator group
@@ -161,7 +173,7 @@ class NodeMenu(gtk.UIManager):
 #                        self.actiongroup2.add_actions( [(kb[ip + 'passwords'], None, str(kb[ip + 'passwords']))] )
 #                        self.target_menu += '<menuitem action="' + kb[ip + '_passwords'] + '">'
 
-                    self.actiongroup2.add_actions( [(str(port), None, str(port))] )
+                    self.actiongroup2.add_actions( [(str(port), 'my-services', str(port))] )
                     self.target_menu += '<menu action="' + str(port) + '">'
 
                     # Menuitems for connect and browser
@@ -194,17 +206,17 @@ class NodeMenu(gtk.UIManager):
 
                         # Menuitems for each info
                         for info in kb[ip + '_' + str(port) + '-info']:
-                            self.actiongroup2.add_actions( [(str(port) + '_' + info, gtk.STOCK_YES, info, None, None, None)]  )
+                            self.actiongroup2.add_actions( [(str(port) + '_' + info, 'my-serviceinfo', info, None, None, None)]  )
                             self.target_menu += '<menuitem action="' + str(port) + '_' + info + '"/>'
                         self.target_menu += '</menu>'
 
                     # Menu for brute modules
-                    self.actiongroup2.add_actions( [(str(port) + '_brutes', None, 'Bruteforce')] )
+                    self.actiongroup2.add_actions( [(str(port) + '_brutes', 'my-bruteforces', 'Bruteforce')] )
                     self.target_menu += '<menu action="' + str(port) + '_brutes' + '">'
                     #Brute menuitems for each module
                     for brute in getattr(config, 'brutes'):
                         id = ip + '_' + str(port) + '_' + brute
-                        self.actiongroup2.add_actions( [(id, gtk.STOCK_REFRESH, 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
+                        self.actiongroup2.add_actions( [(id, 'my-dobrute', 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
 self.showBrute )], user_data=[ip, port] )
                         self.target_menu += '<menuitem action="' + id + '"/>'
                     self.target_menu += '</menu>'
