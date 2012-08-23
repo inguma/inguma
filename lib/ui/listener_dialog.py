@@ -139,7 +139,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
         if self.uicore.listeners:
             for listener in self.uicore.listeners.keys():
-                port = listener.split('_')[1]
+                port = listener.replace('_', ':')
                 store.append([port])
 
         treeView = gtk.TreeView(store)

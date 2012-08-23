@@ -54,16 +54,18 @@ class UIcore():
         self.gom = glob.gom
 
         self.user_data = inguma.user_data
-        self.listener = liblistener.Listener(self.gom)
+        self.listener = liblistener.Listener()
 
         self.listeners = {}
 
 
-    #########################################################
-    # TO REMOVE ONCE lib.kb works for ginguma
-    #########################################################
-
     def loadKB(self, res):
+        """
+        #########################################################
+        # TO BE REMOVED ONCE lib.kb works for ginguma
+        #########################################################
+        """
+
         input = open(res, 'r')
         inguma.user_data = pickle.load(input)
         self.user_data = inguma.user_data
@@ -74,6 +76,12 @@ class UIcore():
         input.close()
 
     def saveKB(self, res):
+        """
+        #########################################################
+        # TO BE REMOVED ONCE lib.kb works for ginguma
+        #########################################################
+        """
+
         output = open(res, 'wb')
         pickle.dump(inguma.user_data, output)
         output.close()
