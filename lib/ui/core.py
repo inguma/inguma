@@ -56,9 +56,6 @@ class UIcore():
         self.user_data = inguma.user_data
         self.listener = liblistener.Listener()
 
-        self.listeners = {}
-
-
     def loadKB(self, res):
         """
         #########################################################
@@ -222,14 +219,14 @@ class UIcore():
     def create_listener(self, host, port):
         listener = threading.Thread(target=self.listener.run, args=(port, host, 'local'))
         listener.start()
-        listener_id = "_".join([host, str(port)])
-        self.listeners[listener_id] = self.listener
+        listener_id = ":".join([host, str(port)])
+        glob.listeners[listener_id] = self.listener
 
     def kill_all_listeners(self):
-        if self.listeners:
-            for listener in self.listeners.keys():
-                self.listeners[listener].exit()
-                self.listeners.pop(listener)
+        if glob.listeners:
+            for listener in glob.listeners.keys():
+                glob.listeners[listener].exit()
+                glob.listeners.pop(listener)
 
     def getTargetPath(self):
         steps = []

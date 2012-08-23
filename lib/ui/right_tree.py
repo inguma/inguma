@@ -20,6 +20,7 @@
 import os
 import gtk
 
+import lib.globals as glob
 import lib.ui.config as config
 import lib.ui.vulns_menu as vulns_menu
 import lib.ui.listeners_menu as listeners_menu
@@ -33,7 +34,7 @@ class KBtree(gtk.TreeView):
         super(KBtree,self).__init__(self.treestore)
 
         self.main = main
-        self.gom = self.main.gom
+        glob.gom = self.main.gom
         self.uicore = core
         self.node_menu = main.uiman
 
@@ -48,7 +49,7 @@ class KBtree(gtk.TreeView):
         # nodes will store graph nodes used for automove on kbtree click
         self.nodes = {}
 
-        # To keep track of listeners that recived connection
+        # To keep track of listeners that received connection
         self.connections = []
 
         # Tree icons
@@ -250,11 +251,10 @@ class KBtree(gtk.TreeView):
         conn = conn.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
         disconn = gtk.Image()
         disconn = disconn.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
-        if self.uicore.listeners:
-            for listener in self.uicore.listeners:
-                print "Adding listener:", listener
-                host, port = listener.split('_')
-                if port in self.connections:
+        if glob.listeners:
+            for listener in glob.listeners:
+                host, port = listener.split(':')
+                if listener in self.connections:
                     self.liststore.append([conn, host, port])
                 else:
                     self.liststore.append([disconn, host, port])
@@ -268,11 +268,14 @@ class KBtree(gtk.TreeView):
         self.handler = self.connect('button-press-event', self.listener_menu)
 
     def update_listener(self, host, port):
-        for row in self.liststore:
-            if row[2] == port:
-                self.gom.echo("Got connection from %s to port %s" %(host, port), False)
-                self.connections.append(port)
-                self.fill_listeners_list()
+        listen_id = host + ':' + port
+        self.connections.append(listen_id)
+
+        if self.active_mode == 'Listeners':
+            for row in self.liststore:
+                if row[2] == port:
+                    glob.gom.echo("Got connection from %s to port %s" %(host, port), False)
+                    self.fill_listeners_list()
 
     def create_vulns_tree(self):
         ids = {}
@@ -442,8 +445,8 @@ class KBtree(gtk.TreeView):
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:
                 (path, column, x, y) = var
-                # Is it over a plugin name ?
-                # Ge the information about the click
+                # Is it over a plugin name?
+                # Get the information about the click
                 if path is not None and len(path) == 1 and self.nodes:
                     node = self.treestore[path][1]
                     if node in self.nodes:
@@ -453,8 +456,8 @@ class KBtree(gtk.TreeView):
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:
                 (path, column, x, y) = var
-                # Is it over a plugin name ?
-                # Ge the information about the click
+                # Is it over a plugin name?
+                # Get the information about the click
                 if path is not None and len(path) == 1:
                     node = self.treestore[path][1]
                     self.node_menu.set_data(node)
@@ -466,8 +469,8 @@ class KBtree(gtk.TreeView):
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:
                 (path, column, x, y) = var
-                # Is it over a plugin name ?
-                # Ge the information about the click
+                # Is it over a plugin name?
+                # Get the information about the click
                 if path is not None and len(path) == 4:
                     node = self.treestore[path][1]
                     menu = self.vuln_popup.create_menu(node, self.treestore[path][2])
@@ -480,9 +483,9 @@ class KBtree(gtk.TreeView):
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:
                 (path, column, x, y) = var
-                # Is it over a plugin name ?
-                # Ge the information about the click
-                if path is not None and self.uicore.listeners:
+                # Is it over a plugin name?
+                # Get the information about the click
+                if path is not None and glob.listeners:
                     node = self.liststore[path][1]
                     menu = self.listener_popup.create_menu(node, self.liststore[path][2])
                     menu.popup(None, None, None, 1, event.time)

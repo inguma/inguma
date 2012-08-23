@@ -31,6 +31,7 @@ debug = False
 http_server = False
 isGui = False
 ports = []
+listeners = {}
 
 discovers = []
 gathers = []

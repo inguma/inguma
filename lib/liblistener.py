@@ -68,7 +68,7 @@ class Listener:
             return False
 
 
-        glob.gom.echo("== New listener created on %s:%d ==" % (host, port), False)
+        glob.gom.echo('New local listener created on %s:%d' % (host, port), False)
 
         self.sockfd.listen(1)
         while self.keep: # listen for connections
@@ -118,7 +118,7 @@ class Listener:
 
         self.sockfd.shutdown(socket.SHUT_RDWR)
         self.sockfd.close()
-        glob.gom.echo(">>>> Server terminated <<<<<", False)
+        glob.gom.echo("Server terminated", False)
 
     def create_remote_listener(self, port, host='127.0.0.1', platform=''):
         """Create and return a new remote listener"""
@@ -126,7 +126,7 @@ class Listener:
         try:
             self.sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, e:
-            glob.gom.echo("Error in creating socket : ", e)
+            glob.gom.echo("Error in creating socket: ", e)
             return False
 
         self.sockfd.setsockopt(socket.SOL_SOCKET , socket.SO_REUSEADDR , 1)
@@ -136,9 +136,9 @@ class Listener:
             # To be used for remote listener
             self.sockfd.connect((host,port))
         except socket.gaierror, e:
-            glob.gom.echo("Error (address-related) while connecting to server : ",e)
+            glob.gom.echo("Error (address-related) while connecting to server: ",e)
         except socket.error, e:
-            glob.gom.echo("Error while connecting to server : ",e)
+            glob.gom.echo("Error while connecting to server: ",e)
             return False
 #        except socket.error, e:
 #            glob.gom.echo("Error in Binding : ", e)
@@ -158,7 +158,7 @@ class Listener:
 
                 # close the connection
                 if cmd == 'close': # close the connection
-                    glob.gom.echo("\n-----------Connection closed----------------")
+                    glob.gom.echo("\n---Connection closed---")
                     self.sockfd.close()
                     break
                 else:
@@ -166,5 +166,5 @@ class Listener:
                     output = self.sockfd.recv(self.SIZE).strip()
                     glob.gom.echo("Command output :- \n" + output + "\r\n")
 
-        glob.gom.echo("\n\n>>>> Server terminated <<<<<\n")
+        glob.gom.echo("\n\n>> Server terminated <<\n")
         return False

@@ -18,6 +18,7 @@
 #       MA 02110-1301, USA.
 
 import gtk
+import lib.globals as glob
 
 class ListenersMenu(gtk.MenuBar):
     '''Listeners popup menu'''
@@ -26,7 +27,6 @@ class ListenersMenu(gtk.MenuBar):
         super(ListenersMenu,self).__init__()
 
         self.main = main
-        self.gom = main.gom
         self.tree = tree
         self.uicore = main.uicore
 
@@ -39,7 +39,7 @@ class ListenersMenu(gtk.MenuBar):
 
         self.targetm = gtk.ImageMenuItem(gtk.STOCK_CONNECT)
         label = self.targetm.get_children()[0]
-        label.set_markup('<b>' + ' '.join([self.host, self.port]) + '</b>')
+        label.set_markup('<b>' + ':'.join([self.host, self.port]) + '</b>')
         listener_menu.append(self.targetm)
 
         # Separator
@@ -56,8 +56,9 @@ class ListenersMenu(gtk.MenuBar):
         return listener_menu
 
     def _stop_listener(self, widget):
-        self.uicore.listeners[self.host + '_' + self.port].exit()
-        self.uicore.listeners.pop(self.host + '_' + self.port)
-        self.gom.echo('Killed listener at port: ' + str(self.port), False)
+        listen_id = self.host + ':' + self.port
+        glob.listeners[listen_id].exit()
+        glob.listeners.pop(listen_id)
+        glob.gom.echo('Killed listener at address: ' + listen_id, False)
         self.tree.fill_listeners_list()
-        self.tree.connections.remove(self.port)
+        self.tree.connections.remove(listen_id)

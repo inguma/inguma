@@ -19,6 +19,7 @@
 
 import gtk
 
+import lib.globals as glob
 import lib.ui.popup_dialog as popup_dialog
 
 class ListenerDialog(popup_dialog.PopupDialog):
@@ -32,7 +33,6 @@ class ListenerDialog(popup_dialog.PopupDialog):
         self.main = main
         self.treeview = self.main.treeview
         self.uicore = main.uicore
-        self.gom = main.gom
         self.button = button
 
         self.main_vbox = gtk.VBox(False, 5)
@@ -137,10 +137,9 @@ class ListenerDialog(popup_dialog.PopupDialog):
     def _create_ports_list(self):
         store = gtk.ListStore(str)
 
-        if self.uicore.listeners:
-            for listener in self.uicore.listeners.keys():
-                port = listener.replace('_', ':')
-                store.append([port])
+        if glob.listeners:
+            for listener in glob.listeners.keys():
+                store.append([listener])
 
         treeView = gtk.TreeView(store)
         treeView.set_rules_hint(True)
