@@ -269,13 +269,14 @@ class KBtree(gtk.TreeView):
 
     def update_listener(self, host, port):
         listen_id = host + ':' + port
-        self.connections.append(listen_id)
+        if glob.listeners[listen_id].connected:
+            self.connections.append(listen_id)
+        else:
+            if listen_id in self.connections:
+                self.connections.remove(listen_id)
 
         if self.active_mode == 'Listeners':
-            for row in self.liststore:
-                if row[2] == port:
-                    glob.gom.echo("Got connection from %s to port %s" %(host, port), False)
-                    self.fill_listeners_list()
+            self.fill_listeners_list()
 
     def create_vulns_tree(self):
         ids = {}

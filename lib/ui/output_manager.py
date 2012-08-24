@@ -38,7 +38,7 @@ class OutputManager:
 
         self.ing = ing
         self.iface = iface
-        self.debug = debug
+        self.debug_enabled = debug
         self.dot_file = ''
 
         if self.iface != 'gui' and self.iface != 'console':
@@ -52,8 +52,8 @@ class OutputManager:
     def debug(self, data = '', window=True, newline=True):
         """ Function that will print debug messages if we enabled -d on the command line."""
 
-        if self.debug:
-            print data
+        if self.debug_enabled:
+            print(data)
 
     def echo(self, data = "", window=True, newline=True):
         '''Generic method for printing stuff on the UI'''
@@ -142,8 +142,9 @@ class OutputManager:
     #
 
     def update_listener_status(self, host, port):
-        self.echo("Updating listener %s at port %s" % (host, port), False)
-        self.ing.treeview.update_listener(host, str(port))
+        self.debug("Updating listener status for %s:%s" % (host, port))
+        if glob.isGui:
+            self.ing.treeview.update_listener(host, str(port))
 
     #
     # Statusbar output methods
@@ -160,7 +161,7 @@ class OutputManager:
         self.ing.statusbar.pack_start(self.icon, False, False, 2)
 
     def insert_bokken_text(self, data_dict, version):
-        '''data_dict ontains text to be added.
+        '''data_dict contains text to be added.
            Key will be the title
            Value will be... well, the value :)'''
 

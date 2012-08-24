@@ -32,7 +32,7 @@ class Listener:
         self.SIZE = 512
 
         self.clientsock = None
-        self.conn = False
+        self.connected = False
         self.keep = 1
 
     def __del__(self):
@@ -59,7 +59,7 @@ class Listener:
             glob.gom.echo("Error in creating socket %s: " % e, False)
             return False
 
-        self.sockfd.setsockopt(socket.SOL_SOCKET , socket.SO_REUSEADDR , 1)
+        self.sockfd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         try:
             self.sockfd.bind((host, port))
@@ -72,16 +72,18 @@ class Listener:
 
         self.sockfd.listen(1)
         while self.keep: # listen for connections
-            self.conn = False
+            self.connected = False
+            glob.gom.update_listener_status(host, port)
             try:
                 self.clientsock, clientaddr = self.sockfd.accept()
-                self.conn = True
+                self.connected = True
             except socket.error, e:
                 # Just catch the [Errno 22] Invalid argument.
                 if not e.errno == errno.EINVAL:
                     raise
-            if self.conn:
-                glob.gom.update_listener_status(clientaddr[0], port)
+            if self.connected:
+                glob.gom.echo("Got connection from %s to port %s" %(host, port), False)
+                glob.gom.update_listener_status(host, port)
                 while 1:
                     data = self.clientsock.recv(1024)
                     if not data: break
@@ -111,10 +113,10 @@ class Listener:
 
     def exit(self):
         self.keep = 0
-        if self.conn:
+        if self.connected:
             self.clientsock.shutdown(2)
             self.clientsock.close()
-            self.conn = False
+            self.connected = False
 
         self.sockfd.shutdown(socket.SHUT_RDWR)
         self.sockfd.close()
@@ -149,7 +151,7 @@ class Listener:
         glob.gom.echo("======================================================\n\n")
 
         while self.keep: # listen for connections  
-            self.conn = True
+            self.connected = True
             while 1:  
                 try:
                     cmd = raw_input('--> ')
