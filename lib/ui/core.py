@@ -54,7 +54,6 @@ class UIcore():
         self.gom = glob.gom
 
         self.user_data = inguma.user_data
-        self.listener = liblistener.Listener()
 
     def loadKB(self, res):
         """
@@ -217,16 +216,18 @@ class UIcore():
         return scapy.get_if_list()
 
     def create_listener(self, host, port):
-        listener = threading.Thread(target=self.listener.run, args=(port, host, 'local'))
+        import time
+        listener = threading.Thread(target=liblistener.Listener().run, args=(port, host, 'local'))
         listener.start()
-        listener_id = ":".join([host, str(port)])
-        glob.listeners[listener_id] = self.listener
+        time.sleep(0.5)
+        if not listener.is_alive():
+            # The listener couldn't complete for some reason.
+            return False
 
     def kill_all_listeners(self):
         if glob.listeners:
             for listener in glob.listeners.keys():
                 glob.listeners[listener].exit()
-                glob.listeners.pop(listener)
 
     def getTargetPath(self):
         steps = []

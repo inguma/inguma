@@ -32,20 +32,24 @@ class Listener:
         self.SIZE = 512
 
         self.clientsock = None
+        self.clientaddr = None
         self.connected = False
+        self.host = None
         self.keep = 1
+        self.listener_id = None
+        self.port = None
 
-    def __del__(self):
-        """Destructor for the Listener class."""
-
-        if self.clientsock:
-            self.socket.shutdown(socket.SHUT_RDWR)
-
-        self.socket.close()
+#    def __del__(self):
+#        """Destructor for the Listener class."""
+#
+#        if self.clientsock:
+#            self.socket.shutdown(socket.SHUT_RDWR)
+#
+#        self.socket.close()
 
     def run(self, port, host, type=''):
         if type == 'local':
-            self.create_local_listener(port, host)
+            return self.create_local_listener(port, host)
         else:
             # WIP
             pass
@@ -56,7 +60,7 @@ class Listener:
         try:
             self.sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, e:
-            glob.gom.echo("Error in creating socket %s: " % e, False)
+            glob.gom.echo('Error in creating socket for %s:%s (%s).' % (host, port, e), False)
             return False
 
         self.sockfd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -64,10 +68,14 @@ class Listener:
         try:
             self.sockfd.bind((host, port))
         except socket.error, e:
-            glob.gom.echo("Error in binding : %s" % e, False)
+            glob.gom.echo('Error in binding to %s:%s (%s).' % (host, port, e), False)
             return False
 
+        self.host = host
+        self.port = port
+        self.listener_id = self.host + ':' + str(self.port)
 
+        glob.listeners[self.listener_id] = self
         glob.gom.echo('New local listener created on %s:%d' % (host, port), False)
 
         self.sockfd.listen(1)
@@ -75,14 +83,14 @@ class Listener:
             self.connected = False
             glob.gom.update_listener_status(host, port)
             try:
-                self.clientsock, clientaddr = self.sockfd.accept()
+                self.clientsock, self.clientaddr = self.sockfd.accept()
                 self.connected = True
             except socket.error, e:
                 # Just catch the [Errno 22] Invalid argument.
                 if not e.errno == errno.EINVAL:
                     raise
             if self.connected:
-                glob.gom.echo("Got connection from %s to port %s" %(host, port), False)
+                glob.gom.echo('Got connection from %s:%d to %s' %(self.clientaddr[0], self.clientaddr[1], self.listener_id), False)
                 glob.gom.update_listener_status(host, port)
                 while 1:
                     data = self.clientsock.recv(1024)
@@ -116,11 +124,14 @@ class Listener:
         if self.connected:
             self.clientsock.shutdown(2)
             self.clientsock.close()
+            glob.gom.echo('Connection with %s:%d terminated.' % (self.clientaddr[0], self.clientaddr[1]), False)
             self.connected = False
+        else:
+            self.sockfd.shutdown(socket.SHUT_RDWR)
+            self.sockfd.close()
 
-        self.sockfd.shutdown(socket.SHUT_RDWR)
-        self.sockfd.close()
-        glob.gom.echo("Server terminated", False)
+        glob.listeners.pop(self.listener_id)
+        glob.gom.echo('Destroyed listener on %s' % self.listener_id)
 
     def create_remote_listener(self, port, host='127.0.0.1', platform=''):
         """Create and return a new remote listener"""

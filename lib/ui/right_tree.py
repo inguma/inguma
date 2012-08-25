@@ -268,12 +268,12 @@ class KBtree(gtk.TreeView):
         self.handler = self.connect('button-press-event', self.listener_menu)
 
     def update_listener(self, host, port):
-        listen_id = host + ':' + port
-        if glob.listeners[listen_id].connected:
-            self.connections.append(listen_id)
+        listener_id = host + ':' + port
+        if glob.listeners[listener_id].connected:
+            self.connections.append(listener_id)
         else:
-            if listen_id in self.connections:
-                self.connections.remove(listen_id)
+            if listener_id in self.connections:
+                self.connections.remove(listener_id)
 
         if self.active_mode == 'Listeners':
             self.fill_listeners_list()
