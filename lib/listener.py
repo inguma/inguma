@@ -1,9 +1,13 @@
-#       liblistener.py
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+#       listener.py
 #
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
 #       Copyright 2012 David Martínez Moreno <ender@debian.org>
 #       Based on code from w3af by Andres Riancho (w3af.sourceforge.net)
+#
+#       I am providing code in this repository to you under an open source license.
+#       Because this is a personal repository, the license you receive to my code
+#       is from me and not my employer (Facebook).
 #
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -46,13 +50,6 @@ class Listener:
 #            self.socket.shutdown(socket.SHUT_RDWR)
 #
 #        self.socket.close()
-
-    def run(self, port, host, type=''):
-        if type == 'local':
-            return self.create_local_listener(port, host)
-        else:
-            # WIP
-            pass
 
     def create_local_listener(self, port, host='127.0.0.1', platform=''):
         """Create and return a new local listener"""
@@ -97,7 +94,7 @@ class Listener:
                     if not data: break
                     glob.gom.echo(data)
 
-#            while 1:  
+#            while 1:
 #                try:
 #                    cmd = raw_input('--> ')
 #                except:
@@ -118,20 +115,6 @@ class Listener:
 #                    glob.gom.echo("Command Output :- \n" + output + "\r\n", False)
 #
 #        glob.gom.echo(">>>> Server Terminated <<<<<", False)
-
-    def exit(self):
-        self.keep = 0
-        if self.connected:
-            self.clientsock.shutdown(2)
-            self.clientsock.close()
-            glob.gom.echo('Connection with %s:%d terminated.' % (self.clientaddr[0], self.clientaddr[1]), False)
-            self.connected = False
-        else:
-            self.sockfd.shutdown(socket.SHUT_RDWR)
-            self.sockfd.close()
-
-        glob.listeners.pop(self.listener_id)
-        glob.gom.echo('Destroyed listener on %s' % self.listener_id)
 
     def create_remote_listener(self, port, host='127.0.0.1', platform=''):
         """Create and return a new remote listener"""
@@ -161,9 +144,9 @@ class Listener:
         glob.gom.echo("----------  Connected to %s %d ----------------" % (host, port) )
         glob.gom.echo("======================================================\n\n")
 
-        while self.keep: # listen for connections  
+        while self.keep: # listen for connections
             self.connected = True
-            while 1:  
+            while 1:
                 try:
                     cmd = raw_input('--> ')
                 except:
@@ -181,3 +164,24 @@ class Listener:
 
         glob.gom.echo("\n\n>> Server terminated <<\n")
         return False
+
+    def exit(self):
+        self.keep = 0
+        if self.connected:
+            self.clientsock.shutdown(2)
+            self.clientsock.close()
+            glob.gom.echo('Connection with %s:%d terminated.' % (self.clientaddr[0], self.clientaddr[1]), False)
+            self.connected = False
+        else:
+            self.sockfd.shutdown(socket.SHUT_RDWR)
+            self.sockfd.close()
+
+        glob.listeners.pop(self.listener_id)
+        glob.gom.echo('Destroyed listener on %s' % self.listener_id)
+
+    def run(self, port, host, type=''):
+        if type == 'local':
+            return self.create_local_listener(port, host)
+        else:
+            # WIP
+            pass

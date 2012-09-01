@@ -29,7 +29,7 @@ scapy.conf.verb = 0
 import dotgen
 
 import lib.IPy as IPy
-import lib.liblistener as liblistener
+import lib.listener as liblistener
 import lib.globals as glob
 
 class UIcore():
