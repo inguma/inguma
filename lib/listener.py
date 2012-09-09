@@ -33,7 +33,7 @@ class Listener:
 
     def __init__(self):
 
-        self.SIZE = 512
+        self.SIZE = 1024
 
         self.clientsock = None
         self.clientaddr = None
@@ -43,15 +43,7 @@ class Listener:
         self.listener_id = None
         self.port = None
 
-#    def __del__(self):
-#        """Destructor for the Listener class."""
-#
-#        if self.clientsock:
-#            self.socket.shutdown(socket.SHUT_RDWR)
-#
-#        self.socket.close()
-
-    def create_local_listener(self, port, host='127.0.0.1', platform=''):
+    def create_local_listener(self, port, host='127.0.0.1'):
         """Create and return a new local listener"""
 
         try:
@@ -90,7 +82,7 @@ class Listener:
                 glob.gom.echo('Got connection from %s:%d to %s' %(self.clientaddr[0], self.clientaddr[1], self.listener_id), False)
                 glob.gom.update_listener_status(host, port)
                 while 1:
-                    data = self.clientsock.recv(1024)
+                    data = self.clientsock.recv(self.SIZE)
                     if not data: break
                     glob.gom.echo(data)
 
@@ -116,7 +108,7 @@ class Listener:
 #
 #        glob.gom.echo(">>>> Server Terminated <<<<<", False)
 
-    def create_remote_listener(self, port, host='127.0.0.1', platform=''):
+    def create_remote_listener(self, port, host='127.0.0.1'):
         """Create and return a new remote listener"""
 
         try:

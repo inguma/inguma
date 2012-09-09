@@ -56,8 +56,8 @@ class ListenersMenu(gtk.MenuBar):
         return listener_menu
 
     def _stop_listener(self, widget):
-        listen_id = self.host + ':' + self.port
-        glob.listeners[listen_id].exit()
+        listener_id = self.host + ':' + self.port
+        glob.listeners[listener_id].exit()
         self.tree.fill_listeners_list()
-        if listen_id in self.tree.connections:
-            self.tree.connections.remove(listen_id)
+        if listener_id in self.tree.connections:
+            self.tree.connections.remove(listener_id)

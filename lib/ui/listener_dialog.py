@@ -153,7 +153,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
         return treeView
 
     def get_ip(self, widget):
-        '''get IP address of selected iface and change ip label'''
+        '''Get IP address of selected iface and change IP label'''
 
         model = self.iface_combo.get_model()
         active = self.iface_combo.get_active()
