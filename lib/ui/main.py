@@ -292,6 +292,17 @@ class MainApp(gtk.Window):
         self.notebook.append_page(self.right_hbox, b)
         self.notebook.connect("switch_page", self.on_switch)
 
+        # Log  button
+        self.log_btn = gtk.Button()
+        self.log_icn = gtk.Image()
+        self.log_icn.set_from_stock(gtk.STOCK_GOTO_BOTTOM, gtk.ICON_SIZE_MENU)
+        self.log_btn.set_image(self.log_icn)
+        self.log_btn.set_relief(gtk.RELIEF_NONE)
+        self.log_btn.set_tooltip_text('Show/Hide Log panel')
+        self.log_btn.connect("clicked", self.show_log)
+        self.notebook.set_action_widget(self.log_btn, gtk.PACK_END)
+        self.log_btn.show()
+
         #################################################################################################################################
         # Consoles Tab
         #################################################################
@@ -572,6 +583,19 @@ class MainApp(gtk.Window):
 #################################################################################################################################
 # Functions
 #################################################################
+
+    def show_log(self, widget):
+        ''' Show/hide log panel'''
+
+        if self.bottom_nb.is_visible == True:
+            self.bottom_nb.hide()
+            self.bottom_nb.is_visible = False
+            self.log_icn.set_from_stock(gtk.STOCK_GOTO_TOP, gtk.ICON_SIZE_MENU)
+
+        else:
+            self.bottom_nb.show()
+            self.bottom_nb.is_visible = True
+            self.log_icn.set_from_stock(gtk.STOCK_GOTO_BOTTOM, gtk.ICON_SIZE_MENU)
 
     def on_bottom_switch(self, widget, data, page):
         self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)

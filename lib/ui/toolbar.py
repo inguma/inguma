@@ -140,42 +140,36 @@ class Toolbar(gtk.HBox):
         self.sep = gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 13)
 
-        # Log  button
-        self.log_tb = gtk.ToggleToolButton(gtk.STOCK_GOTO_BOTTOM)
-        self.log_tb.set_tooltip_text('Show/Hide Log panel')
-        self.log_tb.connect("toggled", self.show_log)
-        self.main_tb.insert(self.log_tb, 14)
-
         # Report button
         self.report_tb = gtk.ToolButton(gtk.STOCK_INDEX)
         self.report_tb.set_tooltip_text('Show KB report')
         self.report_tb.connect("clicked", self.report)
-        self.main_tb.insert(self.report_tb, 15)
+        self.main_tb.insert(self.report_tb, 14)
 
         # Exit button
         self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
         self.exit_tb.connect("clicked", self._bye)
         self.exit_tb.set_tooltip_text('Have a nice day ;-)')
-        self.main_tb.insert(self.exit_tb, 16)
+        self.main_tb.insert(self.exit_tb, 15)
 
         # Separator
         self.sep = gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
-        self.main_tb.insert(self.sep, 17)
+        self.main_tb.insert(self.sep, 16)
 
         # Toggle Full screen
         self.full_tb = gtk.ToggleToolButton(gtk.STOCK_FULLSCREEN)
         self.full_tb.connect("toggled", self._toggle_fullscreen)
         self.full_tb.set_tooltip_text('Toggle full screen')
-        self.main_tb.insert(self.full_tb, 18)
+        self.main_tb.insert(self.full_tb, 17)
 
 
         # Throbber
         self.throbber = throbber.Throbber()
         self.throbber_tb = gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
-        self.main_tb.insert(self.throbber_tb, 19)
+        self.main_tb.insert(self.throbber_tb, 18)
 
         self.toolbox.pack_start(self.main_tb, True, True)
 
@@ -271,24 +265,6 @@ class Toolbar(gtk.HBox):
     def new_tab(self, widget, command=''):
         self.main.term_notebook.add_new_tab(widget, command)
         self.main.notebook.set_current_page(1)
-
-    def show_log(self, widget):
-        ''' Show/hide log panel'''
-
-        self.bottom_nb = self.main.bottom_nb
-
-        if self.bottom_nb.is_visible == True:
-            self.bottom_nb.hide()
-            self.bottom_nb.is_visible = False
-
-        else:
-            self.bottom_nb.show()
-            self.bottom_nb.is_visible = True
-
-        if self.log_tb.get_active():
-            self.log_tb.set_stock_id(gtk.STOCK_GOTO_TOP)
-        else:
-            self.log_tb.set_stock_id(gtk.STOCK_GOTO_BOTTOM)
 
 #    def show_kb(self, widget):
 #        ''' Show/hide KB panel'''
