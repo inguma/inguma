@@ -45,7 +45,7 @@ class MyDotWidget(xdot.DotWidget):
                 if jump is not None and url is not None:
                     #Ctrl + Right Click on Node!!
                     self.alt_node.set_data(url.url)
-                    self.alt_node.popmenu.popup(None, None, None, 1, event.time)
+                    self.alt_node.popmenu.popup(None, None, None, None, 1, event.time)
 
         elif event.button == 3:
             x, y = int(event.x), int(event.y)
@@ -53,7 +53,7 @@ class MyDotWidget(xdot.DotWidget):
             if url is not None:
                 self.core.set_kbfield('target', url.url)
             else:
-                self.graph_menu.popmenu.popup(None, None, None, 1, event.time)
+                self.graph_menu.popmenu.popup(None, None, None, None, 1, event.time)
 
             jump = self.get_jump(x, y)
             if jump is not None and url is not None:
@@ -66,7 +66,7 @@ class MyDotWidget(xdot.DotWidget):
                 else:
                     # If not is a target node
                     self.context.set_data(url.url)
-                    self.context.popmenu.popup(None, None, None, 1, event.time)
+                    self.context.popmenu.popup(None, None, None, None, 1, event.time)
 
         else:
             super(MyDotWidget, self).on_area_button_release(area, event)

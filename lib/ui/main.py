@@ -660,7 +660,7 @@ class MainApp(Gtk.Window):
             for dialog in self.toolbar.popup_dialogs:
                 dialog.update_position()
 
-        Gtk.Window.do_configure_event(self, event)
+        Gtk.Window.do_configure_event(self, event.configure)
 
     def _quit(self, widget, event, data=None):
         '''Main quit.

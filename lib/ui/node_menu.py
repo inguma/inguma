@@ -302,10 +302,10 @@ self.showBrute )], user_data=[ip, port] )
             bold_title.set_markup("<b> " + ip + " </b>")
 
         if len(items) > 2:
-            items[2].set_image(Gtk.image_new_from_pixbuf(self.report_icon))
-            items[6].set_image(Gtk.image_new_from_pixbuf(self.bug_icon))
-            items[7].set_image(Gtk.image_new_from_pixbuf(self.discover_icon))
-            items[8].set_image(Gtk.image_new_from_pixbuf(self.gather_icon))
+            items[2].set_image(Gtk.Image.new_from_pixbuf(self.report_icon))
+            items[6].set_image(Gtk.Image.new_from_pixbuf(self.bug_icon))
+            items[7].set_image(Gtk.Image.new_from_pixbuf(self.discover_icon))
+            items[8].set_image(Gtk.Image.new_from_pixbuf(self.gather_icon))
 
     def _fuzz_target(self, widget, data):
         self.notebook.set_current_page(3)

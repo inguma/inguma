@@ -1,5 +1,5 @@
 ##      listener_shell.py
-#       
+#
 #       Copyright 2012 Hugo Teso <hugo.teso@gmail.com>
 #
 #       This program is free software; you can redistribute it and/or modify
@@ -177,11 +177,11 @@ class ListenerShell(Gtk.VBox):
         self.comm_entry.modify_base(Gtk.StateType.NORMAL, Gdk.Color(16400, 16400, 16440))
         self.comm_entry.modify_text(Gtk.StateType.NORMAL, Gdk.Color(60535, 60535, 60535, 0))
 
-        self.pack_start(self.comm_entry, False, False, 0)        
+        self.pack_start(self.comm_entry, False, False, 0)
 
         self.show_all()
 
     def rescroll(self, adj, scroll):
-        adj.set_value(adj.upper-adj.page_size)
+        adj.set_value(adj.props.upper-adj.props.page_size)
         scroll.set_vadjustment(adj)
 

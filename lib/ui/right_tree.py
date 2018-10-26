@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import os
-from gi.repository import GdkPixbuf, Gtk
+from gi.repository import Gdk, GdkPixbuf, Gtk
 
 import lib.globals as glob
 import lib.ui.config as config
@@ -419,8 +419,8 @@ class KBtree(Gtk.TreeView):
         self.os_visible[os_name] = widget.get_active()
         self.modelfilter.refilter()
 
-    def visible_cb(self, model, iter):
-        data = self.tgt_entry.get_text()
+    def visible_cb(self, model, iter, data):
+        text = self.tgt_entry.get_text()
         # Just filter root nodes, so we check iter path
         if len(model.get_path(iter)) == 1:
             # Check os filter buttons
@@ -431,17 +431,13 @@ class KBtree(Gtk.TreeView):
                     return False
                 else:
                     # Just filter if text entry is filled
-                    if data:
-                        return data in model.get_value(iter, 1)
-                    else:
-                        return True
-            else:
-                return True
-        else:
-            return True
+                    if text:
+                        return text in model.get_value(iter, 1)
+
+        return True
 
     def popup_menu(self, tree, event):
-        if event.button == 1 and event.type == Gdk._2BUTTON_PRESS:
+        if event.button == 1 and event.type == Gdk.EventType._2BUTTON_PRESS:
             #(path, column) = tree.get_cursor()
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:

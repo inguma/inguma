@@ -1,17 +1,17 @@
 #       treeviews.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -36,7 +36,7 @@ class TreeViews(Gtk.TreeView):
         self.popup_handler = self.connect('button-press-event', self.popup_menu)
 
     def create_functions_columns(self):
-    
+
         rendererText = Gtk.CellRendererText()
         rendererPix = Gtk.CellRendererPixbuf()
         self.fcn_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
@@ -53,7 +53,7 @@ class TreeViews(Gtk.TreeView):
         self.set_model(self.store)
 
     def create_sections_columns(self):
-    
+
         self.data_sec_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'data-sec.png')
         rendererPix = Gtk.CellRendererPixbuf()
         rendererText = Gtk.CellRendererText()
@@ -65,7 +65,7 @@ class TreeViews(Gtk.TreeView):
         column.set_attributes(rendererPix, pixbuf=0)
         column.set_sort_column_id(0)
         self.append_column(column)
-    
+
         rendererText = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Virtual Address", rendererText, text=2)
         self.store.set_sort_column_id(2,Gtk.SortType.ASCENDING)
@@ -97,7 +97,7 @@ class TreeViews(Gtk.TreeView):
         self.store.set_sort_column_id(1,Gtk.SortType.ASCENDING)
         column.set_sort_column_id(1)
         self.append_column(column)
-    
+
         rendererText = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Name", rendererText, text=2)
         column.set_sort_column_id(2)
@@ -276,13 +276,13 @@ class TreeViews(Gtk.TreeView):
         '''Shows a menu when you right click on a plugin.
 
         @param tv: the treeview.
-        @parameter event: The GTK event 
+        @parameter event: The GTK event
         '''
 
         self.dograph = False
 
         # I do this to return fast (and to avoid leaking memory in 'e io.va' for now).
-        #if (event.button != 3) and not (event.button ==1 and event.type == Gdk._2BUTTON_PRESS):
+        #if (event.button != 3) and not (event.button ==1 and event.type == Gdk.EventType._2BUTTON_PRESS):
         if (event.button != 3) and (event.button !=1):
             return False
 
@@ -352,7 +352,7 @@ class TreeViews(Gtk.TreeView):
 
             gm.popup( None, None, None, event.button, _time)
 
-        #elif event.button == 1 and event.type == Gdk._2BUTTON_PRESS:
+        #elif event.button == 1 and event.type == Gdk.EventType._2BUTTON_PRESS:
         elif event.button == 1:
             # It's a double-click!
             (path, column, x, y) = tv.get_path_at_pos(int(event.x), int(event.y))
