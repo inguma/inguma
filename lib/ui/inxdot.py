@@ -19,6 +19,7 @@
 
 import sys
 import xdot
+from gi.repository import Gdk
 
 
 class MyDotWidget(xdot.DotWidget):
