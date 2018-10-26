@@ -24,10 +24,10 @@
 
 import os, os.path
 import sys
-import gtk
+from gi.repository import Gtk
 import gtksourceview2 as gtksourceview
-import gio
-import pango
+from gi.repository import Gio
+from gi.repository import Pango
 
 from config import theme
 
@@ -42,10 +42,10 @@ DATADIR = '/usr/share'
 ######################################################################
 ##### error dialog
 def error_dialog(parent, msg):
-    dialog = gtk.MessageDialog(parent,
-                               gtk.DIALOG_DESTROY_WITH_PARENT,
-                               gtk.MESSAGE_ERROR,
-                               gtk.BUTTONS_OK,
+    dialog = Gtk.MessageDialog(parent,
+                               Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                               Gtk.MessageType.ERROR,
+                               Gtk.ButtonsType.OK,
 			       msg)
     dialog.run()
     dialog.destroy()
@@ -98,7 +98,7 @@ def open_file(buffer, filename):
         path = filename
     else:
         path = os.path.abspath(filename)
-    f = gio.File(path)
+    f = Gio.File(path)
 
     path = f.get_path()
 
@@ -155,12 +155,12 @@ def new_view_cb(action, sourceview):
 ######################################################################
 ##### Buffer action callbacks
 def open_file_cb(action, buffer):
-    chooser = gtk.FileChooserDialog('Open file...', None,
-                                    gtk.FILE_CHOOSER_ACTION_OPEN,
-                                    (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                    gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+    chooser = Gtk.FileChooserDialog('Open file...', None,
+                                    Gtk.FileChooserAction.OPEN,
+                                    (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                    Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
     response = chooser.run()
-    if response == gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
         filename = chooser.get_filename()
         if filename:
             open_file(buffer, filename)
@@ -205,12 +205,12 @@ def button_press_cb(view, ev):
     if not view.get_show_line_marks():
         return False
     # check that the click was on the left gutter
-    if ev.window == view.get_window(gtk.TEXT_WINDOW_LEFT):
+    if ev.window == view.get_window(Gtk.TextWindowType.LEFT):
         if ev.button == 1:
             mark_type = MARK_TYPE_1
         else:
             mark_type = MARK_TYPE_2
-        x_buf, y_buf = view.window_to_buffer_coords(gtk.TEXT_WINDOW_LEFT,
+        x_buf, y_buf = view.window_to_buffer_coords(Gtk.TextWindowType.LEFT,
                                                     int(ev.x), int(ev.y))
         # get line bounds
         line_start = view.get_line_at_y(y_buf)[0]
@@ -234,14 +234,14 @@ def quit(widget, ev):
 ######################################################################
 ##### Actions & UI definition
 buffer_actions = [
-    ('Open', gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', open_file_cb),
-    ('Quit', gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Exit the application', quit)
+    ('Open', Gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', open_file_cb),
+    ('Quit', Gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Exit the application', quit)
 ]
 
 view_actions = [
     ('FileMenu', None, '_File'),
     ('ViewMenu', None, '_View'),
-    ('NewView', gtk.STOCK_NEW, '_New View', None, 'Create a new view of the file', new_view_cb),
+    ('NewView', Gtk.STOCK_NEW, '_New View', None, 'Create a new view of the file', new_view_cb),
     ('TabWidth', None, '_Tab Width')
 ]
 
@@ -305,9 +305,9 @@ buffer_ui_description = """
 ##### create view window
 def create_view_window(buffer, sourceview = None):
     # window
-    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
     window.set_default_size(800, 600)
-    window.set_position(gtk.WIN_POS_CENTER)
+    window.set_position(Gtk.WindowPosition.CENTER)
     #window.set_border_width(0)
     window.set_title('Inguma module editor')
     windows.append(window) # this list contains all view windows
@@ -320,12 +320,12 @@ def create_view_window(buffer, sourceview = None):
     window.connect('delete-event', window_deleted_cb, view)
 
     # action group and UI manager
-    action_group = gtk.ActionGroup('ViewActions')
+    action_group = Gtk.ActionGroup('ViewActions')
     action_group.add_actions(view_actions, view)
     action_group.add_toggle_actions(toggle_actions, view)
     action_group.add_radio_actions(radio_actions, -1, tabs_toggled_cb, view)
 
-    ui_manager = gtk.UIManager()
+    ui_manager = Gtk.UIManager()
     ui_manager.insert_action_group(action_group, 0)
     # save a reference to the ui manager in the window for later use
     window.set_data('ui_manager', ui_manager)
@@ -334,10 +334,10 @@ def create_view_window(buffer, sourceview = None):
     ui_manager.add_ui_from_string(view_ui_description)
 
     # misc widgets
-    vbox = gtk.VBox(0, False)
-    sw = gtk.ScrolledWindow()
-    sw.set_shadow_type(gtk.SHADOW_IN)
-    pos_label = gtk.Label('Position')
+    vbox = Gtk.VBox(0, False)
+    sw = Gtk.ScrolledWindow()
+    sw.set_shadow_type(Gtk.ShadowType.IN)
+    pos_label = Gtk.Label(label='Position')
     view.set_data('pos_label', pos_label)
     menu = ui_manager.get_widget('/MainMenu')
 
@@ -349,7 +349,7 @@ def create_view_window(buffer, sourceview = None):
     vbox.pack_start(pos_label, False, False, 0)
 
     # setup view
-    font_desc = pango.FontDescription('monospace')
+    font_desc = Pango.FontDescription('monospace')
     if font_desc:
         view.modify_font(font_desc)
 
@@ -370,14 +370,14 @@ def create_view_window(buffer, sourceview = None):
             action.set_active(True)
 
     # add source mark pixbufs
-    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR, 'pixmaps/apple-green.png'))
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(DATADIR, 'pixmaps/apple-green.png'))
     if pixbuf:
         view.set_mark_category_pixbuf (MARK_TYPE_1, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_1, 1)
     else:
         print 'could not load mark 1 image.  Spurious messages might get triggered'
 
-    pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(DATADIR,'pixmaps/apple-red.png'))
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(DATADIR,'pixmaps/apple-red.png'))
     if pixbuf:
         view.set_mark_category_pixbuf (MARK_TYPE_2, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_2, 2)
@@ -396,7 +396,7 @@ def create_main_window(buffer):
     ui_manager = window.get_data('ui_manager')
 
     # buffer action group
-    action_group = gtk.ActionGroup('BufferActions')
+    action_group = Gtk.ActionGroup('BufferActions')
     action_group.add_actions(buffer_actions, buffer)
     ui_manager.insert_action_group(action_group, 1)
     # merge buffer ui
@@ -439,6 +439,6 @@ def main(exploit=''):
     # create first window
     window = create_main_window(buffer)
     window.set_default_size(800, 600)
-    window.set_position(gtk.WIN_POS_CENTER)
+    window.set_position(Gtk.WindowPosition.CENTER)
     window.set_title('Inguma module editor - ' + exploit)
     window.show()

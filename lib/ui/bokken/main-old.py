@@ -20,16 +20,16 @@
 import os, sys, threading
 
 # Now that I know that I have them, import them!
-import gtk, gobject
+from gi.repository import Gtk
 
 import core
 import textviews
 
 # Threading initializer
 if sys.platform == "win32":
-    gobject.threads_init()
+    GObject.threads_init()
 else:
-    gtk.gdk.threads_init()
+    Gdk.threads_init()
 
 MAINTITLE = "Bokken, a GUI for pyew and (soon) radare2!"
 VERSION = "1.0"
@@ -63,21 +63,21 @@ class MainApp:
             thread = threading.Thread(target=self.load_file, args=(self.target,))
             thread.start()
             # This call must not depend on load_file data
-            gobject.timeout_add(500, self.show_file_data, thread)
+            GObject.timeout_add(500, self.show_file_data, thread)
         else:
             self.empty_gui = True
 
 
-        gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
+        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main") 
 
         # Create VBox to contain top buttons and other VBox
-        self.supervb = gtk.VBox(False, 1)
+        self.supervb = Gtk.VBox(False, 1)
 
         # Create top buttons and add to VBox
         self.topbuttons = self.ing.bokken_tb
 
         # Create VBox to contain textviews and statusbar
-        self.mainvb = gtk.VBox(False, 1)
+        self.mainvb = Gtk.VBox(False, 1)
         self.supervb.pack_start(self.mainvb, True, True, 1)
 
         # Initialize and add TextViews
@@ -177,14 +177,14 @@ class MainApp:
         @param data: optional data to receive.
         '''
         msg = ("Do you really want to quit?")
-        dlg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
+        dlg = Gtk.MessageDialog(self.window, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
         opt = dlg.run()
         dlg.destroy()
 
-        if opt != gtk.RESPONSE_YES:
+        if opt != Gtk.ResponseType.YES:
             return True
 
-        gtk.main_quit()
+        Gtk.main_quit()
         return False
 
 def main(target):

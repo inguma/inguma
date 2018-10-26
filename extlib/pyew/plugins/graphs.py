@@ -82,11 +82,11 @@ def showDotInXDot(buf):
         from xdot import DotWindow
         
         win = DotWindow()
-        win.connect('destroy', gtk.main_quit)
+        win.connect('destroy', Gtk.main_quit)
         win.set_filter("dot")
         win.set_dotcode(buf)
         try:
-            thread.start_new_thread(gtk.main, None)
+            thread.start_new_thread(Gtk.main, None)
         except:
             pass
     except ImportError:

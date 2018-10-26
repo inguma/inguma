@@ -18,13 +18,13 @@
 #       MA 02110-1301, USA.
 
 
-import gtk
+from gi.repository import Gtk
 
 FAIL = '\033[91m'
 OKGREEN = '\033[92m'
 ENDC = '\033[0m'
 
-class InteractiveButtons(gtk.HBox):
+class InteractiveButtons(Gtk.HBox):
     '''Interactive Buttons'''
 
     def __init__(self, uicore, buffer):
@@ -38,14 +38,14 @@ class InteractiveButtons(gtk.HBox):
         self.uicore = uicore
         self.toolbox = self
 
-        self.int_tb = gtk.Toolbar()
-        self.int_tb.set_style(gtk.TOOLBAR_ICONS)
+        self.int_tb = Gtk.Toolbar()
+        self.int_tb.set_style(Gtk.ToolbarStyle.ICONS)
 
         # Previous buffer button
-        self.prev_ti = gtk.ToolItem()
-        self.prev_align = gtk.Alignment(yalign=0.5)
+        self.prev_ti = Gtk.ToolItem()
+        self.prev_align = Gtk.Alignment.new(yalign=0.5)
         self.prev_ti.add(self.prev_align)
-        self.prev = gtk.ToolButton(gtk.STOCK_GO_UP)
+        self.prev = Gtk.ToolButton(Gtk.STOCK_GO_UP)
         self.prev.set_tooltip_text('Previous buffer')
         self.prev.connect("clicked", self.move, 'b')
         self.prev.label = 'Previous'
@@ -53,10 +53,10 @@ class InteractiveButtons(gtk.HBox):
         self.int_tb.insert(self.prev_ti, 0)
 
         # Next buffer button
-        self.next_ti = gtk.ToolItem()
-        self.next_align = gtk.Alignment(yalign=0.5)
+        self.next_ti = Gtk.ToolItem()
+        self.next_align = Gtk.Alignment.new(yalign=0.5)
         self.next_ti.add(self.next_align)
-        self.next = gtk.ToolButton(gtk.STOCK_GO_DOWN)
+        self.next = Gtk.ToolButton(Gtk.STOCK_GO_DOWN)
         self.next.set_tooltip_text('Next buffer')
         self.next.connect("clicked", self.move, 'f')
         self.next.label = 'Next'
@@ -64,18 +64,18 @@ class InteractiveButtons(gtk.HBox):
         self.int_tb.insert(self.next_ti, 1)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.int_tb.insert(self.sep, 2)
 
         # Seek to...
-        self.seek_tb = gtk.ToolItem()
-        self.seek_label = gtk.Label(' Seek: ')
+        self.seek_tb = Gtk.ToolItem()
+        self.seek_label = Gtk.Label(label=' Seek: ')
         self.seek_tb.add(self.seek_label)
         self.int_tb.insert(self.seek_tb, 3)
 
-        self.seek_entry_tb = gtk.ToolItem()
-        self.seek_entry = gtk.Entry(100)
-        self.seek_entry.set_icon_from_stock(1, gtk.STOCK_GO_FORWARD)
+        self.seek_entry_tb = Gtk.ToolItem()
+        self.seek_entry = Gtk.Entry(100)
+        self.seek_entry.set_icon_from_stock(1, Gtk.STOCK_GO_FORWARD)
         self.seek_entry.set_icon_tooltip_text(1, 'Seek to')
         self.seek_entry.connect("activate", self.seek)
         self.seek_entry.connect("icon-press", self.seek)
@@ -83,18 +83,18 @@ class InteractiveButtons(gtk.HBox):
         self.int_tb.insert(self.seek_entry_tb, 4)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.int_tb.insert(self.sep, 5)
 
         # Buffer size
-        self.buffer_tb = gtk.ToolItem()
-        self.buffer_label = gtk.Label(' Buffer size: ')
+        self.buffer_tb = Gtk.ToolItem()
+        self.buffer_label = Gtk.Label(label=' Buffer size: ')
         self.buffer_tb.add(self.buffer_label)
         self.int_tb.insert(self.buffer_tb, 6)
 
-        self.buffer_entry_tb = gtk.ToolItem()
-        self.buffer_entry = gtk.Entry(100)
-        self.buffer_entry.set_icon_from_stock(1, gtk.STOCK_APPLY)
+        self.buffer_entry_tb = Gtk.ToolItem()
+        self.buffer_entry = Gtk.Entry(100)
+        self.buffer_entry.set_icon_from_stock(1, Gtk.STOCK_APPLY)
         self.buffer_entry.set_icon_tooltip_text(1, 'Apply')
         self.buffer_entry.connect("activate", self.set_buffer_size)
         self.buffer_entry.connect("icon-press", self.set_buffer_size)
@@ -102,25 +102,25 @@ class InteractiveButtons(gtk.HBox):
         self.int_tb.insert(self.buffer_entry_tb, 7)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.int_tb.insert(self.sep, 8)
 
         # Radio buttons (output format)
 
-        self.hex_ti = gtk.ToolItem()
-        self.hex_align = gtk.Alignment(yalign=0.5)
+        self.hex_ti = Gtk.ToolItem()
+        self.hex_align = Gtk.Alignment.new(yalign=0.5)
         self.hex_ti.add(self.hex_align)
-        self.hex_button = gtk.RadioToolButton(None, None)
+        self.hex_button = Gtk.RadioToolButton(None, None)
         self.hex_button.set_label("HEX")
         self.hex_button.connect("toggled", self.callback, "Hexadecimal")
         self.hex_button.set_active(True)
         self.hex_align.add(self.hex_button)
         self.int_tb.insert(self.hex_ti, 9)
 
-        self.dasm_ti = gtk.ToolItem()
-        self.dasm_align = gtk.Alignment(yalign=0.5)
+        self.dasm_ti = Gtk.ToolItem()
+        self.dasm_align = Gtk.Alignment.new(yalign=0.5)
         self.dasm_ti.add(self.dasm_align)
-        self.dasm_button = gtk.RadioToolButton(self.hex_button, None)
+        self.dasm_button = Gtk.RadioToolButton(self.hex_button, None)
         self.dasm_button.set_label("ASM")
         self.dasm_button.connect("toggled", self.callback, "Disassembly")
         self.dasm_align.add(self.dasm_button)
@@ -128,12 +128,12 @@ class InteractiveButtons(gtk.HBox):
 
         if 'radare' in self.uicore.backend:
             # Separator
-            self.sep = gtk.SeparatorToolItem()
+            self.sep = Gtk.SeparatorToolItem()
             self.int_tb.insert(self.sep, 11)
 
-            self.exec_entry_tb = gtk.ToolItem()
-            self.exec_entry = gtk.Entry(100)
-            self.exec_entry.set_icon_from_stock(1, gtk.STOCK_EXECUTE)
+            self.exec_entry_tb = Gtk.ToolItem()
+            self.exec_entry = Gtk.Entry(100)
+            self.exec_entry.set_icon_from_stock(1, Gtk.STOCK_EXECUTE)
             self.exec_entry.set_icon_tooltip_text(1, 'Execute')
             self.exec_entry.connect("activate", self.r2_exec)
             self.exec_entry.connect("icon-press", self.r2_exec)
@@ -247,8 +247,8 @@ class InteractiveButtons(gtk.HBox):
 
     def set_completion(self):
         # Seek entry EntryCompletion
-        self.completion = gtk.EntryCompletion()
-        self.liststore = gtk.ListStore(str)
+        self.completion = Gtk.EntryCompletion()
+        self.liststore = Gtk.ListStore(str)
         # Add function names to the list
         for function in self.uicore.allfuncs:
             self.liststore.append([function])
@@ -261,7 +261,7 @@ class InteractiveButtons(gtk.HBox):
 
 # Used to create most of the buttons
 #
-class SemiStockButton(gtk.Button):
+class SemiStockButton(Gtk.Button):
     '''Takes the image from the stock, but the label which is passed.
     
     @param text: the text that will be used for the label
@@ -287,6 +287,6 @@ class SemiStockButton(gtk.Button):
         @param tooltip: the tooltip for the button
         '''
         self.label.set_text(newtext)
-        self.image.set_from_stock(newimage, gtk.ICON_SIZE_BUTTON)
+        self.image.set_from_stock(newimage, Gtk.IconSize.BUTTON)
         if tooltip is not None:
             self.set_tooltip_text(tooltip)

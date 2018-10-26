@@ -20,17 +20,18 @@
 import os, sys
 import lib.globals as glob
 
-import gtk
+from gi.repository import Gtk
 
+# REMOVE_ME
 # The reason for this is that PyGTK now contains an interactive event loop.
 # We should switch off this event loop before starting our own event loop for
 # the HTTP server to avoid the two event loops interfering with each other.
-# gtk.set_interactive(True) causes gtk's event loop to run automatically
+# Gtk.set_interactive(True) causes gtk's event loop to run automatically
 # whenever Python is waiting for the user to type in the next Python command, as in
-# the main loop in raw_input. After gtk.set_interactive(False), the *automatic*
+# the main loop in raw_input. After Gtk.set_interactive(False), the *automatic*
 # launching of the event loop no longer happens. Otherwise, it has no effect on
 # gtk's event loops.
-gtk.set_interactive(False)
+#Gtk.set_interactive(False)
 
 class OutputManager:
 
@@ -135,7 +136,7 @@ class OutputManager:
     def alert_tab(self):
         bottom_nb = self.ing.bottom_nb
         if bottom_nb.get_current_page() != 0:
-            self.ing.log_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
+            self.ing.log_icon.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.MENU)
 
     #
     # Listeners methods
@@ -151,13 +152,13 @@ class OutputManager:
     #
     def insert_sb_text(self, text):
         context = self.ing.statusbar.get_context_id(text)
-        self.icon = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('logo' + os.sep + 'inguma_16.png')
-        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        self.icon = Gtk.Image()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('logo' + os.sep + 'inguma_16.png')
+        scaled_buf = pixbuf.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
         self.icon.set_from_pixbuf(scaled_buf)
 
-        self.ing.statusbar.pack_start(gtk.VSeparator(), False, False, 2)
-        self.ing.statusbar.pack_start(gtk.Label(text), False, False, 2)
+        self.ing.statusbar.pack_start(Gtk.Separator(Gtk.Orientation.VERTICAL), False, False, 2)
+        self.ing.statusbar.pack_start(Gtk.Label(text, True, True, 0), False, False, 2)
         self.ing.statusbar.pack_start(self.icon, False, False, 2)
 
     def insert_bokken_text(self, data_dict, version):
@@ -165,24 +166,24 @@ class OutputManager:
            Key will be the title
            Value will be... well, the value :)'''
 
-        context = self.ing.bokken_sb.get_context_id('sb')        
+        context = self.ing.bokken_sb.get_context_id('sb')
         self.text = ''
         for element in data_dict.keys():
             self.text += element.capitalize() + ': ' + str(data_dict[element]) + ' | '
         self.ing.bokken_sb.push(context, self.text)
         if version:
-            self.icon = gtk.Image()
-            pixbuf = gtk.gdk.pixbuf_new_from_file('lib/ui/bokken/data/icon.png')
-            scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+            self.icon = Gtk.Image()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib/ui/bokken/data/icon.png')
+            scaled_buf = pixbuf.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
             self.icon.set_from_pixbuf(scaled_buf)
 
-            self.ing.bokken_sb.pack_end(gtk.Label('Bokken ' + version), False)
+            self.ing.bokken_sb.pack_end(Gtk.Label('Bokken ' + version, True, True, 0), False)
             self.ing.bokken_sb.pack_end(self.icon, False, False, 2)
-            self.ing.bokken_sb.pack_end(gtk.VSeparator(), False)
+            self.ing.bokken_sb.pack_end(Gtk.Separator(Gtk.Orientation.VERTICAL), False)
         #self.ing.bokken_sb.show_all()
 
     def clear_sb_text(self):
-        context = self.ing.statusbar.get_context_id('sb')        
+        context = self.ing.statusbar.get_context_id('sb')
         self.ing.statusbar.pop(context)
 
     def update_helpers(self):

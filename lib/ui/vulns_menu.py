@@ -17,11 +17,11 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 from webbrowser import open_new
 
-class VulnsMenu(gtk.MenuBar):
+class VulnsMenu(Gtk.MenuBar):
     '''Vulns popup menu'''
 
     def __init__(self, main):
@@ -31,34 +31,34 @@ class VulnsMenu(gtk.MenuBar):
 
     def create_menu(self, poc, target):
         # Function Menu
-        vulnmenu = gtk.Menu()
+        vulnmenu = Gtk.Menu()
         self.poc = poc
         self.id = target.split('-')[0]
         self.host = target.split('-')[1]
 
-        self.targetm = gtk.ImageMenuItem(target)
+        self.targetm = Gtk.ImageMenuItem(target)
         label = self.targetm.get_children()[0]
         label.set_markup('<b>OSVDB id: ' + self.id + '</b>')
         vulnmenu.append(self.targetm)
 
         # Separator
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         vulnmenu.append(sep)
 
         # Open with browser, bokken and osvbd web
-        self.browsermenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
+        self.browsermenu = Gtk.ImageMenuItem(Gtk.STOCK_INDENT)
         self.browsermenu.get_children()[0].set_label('Open in browser')
         self.browsermenu.connect('activate', self.open_poc)
 
         vulnmenu.append(self.browsermenu)
 
-        self.bokkenmenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
+        self.bokkenmenu = Gtk.ImageMenuItem(Gtk.STOCK_INDENT)
         self.bokkenmenu.get_children()[0].set_label('Open with Bokken')
         self.bokkenmenu.connect('activate', self.open_bokken)
 
         vulnmenu.append(self.bokkenmenu)
 
-        self.osvdbmenu = gtk.ImageMenuItem(gtk.STOCK_INDENT)
+        self.osvdbmenu = Gtk.ImageMenuItem(Gtk.STOCK_INDENT)
         self.osvdbmenu.get_children()[0].set_label('Open in OSVDB')
         self.osvdbmenu.connect('activate', self.open_osvdb)
 

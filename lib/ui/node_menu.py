@@ -1,24 +1,25 @@
 ##      node_menu.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+import gobject
+from gi.repository import GdkPixbuf, Gtk
 
 from . import discover_dialog
 from . import bruteDialog
@@ -31,10 +32,10 @@ from . import reportWin
 # MUST rewrite the whole menu away from UImanager to normal menu widget
 # FIXME
 
-class NodeMenu(gtk.UIManager):
+class NodeMenu(Gtk.UIManager):
 
     def __init__(self, gom, core, config):
-        #gtk.NodeMenu.__init__(self)
+        #GObject.GObject.__init__(self)
         super(NodeMenu,self).__init__()
 
         self.ui_id = 0
@@ -45,44 +46,44 @@ class NodeMenu(gtk.UIManager):
         # FIXME
         # Move custom stock icons to global library for all the project
         # FIXME
-        self.report_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'report.png')
-        self.bug_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
-        self.discover_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
-        self.gather_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
+        self.report_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'report.png')
+        self.bug_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
+        self.discover_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        self.gather_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
 
-        factory = gtk.IconFactory()
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
-        iconset = gtk.IconSet(pixbuf)
+        factory = Gtk.IconFactory()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-discovers', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_connect.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-gathers', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_lightning.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'server_lightning.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-services', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'plugin_exec.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'plugin_exec.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-plugin', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-term', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'world_go.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'world_go.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-browser', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug_go.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-buggo', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-bug', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'application_link.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'application_link.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-serviceinfo', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'lock_break.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'lock_break.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-bruteforces', iconset)
-        pixbuf = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'key_go.png')
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'key_go.png')
+        iconset = Gtk.IconSet(pixbuf)
         factory.add('my-dobrute', iconset)
         factory.add_default()
 
@@ -90,7 +91,7 @@ class NodeMenu(gtk.UIManager):
         self.accel = self.get_accel_group()
 
         # Create an ActionGroup
-        self.actiongroup = gtk.ActionGroup('Base')
+        self.actiongroup = Gtk.ActionGroup('Base')
 
         # Parse config file
         categories = getattr(config, 'categories')
@@ -103,7 +104,7 @@ class NodeMenu(gtk.UIManager):
             #Create menu for category
 
             self.menu_base += '<menu action="' + category.capitalize() + '">'
-            self.actiongroup.add_actions( [(category.capitalize(), gtk.STOCK_EXECUTE, '  ' + category.capitalize())] )
+            self.actiongroup.add_actions( [(category.capitalize(), Gtk.STOCK_EXECUTE, '  ' + category.capitalize())] )
 
             #print category
             subcategories = getattr(config, 'sub' + category)
@@ -146,21 +147,21 @@ class NodeMenu(gtk.UIManager):
         '''
 
         if not ip:
-            self.actiongroup2 = gtk.ActionGroup('Target')
+            self.actiongroup2 = Gtk.ActionGroup('Target')
 
             self.target_menu += self.menu_base
-    
+
             # Add the actiongroup to the uimanager
             self.insert_action_group(self.actiongroup2, 0)
         else:
             self.remove_action_group(self.actiongroup2)
-            self.actiongroup2 = gtk.ActionGroup('Target')
+            self.actiongroup2 = Gtk.ActionGroup('Target')
 
             kb = self.uicore.get_kbList()
 
-            # Add menu elements in reverse order to be shown correctly    
+            # Add menu elements in reverse order to be shown correctly
             # Target Services
-            self.actiongroup2.add_actions( [('services', gtk.STOCK_NETWORK, '  Services')] )
+            self.actiongroup2.add_actions( [('services', Gtk.STOCK_NETWORK, '  Services')] )
             self.target_menu += '<menu action="services" position="top">'
 
             if kb.__contains__(ip + '_tcp_ports'):
@@ -201,7 +202,7 @@ class NodeMenu(gtk.UIManager):
                     if kb.__contains__(ip + "_" + str(port) + '-info'):
                         #print "* We have port %s with info!" % port
                         # Menu for service info
-                        self.actiongroup2.add_actions( [(str(port) + '_info', gtk.STOCK_INFO, 'Info')] )
+                        self.actiongroup2.add_actions( [(str(port) + '_info', Gtk.STOCK_INFO, 'Info')] )
                         self.target_menu += '<menu action="' + str(port) + '_info' + '">'
 
                         # Menuitems for each info
@@ -221,7 +222,7 @@ self.showBrute )], user_data=[ip, port] )
                         self.target_menu += '<menuitem action="' + id + '"/>'
                     self.target_menu += '</menu>'
                     self.target_menu += '</menu>'
-                        
+
 
 #            elif kb.__contains__(ip + '_tcp_ports'):
 #                for port in kb[ip + '_tcp_ports']:
@@ -235,25 +236,25 @@ self.showBrute )], user_data=[ip, port] )
 #
 #                    self.actiongroup2.add_actions( [(str(port), None, str(port))] )
 #                    self.target_menu += '<menu action="' + str(port) + '">'
-#    
+#
 #                    for brute in getattr(config, 'brutes'):
 #                        id = ip + '_' + str(port) + '_' + brute
-#                        self.actiongroup2.add_actions( [(id, gtk.STOCK_REFRESH, 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
+#                        self.actiongroup2.add_actions( [(id, Gtk.STOCK_REFRESH, 'Brute ' + brute.split('brute')[-1].upper(), None, "tooltip", \
 #self.showBrute )], user_data=[ip, port] )
 #                        self.target_menu += '<menuitem action="' + id + '"/>'
 #                    self.target_menu += '</menu>'
-                        
+
             self.target_menu += '</menu><separator/>'
 
             self.target_menu += '<menuitem action="Fuzz"/>'
-            self.actiongroup2.add_actions([('Fuzz', gtk.STOCK_EXECUTE, '  Fuzz target', None, 'Fuzz target', self._fuzz_target)], user_data=[ip])
+            self.actiongroup2.add_actions([('Fuzz', Gtk.STOCK_EXECUTE, '  Fuzz target', None, 'Fuzz target', self._fuzz_target)], user_data=[ip])
 
             # Add target's information
-            self.actiongroup2.add_actions( [('Information', gtk.STOCK_INFO, '  Information')] )
+            self.actiongroup2.add_actions( [('Information', Gtk.STOCK_INFO, '  Information')] )
             self.target_menu += '<menu action="Information" position="top">'
 
             if kb.__contains__(ip + '_name'):
-                # Host name 
+                # Host name
                 self.actiongroup2.add_actions( [('host', None, 'Host Name')] )
                 self.target_menu += '<menuitem action="host"/>'
                 self.actiongroup2.add_actions( [('name', None, kb[ip + '_name'][0] )] )
@@ -265,25 +266,25 @@ self.showBrute )], user_data=[ip, port] )
                 self.target_menu += '<menuitem action="asname"/>'
                 self.actiongroup2.add_actions( [('tasn', None, kb[ip + '_asn'][-1] )] )
                 self.target_menu += '<menuitem action="tasn"/><separator/>'
-    
+
             if kb.__contains__(ip + '_os'):
                 # OS Information
                 self.actiongroup2.add_actions( [('osname', None, 'OS')] )
                 self.target_menu += '<menuitem action="osname"/>'
                 self.actiongroup2.add_actions( [('tos', None, kb[ip + '_os'][-1] )] )
                 self.target_menu += '<menuitem action="tos"/><separator/>'
-    
+
             self.target_menu += '</menu>'
-    
+
             # Add target's report button
-            self.actiongroup2.add_actions( [('Report', gtk.STOCK_INFO, '  Report', None, None, self.showReport )], user_data=[ip] )
+            self.actiongroup2.add_actions( [('Report', Gtk.STOCK_INFO, '  Report', None, None, self.showReport )], user_data=[ip] )
             self.target_menu += '<menuitem action="Report" position="top"/>'
-   
+
             # Add IP Address
             self.actiongroup2.add_actions( [(ip, None, '  ' + ip + '  ')] )
             self.target_menu += '<separator position="top"/>'
             self.target_menu += '<menuitem action="' + ip + '" position="top"/>'
-    
+
             self.target_menu += self.menu_base
 
             # Add the actiongroup to the uimanager
@@ -301,10 +302,10 @@ self.showBrute )], user_data=[ip, port] )
             bold_title.set_markup("<b> " + ip + " </b>")
 
         if len(items) > 2:
-            items[2].set_image(gtk.image_new_from_pixbuf(self.report_icon))
-            items[6].set_image(gtk.image_new_from_pixbuf(self.bug_icon))
-            items[7].set_image(gtk.image_new_from_pixbuf(self.discover_icon))
-            items[8].set_image(gtk.image_new_from_pixbuf(self.gather_icon))
+            items[2].set_image(Gtk.image_new_from_pixbuf(self.report_icon))
+            items[6].set_image(Gtk.image_new_from_pixbuf(self.bug_icon))
+            items[7].set_image(Gtk.image_new_from_pixbuf(self.discover_icon))
+            items[8].set_image(Gtk.image_new_from_pixbuf(self.gather_icon))
 
     def _fuzz_target(self, widget, data):
         self.notebook.set_current_page(3)
@@ -354,9 +355,9 @@ self.showBrute )], user_data=[ip, port] )
             setattr(dialog, 'gom', self.gom)
             setattr(dialog, 'module', module)
         elif not inputs:
-            tg = gather_dialog.GatherDialog(module, gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)
+            tg = gather_dialog.GatherDialog(module, Gtk.STOCK_NEW, ["target", "port", "timeout"], self.uicore)
         else:
-            tg = gather_dialog.GatherDialog(module, gtk.STOCK_NEW, inputs, self.uicore)
+            tg = gather_dialog.GatherDialog(module, Gtk.STOCK_NEW, inputs, self.uicore)
 
     def showBrute(self, action, params):
         module = action.get_name().split('_')[-1]
@@ -364,11 +365,11 @@ self.showBrute )], user_data=[ip, port] )
         defaults = ["target", "port", "user"]
 
         if not inputs:
-            tg = bruteDialog.BruteDialog(module, gtk.STOCK_NEW, defaults, self.uicore, params)
+            tg = bruteDialog.BruteDialog(module, Gtk.STOCK_NEW, defaults, self.uicore, params)
         else:
             for input in inputs:
                 defaults.append(input)
-            tg = bruteDialog.BruteDialog(module, gtk.STOCK_NEW, defaults, self.uicore, params)
+            tg = bruteDialog.BruteDialog(module, Gtk.STOCK_NEW, defaults, self.uicore, params)
 
     def showReport(self, action, host):
         #print "Generating report for host:", host[0]

@@ -22,7 +22,7 @@ import gtk, cairo
 
 import GeoIP
 
-class Gui(gtk.Window):
+class Gui(Gtk.Window):
     def __init__(self, core):
         super(Gui,self).__init__()
 
@@ -40,25 +40,25 @@ class Gui(gtk.Window):
         self.set_resizable(True)
 
         # Drawing area for the map and the points
-        self.drawarea = gtk.DrawingArea()
+        self.drawarea = Gtk.DrawingArea()
         self.drawarea.set_size_request(2048, 1025)
         pangolayout = self.drawarea.create_pango_layout("")
-        self.drawarea.set_events(gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK)
+        self.drawarea.set_events(Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
         self.drawarea.props.has_tooltip = True
         self.drawarea.connect("expose-event", self.drawarea_expose)
         self.drawarea.connect("query-tooltip", self.query_tooltip_drawing_area_cb)
 
         # ScrolledWindow to contain the map (DrawingArea)
-        self.scrolledw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
+        self.scrolledw = Gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
         self.scrolledw.set_size_request(1000, 502)
-        self.scrolledw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrolledw.add_with_viewport(self.drawarea)
 
         # The list of IP addresses and data
         self.geovbox = self.dialogGeoIP()
 
         # Vertical Panel to contain the map and the list
-        self.vpane = gtk.VPaned()
+        self.vpane = Gtk.VPaned()
         self.vpane.add1(self.scrolledw)
         self.vpane.add2(self.geovbox)
 
@@ -72,7 +72,7 @@ class Gui(gtk.Window):
         self.geodata = []
         # Paint the map in the DrawArea
         mapstyle = self.drawarea.get_style()
-        self.mapgc = mapstyle.fg_gc[gtk.STATE_NORMAL]
+        self.mapgc = mapstyle.fg_gc[Gtk.StateType.NORMAL]
         
         self.font = 0
         
@@ -81,7 +81,7 @@ class Gui(gtk.Window):
         image = cairo.ImageSurface.create_from_png(mapname)
 
         sizeDrawarea = self.drawarea.get_allocation()
-        self.pixmap  = gtk.gdk.Pixmap(None, sizeDrawarea.width, sizeDrawarea.height, 24)
+        self.pixmap  = Gdk.Pixmap(None, sizeDrawarea.width, sizeDrawarea.height, 24)
 
         imagepattern = cairo.SurfacePattern(image)
 
@@ -135,7 +135,7 @@ class Gui(gtk.Window):
         pxlat = int(pxlat)
 
         # Paint a red point on the map
-        self.pointgc.set_rgb_fg_color( gtk.gdk.Color(red=1.0, green=1.0, blue=1.0) )
+        self.pointgc.set_rgb_fg_color( Gdk.Color(red=1.0, green=1.0, blue=1.0) )
         self.drawarea.window.draw_arc(self.pointgc, True, pxlon-2, pxlat-2, 6, 6, 0, 360*64)
 
         self.pangolayout = self.drawarea.create_pango_layout("")
@@ -195,23 +195,23 @@ class Gui(gtk.Window):
 
     def dialogGeoIP(self):
         # Text list of IP data
-        self.liststore = gtk.ListStore(str, str, str, str, str, str, str, str, str)
+        self.liststore = Gtk.ListStore(str, str, str, str, str, str, str, str, str)
         # ip lon lat city region country...
         self.liststore = self.refreshListstore(self.liststore)
 
-        treeview = gtk.TreeView(self.liststore)
+        treeview = Gtk.TreeView(self.liststore)
         treeview.set_rules_hint(True)
 
         #create the treeviewcolumn(tvc) object
-        tvcIp         = gtk.TreeViewColumn('IP')
-        tvcLat        = gtk.TreeViewColumn('Latitude')
-        tvcLon        = gtk.TreeViewColumn('Longitude')
-        tvcCity       = gtk.TreeViewColumn('City')
-        tvcRegion     = gtk.TreeViewColumn('Region')
-        tvcRegname    = gtk.TreeViewColumn('Region Name')
-        tvcCountry    = gtk.TreeViewColumn('Country')
-        tvcCountryc   = gtk.TreeViewColumn('Country Code')
-        tvcTimezone   = gtk.TreeViewColumn('Time Zone')
+        tvcIp         = Gtk.TreeViewColumn('IP')
+        tvcLat        = Gtk.TreeViewColumn('Latitude')
+        tvcLon        = Gtk.TreeViewColumn('Longitude')
+        tvcCity       = Gtk.TreeViewColumn('City')
+        tvcRegion     = Gtk.TreeViewColumn('Region')
+        tvcRegname    = Gtk.TreeViewColumn('Region Name')
+        tvcCountry    = Gtk.TreeViewColumn('Country')
+        tvcCountryc   = Gtk.TreeViewColumn('Country Code')
+        tvcTimezone   = Gtk.TreeViewColumn('Time Zone')
 
         #add the self.liststore row to the treeview GUI backend
         treeview.append_column(tvcIp)
@@ -225,15 +225,15 @@ class Gui(gtk.Window):
         treeview.append_column(tvcTimezone)
 
         #create cell object
-        cellIp         = gtk.CellRendererText()
-        cellLat        = gtk.CellRendererText()
-        cellLon        = gtk.CellRendererText()
-        cellCity       = gtk.CellRendererText()
-        cellRegion     = gtk.CellRendererText()
-        cellRegname    = gtk.CellRendererText()
-        cellCountry    = gtk.CellRendererText()
-        cellCountryc   = gtk.CellRendererText()
-        cellTimezone   = gtk.CellRendererText()
+        cellIp         = Gtk.CellRendererText()
+        cellLat        = Gtk.CellRendererText()
+        cellLon        = Gtk.CellRendererText()
+        cellCity       = Gtk.CellRendererText()
+        cellRegion     = Gtk.CellRendererText()
+        cellRegname    = Gtk.CellRendererText()
+        cellCountry    = Gtk.CellRendererText()
+        cellCountryc   = Gtk.CellRendererText()
+        cellTimezone   = Gtk.CellRendererText()
         
         #add cells to columns 
         tvcIp.pack_start(cellIp, True)
@@ -269,14 +269,14 @@ class Gui(gtk.Window):
         tvcTimezone.set_sort_column_id(8)
         
         treeview.set_reorderable(0)
-        scrolledwindow = gtk.ScrolledWindow()
+        scrolledwindow = Gtk.ScrolledWindow()
         scrolledwindow.add(treeview)
 
 #        # Refresh button
-#        refreshbt = gtk.Button("refresh")
+#        refreshbt = Gtk.Button("refresh")
 #        refreshbt.connect("clicked", self.refreshButton)
 
-        vbox = gtk.VBox(False, 0)
+        vbox = Gtk.VBox(False, 0)
 #        vbox.pack_start(refreshbt, False, True, 0)
         vbox.pack_start(scrolledwindow, True, True, 0)
         return vbox

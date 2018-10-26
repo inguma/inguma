@@ -17,19 +17,19 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 import sys
 sys.path.append('../..')
 
 import lib.ui.config as config
 
-class GatherDialog(gtk.Dialog):
+class GatherDialog(Gtk.Dialog):
     '''Dialog for adding gather modules required data'''
 
     def __init__(self, title, stockok, options, core):
-        super(GatherDialog,self).__init__(title, None, gtk.DIALOG_MODAL,
-                      (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,stockok,gtk.RESPONSE_OK))
+        super(GatherDialog,self).__init__(title, None, Gtk.DialogFlags.MODAL,
+                      (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,stockok,Gtk.ResponseType.OK))
 
         self.set_resizable(False)
         TITLE = "Specify data for " + title
@@ -46,15 +46,15 @@ class GatherDialog(gtk.Dialog):
         self.entries = []
         # kb fields
         self.titles = []
-        table = gtk.Table(len(options), 3)
+        table = Gtk.Table(len(options), 3)
 
         for row,tit in enumerate(options):
             self.titles.append(tit)
-            titlab = gtk.Label(tit.capitalize() + ":\t")
+            titlab = Gtk.Label(label=tit.capitalize() + ":\t")
             titlab.set_padding(5, 0)
             titlab.set_alignment(0.0, 0.5)
             table.attach(titlab, 0,1,row,row+1)
-            entry = gtk.Entry()
+            entry = Gtk.Entry()
             try:
                 entry.set_text( str(self.kblist[tit]) )
             except:
@@ -64,8 +64,8 @@ class GatherDialog(gtk.Dialog):
 
             # Let's add tooltips at entries
             if self.descs.has_key(tit):
-                info = gtk.Image()
-                info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+                info = Gtk.Image()
+                info.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
                 info.set_tooltip_text(self.descs[tit])
                 info.set_padding(5, 0)
                 table.attach(info, 2,3,row,row+1)
@@ -73,7 +73,7 @@ class GatherDialog(gtk.Dialog):
             if tit == 'target':
                 self.set_completion(entry)
 
-        self.vbox.pack_start(table)
+        self.vbox.pack_start(table, True, True, 0)
 
         # the cancel button
         self.butt_cancel = self.action_area.get_children()[1]
@@ -89,8 +89,8 @@ class GatherDialog(gtk.Dialog):
 
     def set_completion(self, entry):
         # Seek entry EntryCompletion
-        self.completion = gtk.EntryCompletion()
-        self.liststore = gtk.ListStore(str)
+        self.completion = Gtk.EntryCompletion()
+        self.liststore = Gtk.ListStore(str)
         # Add function names to the list
         for target in self.kblist['hosts']:
             self.liststore.append([target])
@@ -114,7 +114,7 @@ class GatherDialog(gtk.Dialog):
             count += 1
         self._run_module()
         if close:
-            self.response(gtk.RESPONSE_OK)
+            self.response(Gtk.ResponseType.OK)
 
     def _run_module(self):
         self.destroy()

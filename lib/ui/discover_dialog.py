@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 import sys
 sys.path.append('../..')
@@ -36,22 +36,22 @@ class DiscoverDialog:
         self.module = module
 
         # Dialog
-        self.dialog = gtk.Dialog(title=TITLE, parent=None, flags=gtk.DIALOG_MODAL, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
+        self.dialog = Gtk.Dialog(title=TITLE, parent=None, flags=Gtk.DialogFlags.MODAL, buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OK,Gtk.ResponseType.OK))
         self.dialog.set_resizable(False)
 
         # Radio buttons
-        self.ip_rbutton= gtk.RadioButton(group=None, label='Single IP')
+        self.ip_rbutton= Gtk.RadioButton(group=None, label='Single IP')
         self.ip_rbutton.connect("toggled", self.rbcallback, "IP")
         self.active = 'IP'
         self.ip_rbutton.set_active(True)
-        self.net_rbutton = gtk.RadioButton(self.ip_rbutton, label='IP Range (CDIR)')
+        self.net_rbutton = Gtk.RadioButton(self.ip_rbutton, label='IP Range (CDIR)')
         self.net_rbutton.connect("toggled", self.rbcallback, "NET")
         self.ip_rbutton.set_active(True)
-        self.dom_rbutton = gtk.RadioButton(self.ip_rbutton, label='Domain')
+        self.dom_rbutton = Gtk.RadioButton(self.ip_rbutton, label='Domain')
         self.dom_rbutton.connect("toggled", self.rbcallback, "DOM")
 
         # A target text entry
-        self.tgentry = gtk.Entry(max=20)
+        self.tgentry = Gtk.Entry(max=20)
 
         # Auto fill with selected node IP
         target = self.uicore.get_kbfield('target')
@@ -60,24 +60,24 @@ class DiscoverDialog:
         self.tgentry.set_focus = True
 
         # A domain text entry
-        self.domainentry = gtk.Entry(max=40)
+        self.domainentry = Gtk.Entry(max=40)
         self.domainentry.set_sensitive(False)
 
         # Domain separator
-        self.domainsep = gtk.HSeparator()
+        self.domainsep = Gtk.HSeparator()
 
         # Port separator
-        self.portsep = gtk.HSeparator()
+        self.portsep = Gtk.HSeparator()
 
         # Label and textextry for port
-        self.portlab = gtk.Label('Port:\t')
+        self.portlab = Gtk.Label(label='Port:\t')
         self.portlab.set_alignment(0.21, 0.5)
 
-        self.portentry = gtk.Entry(max=5)
+        self.portentry = Gtk.Entry(max=5)
         self.portentry.set_text( str(self.uicore.user_data['port']) )
 
         # A ComboBox
-        self.combobox = gtk.combo_box_new_text()
+        self.combobox = Gtk.ComboBoxText()
         #for host in self.uicore.user_data['hosts']:
         self.uicore.get_kbfield('hosts').sort()
         for host in self.uicore.get_kbfield('hosts'):
@@ -85,7 +85,7 @@ class DiscoverDialog:
 
         #########################################################
         # Table
-        table = gtk.Table(rows=6, columns=2, homogeneous=False)
+        table = Gtk.Table(rows=6, columns=2, homogeneous=False)
         table.set_row_spacings(3)
         table.set_col_spacings(3)
 
@@ -190,8 +190,8 @@ class DiscoverDialog:
         error_string - The error string that will be displayed
         on the dialog.
         """
-        error_dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR
+        error_dlg = Gtk.MessageDialog(type=Gtk.MessageType.ERROR
                     , message_format=error_string
-                    , buttons=gtk.BUTTONS_OK)
+                    , buttons=Gtk.ButtonsType.OK)
         error_dlg.run()
         error_dlg.destroy()

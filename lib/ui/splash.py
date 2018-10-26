@@ -18,40 +18,40 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk, Gdk
 
-class Splash(gtk.Window):
+class Splash(Gtk.Window):
     '''Builds the Splash window.
     
     @author: Facundo Batista <facundobatista =at= taniquetil.com.ar>
     '''
     def __init__(self):
         super(Splash,self).__init__()
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.add(vbox)
 
         # content
-        img = gtk.image_new_from_file('lib/ui/data/splash.png')
-        vbox.pack_start(img)
-        self.label = gtk.Label()
-        vbox.pack_start(self.label)
+        img = Gtk.Image.new_from_file('lib/ui/data/splash.png')
+        vbox.pack_start(img, True, True, 0)
+        self.label = Gtk.Label()
+        vbox.pack_start(self.label, True, True, 0)
 
         # color and position
         self.set_decorated(False)
-        color = gtk.gdk.color_parse('#f2f2ff')
-        self.modify_bg(gtk.STATE_NORMAL, color)
-        self.set_position(gtk.WIN_POS_CENTER)
+        color = Gdk.color_parse('#f2f2ff')
+        self.modify_bg(Gtk.StateType.NORMAL, color)
+        self.set_position(Gtk.WindowPosition.CENTER)
         #self.set_size_request(600,295)
         self.set_size_request(600,150)
 
         # ensure it is rendered immediately
         self.show_all()
         
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def push(self, text):
         '''New text to be shown in the Splash.'''
         self.label.set_text(text)
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()

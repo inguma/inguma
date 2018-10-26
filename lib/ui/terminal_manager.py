@@ -1,5 +1,5 @@
 ##      terminal_manager.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
 #
 #       This program is free software; you can redistribute it and/or modify
@@ -18,8 +18,7 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk, pango
-import gobject
+from gi.repository import GObject, Gtk, Pango
 import pwd
 import psutil
 
@@ -27,58 +26,63 @@ import lib.ui.config as config
 import lib.ui.listener_shell as listener_shell
 
 if config.HAS_VTE:
-    import vte
+    from gi.repository import Vte
 
 window = None
 notebook = None
 
-class TerminalNotebook(gtk.Notebook):
+class TerminalNotebook(Gtk.Notebook):
 
     def __init__(self, main):
-        gtk.Notebook.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.pid = None
         self.pids = []
         self.main = main
 
         #set the tab properties
-        self.set_property('homogeneous', True)
-        self.set_tab_pos(gtk.POS_BOTTOM)
+        # The 'homogeneous' property has been removed in GTK+3.
+        #self.set_property('homogeneous', True)
+        self.set_tab_pos(Gtk.PositionType.BOTTOM)
 
         # Add a tab from the begining
         self.add_new_tab(self)
-        gobject.timeout_add(500, self._update_cwd)
+        GObject.timeout_add(500, self._update_cwd)
         self.show_all()
 
         ####################### FIXME ###########################
 #        # Just for testing!!! WILL BE REMOVED
 #        self.l_shell = listener_shell.ListenerShell()
 #        self.append_page(self.l_shell)
-#        
+#
 #        label = self.create_tab_label('Listener shell', self.l_shell)
 #        label.show_all()
-#        
-#        image = gtk.Image()
-#        self.set_tab_label_packing(image, True, True, gtk.PACK_START)
+#
+#        image = Gtk.Image()
+#        self.set_tab_label_packing(image, True, True, Gtk.PACK_START)
 #        self.set_tab_label(self.l_shell, label)
         ####################### FIXME ###########################
 
     def new_tab(self, command='', cwd='', args=[]):
-        hbox = gtk.HBox(False, 3)
-        self.tools = gtk.VBox(False)
-        self.tools2 = gtk.VBox(False)
+        hbox = Gtk.HBox(False, 3)
+        self.tools = Gtk.VBox(False)
+        self.tools2 = Gtk.VBox(False)
 
-        term = vte.Terminal()
+        # FIXME!!!!! Terminals are broken!!
+        return
+        # FIXME: Even when vte is not present, this is still called (and causes an error).
+        term = Vte.Terminal()
 
-        term.set_font(pango.FontDescription('mono 8'))
+        term.set_font(Pango.FontDescription('mono 8'))
+        term.set_pty(Vte.Pty())
+        term.connect("child-exited", self.on_terminal_child_exit)
         if command:
-            self.pid = term.fork_command(command=command, argv=args, directory=cwd)
+            self.pid = term.pty.spawn_async(command=command, argv=args, working_directory=cwd)
         else:
-            self.pid = term.fork_command(directory=cwd)
+            self.pid = term.pty.spawn_async(working_directory=cwd)
         self.pids.append(self.pid)
         term.set_scrollback_lines(1000)
         term.set_scroll_on_output = True
-        term.connect("child-exited", self.on_terminal_child_exit)
         term.set_size_request(200,200)
         term.show_all()
         self._create_term_buttons(term)
@@ -87,35 +91,35 @@ class TerminalNotebook(gtk.Notebook):
         hbox.pack_start(self.tools2, False, False, 0)
 
         self.append_page(hbox)
-        
+
         label = self.create_tab_label(command, hbox)
         label.show_all()
-        
-        image = gtk.Image()
-        self.set_tab_label_packing(image, True, True, gtk.PACK_START)
+
+        image = Gtk.Image()
+        self.set_tab_label_packing(image, True, True, Gtk.PACK_START)
         self.set_tab_label(hbox, label)
         term.show_all()
         if self.get_current_page() == -1:
-            gobject.timeout_add(500, self._update_cwd)
+            GObject.timeout_add(500, self._update_cwd)
 
     def create_tab_label(self, title, tab_child):
-        box = gtk.HBox(False, 1)
+        box = Gtk.HBox(False, 1)
         # Tab text label
-        #label = gtk.Label('Terminal')
-        label = gtk.Label(title)
-        small = pango.AttrScale(pango.SCALE_SMALL, 0, -1)
-        label_attributes = pango.AttrList()
+        #label = Gtk.Label(label='Terminal')
+        label = Gtk.Label(label=title)
+        small = Pango.AttrScale(Pango.SCALE_SMALL, 0, -1)
+        label_attributes = Pango.AttrList()
         label_attributes.insert(small)
         label.set_attributes(label_attributes)
-        label.set_ellipsize(pango.ELLIPSIZE_START)
+        label.set_ellipsize(Pango.EllipsizeMode.START)
         label.set_width_chars(9)
 
         # Tab terminal icon
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
         # Tab pseudo-close button
-        eb = gtk.EventBox()
-        cross = gtk.Image()
+        eb = Gtk.EventBox()
+        cross = Gtk.Image()
         cross.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'cross.png')
         cross.connect("realize", self._realize_cb)
         eb.add(cross)
@@ -129,7 +133,7 @@ class TerminalNotebook(gtk.Notebook):
 
     def _realize_cb(self, widget):
         """ method used to change mouse cursor for close pseudo-button """
-        hand = gtk.gdk.Cursor(gtk.gdk.HAND2)
+        hand = Gdk.Cursor.new(Gdk.HAND2)
         widget.window.set_cursor(hand)
 
     def add_new_tab(self, widget, command='', cwd=''):
@@ -170,17 +174,17 @@ class TerminalNotebook(gtk.Notebook):
         self.selectnone_button = self.load_button('textfield_delete.png',
           'Select None')
 #        self.find_button = self.load_button('find.png',
-#          'Search for text', gtk.ToggleButton)
+#          'Search for text', Gtk.ToggleButton)
 
-        self.tools.pack_start(self.browse_button, expand=False)
-        self.tools.pack_start(self.shell_button, expand=False)
-        self.tools.pack_start(self.bookmark_button, expand=False)
-        self.tools.pack_start(self.killer_button, expand=False)
-        self.tools.pack_start(self.killer_shell_button, expand=False)
-        self.tools2.pack_start(self.copy_button, expand=False)
-        self.tools2.pack_start(self.paste_button, expand=False)
-        self.tools2.pack_start(self.selectall_button, expand=False)
-        self.tools2.pack_start(self.selectnone_button, expand=False)
+        self.tools.pack_start(self.browse_button, False, True, 0)
+        self.tools.pack_start(self.shell_button, False, True, 0)
+        self.tools.pack_start(self.bookmark_button, False, True, 0)
+        self.tools.pack_start(self.killer_button, False, True, 0)
+        self.tools.pack_start(self.killer_shell_button, False, True, 0)
+        self.tools2.pack_start(self.copy_button, False, True, 0)
+        self.tools2.pack_start(self.paste_button, False, True, 0)
+        self.tools2.pack_start(self.selectall_button, False, True, 0)
+        self.tools2.pack_start(self.selectnone_button, False, True, 0)
         #self.copy_button.set_sensitive(False)
 
         self.create_killer()
@@ -195,7 +199,7 @@ class TerminalNotebook(gtk.Notebook):
         self.killer_shell_button.connect('button-press-event', self.on_killer_shell_button__button_press_event)
 
     def create_killer(self):
-        self.killer_menu = gtk.Menu()
+        self.killer_menu = Gtk.Menu()
         signums = [
             ('SIGTERM', 15),
             ('SIGKILL', 9),
@@ -203,15 +207,15 @@ class TerminalNotebook(gtk.Notebook):
             ('SIGABRT', 6),
         ]
         for signame, signum in signums:
-            menuitem = gtk.MenuItem()
+            menuitem = Gtk.MenuItem()
             menuitem.set_label('{0} ({1})'.format(signame, signum))
             self.killer_menu.append(menuitem)
             menuitem.set_data('signum', signum)
             menuitem.connect('activate', self.on_killer_activate)
         self.killer_menu.show_all()
-        self.killer_shell_menu = gtk.Menu()
+        self.killer_shell_menu = Gtk.Menu()
         for signame, signum in signums:
-            menuitem = gtk.MenuItem()
+            menuitem = Gtk.MenuItem()
             menuitem.set_label('{0} ({1})'.format(signame, signum))
             self.killer_shell_menu.append(menuitem)
             menuitem.set_data('signum', signum)
@@ -219,14 +223,14 @@ class TerminalNotebook(gtk.Notebook):
         self.killer_shell_menu.show_all()
 
     def load_button(self, icon, tip):
-        button = gtk.Button()
+        button = Gtk.Button()
         button.set_image(self.load_icon(icon))
         button.set_tooltip_text(tip)
         return button
 
     def load_icon(self, name):
         """Create an image from an icon name."""
-        img = gtk.Image()
+        img = Gtk.Image()
         img.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + name)
         return img
 
@@ -295,6 +299,6 @@ class TerminalNotebook(gtk.Notebook):
 
     def get_default_shell():
         """Returns the default shell for the user"""
-        # Environ, or fallback to login shell 
+        # Environ, or fallback to login shell
         return os.environ.get('SHELL', pwd.getpwuid(os.getuid())[-1])
 

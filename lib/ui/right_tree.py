@@ -18,18 +18,18 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import GdkPixbuf, Gtk
 
 import lib.globals as glob
 import lib.ui.config as config
 import lib.ui.vulns_menu as vulns_menu
 import lib.ui.listeners_menu as listeners_menu
 
-class KBtree(gtk.TreeView):
+class KBtree(Gtk.TreeView):
 
     def __init__(self, main, core):
         # TreeStore
-        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, str)
+        self.treestore = Gtk.TreeStore(GdkPixbuf.Pixbuf, str, str)
         # create the TreeView using treestore
         super(KBtree,self).__init__(self.treestore)
 
@@ -53,13 +53,13 @@ class KBtree(gtk.TreeView):
         self.connections = []
 
         # Tree icons
-        self.default_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
-        self.node_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
-        self.value_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
-        self.vuln_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
+        self.default_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
+        self.node_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
+        self.value_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
+        self.vuln_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
 
         # Main VBox to store right panel elements
-        self.right_vbox = gtk.VBox(False)
+        self.right_vbox = Gtk.VBox(False)
 
         # OS visibility
         self.os_visible = {}
@@ -68,9 +68,9 @@ class KBtree(gtk.TreeView):
             self.os_visible[oss.lower()] = True
 
         # OS buttons bar
-        self.oss_bar = gtk.Toolbar()
+        self.oss_bar = Gtk.Toolbar()
         self.oss_bar.set_show_arrow(True)
-        self.oss_bar.set_style(gtk.TOOLBAR_ICONS)
+        self.oss_bar.set_style(Gtk.ToolbarStyle.ICONS)
         self.create_os_buttons()
 
         #################################################################
@@ -79,28 +79,28 @@ class KBtree(gtk.TreeView):
 
         # Target filter text entry
         # expand/collapse buttons
-        self.tgt_hbox = gtk.HBox(False)
+        self.tgt_hbox = Gtk.HBox(False)
 
-        self.expand_btn = gtk.Button()
-        self.expand_icon = gtk.Image()
-        self.expand_icon.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        self.expand_btn = Gtk.Button()
+        self.expand_icon = Gtk.Image()
+        self.expand_icon.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.MENU)
         self.expand_btn.set_image(self.expand_icon)
-        self.expand_btn.set_relief(gtk.RELIEF_NONE)
+        self.expand_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.expand_btn.set_tooltip_text('Expand all nodes')
         self.expand_btn.connect('clicked', self._expand_all)
 
-        self.collapse_btn = gtk.Button()
-        self.collapse_icon = gtk.Image()
-        self.collapse_icon.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        self.collapse_btn = Gtk.Button()
+        self.collapse_icon = Gtk.Image()
+        self.collapse_icon.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.MENU)
         self.collapse_btn.set_image(self.collapse_icon)
-        self.collapse_btn.set_relief(gtk.RELIEF_NONE)
+        self.collapse_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.collapse_btn.set_tooltip_text('Collapse all nodes')
         self.collapse_btn.connect('clicked', self._collapse_all)
 
-        sep = gtk.VSeparator()
+        sep = Gtk.VSeparator()
 
-        self.tgt_entry = gtk.Entry(20)
-        self.tgt_entry.set_icon_from_stock(1, gtk.STOCK_CLEAR)
+        self.tgt_entry = Gtk.Entry()
+        self.tgt_entry.set_icon_from_stock(1, Gtk.STOCK_CLEAR)
         self.tgt_entry.set_icon_tooltip_text(1, 'Clear entry')
         self.tgt_entry.connect('icon-press', self._clear_entry)
         self.tgt_entry.connect('changed', self._do_filter)
@@ -113,8 +113,8 @@ class KBtree(gtk.TreeView):
         self.right_vbox.pack_start(self.tgt_hbox, False, False, 1)
 
         # Scrolledwindow/Treeview
-        self.scrolled_window = gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolled_window = Gtk.ScrolledWindow()
+        self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrolled_window.set_size_request(250,-1)
 
         self.modelfilter = self.treestore.filter_new()
@@ -166,21 +166,21 @@ class KBtree(gtk.TreeView):
 
     def create_os_button(self, oss, generic=False):
         if not generic:
-            btn = gtk.ToggleToolButton(oss)
+            btn = Gtk.ToggleToolButton(oss)
             btn.set_label(oss.capitalize())
             btn.set_tooltip_text(oss.capitalize())
-            icon = gtk.Image()
+            icon = Gtk.Image()
             icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
             btn.set_icon_widget(icon)
             btn.set_active(True)
             self.os_visible[oss.lower()] = True
             btn.connect('toggled', self._filter_on_toggle)
         else:
-            btn = gtk.ToggleToolButton()
+            btn = Gtk.ToggleToolButton()
             btn.set_label('Generic')
             btn.set_tooltip_text('Generic')
             self.os_visible['generic'] = True
-            icon = gtk.Image()
+            icon = Gtk.Image()
             icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
             btn.set_icon_widget(icon)
             btn.set_active(True)
@@ -224,10 +224,10 @@ class KBtree(gtk.TreeView):
             self.right_vbox.remove(self.oss_bar)
 
     def create_listeners_list(self):
-        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
-        rendererPix = gtk.CellRendererPixbuf()
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("File")
+        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str)
+        rendererPix = Gtk.CellRendererPixbuf()
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("File")
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)
@@ -236,9 +236,9 @@ class KBtree(gtk.TreeView):
         column.set_sort_column_id(0)
         self.append_column(column)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Port", rendererText, text=2)
-        self.treestore.set_sort_column_id(2,gtk.SORT_ASCENDING)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Port", rendererText, text=2)
+        self.treestore.set_sort_column_id(2,Gtk.SortType.ASCENDING)
         column.set_sort_column_id(2)
         self.append_column(column)
 
@@ -247,10 +247,10 @@ class KBtree(gtk.TreeView):
 
     def fill_listeners_list(self):
         self.liststore.clear()
-        conn = gtk.Image()
-        conn = conn.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
-        disconn = gtk.Image()
-        disconn = disconn.render_icon(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
+        conn = Gtk.Image()
+        conn = conn.render_icon(Gtk.STOCK_CONNECT, Gtk.IconSize.MENU)
+        disconn = Gtk.Image()
+        disconn = disconn.render_icon(Gtk.STOCK_DISCONNECT, Gtk.IconSize.MENU)
         if glob.listeners:
             for listener in glob.listeners:
                 host, port = listener.split(':')
@@ -259,8 +259,8 @@ class KBtree(gtk.TreeView):
                 else:
                     self.liststore.append([disconn, host, port])
         else:
-            icon = gtk.Image()
-            icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+            icon = Gtk.Image()
+            icon = icon.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
             self.liststore.append([icon, 'No active listeners', None])
 
         if self.handler:
@@ -289,14 +289,14 @@ class KBtree(gtk.TreeView):
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
-                        icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                        icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
                         piter = self.treestore.append(None, [icon, host, oss])
             else:
                 piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
             if host + '_tcp_ports' in kb:
                 for port in kb[host + '_tcp_ports']:
-                    icon = gtk.Image()
-                    icon = icon.render_icon(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
+                    icon = Gtk.Image()
+                    icon = icon.render_icon(Gtk.STOCK_CONNECT, Gtk.IconSize.MENU)
                     port_iter = self.treestore.append( piter, [icon, str(port) + '/TCP', None])
                     if host + '_'+ str(port) + '-web-vulns' in kb.keys():
                         for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
@@ -308,12 +308,12 @@ class KBtree(gtk.TreeView):
                             else:
                                 self.treestore.append( ids[id], [self.vuln_icon, vuln, id + '-' + host + ':' + str(port)])
                     else:
-                        icon = gtk.Image()
-                        icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+                        icon = Gtk.Image()
+                        icon = icon.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
                         self.treestore.append( port_iter, [icon, 'No vulnerabilities found yet', None])
             else:
-                icon = gtk.Image()
-                icon = icon.render_icon(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+                icon = Gtk.Image()
+                icon = icon.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
                 self.treestore.append( piter, [icon, 'No opened ports found yet', None])
 
         self.set_model(self.modelfilter)
@@ -324,14 +324,14 @@ class KBtree(gtk.TreeView):
     def create_targets_tree(self):
 
         # create the TreeViewColumn to display the data
-        self.tvcolumn = gtk.TreeViewColumn('Hosts')
+        self.tvcolumn = Gtk.TreeViewColumn('Hosts')
 
         # add tvcolumn to treeview
         self.append_column(self.tvcolumn)
 
         # create a CellRendererText to render the data
-        self.cell = gtk.CellRendererText()
-        self.rendererPix = gtk.CellRendererPixbuf()
+        self.cell = Gtk.CellRendererText()
+        self.rendererPix = Gtk.CellRendererPixbuf()
 
         # add the cell to the tvcolumn and allow it to expand
         self.tvcolumn.pack_start(self.rendererPix, False)
@@ -372,7 +372,7 @@ class KBtree(gtk.TreeView):
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
-                        icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                        icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
                         piter = self.treestore.append(None, [icon, host, oss])
             else:
                 piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
@@ -441,7 +441,7 @@ class KBtree(gtk.TreeView):
             return True
 
     def popup_menu(self, tree, event):
-        if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.button == 1 and event.type == Gdk._2BUTTON_PRESS:
             #(path, column) = tree.get_cursor()
             var = tree.get_path_at_pos(int(event.x), int(event.y))
             if var:

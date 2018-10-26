@@ -18,33 +18,33 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
-class RceMenu(gtk.HBox):
+class RceMenu(Gtk.HBox):
     ''' Menu for the xdot graph widget '''
     def __init__(self, graph, rcecore):
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         self.graph = graph
         self.rcecore = rcecore
 
         self.toolbox = self
-        b = SemiStockButton("", gtk.STOCK_ZOOM_IN, 'Zoom In')
+        b = SemiStockButton("", Gtk.STOCK_ZOOM_IN, 'Zoom In')
         b.connect("clicked", self._zoom, "in")
         self.toolbox.pack_start(b, False, False)
-        b = SemiStockButton("", gtk.STOCK_ZOOM_OUT, 'Zoom Out')
+        b = SemiStockButton("", Gtk.STOCK_ZOOM_OUT, 'Zoom Out')
         b.connect("clicked", self._zoom, "out")
         self.toolbox.pack_start(b, False, False)
-        b = SemiStockButton("", gtk.STOCK_ZOOM_FIT, 'Zoom Fit')
+        b = SemiStockButton("", Gtk.STOCK_ZOOM_FIT, 'Zoom Fit')
         b.connect("clicked", self._zoom, "fit")
         self.toolbox.pack_start(b, False, False)
-        b = SemiStockButton("", gtk.STOCK_ZOOM_100, 'Zoom 100%')
+        b = SemiStockButton("", Gtk.STOCK_ZOOM_100, 'Zoom 100%')
         b.connect("clicked", self._zoom, "100")
         self.toolbox.pack_start(b, False, False)
 #        # XXX Separator XXX
-#        self.sep = gtk.VSeparator()
+#        self.sep = Gtk.VSeparator()
 #        self.toolbox.pack_start(self.sep, False, False)
 
-        self.combo = gtk.combo_box_new_text()
+        self.combo = Gtk.ComboBoxText()
         self.combo.set_sensitive(False)
         self.combo.connect("changed", self.load_function)
         self.toolbox.pack_end(self.combo, False, False)
@@ -84,7 +84,7 @@ class RceMenu(gtk.HBox):
 #    def _addTarget(self, widg):
 #        addw = addtarget.TargetDialog()
 
-class SemiStockButton(gtk.Button):
+class SemiStockButton(Gtk.Button):
     '''Takes the image from the stock, but the label which is passed.
     
     @param text: the text that will be used for the label
@@ -110,18 +110,18 @@ class SemiStockButton(gtk.Button):
         @param tooltip: the tooltip for the button
         '''
         self.label.set_text(newtext)
-        self.image.set_from_stock(newimage, gtk.ICON_SIZE_BUTTON)
+        self.image.set_from_stock(newimage, Gtk.IconSize.BUTTON)
         if tooltip is not None:
             self.set_tooltip_text(tooltip)
 
-class DasmMenu(gtk.HBox):
+class DasmMenu(Gtk.HBox):
     ''' Menu for the xdot graph widget '''
     def __init__(self):
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.dasmbox = self
 
-        self.combo = gtk.combo_box_new_text()
+        self.combo = Gtk.ComboBoxText()
         self.combo.set_sensitive(False)
         self.dasmbox.pack_end(self.combo, False, False)
 

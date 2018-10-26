@@ -19,7 +19,7 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk
 
 FAIL = '\033[91m'
 OKGREEN = '\033[92m'
@@ -35,7 +35,7 @@ import ui.throbber as throbber
 import main_button_menu as main_button_menu
 import ui.main_button as main_button
 
-class TopButtons(gtk.HBox):
+class TopButtons(Gtk.HBox):
     '''Top Buttons'''
 
     def __init__(self, core, main):
@@ -50,8 +50,8 @@ class TopButtons(gtk.HBox):
         self.img_path = os.path.dirname(__file__) + os.sep + 'data' + os.sep
         self.options_dict = {'String':' ', 'String no case':'i ', 'Hexadecimal':'x ', 'Regexp':'e '}
 
-        self.main_tb = gtk.Toolbar()
-        self.main_tb.set_style(gtk.TOOLBAR_ICONS)
+        self.main_tb = Gtk.Toolbar()
+        self.main_tb.set_style(Gtk.ToolbarStyle.ICONS)
 
         # Main Button
         self.menu = main_button_menu.MenuBar(self.main)
@@ -59,69 +59,69 @@ class TopButtons(gtk.HBox):
         self.menu_button = main_button.MainMenuButton("Bokken", self.menu)
         self.menu_button.set_border_width(0)
 
-        menu_toolitem = gtk.ToolItem()
+        menu_toolitem = Gtk.ToolItem()
 
         menu_toolitem.add(self.menu_button)
         self.main_tb.insert(menu_toolitem, 0)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 1)
 
         # Assembler button
-        self.asm_tb = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        self.asm_tb = Gtk.ToolButton(Gtk.STOCK_EXECUTE)
         self.asm_tb.set_tooltip_text('Open assembler dialog')
         self.asm_tb.connect("clicked", self._assembler)
         self.main_tb.insert(self.asm_tb, 2)
 
         # Bindiff button
-        self.diff_tb = gtk.ToolButton(gtk.STOCK_REFRESH)
+        self.diff_tb = Gtk.ToolButton(Gtk.STOCK_REFRESH)
         self.diff_tb.set_tooltip_text('Do binary diffing')
         self.diff_tb.connect("clicked", self._do_diff)
         self.main_tb.insert(self.diff_tb, 3)
 
         # Section bars button
-        self.sections_tb = gtk.ToolButton(gtk.STOCK_SORT_ASCENDING)
+        self.sections_tb = Gtk.ToolButton(Gtk.STOCK_SORT_ASCENDING)
         self.sections_tb.set_tooltip_text('Extended sections information')
         self.sections_tb.connect("clicked", self._do_sections)
         self.main_tb.insert(self.sections_tb, 4)
 
         # Calculator button
-        self.image = gtk.Image()
+        self.image = Gtk.Image()
         self.image.set_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'calc.png')
-        self.calc_tb = gtk.ToolButton()
+        self.calc_tb = Gtk.ToolButton()
         self.calc_tb.set_icon_widget(self.image)
         self.calc_tb.set_tooltip_text('Show calculator')
         self.calc_tb.connect("clicked", self._do_calc)
         self.main_tb.insert(self.calc_tb, 5)
 
         # File magic button
-        self.magic_tb = gtk.ToolButton(gtk.STOCK_INFO)
+        self.magic_tb = Gtk.ToolButton(Gtk.STOCK_INFO)
         self.magic_tb.set_tooltip_text('Show file magic')
         self.magic_tb.connect("clicked", self._do_file_magic)
         self.main_tb.insert(self.magic_tb, 6)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 7)
 
         # Search components
-        self.search_combo_tb = gtk.ToolItem()
-        self.search_combo_align = gtk.Alignment(yalign=0.5)
-        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        self.search_combo = gtk.ComboBox(store)
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        self.search_combo_tb = Gtk.ToolItem()
+        self.search_combo_align = Gtk.Alignment.new(yalign=0.5)
+        store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self.search_combo = Gtk.ComboBox(store)
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         self.search_combo.pack_start(rendererPix, False)
         self.search_combo.pack_start(rendererText, True)
         self.search_combo.add_attribute(rendererPix, 'pixbuf', 0)
         self.search_combo.add_attribute(rendererText, 'text', 1)
 
         options = {
-            'String':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_16.png'),
-            'String no case':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_no_case_16.png'),
-            'Hexadecimal':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_hexadecimal_16.png'),
-            'Regexp':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_regexp_16.png')
+            'String':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_16.png'),
+            'String no case':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_no_case_16.png'),
+            'Hexadecimal':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_hexadecimal_16.png'),
+            'Regexp':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_regexp_16.png')
         }
 
         for option in options.keys():
@@ -132,14 +132,14 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.search_combo_tb, 8)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_draw(False)
         self.main_tb.insert(self.sep, 9)
 
-        self.search_entry_tb = gtk.ToolItem()
-        self.search_entry = gtk.Entry(100)
+        self.search_entry_tb = Gtk.ToolItem()
+        self.search_entry = Gtk.Entry(100)
         self.search_entry.set_text('Text to search')
-        self.search_entry.set_icon_from_stock(1, gtk.STOCK_FIND)
+        self.search_entry.set_icon_from_stock(1, Gtk.STOCK_FIND)
         self.search_entry.set_icon_tooltip_text(1, 'Search')
         self.search_entry.connect("activate", self.search)
         self.search_entry.connect("icon-press", self.search)
@@ -149,23 +149,23 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.search_entry_tb, 10)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 11)
 
         # Cheatsheet button
-        self.cheatsheet_tb = gtk.ToolButton(gtk.STOCK_JUSTIFY_FILL)
+        self.cheatsheet_tb = Gtk.ToolButton(Gtk.STOCK_JUSTIFY_FILL)
         self.cheatsheet_tb.set_tooltip_text('Show assembler reference sheet')
         self.cheatsheet_tb.connect("clicked", self.create_cheatsheet_dialog)
         self.main_tb.insert(self.cheatsheet_tb, 12)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
         self.main_tb.insert(self.sep, 13)
 
         # Exit button
-        self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
+        self.exit_tb = Gtk.ToolButton(Gtk.STOCK_QUIT)
         self.exit_tb.set_label('Quit')
         self.exit_tb.connect("clicked", self.main.quit)
         self.exit_tb.set_tooltip_text('Have a nice day ;-)')
@@ -173,7 +173,7 @@ class TopButtons(gtk.HBox):
 
         # Throbber
         self.throbber = throbber.Throbber()
-        self.throbber_tb = gtk.ToolItem()
+        self.throbber_tb = Gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
         self.main_tb.insert(self.throbber_tb, 15)
 
@@ -200,7 +200,7 @@ class TopButtons(gtk.HBox):
         #self.diff_widget = self.main.tviews.bindiff_widget
         chooser = diff_dialog.DiffDialog(self.uicore)
         self.response = chooser.run()
-        if self.response in [gtk.RESPONSE_DELETE_EVENT, gtk.RESPONSE_REJECT, -3]:
+        if self.response in [Gtk.ResponseType.DELETE_EVENT, Gtk.ResponseType.REJECT, -3]:
             chooser.destroy()
         else:
             self.file_name = chooser.input_entry2.get_text()
@@ -223,8 +223,8 @@ class TopButtons(gtk.HBox):
         magic = self.uicore.core.cmd_str('pm')
         #self.uicore.core.cmd0('e io.va=1')
         if magic:
-            md = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, 
-                gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, None)
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, 
+                Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, None)
             md.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
             md.set_markup("<b>Detected file magic:</b>\n\n" + magic)
             md.run()
@@ -260,7 +260,7 @@ class TopButtons(gtk.HBox):
     def new_file(self, widget, file=''):
         dialog = file_dialog.FileDialog(False, self.dependency_check.HAS_RADARE, 'radare', file)
         resp = dialog.run()
-        if resp == gtk.RESPONSE_DELETE_EVENT or resp == gtk.RESPONSE_REJECT:
+        if resp == Gtk.ResponseType.DELETE_EVENT or resp == Gtk.ResponseType.REJECT:
             dialog.destroy()
         else:
             self.file = dialog.file

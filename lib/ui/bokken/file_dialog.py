@@ -19,14 +19,14 @@
 
 import os
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
-class FileDialog(gtk.Dialog):
+class FileDialog(Gtk.Dialog):
     '''Window popup to select file'''
 
     def __init__(self, has_pyew, has_radare, core='', file='', first_run=False):
-        super(FileDialog,self).__init__('Select file', None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        super(FileDialog,self).__init__('Select file', None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, (Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT, Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
 
         self.has_pyew = has_pyew
         self.has_radare = has_radare
@@ -47,41 +47,41 @@ class FileDialog(gtk.Dialog):
         #self.butt_cancel.connect("clicked", self.cancel)
 
         # Window position
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         # Main Vertical Box
-        self.main_vbox = gtk.VBox(False, 2)
+        self.main_vbox = Gtk.VBox(False, 2)
         self.main_vbox.set_border_width(7)
 
         # Logo
-        self.logo = gtk.Image()
+        self.logo = Gtk.Image()
         self.logo.set_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
         # Logo label
-        self.logo_text = gtk.Label()
+        self.logo_text = Gtk.Label()
         self.logo_text.set_markup('<span size=\'12000\'>Welcome to <b>Bokken 1.5</b></span>')
 
         # Common label
-        self.label = gtk.Label('Select a target or enter the path manually.')
+        self.label = Gtk.Label(label='Select a target or enter the path manually.')
         self.label.set_padding(0, 3)
         self.label.set_alignment(0, 0.5)
 
         # Pyew targets label
-        self.pyew_label = gtk.Label()
+        self.pyew_label = Gtk.Label()
         self.pyew_label.set_markup('Valid inputs are: <b>PE/ELF, PDF, plain text files and URLs</b>')
         self.pyew_label.set_padding(0, 2)
 
         # Radare targets label
-        self.radare_label = gtk.Label()
+        self.radare_label = Gtk.Label()
         self.radare_label.set_markup('Valid inputs are: <b>PE, ELF, mach0 and java/dex classes</b>')
         self.radare_label.set_padding(0, 2)
 
         # Horizontal Separator
-        self.hseparator1 = gtk.HSeparator()
+        self.hseparator1 = Gtk.HSeparator()
 
         # Core selection label and combo
-        self.core_label = gtk.Label('Select backend to use: ')
+        self.core_label = Gtk.Label(label='Select backend to use: ')
         self.core_label.set_alignment(0, 0.5)
-        self.core_combo = gtk.combo_box_new_text()
+        self.core_combo = Gtk.ComboBoxText()
 
         if self.has_pyew:
             self.core_combo.append_text('Pyew')
@@ -103,31 +103,31 @@ class FileDialog(gtk.Dialog):
         self.core = self.core_combo.get_active_text().lower()
 
         # Core combo Horizontal Box
-        self.core_hbox = gtk.HBox(False, 0)
+        self.core_hbox = Gtk.HBox(False, 0)
         self.core_hbox.pack_start(self.core_label, True, True, 2)
         self.core_hbox.pack_start(self.core_combo, False, False, 2)
         # Horizontal Separator
-        self.hseparator2 = gtk.HSeparator()
+        self.hseparator2 = Gtk.HSeparator()
 
         # File selection Horizontal Box
-        self.hbox = gtk.HBox(False, 0)
+        self.hbox = Gtk.HBox(False, 0)
         # TextEntry
-        self.model = gtk.ListStore(str)
-        self.input_entry = gtk.ComboBoxEntry(self.model, column=0)
+        self.model = Gtk.ListStore(str)
+        self.input_entry = Gtk.ComboBoxEntry(self.model, column=0)
         self.input_entry.get_child().connect("activate", self.fast_start)
         self.input_entry.connect("changed", self._validate_cb)
-        #self.input_entry = gtk.Entry(100)
+        #self.input_entry = Gtk.Entry(100)
         if self.file:
             self.input_entry.get_child().set_text(self.file)
         # Recent file manager
-        self.manager = gtk.recent_manager_get_default()
+        self.manager = Gtk.RecentManager.get_default()
         items = self.manager.get_items()
         for element in items[:10]:
             self.model.append( [element.get_display_name()])
         # Select file button
-        icon = gtk.Image()
-        icon.set_from_stock(gtk.STOCK_OPEN, gtk.ICON_SIZE_MENU)
-        self.select_button = gtk.Button()
+        icon = Gtk.Image()
+        icon.set_from_stock(Gtk.STOCK_OPEN, Gtk.IconSize.MENU)
+        self.select_button = Gtk.Button()
         self.select_button.set_image(icon)
         self.select_button.connect("clicked", self.select_file)
         # Pack elements into hbox
@@ -135,24 +135,24 @@ class FileDialog(gtk.Dialog):
         self.hbox.pack_start(self.select_button, False, False, 2)
 
         # File options Horizontal Box
-        self.options_hbox = gtk.HBox(False, 2)
+        self.options_hbox = Gtk.HBox(False, 2)
         # Pyew option Vertical Box
-        self.pyew_box = gtk.VBox(False, 0)
+        self.pyew_box = Gtk.VBox(False, 0)
         # Radare option Vertical Box
-        self.radare_box = gtk.VBox(False, 0)
+        self.radare_box = Gtk.VBox(False, 0)
         # pack the boxes
         self.options_hbox.pack_start(self.pyew_box, False, False, 0)
         self.options_hbox.pack_start(self.radare_box, False, False, 0)
 
         # HSeparator
-        self.hseparator3 = gtk.HSeparator()
+        self.hseparator3 = Gtk.HSeparator()
         # Analysis options label
-        self.anal_label = gtk.Label()
+        self.anal_label = Gtk.Label()
         self.anal_label.set_markup("<b>Analysis options:</b>")
 
         # Pyew options
-        self.deep_anal = gtk.CheckButton(label='Deep analysis')
-        self.case_dasm = gtk.CheckButton(label='Lower case disassembly')
+        self.deep_anal = Gtk.CheckButton(label='Deep analysis')
+        self.case_dasm = Gtk.CheckButton(label='Lower case disassembly')
         self.case_dasm.set_active(True)
         self.pyew_box.pack_start(self.deep_anal, False, False, 2)
         self.pyew_box.pack_start(self.case_dasm, False, False, 2)
@@ -160,13 +160,13 @@ class FileDialog(gtk.Dialog):
         self.core_combo.connect("changed", self._on_change)
 
         # Radare options
-        self.anal_bin = gtk.CheckButton(label='Analyze program')
+        self.anal_bin = Gtk.CheckButton(label='Analyze program')
         self.anal_bin.set_active(True)
-        self.radare_dasm = gtk.CheckButton(label='Lower case disassembly')
+        self.radare_dasm = Gtk.CheckButton(label='Lower case disassembly')
         self.radare_dasm.set_active(True)
-        self.io_va = gtk.CheckButton(label='Don\'t use VA')
-        self.asm_syntax = gtk.CheckButton(label='Use AT&T syntax')
-        self.asm_bytes = gtk.CheckButton(label='Don\'t show asm bytes')
+        self.io_va = Gtk.CheckButton(label='Don\'t use VA')
+        self.asm_syntax = Gtk.CheckButton(label='Use AT&T syntax')
+        self.asm_bytes = Gtk.CheckButton(label='Don\'t show asm bytes')
         self.anal_bin.connect("toggled", self._no_anal)
         self.radare_box.pack_start(self.anal_bin, False, False, 2)
         self.radare_box.pack_start(self.radare_dasm, False, False, 2)
@@ -188,7 +188,7 @@ class FileDialog(gtk.Dialog):
         self.main_vbox.pack_start(self.anal_label, False, False, 2)
         self.main_vbox.pack_start(self.options_hbox, False, False, 2)
 
-        self.vbox.pack_start(self.main_vbox)
+        self.vbox.pack_start(self.main_vbox, True, True, 0)
         self.set_focus(self.input_entry.get_child())
         self.show_all()
 
@@ -218,9 +218,9 @@ class FileDialog(gtk.Dialog):
         self.butt_ok.set_sensitive(False)
 
         # Progress bar
-        self.progress_box = gtk.VBox(False, 0)
-        self.hseparator4 = gtk.HSeparator()
-        self.progress_bar = gtk.ProgressBar()
+        self.progress_box = Gtk.VBox(False, 0)
+        self.hseparator4 = Gtk.HSeparator()
+        self.progress_bar = Gtk.ProgressBar()
         self.progress_box.pack_start(self.hseparator4, False, False, 0)
         self.progress_box.pack_start(self.progress_bar, False, False, 0)
 
@@ -260,10 +260,10 @@ class FileDialog(gtk.Dialog):
             self.asm_byt = self.asm_bytes.get_active()
 
     def select_file(self, widget):
-        chooser = gtk.FileChooserDialog(title="Select target",action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                              buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        chooser = Gtk.FileChooserDialog(title="Select target",action=Gtk.FileChooserAction.OPEN,
+                              buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
         self.resp = chooser.run()
-        if self.resp == gtk.RESPONSE_OK:
+        if self.resp == Gtk.ResponseType.OK:
             self.file_name = chooser.get_filename()
             self.input_entry.get_child().set_text(self.file_name)
         chooser.destroy()
@@ -271,8 +271,8 @@ class FileDialog(gtk.Dialog):
     def _validate_cb(self, widget):
         if self.timer_id:
             # We destroy the last event source and create another one.
-            gobject.source_remove(self.timer_id)
-        self.timer_id = gobject.timeout_add(500, self._validate, widget.get_child())
+            GObject.source_remove(self.timer_id)
+        self.timer_id = GObject.timeout_add(500, self._validate, widget.get_child())
 
     def _validate(self, widget):
         text = widget.get_text()
@@ -282,13 +282,13 @@ class FileDialog(gtk.Dialog):
         bg_not_valid = colormap.alloc_color("red")
         if 'http' in text:
             if core == 'Radare':
-                widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+                widget.modify_base(Gtk.StateType.NORMAL, bg_not_valid)
             else:
-                widget.modify_base(gtk.STATE_NORMAL, bg_ok)
+                widget.modify_base(Gtk.StateType.NORMAL, bg_ok)
         elif not os.path.isfile(text):
-            widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+            widget.modify_base(Gtk.StateType.NORMAL, bg_not_valid)
         else:
-            widget.modify_base(gtk.STATE_NORMAL, bg_ok)
+            widget.modify_base(Gtk.StateType.NORMAL, bg_ok)
 
     def _on_change(self, widget):
         active = widget.get_active_text()

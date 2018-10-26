@@ -17,9 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
-class PopupDialog(gtk.Window):
+class PopupDialog(Gtk.Window):
     '''Generic windows used as toolbar popup dialog'''
 
     def __init__(self, main, window, button):
@@ -28,12 +28,12 @@ class PopupDialog(gtk.Window):
 
         self.connect("destroy", self._quit)
 
-        self.eb = gtk.EventBox()
-        self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("black"))
+        self.eb = Gtk.EventBox()
+        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse("black"))
 
         # Add an VBox to store contents
         self.set_border_width(1)
-        self.vbox = gtk.VBox(False)
+        self.vbox = Gtk.VBox(False)
         self.vbox.set_border_width(5)
         self.eb.add(self.vbox)
         self.add(self.eb)
@@ -49,23 +49,23 @@ class PopupDialog(gtk.Window):
         # Change window look
         self.set_resizable(False)
         self.set_decorated(False)
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_POPUP_MENU)
+        self.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
         self.set_keep_above(True)
         self.set_transient_for(self.main)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
 
         # Top content with arrow and separators
-        halign = gtk.Alignment(0, 1, 0, 0)
-        self.arrow = gtk.Arrow(gtk.ARROW_UP, gtk.SHADOW_OUT)
+        halign = Gtk.Alignment.new(0, 1, 0, 0)
+        self.arrow = Gtk.Arrow(Gtk.ArrowType.UP, Gtk.ShadowType.OUT)
         halign.add(self.arrow)
 
-        top_left_sep = gtk.HSeparator()
+        top_left_sep = Gtk.HSeparator()
         top_left_sep.set_size_request(13, 5)
-        top_right_sep = gtk.HSeparator()
-        bottom_sep = gtk.HSeparator()
+        top_right_sep = Gtk.HSeparator()
+        bottom_sep = Gtk.HSeparator()
 
-        self.top_hbox = gtk.HBox(False)
+        self.top_hbox = Gtk.HBox(False)
         self.top_hbox.pack_start(top_left_sep, False, False, 0)
         self.top_hbox.pack_start(halign, False, False, 0)
         self.top_hbox.pack_start(top_right_sep, True, True, 0)

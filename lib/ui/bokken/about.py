@@ -19,14 +19,14 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import Gtk
 
 class AboutDialog():
     '''About dialog'''
 
     def create_dialog(self):
 
-        about = gtk.AboutDialog()
+        about = Gtk.AboutDialog()
         about.set_program_name("Bokken")
         about.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
         about.set_version("1.5")
@@ -35,6 +35,6 @@ class AboutDialog():
         about.set_website("http://bokken.inguma.eu")
         about.set_authors(["Hugo Teso <hteso@inguma.eu>", "David Martínez <ender@inguma.eu>"])
         about.set_artists(["Ana Muniesa <ana.muniesa@gmail.com>", "Huahe <juanje@gmail.com> twitter: @huahe", "Marcos Gómez <renx67@gmail.com>"])
-        about.set_logo(gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'bokken.svg'))
+        about.set_logo(GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'bokken.svg'))
 
         return about

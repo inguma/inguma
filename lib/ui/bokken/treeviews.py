@@ -18,13 +18,13 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import Gtk
 
-class TreeViews(gtk.TreeView):
+class TreeViews(Gtk.TreeView):
     '''Main TextView elements'''
 
     def __init__(self, core, textviews):
-        self.store = gtk.ListStore(gtk.gdk.Pixbuf, str, str, str, str)
+        self.store = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str, str, str)
         super(TreeViews,self).__init__(self.store)
 
         self.uicore = core
@@ -37,27 +37,27 @@ class TreeViews(gtk.TreeView):
 
     def create_functions_columns(self):
     
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
-        self.fcn_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
-        self.bb_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'block.png')
-        column = gtk.TreeViewColumn("Function")
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
+        self.fcn_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
+        self.bb_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'block.png')
+        column = Gtk.TreeViewColumn("Function")
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)
         column.set_attributes(rendererText, text=1)
         column.set_attributes(rendererPix, pixbuf=0)
         column.set_sort_column_id(1)
-        self.store.set_sort_column_id(1,gtk.SORT_ASCENDING)
+        self.store.set_sort_column_id(1,Gtk.SortType.ASCENDING)
         self.append_column(column)
         self.set_model(self.store)
 
     def create_sections_columns(self):
     
-        self.data_sec_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'data-sec.png')
-        rendererPix = gtk.CellRendererPixbuf()
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Section")
+        self.data_sec_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'data-sec.png')
+        rendererPix = Gtk.CellRendererPixbuf()
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Section")
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)
@@ -66,45 +66,45 @@ class TreeViews(gtk.TreeView):
         column.set_sort_column_id(0)
         self.append_column(column)
     
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Virtual Address", rendererText, text=2)
-        self.store.set_sort_column_id(2,gtk.SORT_ASCENDING)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Virtual Address", rendererText, text=2)
+        self.store.set_sort_column_id(2,Gtk.SortType.ASCENDING)
         column.set_sort_column_id(2)
         self.append_column(column)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Virtual Size", rendererText, text=3)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Virtual Size", rendererText, text=3)
         column.set_sort_column_id(3)
         self.append_column(column)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Raw Size", rendererText, text=4)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Raw Size", rendererText, text=4)
         column.set_sort_column_id(4)
         self.append_column(column)
         self.set_model(self.store)
 
     def create_exports_columns(self):
 
-        self.exp_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'export.png')
-        rendererPix = gtk.CellRendererPixbuf()
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Offset")
+        self.exp_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'export.png')
+        rendererPix = Gtk.CellRendererPixbuf()
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Offset")
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)
         column.set_attributes(rendererText, text=1)
         column.set_attributes(rendererPix, pixbuf=0)
-        self.store.set_sort_column_id(1,gtk.SORT_ASCENDING)
+        self.store.set_sort_column_id(1,Gtk.SortType.ASCENDING)
         column.set_sort_column_id(1)
         self.append_column(column)
     
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Name", rendererText, text=2)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Name", rendererText, text=2)
         column.set_sort_column_id(2)
         self.append_column(column)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Ordinal", rendererText, text=3)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Ordinal", rendererText, text=3)
         column.set_sort_column_id(3)
         self.append_column(column)
         self.set_model(self.store)
@@ -116,18 +116,18 @@ class TreeViews(gtk.TreeView):
 
     def create_pdf_tree(self, pdfinfo):
         # Create the column
-        pdfs = gtk.TreeViewColumn()
+        pdfs = Gtk.TreeViewColumn()
         pdfs.set_title("PDF Header")
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         pdfs.pack_start(cell, True)
         pdfs.add_attribute(cell, "text", 0)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         pdfs.pack_start(cell, True)
         pdfs.add_attribute(cell, "text", 1)
 
-        self.treestore = gtk.TreeStore(str, str)
+        self.treestore = Gtk.TreeStore(str, str)
 
         # Iterate PDF info and add to the tree
         header = ' '.join(pdfinfo[0][0:])
@@ -144,21 +144,21 @@ class TreeViews(gtk.TreeView):
 
     def create_cookies_tree(self, url_cookies):
         # Create the column
-        cookies = gtk.TreeViewColumn()
+        cookies = Gtk.TreeViewColumn()
         cookies.set_title("Cookies")
 
-        self.cell = gtk.CellRendererText()
+        self.cell = Gtk.CellRendererText()
         cookies.pack_start(self.cell, True)
         cookies.add_attribute(self.cell, "text", 0)
         cookies.set_attributes(self.cell, markup=0)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         cookies.pack_start(cell, True)
         cookies.add_attribute(cell, "text", 1)
         cookies.add_attribute(cell, "markup", 1)
         cell.set_property("markup", 1)
 
-        self.treestore = gtk.TreeStore(str, str)
+        self.treestore = Gtk.TreeStore(str, str)
 
         # Iterate headers and add to the tree
         for cook in url_cookies:
@@ -184,18 +184,18 @@ class TreeViews(gtk.TreeView):
 
     def create_url_headers(self, url_headers):
         # Create the column
-        headers = gtk.TreeViewColumn()
+        headers = Gtk.TreeViewColumn()
         headers.set_title("Headers")
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         headers.pack_start(cell, True)
         headers.add_attribute(cell, "text", 0)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         headers.pack_start(cell, True)
         headers.add_attribute(cell, "text", 1)
 
-        self.treestore = gtk.TreeStore(str, str)
+        self.treestore = Gtk.TreeStore(str, str)
 
         # Iterate headers and add to the tree
         it = self.treestore.append(None, ['URL Headers', ''])
@@ -209,23 +209,23 @@ class TreeViews(gtk.TreeView):
 
     def create_url_tree(self, links):
         # Create the column
-        imports = gtk.TreeViewColumn()
+        imports = Gtk.TreeViewColumn()
         imports.set_title("URL")
 
-        cell = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        cell = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         imports.pack_start(rendererPix, False)
         imports.pack_start(cell, True)
         imports.set_attributes(cell, text=1)
         imports.set_attributes(rendererPix, pixbuf=0)
         #imports.add_attribute(cell, "text", 0)
 
-        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str)
+        self.treestore = Gtk.TreeStore(GdkPixbuf.Pixbuf, str)
 
-        self.remote_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
-        self.local_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'block.png')
-        self.exp_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'export.png')
-        self.data_sec_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'data-sec.png')
+        self.remote_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
+        self.local_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'block.png')
+        self.exp_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'export.png')
+        self.data_sec_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'data-sec.png')
 
         # Iterate links and add to the tree
         it = self.treestore.append(None, [self.remote_pix, 'Remote links'])
@@ -242,15 +242,15 @@ class TreeViews(gtk.TreeView):
 
     def create_tree(self, imps):
         # Create the column
-        imports = gtk.TreeViewColumn()
+        imports = Gtk.TreeViewColumn()
         imports.set_title("Imports")
         imports.set_spacing(5)
 
-        self.treestore = gtk.TreeStore(gtk.gdk.Pixbuf, str)
+        self.treestore = Gtk.TreeStore(GdkPixbuf.Pixbuf, str)
 
-        self.imp_pix = gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'import.png')
-        rendererPix = gtk.CellRendererPixbuf()
-        rendererText = gtk.CellRendererText()
+        self.imp_pix = GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'import.png')
+        rendererPix = Gtk.CellRendererPixbuf()
+        rendererText = Gtk.CellRendererText()
         imports.pack_start(rendererPix, False)
         imports.pack_start(rendererText, True)
         imports.set_attributes(rendererText, text=1)
@@ -282,7 +282,7 @@ class TreeViews(gtk.TreeView):
         self.dograph = False
 
         # I do this to return fast (and to avoid leaking memory in 'e io.va' for now).
-        #if (event.button != 3) and not (event.button ==1 and event.type == gtk.gdk._2BUTTON_PRESS):
+        #if (event.button != 3) and not (event.button ==1 and event.type == Gdk._2BUTTON_PRESS):
         if (event.button != 3) and (event.button !=1):
             return False
 
@@ -335,24 +335,24 @@ class TreeViews(gtk.TreeView):
 
             # Ok, now I show the popup menu !
             # Create the popup menu
-            gm = gtk.Menu()
+            gm = Gtk.Menu()
 
             # And the items
-            e = gtk.MenuItem("Go to")
+            e = Gtk.MenuItem("Go to")
             if 'radare' in self.uicore.backend:
                 e.connect('activate', self.search_and_graph, link_name)
             else:
                 e.connect('activate', self.textviews.search, link_name)
             gm.append( e )
             if 'radare' in self.uicore.backend and self.dograph:
-                e = gtk.MenuItem("Show graph")
+                e = Gtk.MenuItem("Show graph")
                 e.connect('activate', self.textviews.update_graph, link_name)
                 gm.append( e )
             gm.show_all()
 
             gm.popup( None, None, None, event.button, _time)
 
-        #elif event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
+        #elif event.button == 1 and event.type == Gdk._2BUTTON_PRESS:
         elif event.button == 1:
             # It's a double-click!
             (path, column, x, y) = tv.get_path_at_pos(int(event.x), int(event.y))

@@ -18,11 +18,11 @@
 #       MA 02110-1301, USA.
 import platform
 
-import gtk
+from gi.repository import Gtk
 
 import lib.ui.bokken.graph as graph
 
-class RightNotebook(gtk.Notebook):
+class RightNotebook(Gtk.Notebook):
     '''Right Notebook elements'''
 
     def __init__(self, tviews, scrolled_window, strings_textview, repr_textview, interactive_scrolled, bindiff, html_elements, info_elements, uicore, main):
@@ -59,7 +59,7 @@ class RightNotebook(gtk.Notebook):
             text = 'Code'
         self.code_tab = self.create_tab(text, self.scrolled_window, 'SORT_DESCENDING')
 
-        self.set_tab_label_packing(self.scrolled_window, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.scrolled_window, False, False, Gtk.PACK_START)
         self.set_tab_label(self.scrolled_window, self.code_tab)
         if self.uicore.backend == 'radare':
             self.code_tab.get_children()[0].set_sensitive(False)
@@ -75,7 +75,7 @@ class RightNotebook(gtk.Notebook):
 
         tab = self.create_tab(label, self.xdot_box, 'ZOOM_FIT')
 
-        self.set_tab_label_packing(self.xdot_box, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.xdot_box, False, False, Gtk.PACK_START)
         self.set_tab_label(self.xdot_box, tab)
 
         #################################################
@@ -83,7 +83,7 @@ class RightNotebook(gtk.Notebook):
         self.append_page(self.hexdump_view)
         tab = self.create_tab('Hexdump', self.hexdump_view, 'INDEX')
 
-        self.set_tab_label_packing(self.hexdump_view, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.hexdump_view, False, False, Gtk.PACK_START)
         self.set_tab_label(self.hexdump_view, tab)
 
         #################################################
@@ -91,7 +91,7 @@ class RightNotebook(gtk.Notebook):
         self.append_page(self.strings_textview)
         tab = self.create_tab('Strings', self.strings_textview, 'JUSTIFY_CENTER')
 
-        self.set_tab_label_packing(self.strings_textview, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.strings_textview, False, False, Gtk.PACK_START)
         self.set_tab_label(self.strings_textview, tab)
 
         #################################################
@@ -99,7 +99,7 @@ class RightNotebook(gtk.Notebook):
         self.append_page(self.repr_textview)
         tab = self.create_tab('Strings repr', self.repr_textview, 'JUSTIFY_FILL')
 
-        self.set_tab_label_packing(self.repr_textview, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.repr_textview, False, False, Gtk.PACK_START)
         self.set_tab_label(self.repr_textview, tab)
 
         #################################################
@@ -107,7 +107,7 @@ class RightNotebook(gtk.Notebook):
         self.append_page(self.interactive_scrolled)
         tab = self.create_tab('Interactive', self.interactive_scrolled, 'EXECUTE')
 
-        self.set_tab_label_packing(self.interactive_scrolled, False, False, gtk.PACK_START)
+        self.set_tab_label_packing(self.interactive_scrolled, False, False, Gtk.PACK_START)
         self.set_tab_label(self.interactive_scrolled, tab)
 
         if self.uicore.backend == 'radare':
@@ -155,7 +155,7 @@ class RightNotebook(gtk.Notebook):
             self.append_page(self.bindiff)
             tab = self.create_tab('Bindiff', self.bindiff, 'REFRESH')
     
-            self.set_tab_label_packing(self.bindiff, False, False, gtk.PACK_START)
+            self.set_tab_label_packing(self.bindiff, False, False, Gtk.PACK_START)
             self.set_tab_label(self.bindiff, tab)
             self.show_all()
             num = self.page_num(self.bindiff)
@@ -171,7 +171,7 @@ class RightNotebook(gtk.Notebook):
             self.append_page(self.html_elements)
             tab = self.create_tab('Elements', self.html_elements, 'INFO')
     
-            self.set_tab_label_packing(self.html_elements, False, False, gtk.PACK_START)
+            self.set_tab_label_packing(self.html_elements, False, False, Gtk.PACK_START)
             self.set_tab_label(self.html_elements, tab)
             self.html_elements.html_tree.create_html_tree()
             self.show_all()
@@ -185,7 +185,7 @@ class RightNotebook(gtk.Notebook):
             self.append_page(self.info_elements)
             tab = self.create_tab('File info', self.info_elements, 'INFO')
 
-            self.set_tab_label_packing(self.info_elements, False, False, gtk.PACK_START)
+            self.set_tab_label_packing(self.info_elements, False, False, Gtk.PACK_START)
             self.set_tab_label(self.info_elements, tab)
             self.info_elements.info_tree.create_info_tree()
             self.show_all()
@@ -195,21 +195,21 @@ class RightNotebook(gtk.Notebook):
 #        self.set_current_page(0)
 
     def create_tab(self, title, tab_child, icon=''):
-        tab_box = gtk.HBox(False, 3)
-        close_button = gtk.Button()
+        tab_box = Gtk.HBox(False, 3)
+        close_button = Gtk.Button()
 
-        image = gtk.Image()
-        image.set_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
+        image = Gtk.Image()
+        image.set_from_stock(Gtk.STOCK_CLOSE, Gtk.IconSize.MENU)
 
-        label = gtk.Label(title)
+        label = Gtk.Label(label=title)
         if icon:
-            i = gtk.Image()
-            i.set_from_stock(eval('gtk.STOCK_' + icon), gtk.ICON_SIZE_MENU)
+            i = Gtk.Image()
+            i.set_from_stock(eval('Gtk.STOCK_' + icon), Gtk.IconSize.MENU)
             tab_box.pack_start(i, False, False)
 
         close_button.connect("clicked", self.close_tab, tab_child)
         close_button.set_image(image)
-        close_button.set_relief(gtk.RELIEF_NONE)
+        close_button.set_relief(Gtk.ReliefStyle.NONE)
         tab_box.pack_start(label, True, True)
         tab_box.pack_end(close_button, False, False)
 

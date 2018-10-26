@@ -18,11 +18,11 @@
 #       MA 02110-1301, USA.
 
 import os
-import gio
+from gi.repository import Gio
 import platform
 
-import gtk
-import gtksourceview2
+from gi.repository import Gtk
+from gi.repository import GtkSource
 
 import lib.ui.bokken.treeviews as treeviews
 import lib.ui.bokken.rightnotebook as rightnotebook
@@ -44,7 +44,7 @@ Left Buttons | ---------------------Paned ----------------------
              | Left Treeview | ----------- Notebook ------------
 '''
 
-class TextViews(gtk.HBox):
+class TextViews(Gtk.HBox):
     '''Main TextView elements'''
 
     def __init__(self, core, main):
@@ -61,7 +61,7 @@ class TextViews(gtk.HBox):
         #################################################################
 
         # Left and right Vertical Boxes
-        self.left_paned = gtk.HPaned()
+        self.left_paned = Gtk.HPaned()
         self.left_paned.set_position(125)
 
         #################################################################
@@ -78,9 +78,9 @@ class TextViews(gtk.HBox):
         #################################################################
 
         # Scrolled Window
-        self.left_scrolled_window = gtk.ScrolledWindow()
-        self.left_scrolled_window.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.left_scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.left_scrolled_window = Gtk.ScrolledWindow()
+        self.left_scrolled_window.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.left_scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 #        self.left_scrolled_window.set_size_request(100, 1)
         self.left_scrolled_window.show()
 
@@ -244,9 +244,9 @@ class TextViews(gtk.HBox):
 
         # Wrap text only for 'String Repr'
         if option != 'String Repr':
-            self.view.set_wrap_mode(gtk.WRAP_NONE)
+            self.view.set_wrap_mode(Gtk.WrapMode.NONE)
         else:
-            self.view.set_wrap_mode(gtk.WRAP_WORD)
+            self.view.set_wrap_mode(Gtk.WrapMode.WORD)
 
         # Hide left content for 'Plain Text'
         if self.uicore.core.format not in ['Plain Text', 'Hexdump']:
@@ -339,14 +339,14 @@ class TextViews(gtk.HBox):
         if widget.get_active():
             self.main.topbuttons.hide()
             self.main.mbar.hide()
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
+            i = Gtk.Image()
+            i.set_from_stock(Gtk.STOCK_GO_DOWN, Gtk.IconSize.MENU)
             widget.set_image(i)
         else:
             self.main.topbuttons.show()
             self.main.mbar.show()
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+            i = Gtk.Image()
+            i.set_from_stock(Gtk.STOCK_GO_UP, Gtk.IconSize.MENU)
             widget.set_image(i)
 
     def update_left_buttons(self):
@@ -391,16 +391,16 @@ class TextViews(gtk.HBox):
 
         if search_string:
             self.search_string = search_string 
-            res = start.forward_search(self.search_string, gtk.TEXT_SEARCH_TEXT_ONLY)
+            res = start.forward_search(self.search_string, Gtk.TextSearchFlags.TEXT_ONLY)
 
             # Search 'function_name' instead of 'FUNCTION function_name'
             if not res and 'FUNCTION' in self.search_string:
                 self.search_function_name = self.search_string.split()[1]
-                res = start.forward_search(self.search_function_name, gtk.TEXT_SEARCH_TEXT_ONLY)
+                res = start.forward_search(self.search_function_name, Gtk.TextSearchFlags.TEXT_ONLY)
             # Try lowercase search
             elif not res:
                 self.search_lower_string = self.search_string.lower()
-                res = start.forward_search(self.search_lower_string, gtk.TEXT_SEARCH_TEXT_ONLY)
+                res = start.forward_search(self.search_lower_string, Gtk.TextSearchFlags.TEXT_ONLY)
 
             if res:
                 # Remove previous marks if exist
@@ -433,7 +433,7 @@ class TextViews(gtk.HBox):
                 path = self.uicore.core.filename
             else:
                 path = os.path.abspath(self.uicore.core.filename)
-            f = gio.File(path)
+            f = Gio.File(path)
         
             path = f.get_path()
         
@@ -457,7 +457,7 @@ class TextViews(gtk.HBox):
     ##### Note this function is silly and wrong, because it ignores mime
     ##### parent types and subtypes.
     def get_language_for_mime_type(self, mime):
-        lang_manager = gtksourceview2.language_manager_get_default()
+        lang_manager = GtkSource.LanguageManager.get_default()
         lang_ids = lang_manager.get_language_ids()
         for i in lang_ids:
             lang = lang_manager.get_language(i)

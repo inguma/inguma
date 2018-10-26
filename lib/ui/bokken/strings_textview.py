@@ -19,12 +19,12 @@
 
 import os
 
-import gtk, pango
-import gtksourceview2
+
+from gi.repository import GtkSource
 
 from lib.ui.bokken.searchable import Searchable
 
-class StringsTextView(gtk.VBox, Searchable):
+class StringsTextView(Gtk.VBox, Searchable):
     '''Strings TextView elements'''
 
     def __init__(self, core, textviews):
@@ -41,26 +41,26 @@ class StringsTextView(gtk.VBox, Searchable):
 
         # Use GtkSourceView to add eye candy :P
         # create buffer
-        lm = gtksourceview2.LanguageManager()
+        lm = GtkSource.LanguageManager()
         # Add ui dir to language paths
         paths = lm.get_search_path()
         paths.append(os.path.dirname(__file__) + os.sep + 'data' + os.sep)
         lm.set_search_path(paths)
-        self.buffer = gtksourceview2.Buffer()
+        self.buffer = GtkSource.Buffer()
         self.buffer.create_tag("green-background", background="green", foreground="black")
         self.buffer.set_data('languages-manager', lm)
-        self.view = gtksourceview2.View(self.buffer)
+        self.view = GtkSource.View(self.buffer)
         self.view.connect("button-press-event", self._get_press)
         self.view.connect("button-release-event", self._get_release)
 
         # FIXME options must be user selectable (statusbar)
         self.view.set_editable(False)
         self.view.set_highlight_current_line(True)
-        # posible values: gtk.WRAP_NONE, gtk.WRAP_CHAR, gtk.WRAP_WORD...
-        self.view.set_wrap_mode(gtk.WRAP_NONE)
+        # posible values: Gtk.WrapMode.NONE, Gtk.WrapMode.CHAR, Gtk.WrapMode.WORD...
+        self.view.set_wrap_mode(Gtk.WrapMode.NONE)
         
         # setup view
-        font_desc = pango.FontDescription('monospace 9')
+        font_desc = Pango.FontDescription('monospace 9')
         if font_desc:
             self.view.modify_font(font_desc)
 
@@ -69,12 +69,12 @@ class StringsTextView(gtk.VBox, Searchable):
         language = manager.get_language('asm')
         self.buffer.set_language(language)
 
-        self.mgr = gtksourceview2.style_scheme_manager_get_default()
+        self.mgr = GtkSource.StyleSchemeManager.get_default()
 
         # Scrolled Window
-        self.strings_scrolled_window = gtk.ScrolledWindow()
-        self.strings_scrolled_window.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.strings_scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.strings_scrolled_window = Gtk.ScrolledWindow()
+        self.strings_scrolled_window.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.strings_scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.strings_scrolled_window.show()
         # Add Textview to Scrolled Window
         self.strings_scrolled_window.add(self.view)
@@ -107,7 +107,7 @@ class StringsTextView(gtk.VBox, Searchable):
     def _get_clicked_word(self):
         # Get textbuffer coordinates from texview ones
         x, y = self.view.get_pointer()
-        x, y = self.view.window_to_buffer_coords(gtk.TEXT_WINDOW_WIDGET, x, y)
+        x, y = self.view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, x, y)
         # Get text iter and offset at coordinates
         iter = self.view.get_iter_at_location(x, y)
         offset = iter.get_offset()

@@ -1,4 +1,4 @@
-#       menu_bar.py
+##      menu_bar.py
 #
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
 #
@@ -17,15 +17,14 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
-import gobject
+from gi.repository import GObject, Gtk
 import threading
 import webbrowser
 
 import lib.ui.about as about
 import lib.ui.libAutosave as libAutosave
 
-class MenuBar(gtk.Menu):
+class MenuBar(Gtk.Menu):
     '''Main button menu elements'''
 
     def __init__(self, main):
@@ -35,58 +34,58 @@ class MenuBar(gtk.Menu):
         self.gom = self.main.gom
         self.uicore = self.main.uicore
 
-        agr = gtk.AccelGroup()
+        agr = Gtk.AccelGroup()
         #self.main.window.add_accel_group(agr)
 
         # New KB item
-        newi = gtk.ImageMenuItem(gtk.STOCK_NEW, agr)
+        newi = Gtk.ImageMenuItem(Gtk.STOCK_NEW, agr)
         #newi.connect("activate", self.new_file)
-        key, mod = gtk.accelerator_parse("<Control>N")
+        key, mod = Gtk.accelerator_parse("<Control>N")
         newi.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         newi.set_sensitive(False)
         self.append(newi)
 
         # Save KB item
-        savei = gtk.ImageMenuItem(gtk.STOCK_SAVE)
+        savei = Gtk.ImageMenuItem(Gtk.STOCK_SAVE)
         savei.get_children()[0].set_label('Save')
-        key, mod = gtk.accelerator_parse("<Control>S")
+        key, mod = Gtk.accelerator_parse("<Control>S")
         savei.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         savei.connect("activate", self.save_kb)
 
         self.append(savei)
 
         # Load KB item
-        loadi = gtk.ImageMenuItem(gtk.STOCK_OPEN)
+        loadi = Gtk.ImageMenuItem(Gtk.STOCK_OPEN)
         loadi.get_children()[0].set_label('Load')
-        key, mod = gtk.accelerator_parse("<Control>O")
+        key, mod = Gtk.accelerator_parse("<Control>O")
         loadi.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         loadi.connect("activate", self.load_kb)
 
         self.append(loadi)
 
         # Recent KB items
-        self.manager = gtk.recent_manager_get_default()
-        filter = gtk.RecentFilter()
+        self.manager = Gtk.RecentManager.get_default()
+        filter = Gtk.RecentFilter()
         filter.add_pattern("*.kb")
 
-        recent_menu = gtk.RecentChooserMenu(self.manager)
+        recent_menu = Gtk.RecentChooserMenu.new_for_manager(self.manager)
         recent_menu.add_filter(filter)
 
-        recentm = gtk.MenuItem('Recent KB')
+        recentm = Gtk.MenuItem('Recent KB')
         recentm.set_submenu(recent_menu)
         recent_menu.connect('item-activated', self.recent_kb)
 
         self.append(recentm)
 
         # Separator
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
         # Imports: nmap, host list, w3af and burp...
-        impi = gtk.ImageMenuItem(gtk.STOCK_CONVERT)
+        impi = Gtk.ImageMenuItem(Gtk.STOCK_CONVERT)
         #impi.get_children()[0].set_label('Import')
         label = impi.get_children()[0]
         label.set_markup('<b>Import</b>')
@@ -95,61 +94,61 @@ class MenuBar(gtk.Menu):
         self.append(impi)
 
         # Host list
-        imp_hostsi = gtk.MenuItem('Host list')
+        imp_hostsi = Gtk.MenuItem('Host list')
         imp_hostsi.connect('activate', self.import_scan, 'hosts')
 
         self.append(imp_hostsi)
 
         # Nmap scan
-        imp_nmapi = gtk.MenuItem('Nmap XML')
+        imp_nmapi = Gtk.MenuItem('Nmap XML')
         imp_nmapi.connect('activate', self.import_scan, 'nmap')
 
         self.append(imp_nmapi)
 
         # w3af XML
-        imp_w3afi = gtk.MenuItem('w3af XML')
+        imp_w3afi = Gtk.MenuItem('w3af XML')
         imp_w3afi.set_sensitive(False)
 
         self.append(imp_w3afi)
 
         # Burp XML
-        imp_burpi = gtk.MenuItem('Burp XML')
+        imp_burpi = Gtk.MenuItem('Burp XML')
         imp_burpi.set_sensitive(False)
 
         self.append(imp_burpi)
 
         # Separator
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
         # Documentation
-        helpi = gtk.ImageMenuItem(gtk.STOCK_HELP, agr)
+        helpi = Gtk.ImageMenuItem(Gtk.STOCK_HELP, agr)
         helpi.get_children()[0].set_label('Documentation')
-#        key, mod = gtk.accelerator_parse("<Control>Q")
+#        key, mod = Gtk.accelerator_parse("<Control>Q")
 #        helpi.add_accelerator("activate", agr, key,
-#            mod, gtk.ACCEL_VISIBLE)
+#            mod, Gtk.AccelFlags.VISIBLE)
         helpi.connect("activate", self.show_wiki)
 
         self.append(helpi)
 
         # About item
-        abouti = gtk.ImageMenuItem(gtk.STOCK_ABOUT, agr)
-        key, mod = gtk.accelerator_parse("<Control>A")
+        abouti = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT, agr)
+        key, mod = Gtk.accelerator_parse("<Control>A")
         abouti.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         abouti.connect("activate", self.create_about_dialog)
 
         self.append(abouti)
 
         # Separator
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
         # Exit item
-        exit = gtk.ImageMenuItem(gtk.STOCK_QUIT, agr)
-        key, mod = gtk.accelerator_parse("<Control>Q")
+        exit = Gtk.ImageMenuItem(Gtk.STOCK_QUIT, agr)
+        key, mod = Gtk.accelerator_parse("<Control>Q")
         exit.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
 
         exit.connect("activate", self._bye)
 
@@ -164,18 +163,18 @@ class MenuBar(gtk.Menu):
 
     def _bye(self, widget):
         msg = ("Do you really want to quit?")
-        dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
-        dlg.set_default_response(gtk.RESPONSE_YES)
+        dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
+        dlg.set_default_response(Gtk.ResponseType.YES)
         opt = dlg.run()
         dlg.destroy()
 
-        if opt != gtk.RESPONSE_YES:
+        if opt != Gtk.ResponseType.YES:
             return True
 
         self.gom.echo( 'Killing all listeners', False)
         self.uicore.kill_all_listeners()
         self.uicore.remove_dot_file()
-        gtk.main_quit()
+        Gtk.main_quit()
         return False
 
     def recent_kb(self, widget):
@@ -197,21 +196,21 @@ class MenuBar(gtk.Menu):
 
         if not file:
             from lib.core import get_profile_file_path
-            chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            chooser = Gtk.FileChooserDialog(title=None,action=Gtk.FileChooserAction.OPEN, buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
             chooser.set_current_folder(get_profile_file_path('data/'))
             chooser.resize(100,100)
             response = chooser.run()
 
-            if response == gtk.RESPONSE_OK:
+            if response == Gtk.ResponseType.OK:
                 res = chooser.get_filename()
                 chooser.destroy()
 
-            elif response == gtk.RESPONSE_CANCEL:
+            elif response == Gtk.ResponseType.CANCEL:
                 self.gom.echo( 'Closed, no files selected', False)
                 chooser.destroy()
                 return False
 
-            elif response == gtk.RESPONSE_DELETE_EVENT:
+            elif response == Gtk.ResponseType.DELETE_EVENT:
                 chooser.destroy()
                 return False
 
@@ -245,14 +244,14 @@ class MenuBar(gtk.Menu):
         from lib.core import get_profile_file_path
 
         if self.main.kbfile == '':
-            chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+            chooser = Gtk.FileChooserDialog(title=None,action=Gtk.FileChooserAction.SAVE, buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
             chooser.set_current_folder(get_profile_file_path('data/'))
             response = chooser.run()
 
             self.gom = self.main.gom
             self.uicore = self.main.uicore
 
-            if response == gtk.RESPONSE_OK:
+            if response == Gtk.ResponseType.OK:
                 filename = chooser.get_filename()
                 self.uicore.saveKB(filename)
                 #glob.kb.save(filename)
@@ -260,7 +259,7 @@ class MenuBar(gtk.Menu):
                 libAutosave.remove_kb()
                 self.manager.add_item('file://' + filename)
                 self.main.kbfile = filename
-            elif response == gtk.RESPONSE_CANCEL:
+            elif response == Gtk.ResponseType.CANCEL:
                 self.gom.echo('Closed, no files selected', False)
             chooser.destroy()
         else:
@@ -280,7 +279,7 @@ class MenuBar(gtk.Menu):
         self.xdotw = self.main.xdotw
 
         # Choose nmap scan file
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        chooser = Gtk.FileChooserDialog(title=None,action=Gtk.FileChooserAction.OPEN, buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
 
         if file:
             chooser.set_filename(file)
@@ -288,7 +287,7 @@ class MenuBar(gtk.Menu):
         # Try to parse and import data
         response = chooser.run()
         filter = chooser.get_filter()
-        if response == gtk.RESPONSE_OK and type == 'nmap':
+        if response == Gtk.ResponseType.OK and type == 'nmap':
             self.gom.echo( 'Loading Nmap Scan...', False)
             self.gom.echo(  chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
@@ -300,13 +299,13 @@ class MenuBar(gtk.Menu):
                 self.gom.echo( 'Inserting data in KB...', False)
                 nmapParser.insertData(self.uicore, nmapData)
 
-                askASN = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO, message_format="Resolve ASN of IP addresses?")
-                askASN.set_default_response(gtk.RESPONSE_YES)
+                askASN = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO, message_format="Resolve ASN of IP addresses?")
+                askASN.set_default_response(Gtk.ResponseType.YES)
                 do_asn = askASN.run()
 
                 self.gom.echo( 'Loaded\nUpdating Graph', False)
 
-                if do_asn == gtk.RESPONSE_YES:
+                if do_asn == Gtk.ResponseType.YES:
                     doASN=True
                 else:
                     doASN=False
@@ -316,14 +315,14 @@ class MenuBar(gtk.Menu):
 
                 askASN.destroy()
 
-                gobject.timeout_add(1000, self.update_graph, t)
+                GObject.timeout_add(1000, self.update_graph, t)
 
             except:
-                md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format="Error loading file")
+                md = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CLOSE, message_format="Error loading file")
                 md.run()
                 md.destroy()
 
-        elif response == gtk.RESPONSE_OK and type == 'hosts':
+        elif response == Gtk.ResponseType.OK and type == 'hosts':
             self.gom.echo( 'Loading Host list...', False)
             self.gom.echo(  chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
@@ -345,7 +344,7 @@ class MenuBar(gtk.Menu):
             except:
                 print "Your lack of faith on my parsing capabilities is disturbing..."
 
-        elif response == gtk.RESPONSE_CANCEL:
+        elif response == Gtk.ResponseType.CANCEL:
             self.gom.echo( 'Closed, no files selected', False)
 
         chooser.destroy()

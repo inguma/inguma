@@ -19,7 +19,7 @@
 
 import os
 
-import gtk, gobject
+from gi.repository import Gtk
 import threading
 
 FAIL = '\033[91m'
@@ -33,7 +33,7 @@ import lib.ui.bokken.throbber as throbber
 import lib.ui.bokken.main_button_menu as main_button_menu
 import lib.ui.bokken.main_button as main_button
 
-class TopButtons(gtk.HBox):
+class TopButtons(Gtk.HBox):
     '''Top Buttons'''
 
     def __init__(self, core, main):
@@ -48,8 +48,8 @@ class TopButtons(gtk.HBox):
         self.img_path = os.path.dirname(__file__) + os.sep + 'data' + os.sep
         self.options_dict = {'Hexadecimal':'x', 'String':'s', 'String no case':'i', 'Regexp':'r', 'Unicode':'u', 'Unicode no case':'U'}
 
-        self.main_tb = gtk.Toolbar()
-        self.main_tb.set_style(gtk.TOOLBAR_ICONS)
+        self.main_tb = Gtk.Toolbar()
+        self.main_tb.set_style(Gtk.ToolbarStyle.ICONS)
 
         # Main Button
         self.menu = main_button_menu.MenuBar(self.main)
@@ -57,60 +57,60 @@ class TopButtons(gtk.HBox):
         self.menu_button = main_button.MainMenuButton("Bokken", self.menu)
         self.menu_button.set_border_width(0)
 
-        menu_toolitem = gtk.ToolItem()
+        menu_toolitem = Gtk.ToolItem()
 
         menu_toolitem.add(self.menu_button)
         self.main_tb.insert(menu_toolitem, 0)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 1)
 
         # PDF Streams search
-        self.streams_tb = gtk.ToolButton(gtk.STOCK_INDEX)
+        self.streams_tb = Gtk.ToolButton(Gtk.STOCK_INDEX)
         self.streams_tb.set_tooltip_text('Find PDF streams')
         self.streams_tb.connect("clicked", self.search_pdfstreams)
         self.streams_tb.set_sensitive(False)
         self.main_tb.insert(self.streams_tb, 2)
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 3)
 
         # URL related buttons
 
-        i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-headers.png')
-        scaled_buf = pixbuf.scale_simple(24,24,gtk.gdk.INTERP_BILINEAR)
+        i = Gtk.Image()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.img_path + 'response-headers.png')
+        scaled_buf = pixbuf.scale_simple(24,24,GdkPixbuf.InterpType.BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        self.urls = gtk.MenuToolButton(i, 'URL')
+        self.urls = Gtk.MenuToolButton(i, 'URL')
         #self.urls.set_icon_widget(i)
         self.urls.set_tooltip_text('URL plugins')
         self.urls.set_sensitive(False)
-        self.urls_menu = gtk.Menu()
+        self.urls_menu = Gtk.Menu()
 
-        i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-headers.png')
-        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        i = Gtk.Image()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.img_path + 'response-headers.png')
+        scaled_buf = pixbuf.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        item = gtk.ImageMenuItem('Search for URL')
+        item = Gtk.ImageMenuItem('Search for URL')
         item.set_image(i)
         item.connect("activate", self.show_urls)
         self.urls_menu.append(item)
 
-        i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'response-body.png')
-        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        i = Gtk.Image()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.img_path + 'response-body.png')
+        scaled_buf = pixbuf.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        item = gtk.ImageMenuItem('Check URL')
+        item = Gtk.ImageMenuItem('Check URL')
         item.set_image(i)
         item.connect("activate", self.check_urls)
         self.urls_menu.append(item)
 
-        i = gtk.Image()
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.img_path + 'request-body.png')
-        scaled_buf = pixbuf.scale_simple(16,16,gtk.gdk.INTERP_BILINEAR)
+        i = Gtk.Image()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.img_path + 'request-body.png')
+        scaled_buf = pixbuf.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
         i.set_from_pixbuf(scaled_buf)
-        item = gtk.ImageMenuItem('Check bad URL')
+        item = Gtk.ImageMenuItem('Check bad URL')
         item.set_image(i)
         item.connect("activate", self.check_bad_urls)
         self.urls_menu.append(item)
@@ -122,72 +122,72 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.urls, 4)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 5)
 
         # Visualizatin buttons
-        self.visbin_tb = gtk.ToolButton(gtk.STOCK_ZOOM_FIT)
+        self.visbin_tb = Gtk.ToolButton(Gtk.STOCK_ZOOM_FIT)
         self.visbin_tb.connect("clicked", self.execute, 'binvi')
         self.visbin_tb.set_tooltip_text('Visualize binary')
         self.visbin_tb.set_sensitive(False)
         self.main_tb.insert(self.visbin_tb, 6)
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 7)
 
         # Binary analysis buttons
-        self.vtotal_tb = gtk.ToolButton(gtk.STOCK_CONNECT)
+        self.vtotal_tb = Gtk.ToolButton(Gtk.STOCK_CONNECT)
         self.vtotal_tb.connect("clicked", self.send_to_virustotal)
         self.vtotal_tb.set_tooltip_text('Send to VirusTotal')
         self.vtotal_tb.set_sensitive(False)
         self.main_tb.insert(self.vtotal_tb, 8)
 
-        self.threat_tb = gtk.ToolButton(gtk.STOCK_JUMP_TO)
+        self.threat_tb = Gtk.ToolButton(Gtk.STOCK_JUMP_TO)
         self.threat_tb.connect("clicked", self.execute, 'threat')
         self.threat_tb.set_tooltip_text('Search in Threat Expert')
         self.threat_tb.set_sensitive(False)
         self.main_tb.insert(self.threat_tb, 9)
 
-        self.shellcode_tb = gtk.ToolButton(gtk.STOCK_FIND)
+        self.shellcode_tb = Gtk.ToolButton(Gtk.STOCK_FIND)
         self.shellcode_tb.connect("clicked", self.search_shellcode)
         self.shellcode_tb.set_tooltip_text('Search for Shellcode')
         self.shellcode_tb.set_sensitive(False)
         self.main_tb.insert(self.shellcode_tb, 10)
 
         # not yet working properly
-        self.antivm_tb = gtk.ToolButton(gtk.STOCK_FIND_AND_REPLACE)
+        self.antivm_tb = Gtk.ToolButton(Gtk.STOCK_FIND_AND_REPLACE)
         self.antivm_tb.connect("clicked", self.search_antivm)
         self.antivm_tb.set_tooltip_text('Search for antivm tricks')
         self.antivm_tb.set_sensitive(False)
         self.main_tb.insert(self.antivm_tb, 11)
 
-        self.packed_tb = gtk.ToolButton(gtk.STOCK_CONVERT)
+        self.packed_tb = Gtk.ToolButton(Gtk.STOCK_CONVERT)
         self.packed_tb.connect("clicked", self.check_packer)
         self.packed_tb.set_tooltip_text('Check if the PE file is packed')
         self.packed_tb.set_sensitive(False)
         self.main_tb.insert(self.packed_tb, 12)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 13)
 
         # Search components
-        self.search_combo_tb = gtk.ToolItem()
-        self.search_combo_align = gtk.Alignment(yalign=0.5)
-        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        self.search_combo = gtk.ComboBox(store)
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        self.search_combo_tb = Gtk.ToolItem()
+        self.search_combo_align = Gtk.Alignment.new(yalign=0.5)
+        store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self.search_combo = Gtk.ComboBox(store)
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         self.search_combo.pack_start(rendererPix, False)
         self.search_combo.pack_start(rendererText, True)
         self.search_combo.add_attribute(rendererPix, 'pixbuf', 0)
         self.search_combo.add_attribute(rendererText, 'text', 1)
 
         options = {
-            'String':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_16.png'),
-            'String no case':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_no_case_16.png'),
-            'Hexadecimal':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_hexadecimal_16.png'),
-            'Regexp':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_regexp_16.png')
+            'String':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_16.png'),
+            'String no case':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_string_no_case_16.png'),
+            'Hexadecimal':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_hexadecimal_16.png'),
+            'Regexp':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icon_regexp_16.png')
         }
 
         for option in options.keys():
@@ -198,14 +198,14 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.search_combo_tb, 14)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_draw(False)
         self.main_tb.insert(self.sep, 15)
 
-        self.search_entry_tb = gtk.ToolItem()
-        self.search_entry = gtk.Entry(100)
+        self.search_entry_tb = Gtk.ToolItem()
+        self.search_entry = Gtk.Entry(100)
         self.search_entry.set_text('Text to search')
-        self.search_entry.set_icon_from_stock(1, gtk.STOCK_FIND)
+        self.search_entry.set_icon_from_stock(1, Gtk.STOCK_FIND)
         self.search_entry.set_icon_tooltip_text(1, 'Search')
         self.search_entry.connect("activate", self.search)
         self.search_entry.connect("icon-press", self.search)
@@ -216,23 +216,23 @@ class TopButtons(gtk.HBox):
         self.main_tb.insert(self.search_entry_tb, 16)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.main_tb.insert(self.sep, 17)
 
         # Cheatsheet button
-        self.cheatsheet_tb = gtk.ToolButton(gtk.STOCK_JUSTIFY_FILL)
+        self.cheatsheet_tb = Gtk.ToolButton(Gtk.STOCK_JUSTIFY_FILL)
         self.cheatsheet_tb.set_tooltip_text('Show assembler reference sheet')
         self.cheatsheet_tb.connect("clicked", self.create_cheatsheet_dialog)
         self.main_tb.insert(self.cheatsheet_tb, 18)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
         self.main_tb.insert(self.sep, 19)
 
         # Exit button
-        self.exit_tb = gtk.ToolButton(gtk.STOCK_QUIT)
+        self.exit_tb = Gtk.ToolButton(Gtk.STOCK_QUIT)
         self.exit_tb.set_label('Quit')
         self.exit_tb.connect("clicked", self.main.quit)
         self.exit_tb.set_tooltip_text('Have a nice day ;-)')
@@ -240,7 +240,7 @@ class TopButtons(gtk.HBox):
 
         # Throbber
         self.throbber = throbber.Throbber()
-        self.throbber_tb = gtk.ToolItem()
+        self.throbber_tb = Gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
         self.main_tb.insert(self.throbber_tb, 21)
 
@@ -288,7 +288,7 @@ class TopButtons(gtk.HBox):
     def new_file(self, widget, file=''):
         dialog = file_dialog.FileDialog(True, False, 'pyew', file)
         resp = dialog.run()
-        if resp == gtk.RESPONSE_DELETE_EVENT or resp == gtk.RESPONSE_REJECT:
+        if resp == Gtk.ResponseType.DELETE_EVENT or resp == Gtk.ResponseType.REJECT:
             dialog.destroy()
         else:
             self.file = dialog.file
@@ -327,7 +327,7 @@ class TopButtons(gtk.HBox):
                 hit = ( "HIT [0x%08x]:\t%s\n" % (hit[0], hit[1].translate(FILTER)) )
                 self.search_dialog.output_buffer.insert(enditer, hit)
         else:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "The file is not a PDF, could not search for streams")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, "The file is not a PDF, could not search for streams")
             md.run()
             md.destroy()
 
@@ -357,7 +357,7 @@ class TopButtons(gtk.HBox):
             for url in urls:
                 self.search_dialog.output_buffer.insert(enditer, url + '\n')
         else:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "No URLs found :(")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, "No URLs found :(")
             md.run()
             md.destroy()
 
@@ -367,7 +367,7 @@ class TopButtons(gtk.HBox):
         t = threading.Thread(target=self.uicore.check_urls)
         t.start()
         # This call must not depend on load_file data
-        gobject.timeout_add(500, self.show_checked_urls, t)
+        GObject.timeout_add(500, self.show_checked_urls, t)
 
     def show_checked_urls(self, thread):
         if thread.isAlive() == True:
@@ -389,7 +389,7 @@ class TopButtons(gtk.HBox):
         t = threading.Thread(target=self.uicore.bad_urls)
         t.start()
         # This call must not depend on load_file data
-        gobject.timeout_add(500, self.show_bad_urls, t)
+        GObject.timeout_add(500, self.show_bad_urls, t)
 
     def show_bad_urls(self, thread):
         if thread.isAlive() == True:
@@ -415,7 +415,7 @@ class TopButtons(gtk.HBox):
             for match in vt_answer:
                 self.search_dialog.output_buffer.insert(enditer, match[0] + '\t\t' + match[1] + '\n')
         else:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "No response from VirusTotal :_(")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, "No response from VirusTotal :_(")
             md.run()
             md.destroy()
 
@@ -432,7 +432,7 @@ class TopButtons(gtk.HBox):
         else:
             message = 'No libemu found, please install it to use this plugin\n\tGet it from: http://libemu.carnivore.it'
 
-        md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
+        md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, message)
         md.run()
         md.destroy()
 
@@ -440,7 +440,7 @@ class TopButtons(gtk.HBox):
 
         self.execute(widget, 'antivm')
         message = 'This plugin has not been ported yet, look at the terminal for the output'
-        md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, message)
+        md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, message)
         md.run()
         md.destroy()
 
@@ -453,7 +453,7 @@ class TopButtons(gtk.HBox):
             for packer in packers:
                 self.search_dialog.output_buffer.insert(enditer, ''.join(packer) + '\n')
         else:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, "No packers found")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, "No packers found")
             md.run()
             md.destroy()
 

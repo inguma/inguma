@@ -122,11 +122,11 @@ def gtkui_dependency_check():
 
     # Check Gtk
     try:
-        import pygtk
-        pygtk.require('2.0')
-        import gtk, gobject
-        assert gtk.gtk_version >= (2, 12)
-        assert gtk.pygtk_version >= (2, 12)
+        import gi
+        gi.require_version('Gtk', '3.0')
+        from gi.repository import Gtk
+        assert Gtk.gtk_version >= (2, 12)
+        assert Gtk.pygtk_version >= (2, 12)
         print OKGREEN + "\tOK" + ENDC
     except:
         print FAIL + "\tD'oh!" + ENDC
@@ -139,7 +139,7 @@ def gtkui_dependency_check():
     # Check GtkSourceView2
     try:
         print '\tGtkSourceView2...',
-        import gtksourceview2
+        from gi.repository import GtkSource
         print OKGREEN + "\tOK" + ENDC
     except:
         print FAIL + "\tD'oh!" + ENDC

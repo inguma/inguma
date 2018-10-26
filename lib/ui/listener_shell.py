@@ -18,82 +18,82 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk, gobject
+from gi.repository import Gtk
 
 import bokken.throbber as throbber
 
-class ListenerShell(gtk.VBox):
+class ListenerShell(Gtk.VBox):
 
     def __init__(self):
-        gtk.VBox.__init__(self, False)
+        GObject.GObject.__init__(self, False)
 
         # Toolbar
         #
-        self.listener_tb = gtk.Toolbar()
-        self.listener_tb.set_style(gtk.TOOLBAR_ICONS)
+        self.listener_tb = Gtk.Toolbar()
+        self.listener_tb.set_style(Gtk.ToolbarStyle.ICONS)
 
         # Upload button
-        self.upload_tb = gtk.ToolButton(gtk.STOCK_GO_UP)
+        self.upload_tb = Gtk.ToolButton(Gtk.STOCK_GO_UP)
         self.upload_tb.set_tooltip_text('Upload file')
         #self.upload_tb.connect("clicked", self.load_editor)
         self.listener_tb.insert(self.upload_tb, 0)
 
         # Download button
-        self.download_tb = gtk.ToolButton(gtk.STOCK_GO_DOWN)
+        self.download_tb = Gtk.ToolButton(Gtk.STOCK_GO_DOWN)
         self.download_tb.set_tooltip_text('Download file')
         #self.upload_tb.connect("clicked", self.load_editor)
         self.listener_tb.insert(self.download_tb, 1)
 
         # Directory list button
-        self.dirlist_tb = gtk.ToolButton(gtk.STOCK_DIRECTORY)
+        self.dirlist_tb = Gtk.ToolButton(Gtk.STOCK_DIRECTORY)
         self.dirlist_tb.set_tooltip_text('List directories')
         #self.upload_tb.connect("clicked", self.load_editor)
         self.listener_tb.insert(self.dirlist_tb, 2)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.listener_tb.insert(self.sep, 3)
 
         # Connect
-        self.connect_tb = gtk.ToolButton(gtk.STOCK_CONNECT)
+        self.connect_tb = Gtk.ToolButton(Gtk.STOCK_CONNECT)
         self.connect_tb.set_tooltip_text('Connect to target')
         #self.upload_tb.connect("clicked", self.load_editor)
         self.listener_tb.insert(self.connect_tb, 4)
 
         # Disconnect
-        self.disconnect_tb = gtk.ToolButton(gtk.STOCK_DISCONNECT)
+        self.disconnect_tb = Gtk.ToolButton(Gtk.STOCK_DISCONNECT)
         self.disconnect_tb.set_tooltip_text('Disconnect to target')
         #self.upload_tb.disconnect("clicked", self.load_editor)
         self.listener_tb.insert(self.disconnect_tb, 5)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.listener_tb.insert(self.sep, 6)
 
         # Post-exploit label
-        self.post_label_tb = gtk.ToolItem()
-        self.post_label_align = gtk.Alignment(yalign=0.5)
-        self.post_label = gtk.Label('Post exploitation commands:\t')
+        self.post_label_tb = Gtk.ToolItem()
+        self.post_label_align = Gtk.Alignment.new(yalign=0.5)
+        self.post_label = Gtk.Label(label='Post exploitation commands:\t')
         self.post_label_align.add(self.post_label)
         self.post_label_tb.add(self.post_label_align)
         self.listener_tb.insert(self.post_label_tb, 7)
 
         # Search components
-        self.postxpl_combo_tb = gtk.ToolItem()
-        self.postxpl_combo_align = gtk.Alignment(yalign=0.5)
-        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        self.postxpl_combo = gtk.ComboBox(store)
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        self.postxpl_combo_tb = Gtk.ToolItem()
+        self.postxpl_combo_align = Gtk.Alignment.new(yalign=0.5)
+        store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self.postxpl_combo = Gtk.ComboBox(store)
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         self.postxpl_combo.pack_start(rendererPix, False)
         self.postxpl_combo.pack_start(rendererText, True)
         self.postxpl_combo.add_attribute(rendererPix, 'pixbuf', 0)
         self.postxpl_combo.add_attribute(rendererText, 'text', 1)
 
         options = {
-            'Windows':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'windows.png'),
-            'Linux':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'linux.png'),
-            'MacOS':gtk.gdk.pixbuf_new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'apple.png'),
+            'Windows':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'windows.png'),
+            'Linux':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'linux.png'),
+            'MacOS':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'apple.png'),
         }
 
         for option in options.keys():
@@ -105,18 +105,18 @@ class ListenerShell(gtk.VBox):
         self.listener_tb.insert(self.postxpl_combo_tb, 8)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_draw(False)
         self.listener_tb.insert(self.sep, 9)
 
         # Combobox Entry for command selection and edit
-        self.comm_combo_tb = gtk.ToolItem()
-        self.comm_combo_align = gtk.Alignment(yalign=0.5)
-        self.comm_store = gtk.ListStore(gobject.TYPE_STRING)
-        self.comm_combo = gtk.ComboBoxEntry(self.comm_store, 0)
+        self.comm_combo_tb = Gtk.ToolItem()
+        self.comm_combo_align = Gtk.Alignment.new(yalign=0.5)
+        self.comm_store = Gtk.ListStore(GObject.TYPE_STRING)
+        self.comm_combo = Gtk.ComboBoxEntry(self.comm_store, 0)
 
-        self.comm_combo_entry = self.comm_combo.child
-        self.comm_combo_entry.set_icon_from_stock(1, gtk.STOCK_EXECUTE)
+        self.comm_combo_entry = self.comm_combo.get_child()
+        self.comm_combo_entry.set_icon_from_stock(1, Gtk.STOCK_EXECUTE)
 
         #self.comm_store.append(['netstat -an'])
         self.comm_combo_align.add(self.comm_combo)
@@ -125,14 +125,14 @@ class ListenerShell(gtk.VBox):
         self.listener_tb.insert(self.comm_combo_tb, 10)
 
         # Separator
-        self.sep = gtk.SeparatorToolItem()
+        self.sep = Gtk.SeparatorToolItem()
         self.sep.set_expand(True)
         self.sep.set_draw(False)
         self.listener_tb.insert(self.sep, 11)
 
         # Throbber
         self.throbber = throbber.Throbber()
-        self.throbber_tb = gtk.ToolItem()
+        self.throbber_tb = Gtk.ToolItem()
         self.throbber_tb.add(self.throbber)
 
         self.listener_tb.insert(self.throbber_tb, 12)
@@ -141,14 +141,14 @@ class ListenerShell(gtk.VBox):
 
         # Textview
         #
-        self.listener_tv = gtk.TextView(buffer=None)
+        self.listener_tv = Gtk.TextView(buffer=None)
 
         # Some eye candy
-        self.listener_tv.modify_base(gtk.STATE_NORMAL, gtk.gdk.Color(16400, 16400, 16440))
-        self.listener_tv.modify_text(gtk.STATE_NORMAL, gtk.gdk.Color(60535, 60535, 60535, 0))
+        self.listener_tv.modify_base(Gtk.StateType.NORMAL, Gdk.Color(16400, 16400, 16440))
+        self.listener_tv.modify_text(Gtk.StateType.NORMAL, Gdk.Color(60535, 60535, 60535, 0))
         self.listener_tv.set_left_margin(10)
 
-        self.listener_tv.set_wrap_mode(gtk.WRAP_NONE)
+        self.listener_tv.set_wrap_mode(Gtk.WrapMode.NONE)
         self.listener_tv.set_editable(False)
         self.textbuffer = self.listener_tv.get_buffer()
         self.textbuffer.set_text('C:\\WINNT\\system32>\n')
@@ -156,8 +156,8 @@ class ListenerShell(gtk.VBox):
 
         # Scrolled Window
         #
-        self.listener_sw = gtk.ScrolledWindow()
-        self.listener_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.listener_sw = Gtk.ScrolledWindow()
+        self.listener_sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.listener_sw.is_visible = True
 
         #Always on bottom on change
@@ -170,12 +170,12 @@ class ListenerShell(gtk.VBox):
         self.pack_start(self.listener_sw, True, True, 0)
 
         # Commands Entry
-        self.comm_entry = gtk.Entry(max=0)
-        self.comm_entry.set_icon_from_stock(1, gtk.STOCK_EXECUTE)
-        self.comm_entry.set_icon_from_stock(0, gtk.STOCK_CLEAR)
+        self.comm_entry = Gtk.Entry(max=0)
+        self.comm_entry.set_icon_from_stock(1, Gtk.STOCK_EXECUTE)
+        self.comm_entry.set_icon_from_stock(0, Gtk.STOCK_CLEAR)
 
-        self.comm_entry.modify_base(gtk.STATE_NORMAL, gtk.gdk.Color(16400, 16400, 16440))
-        self.comm_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.Color(60535, 60535, 60535, 0))
+        self.comm_entry.modify_base(Gtk.StateType.NORMAL, Gdk.Color(16400, 16400, 16440))
+        self.comm_entry.modify_text(Gtk.StateType.NORMAL, Gdk.Color(60535, 60535, 60535, 0))
 
         self.pack_start(self.comm_entry, False, False, 0)        
 

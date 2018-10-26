@@ -19,11 +19,11 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 def repaint():
     """ Easy function to clean up the event queue and force a repaint. """
 
     # I've been unable to find any other way to repaint the interface. :-(
-    while gtk.events_pending():
-        gtk.main_iteration_do()
+    while Gtk.events_pending():
+        Gtk.main_iteration_do()

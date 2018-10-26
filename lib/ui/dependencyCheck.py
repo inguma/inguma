@@ -1,18 +1,18 @@
 #       dependencyCheck.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       Based on code from w3af by Andres Riancho (w3af.sourceforge.net)
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -35,17 +35,16 @@ def gtkui_dependency_check(config):
 
     # Check Gtk
     try:
-        import pygtk
-        pygtk.require('2.0')
-        import gtk, gobject
-        assert gtk.gtk_version >= (2, 12)
-        assert gtk.pygtk_version >= (2, 12)
+        import gi
+        gi.require_version('Gtk', '3.0')
+        from gi.repository import Gtk
+        assert Gtk.get_major_version(), Gtk.get_minor_version() >= (3, 14)
         print OKGREEN + "\tOK" + ENDC
     except:
         print FAIL + "D'oh!" + ENDC
-        msg = 'You have to install GTK and PyGTK versions >=2.12 to be able to run the GTK user interface.\n'
+        msg = 'You have to install GTK and PyGTK versions >=3.14 to be able to run the GTK user interface.\n'
         msg += '    - On Debian-based distributions: apt-get install python-gtk2\n'
-        msg += '    - On Mac: sudo port install py25-gtk'        
+        msg += '    - On Mac: sudo port install py25-gtk'
         print msg
         sys.exit( 1 )
 
@@ -87,7 +86,8 @@ def gtkui_dependency_check(config):
     # Check Vte
     try:
         print "\tVTE Terminal...",
-        import vte
+        gi.require_version('Vte', '2.91')
+        from gi.repository import Vte
         print OKGREEN + "\tOK" + ENDC
     except:
         print WARNING + "\tD'oh!" + ENDC

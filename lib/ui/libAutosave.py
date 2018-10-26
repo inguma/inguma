@@ -20,7 +20,7 @@
 """ Library containing functions related to KB autosave feature. """
 
 import os
-import gtk
+from gi.repository import Gtk
 from lib.core import get_profile_file_path
 
 _autosave_kb_path = get_profile_file_path('autosaved.kb')
@@ -28,13 +28,13 @@ _autosave_kb_path = get_profile_file_path('autosaved.kb')
 def ask_dialog():
     """ Prompt the use with a GTK dialog for loading the KB. """
     msg = ("Autosaved KB found. Load it?")
-    dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION,
-                            gtk.BUTTONS_YES_NO, msg)
-    dlg.set_default_response(gtk.RESPONSE_YES)
+    dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
+                            Gtk.ButtonsType.YES_NO, msg)
+    dlg.set_default_response(Gtk.ResponseType.YES)
     opt = dlg.run()
     dlg.destroy()
 
-    if opt == gtk.RESPONSE_YES:
+    if opt == Gtk.ResponseType.YES:
         return True
     else:
         return False

@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 import lib.globals as glob
 import lib.ui.popup_dialog as popup_dialog
@@ -35,28 +35,28 @@ class ListenerDialog(popup_dialog.PopupDialog):
         self.uicore = main.uicore
         self.button = button
 
-        self.main_vbox = gtk.VBox(False, 5)
-        self.main_hbox = gtk.HBox(False, 7)
-        self.desc_hbox = gtk.HBox(False, 0)
-        self.iface_vbox = gtk.VBox(False, 2)
-        self.ports_vbox = gtk.VBox(False, 2)
+        self.main_vbox = Gtk.VBox(False, 5)
+        self.main_hbox = Gtk.HBox(False, 7)
+        self.desc_hbox = Gtk.HBox(False, 0)
+        self.iface_vbox = Gtk.VBox(False, 2)
+        self.ports_vbox = Gtk.VBox(False, 2)
 
         # Description icon
-        self.desc_icon = gtk.Image()
-        self.desc_icon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
+        self.desc_icon = Gtk.Image()
+        self.desc_icon.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
 
         # Description label
-        self.desc_label = gtk.Label()
+        self.desc_label = Gtk.Label()
         self.desc_label.set_markup('<b>Select interface and port to listen on</b>')
         self.desc_label.set_padding(4, 0)
-        halign = gtk.Alignment(0, 1, 0, 0)
+        halign = Gtk.Alignment.new(0, 1, 0, 0)
         halign.add(self.desc_label)
 
         # Choose network iface combo
-        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        self.iface_combo = gtk.ComboBox(store)
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self.iface_combo = Gtk.ComboBox(store)
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         self.iface_combo.pack_start(rendererPix, False)
         self.iface_combo.pack_start(rendererText, True)
         self.iface_combo.add_attribute(rendererPix, 'pixbuf', 0)
@@ -65,9 +65,9 @@ class ListenerDialog(popup_dialog.PopupDialog):
         # fill and select interfaces
         count = 0
         active_iface = self.uicore.get_interface()
-        icon = gtk.Image()
-        #icon.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
-        icon = icon.render_icon(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
+        icon = Gtk.Image()
+        #icon.set_from_stock(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
+        icon = icon.render_icon(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
         for iface in self.uicore.get_interfaces():
             store.append([icon, iface])
             if iface == active_iface:
@@ -76,10 +76,10 @@ class ListenerDialog(popup_dialog.PopupDialog):
         self.iface_combo.set_active(i)
 
         # Port entry
-        self.port_entry = gtk.Entry()
-        self.port_entry.set_icon_from_stock(1, gtk.STOCK_ADD)
+        self.port_entry = Gtk.Entry()
+        self.port_entry.set_icon_from_stock(1, Gtk.STOCK_ADD)
         self.default_color = self.port_entry.get_style().text[0]
-        self.port_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
+        self.port_entry.modify_text(Gtk.StateType.NORMAL, Gdk.color_parse("gray"))
         self.port_entry.set_text('Port to listen')
         self.port_entry.set_icon_tooltip_text(1, 'Create new listener')
         self.port_entry.connect('focus-in-event', self._clean, 'in')
@@ -88,22 +88,22 @@ class ListenerDialog(popup_dialog.PopupDialog):
         self.port_entry.connect('icon-press', self._go)
 
         # IP address label
-        self.ip_label = gtk.Label()
+        self.ip_label = Gtk.Label()
         model = self.iface_combo.get_model()
         active = self.iface_combo.get_active()
         active_iface = model[active][1]
         ip_addr = self.uicore.get_iface_ip(active_iface)
         self.ip_label.set_text(ip_addr)
         self.ip_label.set_padding(4, 0)
-        ip_halign = gtk.Alignment(0, 0, 0, 0)
+        ip_halign = Gtk.Alignment.new(0, 0, 0, 0)
         ip_halign.add(self.ip_label)
 
         self.iface_combo.connect('changed', self.get_ip)
 
         # Used ports label
-        self.used_ports_label = gtk.Label()
+        self.used_ports_label = Gtk.Label()
         self.used_ports_label.set_markup('Ports in use:')
-        ports_halign = gtk.Alignment(0, 1, 0, 0)
+        ports_halign = Gtk.Alignment.new(0, 1, 0, 0)
         ports_halign.add(self.used_ports_label)
 
         # Ports list
@@ -135,17 +135,17 @@ class ListenerDialog(popup_dialog.PopupDialog):
     # Methods
 
     def _create_ports_list(self):
-        store = gtk.ListStore(str)
+        store = Gtk.ListStore(str)
 
         if glob.listeners:
             for listener in glob.listeners.keys():
                 store.append([listener])
 
-        treeView = gtk.TreeView(store)
+        treeView = Gtk.TreeView(store)
         treeView.set_rules_hint(True)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("", rendererText, text=0)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("", rendererText, text=0)
         column.set_sort_column_id(0)
         treeView.append_column(column)
         treeView.set_headers_visible(False)
@@ -164,11 +164,11 @@ class ListenerDialog(popup_dialog.PopupDialog):
     def _clean(self, widget, event, data):
         if data == 'in':
             if widget.get_text() == 'Port to listen':
-                self.port_entry.modify_text(gtk.STATE_NORMAL, self.default_color)
+                self.port_entry.modify_text(Gtk.StateType.NORMAL, self.default_color)
                 widget.set_text('')
         elif data == 'out':
             if widget.get_text() == '':
-                self.port_entry.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
+                self.port_entry.modify_text(Gtk.StateType.NORMAL, Gdk.color_parse("gray"))
                 widget.set_text('Port to listen')
 
     def _go_entry(self, widget):
@@ -183,7 +183,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
             self._quit(widget)
             self.treeview.update_tree()
         else:
-            widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+            widget.modify_base(Gtk.StateType.NORMAL, bg_not_valid)
 
     def _go(self, widget, icon_pos, event):
         port = widget.get_text()
@@ -197,4 +197,4 @@ class ListenerDialog(popup_dialog.PopupDialog):
             self._quit(widget)
             self.treeview.update_tree()
         else:
-            widget.modify_base(gtk.STATE_NORMAL, bg_not_valid)
+            widget.modify_base(Gtk.StateType.NORMAL, bg_not_valid)

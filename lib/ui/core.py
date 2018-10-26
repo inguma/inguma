@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 import sys
 sys.path.append('../..')
-import gobject
+from gi.repository import GObject
 
 import pickle, os, platform, tempfile
 import inguma
@@ -371,8 +371,8 @@ class UIcore():
         output = id.read()
         print output
         if self.SHOW_MODULE_WIN:
-            gobject.idle_add( self.gom.create_module_dialog )
-        gobject.idle_add( self.gom.echo, output )
+            GObject.idle_add( self.gom.create_module_dialog )
+        GObject.idle_add( self.gom.echo, output )
 
     #####################################
     #

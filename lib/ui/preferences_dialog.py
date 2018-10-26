@@ -17,8 +17,8 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
 import os, sys, threading, urllib, gzip
 sys.path.append('../..')
@@ -41,37 +41,37 @@ class PropDialog(popup_dialog.PopupDialog):
         self.button = button
 
         # Notebook
-        self.prefs_nb = gtk.Notebook()
+        self.prefs_nb = Gtk.Notebook()
 
         #########################################################
         # Main Table
-        self.main_table = gtk.Table(rows=3, columns=2, homogeneous=True)
+        self.main_table = Gtk.Table(rows=3, columns=2, homogeneous=True)
         self.main_table.set_row_spacings(0)
         self.main_table.set_col_spacings(0)
 
         # Label to add table to Notebook
-        self.main_lbl = gtk.Label('Main')
+        self.main_lbl = Gtk.Label(label='Main')
 
         # Choose network iface
-        self.iface_lbl = gtk.Label('Network interface:')
+        self.iface_lbl = Gtk.Label(label='Network interface:')
 
-        store = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        self.iface_combo = gtk.ComboBox(store)
-        rendererText = gtk.CellRendererText()
-        rendererPix = gtk.CellRendererPixbuf()
+        store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self.iface_combo = Gtk.ComboBox(store)
+        rendererText = Gtk.CellRendererText()
+        rendererPix = Gtk.CellRendererPixbuf()
         self.iface_combo.pack_start(rendererPix, False)
         self.iface_combo.pack_start(rendererText, True)
         self.iface_combo.add_attribute(rendererPix, 'pixbuf', 0)
         self.iface_combo.add_attribute(rendererText, 'text', 1)
-        self.iface_combo_align = gtk.Alignment(yalign=0.5, xalign=0.5)
+        self.iface_combo_align = Gtk.Alignment.new(yalign=0.5, xalign=0.5)
         self.iface_combo_align.add(self.iface_combo)
 
         # fill and select interfaces
         count = 0
         active_iface = self.uicore.get_interface()
-        icon = gtk.Image()
-        #icon.set_from_stock(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
-        icon = icon.render_icon(gtk.STOCK_NETWORK, gtk.ICON_SIZE_MENU)
+        icon = Gtk.Image()
+        #icon.set_from_stock(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
+        icon = icon.render_icon(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
         for iface in self.uicore.get_interfaces():
             store.append([icon, iface])
             if iface == active_iface:
@@ -80,33 +80,33 @@ class PropDialog(popup_dialog.PopupDialog):
         self.iface_combo.set_active(i)
 
         # IP address label
-        self.ip_label = gtk.Label()
+        self.ip_label = Gtk.Label()
         model = self.iface_combo.get_model()
         active = self.iface_combo.get_active()
         active_iface = model[active][1]
         ip_addr = self.uicore.get_iface_ip(active_iface)
         self.ip_label.set_text(ip_addr)
         #self.ip_label.set_padding(4, 0)
-        ip_halign = gtk.Alignment(xalign=0.5)
+        ip_halign = Gtk.Alignment.new(xalign=0.5)
         ip_halign.add(self.ip_label)
 
         self.iface_combo.connect('changed', self.get_ip)
 
         # Apply and Cancel buttons
-        btn_hbox = gtk.HBox(False)
+        btn_hbox = Gtk.HBox(False)
 
-        image = gtk.Image()
-        #  (from http://www.pygtk.org/docs/pygtk/gtk-stock-items.html)
-        image.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_MENU)
-        self.apply_btn = gtk.Button()
+        image = Gtk.Image()
+        #  (from http://www.pyGtk.org/docs/pygtk/gtk-stock-items.html)
+        image.set_from_stock(Gtk.STOCK_APPLY, Gtk.IconSize.MENU)
+        self.apply_btn = Gtk.Button()
         self.apply_btn.set_image(image)
         self.apply_btn.set_label("")
         self.apply_btn.connect("clicked", self.set_interface)
 
-        image = gtk.Image()
-        #  (from http://www.pygtk.org/docs/pygtk/gtk-stock-items.html)
-        image.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_MENU)
-        self.cancel_btn = gtk.Button()
+        image = Gtk.Image()
+        #  (from http://www.pyGtk.org/docs/pygtk/gtk-stock-items.html)
+        image.set_from_stock(Gtk.STOCK_CANCEL, Gtk.IconSize.MENU)
+        self.cancel_btn = Gtk.Button()
         self.cancel_btn.set_image(image)
         self.cancel_btn.set_label("")
         self.cancel_btn.connect("clicked", self._bye)
@@ -114,7 +114,7 @@ class PropDialog(popup_dialog.PopupDialog):
         btn_hbox.pack_start(self.cancel_btn, False, False, 1)
         btn_hbox.pack_start(self.apply_btn, False, False, 1)
 
-        btn_halign = gtk.Alignment(yalign=1.0, xalign=1.0)
+        btn_halign = Gtk.Alignment.new(yalign=1.0, xalign=1.0)
         btn_halign.add(btn_hbox)
 
         # Add elements to Table
@@ -128,25 +128,25 @@ class PropDialog(popup_dialog.PopupDialog):
 
         #########################################################
         # Update Table
-        self.update_table = gtk.Table(rows=4, columns=2, homogeneous=True)
+        self.update_table = Gtk.Table(rows=4, columns=2, homogeneous=True)
         self.update_table.set_row_spacings(2)
         self.update_table.set_col_spacings(2)
 
         # Label to add table to Notebook
-        self.update_lbl = gtk.Label('Updates')
+        self.update_lbl = Gtk.Label(label='Updates')
 
         # Add exploits and nikto update buttons
-        self.exploit_lbl = gtk.Label('Exploit DB')
-        self.nikto_lbl = gtk.Label('Nikto Rules')
-        self.geo_lbl = gtk.Label('GeoIP DB')
-        self.dis_lbl = gtk.Label('distorm64')
-        self.exploit_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.exploit_lbl = Gtk.Label(label='Exploit DB')
+        self.nikto_lbl = Gtk.Label(label='Nikto Rules')
+        self.geo_lbl = Gtk.Label(label='GeoIP DB')
+        self.dis_lbl = Gtk.Label(label='distorm64')
+        self.exploit_bt = Gtk.Button('Update', Gtk.STOCK_REFRESH)
         self.exploit_bt.connect('clicked', self.update_exploits)
-        self.nikto_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.nikto_bt = Gtk.Button('Update', Gtk.STOCK_REFRESH)
         self.nikto_bt.connect('clicked', self.update_nikto)
-        self.geo_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.geo_bt = Gtk.Button('Update', Gtk.STOCK_REFRESH)
         self.geo_bt.connect('clicked', self.update_geo)
-        self.dis_bt = gtk.Button('Update', gtk.STOCK_REFRESH)
+        self.dis_bt = Gtk.Button('Update', Gtk.STOCK_REFRESH)
         self.dis_bt.connect('clicked', self.download_distorm)
 
         # Add elements to Table
@@ -199,7 +199,7 @@ class PropDialog(popup_dialog.PopupDialog):
         widget.set_sensitive(False)
         t = threading.Thread(target=self.exploitsInst.download_exploits, args=(self.gom,))
         t.start()
-        gobject.timeout_add(1000, self.reactivate_button, t, widget)
+        GObject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('Exploit-db Update', 'Exploits DB', t)
 
     def update_nikto(self, widget):
@@ -207,14 +207,14 @@ class PropDialog(popup_dialog.PopupDialog):
         widget.set_sensitive(False)
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
-        gobject.timeout_add(1000, self.reactivate_button, t, widget)
+        GObject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('Nikto Update', 'Nikto DB', t)
 
     def update_geo(self, widget):
         t = threading.Thread(target=self.download_geodb)
         widget.set_sensitive(False)
         t.start()
-        gobject.timeout_add(1000, self.reactivate_button, t, widget)
+        GObject.timeout_add(1000, self.reactivate_button, t, widget)
         self.threadtv.add_action('GeoIP-DB Update', 'GeoIP DB', t)
 
     def download_geodb(self):
@@ -244,7 +244,7 @@ class PropDialog(popup_dialog.PopupDialog):
         path = get_profile_file_path('data' + os.sep)
 
         if platform.system() != 'Linux':
-            md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='Download distorm library installer for Windows at this site:\nhttp://breakingcode.wordpress.com/2009/08/31/using-distorm-with-python-2-6-and-python-3-x-revisited/')
+            md = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CLOSE, message_format='Download distorm library installer for Windows at this site:\nhttp://breakingcode.wordpress.com/2009/08/31/using-distorm-with-python-2-6-and-python-3-x-revisited/')
             md.run()
             md.destroy()
             return False

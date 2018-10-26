@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import Gtk
 
 class AboutDialog():
     '''About dialog'''
@@ -26,7 +26,7 @@ class AboutDialog():
     def create_dialog(self):
         from lib.core import get_inguma_version
 
-        about = gtk.AboutDialog()
+        about = Gtk.AboutDialog()
         about.set_program_name("Inguma")
         about.set_version(get_inguma_version())
         about.set_copyright("(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"+
@@ -35,7 +35,7 @@ class AboutDialog():
         about.set_website("http://inguma.eu")
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martinez Moreno <ender@inguma.eu>'])
         about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>', 'Juanje <juanje@gmail.com>', ' * Web: http://www.puntodepartida.com'])
-        about.set_logo(gtk.gdk.pixbuf_new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
+        about.set_logo(GdkPixbuf.Pixbuf.new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
         about.set_modal(True)
 
         return about

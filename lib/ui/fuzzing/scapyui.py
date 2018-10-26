@@ -1,29 +1,28 @@
 ##      scapyui.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
-import gobject
+from gi.repository import Gdk, GObject, Gtk
 import threading
 
 from scapy.all import *
 
-class ScapyUI(gtk.Frame):
+class ScapyUI(Gtk.Frame):
     def __init__(self, ip_entry, port_entry):
         super(ScapyUI,self).__init__()
 
@@ -31,38 +30,38 @@ class ScapyUI(gtk.Frame):
         self.ip_entry = ip_entry
         self.port_entry = port_entry
 
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         quote = "<b>Scapy Fuzzer</b>"
         self.label.set_markup(quote)
         self.set_label_widget(self.label)
 
         # VBox to add panels and buttons
-        self.vbox = gtk.VBox(False, 2)
+        self.vbox = Gtk.VBox(False, 2)
 
         # HBox to add panels
-        self.panels_hbox = gtk.HBox(False, 10)
+        self.panels_hbox = Gtk.HBox(False, 10)
 
         # File selector
-        self.info_hbox = gtk.HBox(False, 2)
-        self.info = gtk.Image()
-        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.file_label = gtk.Label('Step 2: Select the directory to save sent packages:')
+        self.info_hbox = Gtk.HBox(False, 2)
+        self.info = Gtk.Image()
+        self.info.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
+        self.file_label = Gtk.Label(label='Step 2: Select the directory to save sent packages:')
         self.file_label.set_padding(0, 3)
         self.info_hbox.pack_start(self.info, False, False, 2)
         self.info_hbox.pack_start(self.file_label, False, False, 2)
 
         self.vbox.pack_start(self.info_hbox, False, False, 2)
 
-        self.filechooserbutton = gtk.FileChooserButton('Select a directory', backend=None)
-        self.filechooserbutton.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+        self.filechooserbutton = Gtk.FileChooserButton('Select a directory')
+        self.filechooserbutton.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 
         self.vbox.pack_start(self.filechooserbutton, False, False, 2)
 
         # Information label, icon and HBox
-        self.info_hbox = gtk.HBox(False, 2)
-        self.info = gtk.Image()
-        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.desc_label = gtk.Label('Step 3: Add the layers that you want to fuzz on to the right column:')
+        self.info_hbox = Gtk.HBox(False, 2)
+        self.info = Gtk.Image()
+        self.info.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
+        self.desc_label = Gtk.Label(label='Step 3: Add the layers that you want to fuzz on to the right column:')
         self.desc_label.set_padding(0, 4)
         self.info_hbox.pack_start(self.info, False, False, 2)
         self.info_hbox.pack_start(self.desc_label, False, False, 2)
@@ -71,16 +70,16 @@ class ScapyUI(gtk.Frame):
         #
 
         # Scapy layers panel
-        self.layers_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
-        self.layers_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.layers_sw = Gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
+        self.layers_sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         # Scapy layers Treeview
-        self.layers_store = gtk.ListStore(str)
-        self.layers_tv = gtk.TreeView(self.layers_store)
+        self.layers_store = Gtk.ListStore(str)
+        self.layers_tv = Gtk.TreeView(self.layers_store)
         self.layers_tv.set_rules_hint(True)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Name", rendererText, text=0)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Name", rendererText, text=0)
         column.set_sort_column_id(0)
         column.set_resizable(True)
         self.layers_tv.append_column(column)
@@ -89,22 +88,22 @@ class ScapyUI(gtk.Frame):
         self.layers_sw.add(self.layers_tv)
 
         # Selected layers Treeview
-        self.selected_sw = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
-        self.selected_sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.selected_sw = Gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
+        self.selected_sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        self.selected_store = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_BOOLEAN)
-        self.selected_tv = gtk.TreeView(self.selected_store)
+        self.selected_store = Gtk.TreeStore(GObject.TYPE_STRING, GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN)
+        self.selected_tv = Gtk.TreeView(self.selected_store)
         self.selected_tv.set_rules_hint(True)
 
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Selected Layers", rendererText, text=0)
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Selected Layers", rendererText, text=0)
         column.set_sort_column_id(0)
         column.set_clickable(False)
         self.selected_tv.append_column(column)
 
-        self.toggle_column = gtk.TreeViewColumn("Fuzz")
+        self.toggle_column = Gtk.TreeViewColumn("Fuzz")
         self.toggle_column.set_expand(False)
-        self.toggle = gtk.CellRendererToggle()
+        self.toggle = Gtk.CellRendererToggle()
         self.toggle.set_property('activatable', True)
         self.toggle.connect('toggled', self.activatePlugin)
         self.toggle_column.pack_start(self.toggle, False)
@@ -117,40 +116,40 @@ class ScapyUI(gtk.Frame):
         self.selected_sw.add_with_viewport(self.selected_tv)
 
         # Treeviews Drag and Drop stuff
-        self.layers_tv.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [("text/plain", gtk.TARGET_SAME_APP, 80)], gtk.gdk.ACTION_COPY)
+        self.layers_tv.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.COPY)
         self.layers_tv.connect("drag-data-get", self.drag_data_get_cb)
 
-        self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], gtk.gdk.ACTION_COPY)
-        self.selected_tv.drag_source_set(gtk.gdk.BUTTON1_MASK, [("text/plain", gtk.TARGET_SAME_APP, 80)], gtk.gdk.ACTION_MOVE)
+        self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], Gdk.DragAction.COPY)
+        self.selected_tv.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.MOVE)
         #self.selected_tv.connect("drag-begin", self.drag_selected_begin_cb)
         #self.selected_tv.connect("drag-end", self.drag_selected_end_cb)
         self.selected_tv.connect("drag-data-received", self.drag_data_received_cb)
 
 
-        self.hseparator = gtk.HSeparator()
+        self.hseparator = Gtk.HSeparator()
 
         #
         # Start/stop buttons and HBox
 
         # HBoxes for buttons
-        self.buttons_hbox = gtk.HBox(False, 3)
-        self.buttons_left_hbox = gtk.HBox(False, 3)
-        self.buttons_right_hbox = gtk.HBox(True, 1)
+        self.buttons_hbox = Gtk.HBox(False, 3)
+        self.buttons_left_hbox = Gtk.HBox(False, 3)
+        self.buttons_right_hbox = Gtk.HBox(True, 1)
 
-        self.info = gtk.Image()
-        self.info.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.desc_label = gtk.Label('Step 4: Start fuzzing!')
+        self.info = Gtk.Image()
+        self.info.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
+        self.desc_label = Gtk.Label(label='Step 4: Start fuzzing!')
         self.desc_label.set_padding(0, 4)
         self.buttons_left_hbox.pack_start(self.info, False, False, 2)
         self.buttons_left_hbox.pack_start(self.desc_label, False, False, 2)
 
         # Start/stop buttons
-        self.start = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_PLAY)
-        self.start_image = gtk.Image()
-        self.start_image.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+        self.start = Gtk.Button(label=None, stock=Gtk.STOCK_MEDIA_PLAY)
+        self.start_image = Gtk.Image()
+        self.start_image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
         self.start.set_size_request(60, 30)
         self.start.connect('clicked', self.get_active_plugins)
-        self.stop = gtk.Button(label=None, stock=gtk.STOCK_MEDIA_STOP)
+        self.stop = Gtk.Button(label=None, stock=Gtk.STOCK_MEDIA_STOP)
         self.stop.set_size_request(60, 30)
         self.stop.connect('clicked', self.stop_fuzzing)
 
@@ -164,35 +163,37 @@ class ScapyUI(gtk.Frame):
 
         self.buttons_right_hbox.add(self.start)
         self.buttons_right_hbox.add(self.stop)
-        self.halign = gtk.Alignment(0.97, 0, 0, 0)
+        self.halign = Gtk.Alignment.new(0.97, 0, 0, 0)
         self.halign.add(self.buttons_right_hbox)
 
-        self.buttons_hbox.pack_start(self.buttons_left_hbox)
-        self.buttons_hbox.pack_start(self.halign)
+        self.buttons_hbox.pack_start(self.buttons_left_hbox, True, True, 0)
+        self.buttons_hbox.pack_start(self.halign, True, True, 0)
 
         # Throbber image
-        self.throbber = gtk.Image()
+        self.throbber = Gtk.Image()
         self.img_path = 'lib' + os.sep + 'ui' + os.sep + 'data' + os.sep
         self.throbber.set_from_file(self.img_path + 'throbber_animat_small.gif')
 
         # Delete button
-        self.del_icon = gtk.Image()
+        self.del_icon = Gtk.Image()
         self.del_icon.set_padding(5, 5)
-        self.del_icon.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.del_icon.set_from_stock(Gtk.STOCK_DELETE, Gtk.IconSize.SMALL_TOOLBAR)
 
         # Delete button drag and drop stuff
-        self.del_icon.drag_dest_set(gtk.DEST_DEFAULT_MOTION | gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP, [ ( "text/plain", gtk.TARGET_SAME_APP, 80) ], gtk.gdk.ACTION_MOVE)
+        self.del_icon.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP, [Gtk.TargetEntry( "text/plain", Gtk.TargetFlags.SAME_APP, 80) ], Gdk.DragAction.MOVE)
         self.del_icon.connect("drag_drop", self.drag_drop_cb)
         #self.del_icon.set_no_show_all(True)
         #self.del_icon.hide()
 
-        self.eb = gtk.EventBox()
+        self.eb = Gtk.EventBox()
         #self.eb.set_no_show_all(True)
         #self.eb.hide()
         self.eb.add(self.del_icon)
-        self.eb.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color('#d9e4f2'))
+        color = Gdk.RGBA()
+        color.parse('#d9e4f2')
+        self.eb.override_background_color(Gtk.StateType.NORMAL, color)
 
-        self.right_vbox = gtk.VBox(False, 0)
+        self.right_vbox = Gtk.VBox(False, 0)
         self.right_vbox.pack_start(self.selected_sw, True, True, 1)
         self.right_vbox.pack_start(self.eb, False, False, 1)
 
@@ -270,7 +271,7 @@ class ScapyUI(gtk.Frame):
         @param path: the path that clicked the user.
 
         When a child gets activated/deactivated, the father is also refreshed
-        to show if it's full/partially/not activated. 
+        to show if it's full/partially/not activated.
 
         If the father gets activated/deactivated, all the children follow the
         same fate.
@@ -335,7 +336,7 @@ class ScapyUI(gtk.Frame):
         self.port = self.port_entry.get_text()
 
         if not self.target or not self.port:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "Fill IP address and Port entries")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.WARNING, Gtk.ButtonsType.CLOSE, "Fill IP address and Port entries")
             md.run()
             md.destroy()
         else:
@@ -357,10 +358,10 @@ class ScapyUI(gtk.Frame):
                 label = self.start.get_children()[0]
                 label = label.get_children()[0].get_children()[1]
                 label = label.set_label('')
-    
+
                 self.compose_packet(result)
             else:
-                md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "First drag some layers to the right tree")
+                md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.WARNING, Gtk.ButtonsType.CLOSE, "First drag some layers to the right tree")
                 md.run()
                 md.destroy()
 
@@ -385,7 +386,7 @@ class ScapyUI(gtk.Frame):
         self.srloop(packet)
 
     def fuzz_packet(self, packet, _inplace=0):
-        # add fuzz values to selected fields 
+        # add fuzz values to selected fields
         if not _inplace:
             packet = packet.copy()
         q = packet
@@ -479,7 +480,7 @@ class ScapyUI(gtk.Frame):
                     time.sleep(inter+start-end)
         except KeyboardInterrupt:
             pass
-     
+
         if verbose and n>0:
             self.gom.echo( ct.normal("\nSent %i packets, received %i packets. %3.1f%% hits." % (n,r,100.0*r/n)) )
 

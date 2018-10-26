@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+from gi.repository import Gtk
 
 import lib.ui.popup_dialog as popup_dialog
 
@@ -49,33 +49,33 @@ class TargetDialog(popup_dialog.PopupDialog):
         self.button = button
 
         # Radio buttons
-        self.ip_rbutton= gtk.RadioButton(group=None, label='Single IP')
+        self.ip_rbutton= Gtk.RadioButton(group=None, label='Single IP')
         self.ip_rbutton.connect("toggled", self.rbcallback, "IP")
         self.active = 'IP'
         self.ip_rbutton.set_active(True)
-        self.dom_rbutton = gtk.RadioButton(self.ip_rbutton, label='Domain')
+        self.dom_rbutton = Gtk.RadioButton(self.ip_rbutton, label='Domain')
         self.dom_rbutton.connect("toggled", self.rbcallback, "DOM")
 
         # A target text entry
-        self.tgentry = gtk.Entry(max=30)
+        self.tgentry = Gtk.Entry(max=30)
         self.tgentry.set_focus = True
-        self.tgentry.set_icon_from_stock(1, gtk.STOCK_ADD)
+        self.tgentry.set_icon_from_stock(1, Gtk.STOCK_ADD)
         self.tgentry.connect('activate', self.validate_data)
         self.tgentry.connect('icon-press', self.validate_data)
         self.tgentry.set_icon_tooltip_text(1, 'Add new target')
 
         # Checkbox to use nmap
-        self.nmap = gtk.CheckButton("Use Nmap")
+        self.nmap = Gtk.CheckButton("Use Nmap")
         if not self.config.HAS_NMAP:
             self.nmap.set_sensitive(False)
 
         # Checkbox to audit host
-        self.audit = gtk.CheckButton("Audit host")
+        self.audit = Gtk.CheckButton("Audit host")
         self.audit.set_active(True)
 
         #########################################################
         # Table
-        table = gtk.Table(rows=3, columns=2, homogeneous=True)
+        table = Gtk.Table(rows=3, columns=2, homogeneous=True)
         table.set_row_spacings(2)
         table.set_col_spacings(2)
 
@@ -128,7 +128,7 @@ class TargetDialog(popup_dialog.PopupDialog):
                 t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
                 t.start()
                 self.threadtv.add_action('Nmap Scan', ip, t)
-                gobject.timeout_add(1000, self.check_nmap_thread, t)
+                GObject.timeout_add(1000, self.check_nmap_thread, t)
             else:
                 # Run discover modules
                 t = threading.Thread(target=self.run_modules, args=(type,))
@@ -205,8 +205,8 @@ class TargetDialog(popup_dialog.PopupDialog):
         error_string - The error string that will be displayed
         on the dialog.
         """
-        error_dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR
+        error_dlg = Gtk.MessageDialog(type=Gtk.MessageType.ERROR
                     , message_format=error_string
-                    , buttons=gtk.BUTTONS_OK)
+                    , buttons=Gtk.ButtonsType.OK)
         error_dlg.run()
         error_dlg.destroy()

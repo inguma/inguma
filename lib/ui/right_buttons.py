@@ -17,9 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
-class RightButtons(gtk.VBox):
+class RightButtons(Gtk.VBox):
     '''Right buttons for Treeview change'''
 
     def __init__(self, right_vbox, tree):
@@ -33,42 +33,42 @@ class RightButtons(gtk.VBox):
 
     def create_buttons(self):
         # Icons
-        self.tgt_icon = gtk.Image()
-        self.tgt_icon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
-        self.vuln_icon = gtk.Image()
-        self.vuln_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
-        self.shell_icon = gtk.Image()
-        self.shell_icon.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+        self.tgt_icon = Gtk.Image()
+        self.tgt_icon.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
+        self.vuln_icon = Gtk.Image()
+        self.vuln_icon.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.MENU)
+        self.shell_icon = Gtk.Image()
+        self.shell_icon.set_from_stock(Gtk.STOCK_EXECUTE, Gtk.IconSize.MENU)
 
         # Buttons
-        a = gtk.VBox(False, 1)
-        tgttb = gtk.ToggleButton()
+        a = Gtk.VBox(False, 1)
+        tgttb = Gtk.ToggleButton()
         tgttb.set_active(True)
         handler = tgttb.connect('toggled', self._on_toggle)
         tgttb.handler = handler
-        l = gtk.Label('Targets')
+        l = Gtk.Label(label='Targets')
         l.set_angle(270)
         a.pack_start(self.tgt_icon, False, False, 1)
         a.pack_start(l, False, False, 1)
         tgttb.add(a)
         self.pack_start(tgttb, False, False, 0)
 
-        a = gtk.VBox(False, 1)
-        vulntb = gtk.ToggleButton()
+        a = Gtk.VBox(False, 1)
+        vulntb = Gtk.ToggleButton()
         handler = vulntb.connect('toggled', self._on_toggle)
         vulntb.handler = handler
-        l = gtk.Label('Vulnerabilities')
+        l = Gtk.Label(label='Vulnerabilities')
         l.set_angle(270)
         a.pack_start(self.vuln_icon, False, False, 1)
         a.pack_start(l, False, False, 1)
         vulntb.add(a)
         self.pack_start(vulntb, False, False, 0)
 
-        a = gtk.VBox(False, 1)
-        shelltb = gtk.ToggleButton()
+        a = Gtk.VBox(False, 1)
+        shelltb = Gtk.ToggleButton()
         handler = shelltb.connect('toggled', self._on_toggle)
         shelltb.handler = handler
-        l = gtk.Label('Listeners')
+        l = Gtk.Label(label='Listeners')
         l.set_angle(270)
         a.pack_start(self.shell_icon, False, False, 1)
         a.pack_start(l, False, False, 1)

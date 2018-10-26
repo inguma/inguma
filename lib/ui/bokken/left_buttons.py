@@ -19,9 +19,9 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk
 
-class LeftButtons(gtk.VBox):
+class LeftButtons(Gtk.VBox):
     '''Left buttons for Treeview change'''
 
     def __init__(self, main):
@@ -33,27 +33,27 @@ class LeftButtons(gtk.VBox):
         #################################################################
         # Left mini-toolbar
         #################################################################
-        toolbar = gtk.Toolbar()
-        toolbar.set_style(gtk.TOOLBAR_ICONS)
+        toolbar = Gtk.Toolbar()
+        toolbar.set_style(Gtk.ToolbarStyle.ICONS)
 
     ##################################
     # Methods
 
     def create_buttons(self, option):
         # Icons
-        self.fcn_pix = gtk.Image()
+        self.fcn_pix = Gtk.Image()
         self.fcn_pix.set_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'function.png')
-        self.bb_pix = gtk.Image()
+        self.bb_pix = Gtk.Image()
         self.bb_pix.set_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'block.png')
-        self.imp_pix = gtk.Image()
+        self.imp_pix = Gtk.Image()
         self.imp_pix.set_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'import.png')
-        self.exp_pix = gtk.Image()
+        self.exp_pix = Gtk.Image()
         self.exp_pix.set_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'export.png')
 
         # Show/hide toolbar and menu
-        self.hide_tb = gtk.ToggleButton()
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+        self.hide_tb = Gtk.ToggleButton()
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_GO_UP, Gtk.IconSize.MENU)
         self.hide_tb.set_image(i)
         handler = self.hide_tb.connect('toggled', self._hide_tb_toggled)
         self.hide_tb.handler = handler
@@ -62,23 +62,23 @@ class LeftButtons(gtk.VBox):
 
         if 'bin' in option:
             # Functions
-            a = gtk.VBox(False, 1)
-            fcntb = gtk.ToggleButton()
+            a = Gtk.VBox(False, 1)
+            fcntb = Gtk.ToggleButton()
             fcntb.set_active(True)
             handler = fcntb.connect('toggled', self._on_toggle)
             fcntb.handler = handler
-            l = gtk.Label('Functions')
+            l = Gtk.Label(label='Functions')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.fcn_pix, False, False, 1)
             fcntb.add(a)
     
             # Sections
-            sectb = gtk.ToggleButton()
+            sectb = Gtk.ToggleButton()
             handler = sectb.connect('toggled', self._on_toggle)
             sectb.handler = handler
-            a = gtk.VBox(False, 1)
-            l = gtk.Label('Sections')
+            a = Gtk.VBox(False, 1)
+            l = Gtk.Label(label='Sections')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.bb_pix, False, False, 1)
@@ -89,22 +89,22 @@ class LeftButtons(gtk.VBox):
 
             if option == 'full_bin':
                 # Imports
-                imptb = gtk.ToggleButton()
+                imptb = Gtk.ToggleButton()
                 handler = imptb.connect('toggled', self._on_toggle)
                 imptb.handler = handler
-                a = gtk.VBox(False, 1)
-                l = gtk.Label('Imports')
+                a = Gtk.VBox(False, 1)
+                l = Gtk.Label(label='Imports')
                 l.set_angle(90)
                 a.pack_start(l, False, False, 1)
                 a.pack_start(self.imp_pix, False, False, 1)
                 imptb.add(a)
         
                 # Exports
-                exptb = gtk.ToggleButton()
+                exptb = Gtk.ToggleButton()
                 handler = exptb.connect('toggled', self._on_toggle)
                 exptb.handler = handler
-                a = gtk.VBox(False, 1)
-                l = gtk.Label('Exports')
+                a = Gtk.VBox(False, 1)
+                l = Gtk.Label(label='Exports')
                 l.set_angle(90)
                 a.pack_start(l, False, False, 1)
                 a.pack_start(self.exp_pix, False, False, 1)
@@ -114,10 +114,10 @@ class LeftButtons(gtk.VBox):
                 self.pack_start(exptb, False, False, 0)
         elif option == 'pdf':
             # PDF
-            pdftb = gtk.ToggleButton()
+            pdftb = Gtk.ToggleButton()
             pdftb.set_inconsistent(True)
-            a = gtk.VBox(False, 1)
-            l = gtk.Label('PDF info')
+            a = Gtk.VBox(False, 1)
+            l = Gtk.Label(label='PDF info')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.exp_pix, False, False, 1)
@@ -126,32 +126,32 @@ class LeftButtons(gtk.VBox):
             self.pack_start(pdftb, False, False, 0)
         elif option == 'url':
             # URL
-            lnktb = gtk.ToggleButton()
+            lnktb = Gtk.ToggleButton()
             lnktb.set_active(True)
             handler = lnktb.connect('toggled', self._on_toggle)
             lnktb.handler = handler
-            a = gtk.VBox(False, 1)
-            l = gtk.Label('URL')
+            a = Gtk.VBox(False, 1)
+            l = Gtk.Label(label='URL')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.fcn_pix, False, False, 1)
             lnktb.add(a)
         
-            hdrtb = gtk.ToggleButton()
+            hdrtb = Gtk.ToggleButton()
             handler = hdrtb.connect('toggled', self._on_toggle)
             hdrtb.handler = handler
-            a = gtk.VBox(False, 1)
-            l = gtk.Label('Headers')
+            a = Gtk.VBox(False, 1)
+            l = Gtk.Label(label='Headers')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.exp_pix, False, False, 1)
             hdrtb.add(a)
         
-            ccktb = gtk.ToggleButton()
+            ccktb = Gtk.ToggleButton()
             handler = ccktb.connect('toggled', self._on_toggle)
             ccktb.handler = handler
-            a = gtk.VBox(False, 1)
-            l = gtk.Label('Cookies')
+            a = Gtk.VBox(False, 1)
+            l = Gtk.Label(label='Cookies')
             l.set_angle(90)
             a.pack_start(l, False, False, 1)
             a.pack_start(self.imp_pix, False, False, 1)
@@ -186,13 +186,13 @@ class LeftButtons(gtk.VBox):
     def _hide_tb_toggled(self, widget):
         if widget.get_active():
             self.main.inguma.bokken_tb.hide()
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
+            i = Gtk.Image()
+            i.set_from_stock(Gtk.STOCK_GO_DOWN, Gtk.IconSize.MENU)
             widget.set_image(i)
         else:
             self.main.inguma.bokken_tb.show()
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+            i = Gtk.Image()
+            i.set_from_stock(Gtk.STOCK_GO_UP, Gtk.IconSize.MENU)
             widget.set_image(i)
 
     def remove_all(self):

@@ -17,13 +17,13 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+from gi.repository import GObject, Gtk
 import threading
 
-class UIManager(gtk.UIManager):
+class UIManager(Gtk.UIManager):
 
     def __init__(self, gom, core):
-        gtk.UIManager.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.ui_id = 0
         self.gom = gom
@@ -45,12 +45,12 @@ class UIManager(gtk.UIManager):
         self.accel = self.get_accel_group()
 
         # Create an ActionGroup
-        self.actiongroup = gtk.ActionGroup('Popup')
+        self.actiongroup = Gtk.ActionGroup('Popup')
 
         # Add actions
         self.actiongroup.add_actions( [('Node options', None, ' Node Options ')] )
         self.actiongroup.add_actions( [('options', None, ' Graph Options ')] )
-        self.actiongroup.add_actions( [('remove_node', gtk.STOCK_DIALOG_WARNING, ' Remove Node ', None, 'ToolTip', self.remove_node )] )
+        self.actiongroup.add_actions( [('remove_node', Gtk.STOCK_DIALOG_WARNING, ' Remove Node ', None, 'ToolTip', self.remove_node )] )
 
         # Add the actiongroup to the uimanager
         self.insert_action_group(self.actiongroup, 0)
@@ -70,18 +70,18 @@ class UIManager(gtk.UIManager):
 
     def remove_node(self, widget):
 
-        askRemove = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="Are you sure you want to remove that node?")
-        askRemove.set_default_response(gtk.RESPONSE_YES)
+        askRemove = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.YES_NO, message_format="Are you sure you want to remove that node?")
+        askRemove.set_default_response(Gtk.ResponseType.YES)
         do_remove = askRemove.run()
 
-        if do_remove == gtk.RESPONSE_YES:
+        if do_remove == Gtk.ResponseType.YES:
             print "Let's remove data for node:", self.ip
 #            self.uicore.remove_node(self.ip)
             t = threading.Thread(target=self.uicore.remove_node, args=(self.ip,))
             t.start()
             self.threadtv.add_action('Removing node', self.ip, t)
 
-            gobject.timeout_add(1000, self.update_graph, t)
+            GObject.timeout_add(1000, self.update_graph, t)
         else:
             pass
         askRemove.destroy()

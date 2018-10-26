@@ -1,33 +1,33 @@
 ##      filemanager_notebook.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import GdkPixbuf, Gtk
 
-class FileManagerNotebook(gtk.Notebook):
+class FileManagerNotebook(Gtk.Notebook):
 
     def __init__(self, main):
         super(FileManagerNotebook,self).__init__()
         # TreeStore
-        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, str)
+        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
         # create the TreeView using liststore
-        self.file_tree = gtk.TreeView(self.liststore)
+        self.file_tree = Gtk.TreeView(self.liststore)
         self.file_tree.set_headers_visible(False)
         self.handler = self.file_tree.connect('button-press-event', self.on_dir__button_press_event)
         self.handler = self.file_tree.connect('row-activated', self.on_dir__key_press_event)
@@ -36,64 +36,64 @@ class FileManagerNotebook(gtk.Notebook):
         self.term_nb = self.main.term_notebook
         self.uicore = main.uicore
 
-        self.set_tab_pos(gtk.POS_BOTTOM)
+        self.set_tab_pos(Gtk.PositionType.BOTTOM)
         self.handler = None
         self.path = os.getcwd()
 
         # Tree icons
-        self.folder_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'folder.png')
-        self.file_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'page_white.png')
-        self.term_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
-        self.mark_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'star.png')
-        self.shell_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'computer_link.png')
-        self.import_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'arrow_join.png')
+        self.folder_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'folder.png')
+        self.file_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'page_white.png')
+        self.term_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        self.mark_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'star.png')
+        self.shell_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'computer_link.png')
+        self.import_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'arrow_join.png')
 
         #################################################################
         # Scrolled Window and Co
         #################################################################
 
         # Navigation uuttons and search box
-        self.nav_hbox = gtk.HBox(False)
+        self.nav_hbox = Gtk.HBox(False)
 
-        self.home_btn = gtk.Button()
-        self.home_icon = gtk.Image()
-        self.home_icon.set_from_stock(gtk.STOCK_HOME, gtk.ICON_SIZE_MENU)
+        self.home_btn = Gtk.Button()
+        self.home_icon = Gtk.Image()
+        self.home_icon.set_from_stock(Gtk.STOCK_HOME, Gtk.IconSize.MENU)
         self.home_btn.set_image(self.home_icon)
-        self.home_btn.set_relief(gtk.RELIEF_NONE)
+        self.home_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.home_btn.set_tooltip_text('Go home directory')
         self.home_btn.connect('clicked', self._go_home)
 
-        self.go_up_btn = gtk.Button()
-        self.go_up_icon = gtk.Image()
-        self.go_up_icon.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+        self.go_up_btn = Gtk.Button()
+        self.go_up_icon = Gtk.Image()
+        self.go_up_icon.set_from_stock(Gtk.STOCK_GO_UP, Gtk.IconSize.MENU)
         self.go_up_btn.set_image(self.go_up_icon)
-        self.go_up_btn.set_relief(gtk.RELIEF_NONE)
+        self.go_up_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.go_up_btn.set_tooltip_text('Go UP one directory')
         self.go_up_btn.connect('clicked', self._go_up)
 
-        self.hidden_btn = gtk.ToggleButton()
-        self.hidden_icon = gtk.Image()
-        self.hidden_icon.set_from_stock(gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU)
+        self.hidden_btn = Gtk.ToggleButton()
+        self.hidden_icon = Gtk.Image()
+        self.hidden_icon.set_from_stock(Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU)
         self.hidden_btn.set_image(self.hidden_icon)
-        self.hidden_btn.set_relief(gtk.RELIEF_NONE)
+        self.hidden_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.hidden_btn.set_tooltip_text('Show/Hide hidden elements')
         self.hidden_btn.set_active(True)
         self.hidden_btn.connect('toggled', self._set_show_hidden)
 
-        sep = gtk.VSeparator()
+        sep = Gtk.VSeparator()
 
-        self.new_term_btn = gtk.Button()
-        self.new_term_icon = gtk.Image()
+        self.new_term_btn = Gtk.Button()
+        self.new_term_icon = Gtk.Image()
         self.new_term_icon.set_from_pixbuf(self.term_icon)
         self.new_term_btn.set_image(self.new_term_icon)
-        self.new_term_btn.set_relief(gtk.RELIEF_NONE)
+        self.new_term_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.new_term_btn.set_tooltip_text('Open terminal in current directory')
         self.new_term_btn.connect('clicked', self._new_term)
 
-        sep2 = gtk.VSeparator()
+        sep2 = Gtk.VSeparator()
 
-        self.tgt_entry = gtk.Entry(20)
-        self.tgt_entry.set_icon_from_stock(1, gtk.STOCK_CLEAR)
+        self.tgt_entry = Gtk.Entry()
+        self.tgt_entry.set_icon_from_stock(1, Gtk.STOCK_CLEAR)
         self.tgt_entry.set_icon_tooltip_text(1, 'Clear entry')
         self.tgt_entry.connect('icon-press', self._clear_entry)
         #self.tgt_entry.connect('changed', self._do_filter)
@@ -108,15 +108,15 @@ class FileManagerNotebook(gtk.Notebook):
         self.nav_hbox.pack_start(self.tgt_entry, True, True, 0)
 
         # Scrolledwindow/Treeview
-        self.file_vb = gtk.VBox(False, 0)
-        self.file_sw = gtk.ScrolledWindow()
-        self.file_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.mark_sw = gtk.ScrolledWindow()
-        self.mark_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.term_sw = gtk.ScrolledWindow()
-        self.term_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.shell_sw = gtk.ScrolledWindow()
-        self.shell_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.file_vb = Gtk.VBox(False, 0)
+        self.file_sw = Gtk.ScrolledWindow()
+        self.file_sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.mark_sw = Gtk.ScrolledWindow()
+        self.mark_sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.term_sw = Gtk.ScrolledWindow()
+        self.term_sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.shell_sw = Gtk.ScrolledWindow()
+        self.shell_sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.file_sw.set_size_request(200,-1)
 
         #self.set_rules_hint(True)
@@ -172,13 +172,13 @@ class FileManagerNotebook(gtk.Notebook):
         self._start_term(widget, self.path)
 
     def create_file_menu(self, file):
-        self.file_menu = gtk.Menu()
+        self.file_menu = Gtk.Menu()
         actions = [[self.import_icon, 'Import Nmap scan', self._import_scan_file], [self.import_icon, 'Import Hosts list', self._import_scan_file]]
 
         for action in actions:
-            menuitem = gtk.ImageMenuItem()
+            menuitem = Gtk.ImageMenuItem()
             menuitem.set_label('{0}'.format(action[1]))
-            icon = gtk.Image()
+            icon = Gtk.Image()
             icon.set_from_pixbuf(action[0])
             menuitem.set_image(icon)
             menuitem.connect('activate', action[2], file)
@@ -186,13 +186,13 @@ class FileManagerNotebook(gtk.Notebook):
         self.file_menu.show_all()
 
     def create_dir_menu(self, dir):
-        self.dir_menu = gtk.Menu()
+        self.dir_menu = Gtk.Menu()
         actions = [[self.term_icon, 'Terminal in directory', self._start_term], [self.folder_icon, 'Browse directory', self.update_file_list]]
 
         for action in actions:
-            menuitem = gtk.ImageMenuItem()
+            menuitem = Gtk.ImageMenuItem()
             menuitem.set_label('{0}'.format(action[1]))
-            icon = gtk.Image()
+            icon = Gtk.Image()
             icon.set_from_pixbuf(action[0])
             menuitem.set_image(icon)
             menuitem.connect('activate', action[2], dir)
@@ -203,16 +203,16 @@ class FileManagerNotebook(gtk.Notebook):
         self.term_nb.add_new_tab(widget, '', dir)
 
     def _create_tabs(self):
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_pixbuf(self.folder_icon)
         self.append_page(self.file_vb, icon)
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_pixbuf(self.mark_icon)
         self.append_page(self.mark_sw, icon)
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_pixbuf(self.term_icon)
         self.append_page(self.term_sw, icon)
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_pixbuf(self.shell_icon)
         self.append_page(self.shell_sw, icon)
 
@@ -226,14 +226,14 @@ class FileManagerNotebook(gtk.Notebook):
             self.fill_file_list()
 
     def remove_columns(self):
-        columns = self.file_tree.get_columns() 
+        columns = self.file_tree.get_columns()
         for column in columns:
             self.remove_column(column)
 
     def create_file_list(self):
-        rendererPix = gtk.CellRendererPixbuf()
-        rendererText = gtk.CellRendererText()
-        column = gtk.TreeViewColumn()
+        rendererPix = Gtk.CellRendererPixbuf()
+        rendererText = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn()
         column.set_spacing(5)
         column.pack_start(rendererPix, False)
         column.pack_start(rendererText, True)

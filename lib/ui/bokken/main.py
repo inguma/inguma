@@ -19,7 +19,7 @@
 
 import os, sys
 import platform
-import gobject
+from gi.repository import GObject
 
 # Add plugins directory to the path
 BOKKEN_PATH = os.getcwd() + os.sep + 'plugins' + os.sep
@@ -30,14 +30,14 @@ sys.path.append(BOKKEN_PATH)
 #dependency_check.check_all()
 
 # Now that I know that I have them, import them!
-import gtk
+from gi.repository import Gtk
 
 # This is just general info, to help people knowing their system
 print "Starting bokken, running on:"
 print "  Python version:"
 print "\n".join("    "+x for x in sys.version.split("\n"))
-print "  GTK version:", ".".join(str(x) for x in gtk.gtk_version)
-print "  PyGTK version:", ".".join(str(x) for x in gtk.pygtk_version)
+print "  GTK version:", ".".join(str(x) for x in Gtk.gtk_version)
+print "  PyGTK version:", ".".join(str(x) for x in Gtk.pygtk_version)
 print
 
 import lib.ui.bokken.textviews as textviews
@@ -67,7 +67,7 @@ class MainApp:
 
 #        # Check if we have, at least, one core; else: exit
 #        if not dependency_check.HAS_PYEW and not dependency_check.HAS_RADARE:
-#            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, None)
+#            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, None)
 #            md.set_markup("<big><b>No backend engines found!</b></big>")
 #            md.format_secondary_markup("Install either pyew or radare to run bokken:\n\n<b>Pyew:</b>\t\t<a href=\"http://code.google.com/p/pyew/\">http://code.google.com/p/pyew/</a>\n<b>Radare:</b>\t<a href=\"http://radare.org/\">http://radare.org</a>")
 #            md.run()
@@ -77,7 +77,7 @@ class MainApp:
 #        # Launch file selection dialog
 #        dialog = file_dialog.FileDialog(True, False, self.backend, self.target, True)
 #        resp = dialog.run()
-#        if resp == gtk.RESPONSE_DELETE_EVENT or resp == gtk.RESPONSE_REJECT:
+#        if resp == Gtk.ResponseType.DELETE_EVENT or resp == Gtk.ResponseType.REJECT:
 #            sys.exit(1)
         # Get dialog selected file, backend and options
 #        self.target = dialog.file
@@ -109,11 +109,11 @@ class MainApp:
         else:
             self.empty_gui = True
 
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
         self.window.set_focus = True
         self.window.connect("delete_event", self.quit)
         self.window.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
-        gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
+        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main") 
 
         # Title
         self.window.set_title(MAINTITLE)
@@ -125,7 +125,7 @@ class MainApp:
         self.window.maximize()
 
         # Create VBox to contain top buttons and other VBox
-        self.supervb = gtk.VBox(False, 1)
+        self.supervb = Gtk.VBox(False, 1)
 
         # Create top buttons and add to VBox
         if self.backend == 'pyew':
@@ -137,7 +137,7 @@ class MainApp:
 #        self.supervb.pack_start(self.topbuttons, False, True, 1)
 
         # Create VBox to contain textviews and statusbar
-        self.mainvb = gtk.VBox(False, 1)
+        self.mainvb = Gtk.VBox(False, 1)
 #        self.supervb.pack_start(self.mainvb, True, True, 1)
 
         # Initialize and add TextViews
@@ -174,7 +174,7 @@ class MainApp:
 #        dialog.destroy()
         # We make sure that we remove the reference to the scrollbar to avoid errors.
         self.uicore.core.progress_bar = None
-#        gtk.main()
+#        Gtk.main()
 
     def get_supervb(self):
         return self.mainvb
@@ -211,7 +211,7 @@ class MainApp:
             self.tviews.update_righttext('Hexdump')
 
         if 'radare' in self.uicore.backend and platform.system() != 'Windows':
-            gobject.timeout_add(250, self.merge_dasm_rightextview)
+            GObject.timeout_add(250, self.merge_dasm_rightextview)
         else:
             if self.uicore.text_dasm:
                 self.tviews.update_dasm(self.uicore.text_dasm)
@@ -399,15 +399,15 @@ class MainApp:
         @param data: optional data to receive.
         '''
         msg = ("Do you really want to quit?")
-        dlg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
-        dlg.set_default_response(gtk.RESPONSE_YES)
+        dlg = Gtk.MessageDialog(self.window, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
+        dlg.set_default_response(Gtk.ResponseType.YES)
         opt = dlg.run()
         dlg.destroy()
 
-        if opt != gtk.RESPONSE_YES:
+        if opt != Gtk.ResponseType.YES:
             return True
 
-        gtk.main_quit()
+        Gtk.main_quit()
         if self.dasm_process and self.uicore.backend == 'radare':
             self.dasm_process.terminate()
         return True

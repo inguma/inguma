@@ -17,12 +17,12 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
 import lib.ui.bokken.mydot_widget as mydot_widget
 import graph_bar
 
-class MyDotWidget(gtk.HBox):
+class MyDotWidget(Gtk.HBox):
     '''Working'''
 
     def __init__(self, core, main):
@@ -32,7 +32,7 @@ class MyDotWidget(gtk.HBox):
         self.last_fcn = ''
 
         #dotcode = self.uicore.get_callgraph()
-        gtk.HBox.__init__(self, False, 1)
+        GObject.GObject.__init__(self, False, 1)
 
         #self.dot_widget = DotWidget()
         self.dot_widget = mydot_widget.MyDotWidget(self.uicore, self.main)
@@ -62,12 +62,12 @@ class MyDotWidget(gtk.HBox):
 
     def create_tree(self):
         # Scrolled Window
-        self.sw = gtk.ScrolledWindow()
-        self.sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.sw = Gtk.ScrolledWindow()
+        self.sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
-        self.store = gtk.ListStore(str, str)
-        self.tree = gtk.TreeView(self.store)
+        self.store = Gtk.ListStore(str, str)
+        self.tree = Gtk.TreeView(self.store)
 
         self.sw.add(self.tree)
 
@@ -77,14 +77,14 @@ class MyDotWidget(gtk.HBox):
         self.popup_handler = self.tree.connect('button-press-event', self.popup_menu)
 
         # Create the column
-        bblocks = gtk.TreeViewColumn()
+        bblocks = Gtk.TreeViewColumn()
         bblocks.set_title("Basic Blocks")
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         bblocks.pack_start(cell, True)
         bblocks.add_attribute(cell, "text", 0)
 
-        self.treestore = gtk.TreeStore(str)
+        self.treestore = Gtk.TreeStore(str)
 
         # Add column to tree
         self.tree.append_column(bblocks)

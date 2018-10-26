@@ -17,13 +17,13 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 import webbrowser
 
 # We need it for the "New" button
 import lib.ui.bokken.file_dialog as file_dialog
 
-class MenuBar(gtk.Menu):
+class MenuBar(Gtk.Menu):
     '''Main TextView elements'''
 
     def __init__(self, main):
@@ -32,101 +32,101 @@ class MenuBar(gtk.Menu):
         self.uicore = self.main.uicore
         #self.dependency_check = self.main.dependency_check
 
-        agr = gtk.AccelGroup()
+        agr = Gtk.AccelGroup()
         self.main.window.add_accel_group(agr)
 
         # File menu items
-        newi = gtk.ImageMenuItem(gtk.STOCK_NEW, agr)
+        newi = Gtk.ImageMenuItem(Gtk.STOCK_NEW, agr)
         newi.connect("activate", self.new_file)
-        key, mod = gtk.accelerator_parse("<Control>N")
+        key, mod = Gtk.accelerator_parse("<Control>N")
         newi.add_accelerator("activate", agr, key, 
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         self.append(newi)
 
-        self.manager = gtk.recent_manager_get_default()
+        self.manager = Gtk.RecentManager.get_default()
 
-        self.recent_menu = gtk.RecentChooserMenu(self.manager)
+        self.recent_menu = Gtk.RecentChooserMenu(self.manager)
 
-        self.recentm = gtk.MenuItem('Recent targets')
+        self.recentm = Gtk.MenuItem('Recent targets')
         self.recentm.set_submenu(self.recent_menu)
         self.recent_menu.connect('item-activated', self.recent_kb)
 
         self.append(self.recentm)
 
-        smenu = gtk.Menu()
+        smenu = Gtk.Menu()
 
-        savem = gtk.ImageMenuItem(gtk.STOCK_SAVE)
+        savem = Gtk.ImageMenuItem(Gtk.STOCK_SAVE)
         savem.get_children()[0].set_label('Save')
         savem.set_submenu(smenu)
 
-        saves = [['All', gtk.STOCK_SAVE_AS, 'all'], ['Disassembly', gtk.STOCK_SORT_DESCENDING, 'asm'], ['Hexdump', gtk.STOCK_INDEX, 'hex'], ['Strings', gtk.STOCK_JUSTIFY_CENTER, 'str'], ['String repr', gtk.STOCK_JUSTIFY_FILL, 'repr']]
+        saves = [['All', Gtk.STOCK_SAVE_AS, 'all'], ['Disassembly', Gtk.STOCK_SORT_DESCENDING, 'asm'], ['Hexdump', Gtk.STOCK_INDEX, 'hex'], ['Strings', Gtk.STOCK_JUSTIFY_CENTER, 'str'], ['String repr', Gtk.STOCK_JUSTIFY_FILL, 'repr']]
         for save in saves:
-            savei = gtk.ImageMenuItem(save[1])
+            savei = Gtk.ImageMenuItem(save[1])
             savei.get_children()[0].set_label(save[0])
             savei.connect("activate", self._save, save[2])
             smenu.append(savei)
 
         self.append(savem)
 
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
-        tmenu = gtk.Menu()
+        tmenu = Gtk.Menu()
 
-        themem = gtk.ImageMenuItem(gtk.STOCK_SELECT_COLOR)
+        themem = Gtk.ImageMenuItem(Gtk.STOCK_SELECT_COLOR)
         themem.get_children()[0].set_label('Themes')
         themem.set_submenu(tmenu)
 
         themes = ['Classic', 'Cobalt', 'kate', 'Oblivion', 'Tango']
         for theme in themes:
-            themei = gtk.MenuItem(theme)
+            themei = Gtk.MenuItem(theme)
             themei.connect("activate", self._on_theme_change)
             tmenu.append(themei)
 
         self.append(themem)
 
         # View Menu
-        self.vmenu = gtk.Menu()
+        self.vmenu = Gtk.Menu()
 
-        tabsm = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+        tabsm = Gtk.ImageMenuItem(Gtk.STOCK_PREFERENCES)
         tabsm.get_children()[0].set_label('Show tabs')
         tabsm.set_submenu(self.vmenu)
 
         self.append(tabsm)
 
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
         # Help Menu
-        cheati = gtk.ImageMenuItem(gtk.STOCK_JUSTIFY_FILL, agr)
+        cheati = Gtk.ImageMenuItem(Gtk.STOCK_JUSTIFY_FILL, agr)
         cheati.get_children()[0].set_label('Cheat sheet')
         cheati.connect("activate", self.create_cheatsheet_dialog)
-        key, mod = gtk.accelerator_parse("F1")
+        key, mod = Gtk.accelerator_parse("F1")
         cheati.add_accelerator("activate", agr, key,
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         self.append(cheati)
 
-        helpi = gtk.ImageMenuItem(gtk.STOCK_HELP, agr)
+        helpi = Gtk.ImageMenuItem(Gtk.STOCK_HELP, agr)
         helpi.connect("activate", self.show_wiki)
-        key, mod = gtk.accelerator_parse("<Control>H")
+        key, mod = Gtk.accelerator_parse("<Control>H")
         helpi.add_accelerator("activate", agr, key, 
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         self.append(helpi)
 
-        aboutm = gtk.ImageMenuItem(gtk.STOCK_ABOUT, agr)
+        aboutm = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT, agr)
         aboutm.connect("activate", self.create_about_dialog)
-        key, mod = gtk.accelerator_parse("<Control>A")
+        key, mod = Gtk.accelerator_parse("<Control>A")
         aboutm.add_accelerator("activate", agr, key, 
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
         self.append(aboutm)
 
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         self.append(sep)
 
-        exit = gtk.ImageMenuItem(gtk.STOCK_QUIT, agr)
-        key, mod = gtk.accelerator_parse("<Control>Q")
+        exit = Gtk.ImageMenuItem(Gtk.STOCK_QUIT, agr)
+        key, mod = Gtk.accelerator_parse("<Control>Q")
         exit.add_accelerator("activate", agr, key, 
-            mod, gtk.ACCEL_VISIBLE)
+            mod, Gtk.AccelFlags.VISIBLE)
 
         exit.connect("activate", self.main.quit)
         
@@ -149,7 +149,7 @@ class MenuBar(gtk.Menu):
         for x in self.nb.get_children():
             box = self.nb.get_tab_label(x)
             element = box.get_children()[1].get_text().lower()
-            item = gtk.CheckMenuItem("Show " + element)
+            item = Gtk.CheckMenuItem("Show " + element)
             if element != 'full info':
                 item.set_active(True)
             item.connect("activate", self._on_status_view)
@@ -185,7 +185,7 @@ class MenuBar(gtk.Menu):
     def new_file(self, widget, file=''):
         dialog = file_dialog.FileDialog(True, False, self.uicore.backend, file)
         resp = dialog.run()
-        if resp == gtk.RESPONSE_DELETE_EVENT or resp == gtk.RESPONSE_REJECT:
+        if resp == Gtk.ResponseType.DELETE_EVENT or resp == Gtk.ResponseType.REJECT:
             dialog.destroy()
         else:
             self.file = dialog.file
@@ -222,10 +222,10 @@ class MenuBar(gtk.Menu):
         return types[type]
 
     def _save(self, widget, data):
-        chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        chooser = Gtk.FileChooserDialog(title=None,action=Gtk.FileChooserAction.SAVE, buttons=(Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
         response = chooser.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             all = ['asm', 'hex', 'str', 'repr']
             filename = chooser.get_filename()
             if data != 'all':

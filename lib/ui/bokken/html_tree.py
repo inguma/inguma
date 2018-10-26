@@ -17,17 +17,17 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 
-class HtmlWindow(gtk.ScrolledWindow):
+class HtmlWindow(Gtk.ScrolledWindow):
 
     def __init__(self, uicore):
         super(HtmlWindow,self).__init__()
 
         self.uicore = uicore
 
-        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.html_tree = HtmlTree(self.uicore)
 
@@ -35,11 +35,11 @@ class HtmlWindow(gtk.ScrolledWindow):
         self.add(self.html_tree)
         self.show_all()
 
-class HtmlTree(gtk.TreeView):
+class HtmlTree(Gtk.TreeView):
     '''HTML elements TreeView'''
 
     def __init__(self, core):
-        self.store = gtk.ListStore(str, str, str, str)
+        self.store = Gtk.ListStore(str, str, str, str)
         super(HtmlTree,self).__init__(self.store)
 
         self.uicore = core
@@ -54,22 +54,22 @@ class HtmlTree(gtk.TreeView):
         scripts = self.uicore.scripts
 
         # Create the column
-        htmls = gtk.TreeViewColumn()
+        htmls = Gtk.TreeViewColumn()
         htmls.set_title("HTML elements")
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         htmls.pack_start(cell, True)
         htmls.add_attribute(cell, "text", 0)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         htmls.pack_start(cell, True)
         htmls.add_attribute(cell, "text", 1)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         htmls.pack_start(cell, True)
         htmls.add_attribute(cell, "text", 2)
 
-        self.treestore = gtk.TreeStore(str, str, str)
+        self.treestore = Gtk.TreeStore(str, str, str)
 
         form_it = self.treestore.append(None, ['Forms', '', ''])
         comments_it = self.treestore.append(None, ['Comments', '', ''])

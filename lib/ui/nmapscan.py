@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+from gi.repository import Gtk
 import threading
 
 import sys, os
@@ -36,44 +36,44 @@ class NmapScan:
         self.ip = ip
 
         # Dialog
-        self.dialog = gtk.Dialog(title=TITLE, parent=None, buttons=(gtk.STOCK_HELP, gtk.RESPONSE_HELP, gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OK,gtk.RESPONSE_OK))
+        self.dialog = Gtk.Dialog(title=TITLE, parent=None, buttons=(Gtk.STOCK_HELP, Gtk.ResponseType.HELP, Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OK,Gtk.ResponseType.OK))
         self.dialog.resize(250, 75)
 
         # Label 
-        self.tglab = gtk.Label('Target:')
+        self.tglab = Gtk.Label(label='Target:')
         self.tglab.set_alignment(0.0, 0.5)
 
         # A target text entry
-        self.tgentry = gtk.Entry(max=50)
+        self.tgentry = Gtk.Entry(max=50)
         self.tgentry.set_text(self.ip)
 
         # Label 
-        self.prolab = gtk.Label('Profile:')
+        self.prolab = Gtk.Label(label='Profile:')
         self.prolab.set_alignment(0.0, 0.5)
 
         # A ComboBox
-        self.combobox = gtk.combo_box_new_text()
+        self.combobox = Gtk.ComboBoxText()
         for profile in self.profiles.keys():
             self.combobox.append_text(profile)
         self.combobox.connect('changed', self.changed_cb)
 
         # Label 
-        self.comlab = gtk.Label('Command:')
+        self.comlab = Gtk.Label(label='Command:')
         self.comlab.set_alignment(0.0, 0.5)
 
         # A command text entry
-        self.comentry = gtk.Entry(max=200)
+        self.comentry = Gtk.Entry(max=200)
         self.comentry.set_text('nmap -v -A ' + self.ip)
 
         # Separator
-        self.sep = gtk.HSeparator()
+        self.sep = Gtk.HSeparator()
 
         # ProgressBar
-        self.progressbar = gtk.ProgressBar(adjustment=None)
+        self.progressbar = Gtk.ProgressBar(adjustment=None)
 
         #########################################################
         # Table
-        table = gtk.Table(rows=5, columns=4, homogeneous=False)
+        table = Gtk.Table(rows=5, columns=4, homogeneous=False)
         table.set_row_spacings(2)
         table.set_col_spacings(2)
 
@@ -128,7 +128,7 @@ class NmapScan:
         command += ' -oX /tmp/nmapxml.xml'
         t = threading.Thread(target=self.uicore.run_system_command, args=(command,))
         t.start()
-        gobject.timeout_add(100, self.check_thread, t)
+        GObject.timeout_add(100, self.check_thread, t)
 
     def check_thread(self, thread):
         if thread.isAlive() == True:
@@ -178,17 +178,17 @@ class NmapScan:
         error_string - The error string that will be displayed
         on the dialog.
         """
-        error_dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR
+        error_dlg = Gtk.MessageDialog(type=Gtk.MessageType.ERROR
                     , message_format=error_string
-                    , buttons=gtk.BUTTONS_OK)
+                    , buttons=Gtk.ButtonsType.OK)
         error_dlg.run()
         error_dlg.destroy()
 
-class HelpDialog(gtk.Dialog):
+class HelpDialog(Gtk.Dialog):
     '''Window to popup help output'''
 
     def __init__(self, text_msg):
-        super(HelpDialog,self).__init__('Nmap Help', None, gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_OK,gtk.RESPONSE_ACCEPT))
+        super(HelpDialog,self).__init__('Nmap Help', None, Gtk.DialogFlags.DESTROY_WITH_PARENT, (Gtk.STOCK_OK,Gtk.ResponseType.ACCEPT))
 
         # the cancel button
         self.butt_cancel = self.action_area.get_children()[0]
@@ -196,22 +196,22 @@ class HelpDialog(gtk.Dialog):
 
         # Positions
         self.resize(550, 500)
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         # Log TextView
         #################################################################
-        self.output_text = gtk.TextView(buffer=None)
-        self.output_text.set_wrap_mode(gtk.WRAP_NONE)
+        self.output_text = Gtk.TextView(buffer=None)
+        self.output_text.set_wrap_mode(Gtk.WrapMode.NONE)
         self.output_text.set_editable(False)
         self.output_buffer = self.output_text.get_buffer()
 
-        self.scrolled_window = gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.scrolled_window = Gtk.ScrolledWindow()
+        self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         self.scrolled_window.is_visible = True
 
         #Always on bottom on change
         self.vajd = self.scrolled_window.get_vadjustment()
         self.scrolled_window.add_with_viewport(self.output_text)
 
-        self.vbox.pack_start(self.scrolled_window)
+        self.vbox.pack_start(self.scrolled_window, True, True, 0)
         self.show_all()

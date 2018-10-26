@@ -1,17 +1,17 @@
 #       statusbar.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -19,17 +19,17 @@
 
 import os
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import Pango
 
-class Statusbar(gtk.Statusbar):
+class Statusbar(Gtk.Statusbar):
     '''Statusbar for main window'''
 
     def __init__(self):
         super(Statusbar,self).__init__()
 
     def create_statusbar(self):
-        self._statusbar = gtk.HBox()
+        self._statusbar = Gtk.HBox()
         self._status_holder = self
         # OMG
         frame = self._status_holder.get_children()[0]
@@ -42,41 +42,41 @@ class Statusbar(gtk.Statusbar):
         '''data_dict ontains text to be added.
            Key will be the title
            Value will be... well, the value :)'''
-        self.box = gtk.HBox(False, 1)
+        self.box = Gtk.HBox(False, 1)
         self._statusbar.pack_start(self.box, True, True, 1)
-        ellipsize=pango.ELLIPSIZE_NONE
+        ellipsize=Pango.EllipsizeMode.NONE
 
         # Tragets, vulns and shell indicators
-        self.targ_icon = gtk.Image()
+        self.targ_icon = Gtk.Image()
         self.targ_icon.set_tooltip_text("Targets discovered")
-        self.targ_icon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU)
-        self.vuln_icon = gtk.Image()
+        self.targ_icon.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
+        self.vuln_icon = Gtk.Image()
         self.vuln_icon.set_tooltip_text("Vulnerabilities discovered")
-        self.vuln_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
-        self.shll_icon = gtk.Image()
+        self.vuln_icon.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.MENU)
+        self.shll_icon = Gtk.Image()
         self.shll_icon.set_tooltip_text("Shells available (not yet working)")
         self.shll_icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
         self.shll_icon.set_sensitive(False)
 
-        self.targ_label = gtk.Label('0')
+        self.targ_label = Gtk.Label(label='0')
         self.targ_label.set_ellipsize(ellipsize)
         #self.targ_label.set_alignment(1.0, 1.0)
         self.targ_label.set_padding(1, 5)
-        self.vuln_label = gtk.Label('0')
+        self.vuln_label = Gtk.Label(label='0')
         self.vuln_label.set_ellipsize(ellipsize)
         #self.vuln_label.set_alignment(1.0, 1.0)
         self.vuln_label.set_padding(1, 5)
-        self.shll_label = gtk.Label('0')
+        self.shll_label = Gtk.Label(label='0')
         self.shll_label.set_ellipsize(ellipsize)
         #self.shll_label.set_alignment(1.0, 1.0)
         self.shll_label.set_padding(1, 5)
 
-        sep = gtk.VSeparator()
+        sep = Gtk.VSeparator()
 
         # KB icon and label
-        self.kb_icon = gtk.Image()
+        self.kb_icon = Gtk.Image()
         self.kb_icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'database.png')
-        self.kb_label = gtk.Label('No KB has been saved/loaded yet')
+        self.kb_label = Gtk.Label(label='No KB has been saved/loaded yet')
         #self.kb_label.set_alignment(1.0, 1.0)
         self.kb_label.set_padding(1, 5)
 
@@ -92,9 +92,9 @@ class Statusbar(gtk.Statusbar):
         self.box.pack_end(self.kb_label, True, True, padding=1)
 
         if version:
-            _icon = gtk.image_new_from_file('logo' + os.sep + 'inguma_16.png')
+            _icon = Gtk.Image.new_from_file('logo' + os.sep + 'inguma_16.png')
             self.pack_start(_icon, False, False, 1)
-            label = gtk.Label()
+            label = Gtk.Label()
             label.set_markup('<b>Inguma ' + version + '</b>')
             label.set_alignment(0.5, 0.6)
             self.pack_end(label, False, False, 1)
@@ -115,5 +115,5 @@ class Statusbar(gtk.Statusbar):
         for child in self.box.get_children():
             self.box.remove(child)
         for child in self.get_children():
-            if type(child) is not gtk.Frame:
+            if type(child) is not Gtk.Frame:
                 self.remove(child)

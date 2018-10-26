@@ -17,10 +17,10 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 import lib.globals as glob
 
-class ListenersMenu(gtk.MenuBar):
+class ListenersMenu(Gtk.MenuBar):
     '''Listeners popup menu'''
 
     def __init__(self, main, tree):
@@ -35,19 +35,19 @@ class ListenersMenu(gtk.MenuBar):
         self.host = host
         self.port = port
 
-        listener_menu = gtk.Menu()
+        listener_menu = Gtk.Menu()
 
-        self.targetm = gtk.ImageMenuItem(gtk.STOCK_CONNECT)
+        self.targetm = Gtk.ImageMenuItem(Gtk.STOCK_CONNECT)
         label = self.targetm.get_children()[0]
         label.set_markup('<b>' + ':'.join([self.host, self.port]) + '</b>')
         listener_menu.append(self.targetm)
 
         # Separator
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         listener_menu.append(sep)
 
         # Stop listener
-        self.stopmenu = gtk.ImageMenuItem(gtk.STOCK_STOP)
+        self.stopmenu = Gtk.ImageMenuItem(Gtk.STOCK_STOP)
         self.stopmenu.get_children()[0].set_label('Stop listener')
         self.stopmenu.connect('activate', self._stop_listener)
 

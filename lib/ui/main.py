@@ -36,25 +36,24 @@ import lib.ui.config as config
 dependencyCheck.gtkui_dependency_check(config)
 
 # Now that I know that I have them, import them!
-import gtk, gobject
+from gi.repository import Gdk, Gtk
 
 # This is just general info, to help people knowing their system
 print "Starting Inguma, running on:"
 print "  Python version:"
 print "\n".join("    "+x for x in sys.version.split("\n"))
-print "  GTK version:", ".".join(str(x) for x in gtk.gtk_version)
-print "  PyGTK version:", ".".join(str(x) for x in gtk.pygtk_version)
+print "  GTK version:", ".".join((str(Gtk.get_major_version()), str(Gtk.get_minor_version())))
 print
 
-# Threading initializer
-if sys.platform == "win32":
-    gobject.threads_init()
-else:
-    gtk.gdk.threads_init()
+## Threading initializer
+#if sys.platform == "win32":
+#    GObject.threads_init()
+#else:
+#    Gdk.threads_init()
 
 # Load the theme (this fixes a bug on Windows)
 if sys.platform == "win32":
-    gtk.rc_add_default_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'inguma_gtkrc')
+    Gtk.rc_add_default_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'inguma_gtkrc')
 
 # splash!
 from lib.ui.splash import Splash
@@ -90,7 +89,7 @@ import lib.globals as glob
 
 MAINTITLE = "Inguma - A Free Penetration Testing and Vulnerability Research Toolkit"
 
-class MainApp(gtk.Window):
+class MainApp(Gtk.Window):
     '''Main GTK application'''
 
     __gsignals__ = {
@@ -106,7 +105,7 @@ class MainApp(gtk.Window):
 #        # No exception control because rc_parse doesn't throw exception on fail... sad but true ;)
 #        ORIGDIR = os.getcwd()
 #        os.chdir('lib/ui/data/Brave/gtk-2.0/')
-#        gtk.rc_parse('gtkrc')
+#        Gtk.rc_parse('gtkrc')
 #        os.chdir(ORIGDIR)
 
         from inguma import inguma_init
@@ -132,7 +131,7 @@ class MainApp(gtk.Window):
         self.set_focus = True
         self.connect("delete_event", self._quit)
         splash.push(("Loading..."))
-        gtk.settings_get_default().set_long_property("gtk-button-images", True, "main") 
+        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main")
 
         # Title
         self.set_title(MAINTITLE)
@@ -159,7 +158,7 @@ class MainApp(gtk.Window):
         #################################################################################################################################
         # Main VBox
         #################################################################
-        mainvbox = gtk.VBox(False, 1)
+        mainvbox = Gtk.VBox(False, 1)
         mainvbox.set_border_width(1)
         self.add(mainvbox)
         mainvbox.show()
@@ -184,9 +183,9 @@ class MainApp(gtk.Window):
         # Map tab
         #################################################################
         # Will contain on top the notebook and on bottom log window
-        self.vpaned = gtk.VPaned()
+        self.vpaned = Gtk.VPaned()
         # Will contain xdot widget and kb window
-        self.network_paned = gtk.HPaned()
+        self.network_paned = Gtk.HPaned()
 
         #################################################################
         # xdot map
@@ -226,9 +225,9 @@ class MainApp(gtk.Window):
         #################################################################
         # HBox for Map and GraphMenu
         #################################################################
-        self.graph_box = gtk.HBox()
-        self.graph_box.pack_start(self.xdotw, True, True)
-        self.graph_box.pack_start(gmenu, False, False)
+        self.graph_box = Gtk.HBox()
+        self.graph_box.pack_start(self.xdotw, True, True, 0)
+        self.graph_box.pack_start(gmenu, False, False, 0)
         # Show elements
         gmenu.show()
         self.graph_box.show()
@@ -237,7 +236,7 @@ class MainApp(gtk.Window):
         # Right panel
         #################################################################
         # Holds right tree and buttons
-        self.right_hbox = gtk.HBox(False)
+        self.right_hbox = Gtk.HBox(False)
 
         # KB TreeView
         self.treeview = right_tree.KBtree(self, self.uicore)
@@ -254,7 +253,7 @@ class MainApp(gtk.Window):
         #################################################################
         # Map Iface
         #################################################################
-        label = gtk.Label('Map')
+        label = Gtk.Label(label='Map')
 
         # Pack map and right tree
         self.network_paned.pack1(self.graph_box, True, True)
@@ -274,50 +273,50 @@ class MainApp(gtk.Window):
         self.network_paned.show()
         self.xdotw.show()
 
-        label = gtk.Label(' Networking')
+        label = Gtk.Label(label=' Networking')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
+        i = Gtk.Image()
         i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map.png')
-        b.pack_start(label)
-        b.pack_start(i)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         #################################################################
         # Notebook
         #################################################################
-        self.notebook = gtk.Notebook()
-        self.notebook.set_tab_pos(gtk.POS_LEFT)
+        self.notebook = Gtk.Notebook()
+        self.notebook.set_tab_pos(Gtk.PositionType.LEFT)
         self.notebook.append_page(self.right_hbox, b)
         self.notebook.connect("switch_page", self.on_switch)
 
         # Log  button
-        self.log_btn = gtk.Button()
-        self.log_icn = gtk.Image()
-        self.log_icn.set_from_stock(gtk.STOCK_GOTO_BOTTOM, gtk.ICON_SIZE_MENU)
+        self.log_btn = Gtk.Button()
+        self.log_icn = Gtk.Image()
+        self.log_icn.set_from_stock(Gtk.STOCK_GOTO_BOTTOM, Gtk.IconSize.MENU)
         self.log_btn.set_image(self.log_icn)
-        self.log_btn.set_relief(gtk.RELIEF_NONE)
+        self.log_btn.set_relief(Gtk.ReliefStyle.NONE)
         self.log_btn.set_tooltip_text('Show/Hide Log panel')
         self.log_btn.connect("clicked", self.show_log)
-        self.notebook.set_action_widget(self.log_btn, gtk.PACK_END)
+        self.notebook.set_action_widget(self.log_btn, Gtk.PackType.END)
         self.log_btn.show()
 
         #################################################################################################################################
         # Consoles Tab
         #################################################################
-        label = gtk.Label(' Terminals')
+        label = Gtk.Label(label=' Terminals')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
+        i = Gtk.Image()
         i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
-        b.pack_start(label)
-        b.pack_start(i)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         # Paned to contain left file manager tree and terminals notebook
-        self.terms_paned = gtk.HPaned()
+        self.terms_paned = Gtk.HPaned()
 
         self.term_notebook = terminal_manager.TerminalNotebook(self)
         setattr(self.uiman, 'termnb', self.term_notebook)
@@ -334,14 +333,14 @@ class MainApp(gtk.Window):
         # RCE Iface
         #################################################################
 
-        label = gtk.Label(' Reversing')
+        label = Gtk.Label(label=' Reversing')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(i)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         if self.config.HAS_SOURCEVIEW:
@@ -361,21 +360,21 @@ class MainApp(gtk.Window):
         # Xploit Iface
         #################################################################
         # Exploits Notebook for Exploit DB, Fuzzing and Exploit Dev
-        self.exploits_nb = gtk.Notebook()
-        self.exploits_nb.set_tab_pos(gtk.POS_LEFT)
+        self.exploits_nb = Gtk.Notebook()
+        self.exploits_nb.set_tab_pos(Gtk.PositionType.LEFT)
 
         #
         # Exploits DB
         #
 
-        label = gtk.Label(' Exploits DB')
+        label = Gtk.Label(label=' Exploits DB')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(i)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         self.exploitsInst = exploits.Exploits(self.config, self.term_notebook)
@@ -388,14 +387,14 @@ class MainApp(gtk.Window):
         # Fuzzers
         #
 
-        label = gtk.Label(' Fuzzing')
+        label = Gtk.Label(label=' Fuzzing')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(i)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         # Fuzzers Box to contain krash and scapy fuzzers
@@ -406,14 +405,14 @@ class MainApp(gtk.Window):
         setattr(self.uiman, 'fuzz_frame', self.fuzz_frame)
 
         # Add exploits notebook and text/label to main notebook
-        label = gtk.Label(' Exploiting')
+        label = Gtk.Label(label=' Exploiting')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(i)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         self.notebook.append_page(self.exploits_nb, b)
@@ -427,14 +426,14 @@ class MainApp(gtk.Window):
         #################################################################################################################################
         # Log Window
         #################################################################
-        self.logtext = gtk.TextView(buffer=None)
+        self.logtext = Gtk.TextView(buffer=None)
 
         # Some eye candy
-        self.logtext.modify_base(gtk.STATE_NORMAL, gtk.gdk.Color(16400, 16400, 16440))
-        self.logtext.modify_text(gtk.STATE_NORMAL, gtk.gdk.Color(60535, 60535, 60535, 0))
+        self.logtext.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(16400, 16400, 16440))
+        self.logtext.override_color(Gtk.StateType.NORMAL, Gdk.RGBA(60535, 60535, 60535, 0))
         self.logtext.set_left_margin(10)
 
-        self.logtext.set_wrap_mode(gtk.WRAP_NONE)
+        self.logtext.set_wrap_mode(Gtk.WrapMode.NONE)
         self.logtext.set_editable(False)
         self.logbuffer = self.logtext.get_buffer()
         self.logbuffer.set_text('Loading Inguma...\n')
@@ -443,13 +442,13 @@ class MainApp(gtk.Window):
         #################################################################
         # Log Scrolled Window
         #################################################################
-        self.log_scrolled_window = gtk.ScrolledWindow()
-        self.log_scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.log_scrolled_window = Gtk.ScrolledWindow()
+        self.log_scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         self.log_scrolled_window.is_visible = True
 
-        #Always on bottom on change
-        self.vajd = self.log_scrolled_window.get_vadjustment()
-        self.vajd.connect('changed', lambda a, s=self.log_scrolled_window: self.rescroll(a,s))
+        # Always on bottom on change
+        self.vadj = self.log_scrolled_window.get_vadjustment()
+        self.vadj.connect('changed', lambda a, s=self.log_scrolled_window: self.rescroll(a,s))
 
         # Add Textview to Scrolled Window
         self.log_scrolled_window.add_with_viewport(self.logtext)
@@ -461,33 +460,33 @@ class MainApp(gtk.Window):
         ############################################
 
         # Notebook for bottom panel
-        self.bottom_nb = gtk.Notebook()
+        self.bottom_nb = Gtk.Notebook()
         self.bottom_nb.set_size_request(-1, 110)
-        self.bottom_nb.set_tab_pos(gtk.POS_LEFT)
+        self.bottom_nb.set_tab_pos(Gtk.PositionType.LEFT)
         self.bottom_nb.connect("switch_page", self.on_bottom_switch)
 
         # Icon and label for Logs tab
-        label = gtk.Label(' Logs')
+        label = Gtk.Label(label=' Logs')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        self.log_icon = gtk.Image()
-        self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(self.log_icon)
+        self.log_icon = Gtk.Image()
+        self.log_icon.set_from_stock(Gtk.STOCK_JUSTIFY_FILL, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(self.log_icon, True, True, 0)
         b.show_all()
 
         self.bottom_nb.append_page(self.log_scrolled_window, b)
 
         # Icon and label for Actions tab
-        label = gtk.Label(' Actions')
+        label = Gtk.Label(label=' Actions')
         label.set_angle(90)
-        b_factory = gtk.VBox
+        b_factory = Gtk.VBox
         b = b_factory(spacing=1)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
-        b.pack_start(label)
-        b.pack_start(i)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_EXECUTE, Gtk.IconSize.MENU)
+        b.pack_start(label, True, True, 0)
+        b.pack_start(i, True, True, 0)
         b.show_all()
 
         # Add Threads TreeView
@@ -536,8 +535,8 @@ class MainApp(gtk.Window):
             self.bokken_statusbar = bokken_statusbar.Statusbar(self.bokken.uicore, self.bokken.tviews)
             self.bokken_statusbar.create_statusbar()
             mainvbox.pack_end(self.bokken_statusbar, False, False, 1)
+            self.bokken_statusbar.hide_all()
 
-        self.bokken_statusbar.hide_all()
         self.statusbar.show_all()
 
         # Systray
@@ -578,7 +577,7 @@ class MainApp(gtk.Window):
         self.treeview.expand_all()
         self.xdotw.zoom_image(1.0)
 
-        gtk.main()
+        Gtk.main()
 
 #################################################################################################################################
 # Functions
@@ -590,15 +589,15 @@ class MainApp(gtk.Window):
         if self.bottom_nb.is_visible == True:
             self.bottom_nb.hide()
             self.bottom_nb.is_visible = False
-            self.log_icn.set_from_stock(gtk.STOCK_GOTO_TOP, gtk.ICON_SIZE_MENU)
+            self.log_icn.set_from_stock(Gtk.STOCK_GOTO_TOP, Gtk.IconSize.MENU)
 
         else:
             self.bottom_nb.show()
             self.bottom_nb.is_visible = True
-            self.log_icn.set_from_stock(gtk.STOCK_GOTO_BOTTOM, gtk.ICON_SIZE_MENU)
+            self.log_icn.set_from_stock(Gtk.STOCK_GOTO_BOTTOM, Gtk.IconSize.MENU)
 
     def on_bottom_switch(self, widget, data, page):
-        self.log_icon.set_from_stock(gtk.STOCK_JUSTIFY_FILL, gtk.ICON_SIZE_MENU)
+        self.log_icon.set_from_stock(Gtk.STOCK_JUSTIFY_FILL, Gtk.IconSize.MENU)
 
     def on_switch(self, widget, data, more):
         if more == 2:
@@ -608,7 +607,7 @@ class MainApp(gtk.Window):
                 path = core.get_profile_file_path('data' + os.sep)
                 has_distorm = core.check_distorm_lib(path)
                 if not has_distorm:
-                    md = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format='distorm64 library not found.\nDownload it at the preferences dialog, on the "Update" tab.')
+                    md = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CLOSE, message_format='distorm64 library not found.\nDownload it at the preferences dialog, on the "Update" tab.')
                     md.run()
                     md.destroy()
 
@@ -651,7 +650,7 @@ class MainApp(gtk.Window):
             self.bottom_nb.hide()
 
     def rescroll(self, adj, scroll):
-        adj.set_value(adj.upper-adj.page_size)
+        adj.set_value(adj.props.upper-adj.props.page_size)
         scroll.set_vadjustment(adj)
 
     def do_configure_event(self, event):
@@ -661,7 +660,7 @@ class MainApp(gtk.Window):
             for dialog in self.toolbar.popup_dialogs:
                 dialog.update_position()
 
-        gtk.Window.do_configure_event(self, event)
+        Gtk.Window.do_configure_event(self, event)
 
     def _quit(self, widget, event, data=None):
         '''Main quit.
@@ -671,19 +670,19 @@ class MainApp(gtk.Window):
         @param data: optional data to receive.
         '''
         msg = ("Do you really want to quit?")
-        dlg = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
-        dlg.set_default_response(gtk.RESPONSE_YES)
+        dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
+        dlg.set_default_response(Gtk.ResponseType.YES)
         opt = dlg.run()
         dlg.destroy()
 
-        if opt != gtk.RESPONSE_YES:
+        if opt != Gtk.ResponseType.YES:
             return True
 
         self.gom.echo( 'Killing all listeners', False)
         self.uicore.kill_all_listeners()
         self.uicore.remove_dot_file()
         self.gom.echo( 'Exit!', False)
-        gtk.main_quit()
+        Gtk.main_quit()
         if glob.http_server:
             glob.http.terminate()
 

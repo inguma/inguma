@@ -19,12 +19,12 @@
 
 import os
 
-import gtk, pango
-import gtksourceview2
+
+from gi.repository import GtkSource
 
 import lib.ui.bokken.interactive_buttons as interactive_buttons
 
-class InteractiveTextView(gtk.VBox):
+class InteractiveTextView(Gtk.VBox):
     '''Interactive Right TextView elements'''
 
     def __init__(self, uicore):
@@ -38,24 +38,24 @@ class InteractiveTextView(gtk.VBox):
 
         # Use GtkSourceView to add eye candy :P
         # create buffer
-        lm = gtksourceview2.LanguageManager()
+        lm = GtkSource.LanguageManager()
         # Add ui dir to language paths
         paths = lm.get_search_path()
         paths.append(os.path.dirname(__file__) + os.sep + 'data' + os.sep)
         lm.set_search_path(paths)
-        self.buffer = gtksourceview2.Buffer()
+        self.buffer = GtkSource.Buffer()
         self.buffer.create_tag("green-background", background="green", foreground="black")
         self.buffer.set_data('languages-manager', lm)
-        self.view = gtksourceview2.View(self.buffer)
+        self.view = GtkSource.View(self.buffer)
 
         # FIXME options must be user selectable (statusbar)
         self.view.set_editable(False)
         self.view.set_highlight_current_line(True)
-        # posible values: gtk.WRAP_NONE, gtk.WRAP_CHAR, gtk.WRAP_WORD...
-        self.view.set_wrap_mode(gtk.WRAP_NONE)
+        # posible values: Gtk.WrapMode.NONE, Gtk.WrapMode.CHAR, Gtk.WrapMode.WORD...
+        self.view.set_wrap_mode(Gtk.WrapMode.NONE)
         
         # setup view
-        font_desc = pango.FontDescription('monospace 9')
+        font_desc = Pango.FontDescription('monospace 9')
         if font_desc:
             self.view.modify_font(font_desc)
 
@@ -64,12 +64,12 @@ class InteractiveTextView(gtk.VBox):
         language = manager.get_language('asm')
         self.buffer.set_language(language)
 
-        self.mgr = gtksourceview2.style_scheme_manager_get_default()
+        self.mgr = GtkSource.StyleSchemeManager.get_default()
 
         # Scrolled Window
-        self.interactive_scrolled_window = gtk.ScrolledWindow()
-        self.interactive_scrolled_window.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.interactive_scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.interactive_scrolled_window = Gtk.ScrolledWindow()
+        self.interactive_scrolled_window.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.interactive_scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.interactive_scrolled_window.show()
         # Add Textview to Scrolled Window
         self.interactive_scrolled_window.add(self.view)
@@ -80,17 +80,17 @@ class InteractiveTextView(gtk.VBox):
         self.vajd.connect('changed', lambda a, s=self.interactive_scrolled_window: self.rescroll(a,s))
 
         # Key bindings
-        self.key_1 = gtk.gdk.keyval_from_name("1")
-        self.key_2 = gtk.gdk.keyval_from_name("2")
-        self.key_3 = gtk.gdk.keyval_from_name("3")
-        self.key_4 = gtk.gdk.keyval_from_name("4")
-        self.key_5 = gtk.gdk.keyval_from_name("5")
-        self.key_6 = gtk.gdk.keyval_from_name("6")
-        self.key_7 = gtk.gdk.keyval_from_name("7")
-        self.key_8 = gtk.gdk.keyval_from_name("8")
-        self.key_9 = gtk.gdk.keyval_from_name("9")
-        self.key_b = gtk.gdk.keyval_from_name("b")
-        self.key_f = gtk.gdk.keyval_from_name("f")
+        self.key_1 = Gdk.keyval_from_name("1")
+        self.key_2 = Gdk.keyval_from_name("2")
+        self.key_3 = Gdk.keyval_from_name("3")
+        self.key_4 = Gdk.keyval_from_name("4")
+        self.key_5 = Gdk.keyval_from_name("5")
+        self.key_6 = Gdk.keyval_from_name("6")
+        self.key_7 = Gdk.keyval_from_name("7")
+        self.key_8 = Gdk.keyval_from_name("8")
+        self.key_9 = Gdk.keyval_from_name("9")
+        self.key_b = Gdk.keyval_from_name("b")
+        self.key_f = Gdk.keyval_from_name("f")
         # signals
         self.view.connect("key-press-event", self._key)
 

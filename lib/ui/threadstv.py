@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+from gi.repository import Gtk
 import time
 
 import lib.ui.libAutosave as libAutosave
@@ -32,35 +32,35 @@ class ThreadsTv:
         self.threads = {}
 
         # create a liststore with one string column to use as the model
-        self.liststore = gtk.ListStore(int, int, str, str, str, str)
+        self.liststore = Gtk.ListStore(int, int, str, str, str, str)
 
         #self.modelfilter = self.liststore.filter_new()
 
         # create the TreeView
-        self.treeview = gtk.TreeView(self.liststore)
+        self.treeview = Gtk.TreeView(self.liststore)
         self.treeview.set_rules_hint(True)
 
         # create the TreeViewColumns to display the data
         self.treeview.columns = [None]*6
-        self.treeview.columns[0] = gtk.TreeViewColumn('No.')
-        self.treeview.columns[1] = gtk.TreeViewColumn('State')
+        self.treeview.columns[0] = Gtk.TreeViewColumn('No.')
+        self.treeview.columns[1] = Gtk.TreeViewColumn('State')
         self.treeview.columns[1].set_min_width(150)
-        self.treeview.columns[2] = gtk.TreeViewColumn('Description')
+        self.treeview.columns[2] = Gtk.TreeViewColumn('Description')
         self.treeview.columns[2].set_min_width(300)
-        self.treeview.columns[3] = gtk.TreeViewColumn('Start')
+        self.treeview.columns[3] = Gtk.TreeViewColumn('Start')
         self.treeview.columns[3].set_min_width(100)
-        self.treeview.columns[4] = gtk.TreeViewColumn('End')
+        self.treeview.columns[4] = Gtk.TreeViewColumn('End')
         self.treeview.columns[4].set_min_width(100)
-        self.treeview.columns[5] = gtk.TreeViewColumn('Elapsed time')
+        self.treeview.columns[5] = Gtk.TreeViewColumn('Elapsed time')
         self.treeview.columns[5].set_min_width(100)
 
         # Lets control right click on treeview
         self.treeview.connect('button_press_event', self.on_treeview_button_press_event )
 
         # make ui layout
-        self.scrolledwindow = gtk.ScrolledWindow()
+        self.scrolledwindow = Gtk.ScrolledWindow()
         # remove hscrollbar
-        self.scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.scrolledwindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         #Always on bottom on change
         self.vajd = self.scrolledwindow.get_vadjustment()
@@ -70,7 +70,7 @@ class ThreadsTv:
             # add columns to treeview
             self.treeview.append_column(self.treeview.columns[n])
             # create a CellRenderers to render the data
-            self.treeview.columns[n].cell = gtk.CellRendererText()
+            self.treeview.columns[n].cell = Gtk.CellRendererText()
             # add the cells to the columns
             self.treeview.columns[n].pack_start(self.treeview.columns[n].cell, True)
             # set the cell attributes to the appropriate liststore column
@@ -79,7 +79,7 @@ class ThreadsTv:
         # add columns to treeview
         self.treeview.insert_column(self.treeview.columns[1], 1)
         # create a CellRenderers to render the data
-        self.cellpb = gtk.CellRendererProgress()
+        self.cellpb = Gtk.CellRendererProgress()
         # add the cells to the columns - 2 in the first
         self.treeview.columns[1].pack_start(self.cellpb, True)
         # set the cell attributes to the appropriate liststore column
@@ -104,7 +104,7 @@ class ThreadsTv:
         self.stime = time.time()
         self.threads[self.counter] = threadid
         self.counter += 1
-        gobject.timeout_add(1000, self.check_thread, threadid, iter)
+        GObject.timeout_add(1000, self.check_thread, threadid, iter)
 
     # Convert seconds to HH:MM:SS
     def GetInHMS(self, seconds):
@@ -136,7 +136,7 @@ class ThreadsTv:
             if not self.main.get_property("visible"):
                 tip = self.systray.get_tooltip_text()
                 self.systray.set_new_tooltip("Finished " + tip)
-                self.systray.set_from_stock(gtk.STOCK_INFO)
+                self.systray.set_from_stock(Gtk.STOCK_INFO)
             self.throbber.running(False)
 
             kbpath = libAutosave.get_kb_path()

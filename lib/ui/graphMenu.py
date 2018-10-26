@@ -1,23 +1,23 @@
 ##      graphMenu.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-import gtk, gobject
+from gi.repository import GdkPixbuf, Gtk, GObject
 
 import os, threading
 
@@ -30,22 +30,22 @@ from lib.core import get_profile_file_path
 # MUST rewrite the whole menu away from UImanager to normal menu widget
 # FIXME
 
-class UIManager(gtk.UIManager):
+class UIManager(Gtk.UIManager):
 
     def __init__(self, main):
-        gtk.UIManager.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.ui_id = 0
         self.main = main
         self.gom = main.gom
         self.uicore = main.uicore
 
-        graph_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation.png')
-        graph_icon_add = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
-        asn_search = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'asn_group.png')
-        geomap_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map_icon.png')
-        datalist_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'sitemap_color.png')
-        weight_icon = gtk.gdk.pixbuf_new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_line.png')
+        graph_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation.png')
+        graph_icon_add = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
+        asn_search = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'asn_group.png')
+        geomap_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map_icon.png')
+        datalist_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'sitemap_color.png')
+        weight_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_line.png')
 
         self.graph_menu = '''
         <ui>
@@ -71,13 +71,13 @@ class UIManager(gtk.UIManager):
         self.accel = self.get_accel_group()
 
         # Create an ActionGroup
-        self.actiongroup = gtk.ActionGroup('Popup')
+        self.actiongroup = Gtk.ActionGroup('Popup')
 
         # Add actions
         self.actiongroup.add_actions( [('Graph options', None, '')] )
         self.actiongroup.add_actions( [('options', None, '')] )
-        self.actiongroup.add_actions( [('add_target', gtk.STOCK_ADD, ' Add new target ', None, 'ToolTip', self.add_target )] )
-        self.actiongroup.add_actions( [('do_asn', gtk.STOCK_EXECUTE, ' Get nodes ASN ', None, 'ToolTip', self.doAsn )] )
+        self.actiongroup.add_actions( [('add_target', Gtk.STOCK_ADD, ' Add new target ', None, 'ToolTip', self.add_target )] )
+        self.actiongroup.add_actions( [('do_asn', Gtk.STOCK_EXECUTE, ' Get nodes ASN ', None, 'ToolTip', self.doAsn )] )
         self.actiongroup.add_actions( [('asn_cluster', None, ' ASN Clustered ', None, 'ToolTip', self.doNormal )] )
         self.actiongroup.add_actions( [('geoip', None, ' GeoIP Map ', None, 'ToolTip', self.geoIp)] )
         self.actiongroup.add_actions( [('get_to_from', None, ' Ports per IP ', None, 'ToolTip', self.doToFrom )], ['ports_ip'] )
@@ -101,16 +101,16 @@ class UIManager(gtk.UIManager):
         items = self.popmenu.get_children()
         bold_title = items[1].get_children()[0]
         bold_title.set_markup("<b> Graph options </b>")
-        items[3].set_image(gtk.image_new_from_pixbuf(graph_icon_add))
-        items[4].set_image(gtk.image_new_from_pixbuf(asn_search))
-        items[6].set_image(gtk.image_new_from_pixbuf(graph_icon))
-        items[7].set_image(gtk.image_new_from_pixbuf(geomap_icon))
+        items[3].set_image(Gtk.Image.new_from_pixbuf(graph_icon_add))
+        items[4].set_image(Gtk.Image.new_from_pixbuf(asn_search))
+        items[6].set_image(Gtk.Image.new_from_pixbuf(graph_icon))
+        items[7].set_image(Gtk.Image.new_from_pixbuf(geomap_icon))
         for item in items[8:11]:
-            if type(item) is not gtk.SeparatorMenuItem:
-                item.set_image(gtk.image_new_from_pixbuf(datalist_icon))
+            if type(item) is not Gtk.SeparatorMenuItem:
+                item.set_image(Gtk.Image.new_from_pixbuf(datalist_icon))
         for item in items[11:]:
-            if type(item) is not gtk.SeparatorMenuItem:
-                item.set_image(gtk.image_new_from_pixbuf(weight_icon))
+            if type(item) is not Gtk.SeparatorMenuItem:
+                item.set_image(Gtk.Image.new_from_pixbuf(weight_icon))
 
     def doNormal(self, widget):
         self.uicore.getDot(False)
@@ -124,7 +124,7 @@ class UIManager(gtk.UIManager):
                 import lib.ui.geoip as geoip
                 geoip.Gui(self.uicore)
         else:
-            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE, "GeoIP Database not found!\n\nDownload it at the preferences dialog\nunder the Update tab")
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.WARNING, Gtk.ButtonsType.CLOSE, "GeoIP Database not found!\n\nDownload it at the preferences dialog\nunder the Update tab")
             md.run()
             md.destroy()
 
@@ -135,7 +135,7 @@ class UIManager(gtk.UIManager):
         t.start()
         self.threadtv.add_action('Get nodes ASN', 'all nodes', t)
 
-        gobject.timeout_add(1000, self.update_graph, t)
+        GObject.timeout_add(1000, self.update_graph, t)
 
     def update_graph(self, thread):
 
