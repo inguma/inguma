@@ -285,36 +285,36 @@ class KBtree(Gtk.TreeView):
         targets = kb['targets']
         targets.sort()
         for host in targets:
+            target_def = [self.default_icon, host, 'generic']
             if host + '_os' in kb:
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
                         icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
-                        piter = self.treestore.append(None, [icon, host, oss])
-            else:
-                piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
+                        target_def = [icon, host, oss]
+            piter = self.treestore.append(None, target_def)
             if host + '_tcp_ports' in kb:
                 for port in kb[host + '_tcp_ports']:
                     icon = Gtk.Image()
                     icon = icon.render_icon(Gtk.STOCK_CONNECT, Gtk.IconSize.MENU)
-                    port_iter = self.treestore.append( piter, [icon, str(port) + '/TCP', None])
+                    port_iter = self.treestore.append(piter, [icon, str(port) + '/TCP', None])
                     if host + '_'+ str(port) + '-web-vulns' in kb.keys():
                         for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
                             if id not in ids.keys():
                                 #print "Set element:", element
-                                iditer = self.treestore.append( port_iter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
-                                self.treestore.append( iditer, [self.vuln_icon, vuln,  id + '-' + host + ':' + str(port)])
+                                iditer = self.treestore.append(port_iter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
+                                self.treestore.append(iditer, [self.vuln_icon, vuln,  id + '-' + host + ':' + str(port)])
                                 ids[id] = iditer
                             else:
-                                self.treestore.append( ids[id], [self.vuln_icon, vuln, id + '-' + host + ':' + str(port)])
+                                self.treestore.append(ids[id], [self.vuln_icon, vuln, id + '-' + host + ':' + str(port)])
                     else:
                         icon = Gtk.Image()
                         icon = icon.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
-                        self.treestore.append( port_iter, [icon, 'No vulnerabilities found yet', None])
+                        self.treestore.append(port_iter, [icon, 'No vulnerabilities found yet', None])
             else:
                 icon = Gtk.Image()
                 icon = icon.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
-                self.treestore.append( piter, [icon, 'No opened ports found yet', None])
+                self.treestore.append(piter, [icon, 'No opened ports found yet', None])
 
         self.set_model(self.modelfilter)
         if self.handler:
@@ -368,28 +368,28 @@ class KBtree(Gtk.TreeView):
         targets = kb['targets']
         targets.sort()
         for host in targets:
+            target_def = [self.default_icon, host, 'generic']
             if host + '_os' in kb:
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
                         icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
-                        piter = self.treestore.append(None, [icon, host, oss])
-            else:
-                piter = self.treestore.append(None, [self.default_icon, host, 'generic'])
+                        target_def = [icon, host, oss]
+            piter = self.treestore.append(None, target_def)
             for element in kb:
                 if element.__contains__(host + '_'):
-#                    self.treestore.append( piter, [element.split('_')[-1].capitalize()])
+                    #self.treestore.append(piter, [element.split('_')[-1].capitalize()])
                     #print "Set element:", element
-                    eiter = self.treestore.append( piter, [self.node_icon, element.split('_')[-1].capitalize(), None])
+                    eiter = self.treestore.append(piter, [self.node_icon, element.split('_')[-1].capitalize(), None])
 
                     for subelement in kb[element]:
                         if subelement is list:
                             #print "\tSet subelement list:", subelement
                             for x in subelement:
-                                self.treestore.append( eiter, [self.value_icon, x, None] )
+                                self.treestore.append(eiter, [self.value_icon, x, None] )
                         else:
                             #print "\tSet subelement not list:", subelement
-                            self.treestore.append( eiter, [self.value_icon, subelement, None] )
+                            self.treestore.append(eiter, [self.value_icon, subelement, None] )
 
             if self.xdot:
                 #function = ''
@@ -447,7 +447,7 @@ class KBtree(Gtk.TreeView):
                 if path is not None and len(path) == 1 and self.nodes:
                     node = self.treestore[path][1]
                     if node in self.nodes:
-                        self.xdot.animate_to( int(self.nodes[node][0]), int(self.nodes[node][1]) )
+                        self.xdot.animate_to(int(self.nodes[node][0]), int(self.nodes[node][1]) )
         elif event.button == 3:
             #(path, column) = tree.get_cursor()
             var = tree.get_path_at_pos(int(event.x), int(event.y))

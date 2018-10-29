@@ -1,0 +1,14 @@
+Inguma
+------
+
+Installation:
+=============
+
+MacOS:
+- install Homebrew
+- brew install gtk+3 libdnet graphviz
+- brew install pygobject3 --with-python@2
+- brew install https://raw.githubusercontent.com/secdev/scapy/master/.travis/pylibpcap.rb
+- pip install scapy psutil
+
+Clone the git or mercurial repository, and run ./ginguma.
