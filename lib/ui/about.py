@@ -35,7 +35,7 @@ class AboutDialog():
         about.set_website("http://inguma.eu")
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martinez Moreno <ender@inguma.eu>'])
         about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>', 'Juanje <juanje@gmail.com>', ' * Web: http://www.puntodepartida.com'])
-        about.set_logo(GdkPixbuf.Pixbuf.new_from_file("lib" + os.sep + "ui" + os.sep + "data" + os.sep + "logo.png"))
+        about.set_logo(GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'logo.png')))
         about.set_modal(True)
 
         return about

@@ -53,10 +53,10 @@ class KBtree(Gtk.TreeView):
         self.connections = []
 
         # Tree icons
-        self.default_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
-        self.node_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'node.png')
-        self.value_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'value.png')
-        self.vuln_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'bug.png')
+        self.default_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'generic.png'))
+        self.node_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'node.png'))
+        self.value_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'value.png'))
+        self.vuln_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'bug.png'))
 
         # Main VBox to store right panel elements
         self.right_vbox = Gtk.VBox(False)
@@ -170,7 +170,7 @@ class KBtree(Gtk.TreeView):
             btn.set_label(oss.capitalize())
             btn.set_tooltip_text(oss.capitalize())
             icon = Gtk.Image()
-            icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+            icon.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', oss + '.png'))
             btn.set_icon_widget(icon)
             btn.set_active(True)
             self.os_visible[oss.lower()] = True
@@ -181,7 +181,7 @@ class KBtree(Gtk.TreeView):
             btn.set_tooltip_text('Generic')
             self.os_visible['generic'] = True
             icon = Gtk.Image()
-            icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'generic.png')
+            icon.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'generic.png'))
             btn.set_icon_widget(icon)
             btn.set_active(True)
             btn.connect('toggled', self._filter_on_toggle)
@@ -290,7 +290,7 @@ class KBtree(Gtk.TreeView):
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
-                        icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                        icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', oss + '.png'))
                         target_def = [icon, host, oss]
             piter = self.treestore.append(None, target_def)
             if host + '_tcp_ports' in kb:
@@ -373,7 +373,7 @@ class KBtree(Gtk.TreeView):
                 target_os = kb[host + '_os'][0]
                 for oss in config.ICONS:
                     if oss.capitalize() in target_os:
-                        icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + oss + '.png')
+                        icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', oss + '.png'))
                         target_def = [icon, host, oss]
             piter = self.treestore.append(None, target_def)
             for element in kb:

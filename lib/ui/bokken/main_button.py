@@ -40,7 +40,7 @@ class MainMenuButton (Gtk.ToggleButton):
         hbox1 = Gtk.HBox()
         hbox2 = Gtk.HBox()
         icon = Gtk.Image()
-        icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'bokken' + os.sep + 'data' + os.sep + 'bokken-small.svg')
+        icon.set_from_file(os.path.join('lib', 'ui', 'data', 'bokken-small.svg'))
         hbox1.pack_start(icon, True, True, 3)
         label = Gtk.Label(label=text)
         hbox1.pack_start(label, True, True, 3)

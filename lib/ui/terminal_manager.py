@@ -116,11 +116,11 @@ class TerminalNotebook(Gtk.Notebook):
 
         # Tab terminal icon
         icon = Gtk.Image()
-        icon.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        icon.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'terminal.png'))
         # Tab pseudo-close button
         eb = Gtk.EventBox()
         cross = Gtk.Image()
-        cross.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'cross.png')
+        cross.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'cross.png'))
         cross.connect("realize", self._realize_cb)
         eb.add(cross)
         eb.connect('button_press_event', self.close_tab)
@@ -231,7 +231,7 @@ class TerminalNotebook(Gtk.Notebook):
     def load_icon(self, name):
         """Create an image from an icon name."""
         img = Gtk.Image()
-        img.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + name)
+        img.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', name))
         return img
 
     def copy_clipboard(self, widget, term):

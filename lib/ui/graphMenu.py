@@ -40,12 +40,12 @@ class UIManager(Gtk.UIManager):
         self.gom = main.gom
         self.uicore = main.uicore
 
-        graph_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation.png')
-        graph_icon_add = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_organisation_add.png')
-        asn_search = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'asn_group.png')
-        geomap_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map_icon.png')
-        datalist_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'sitemap_color.png')
-        weight_icon = GdkPixbuf.Pixbuf.new_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'chart_line.png')
+        graph_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'chart_organisation.png'))
+        graph_icon_add = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'chart_organisation_add.png'))
+        asn_search = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'asn_group.png'))
+        geomap_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'map_icon.png'))
+        datalist_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'sitemap_color.png'))
+        weight_icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'chart_line.png'))
 
         self.graph_menu = '''
         <ui>

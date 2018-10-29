@@ -7,9 +7,6 @@ Easy:
 - Add additional logging facilities (a centralized one) in the output manager.
 - Replace every single print in the code by calls (echo or debug) to the
   appropriate OM.
-- Stop using 'dir1' + os.sep + 'dir2' + ... and move to os.path.join() at the
-  very least.  We are using a mix of the above plus UNIX paths across the
-  codebase.  See lib/ui/node_menu.py for an example.
 
 Medium:
 - Get rid of pygtk-isms scattered across the codebase.

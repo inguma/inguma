@@ -102,7 +102,7 @@ class Toolbar(Gtk.HBox):
         self.main_tb.insert(self.scapy_tb, 8)
 
         self.scapy_logo = Gtk.Image()
-        self.scapy_logo.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'python-icon.png')
+        self.scapy_logo.set_from_file(os.path.join('lib', 'ui', 'data', 'python-icon.png'))
         self.scapy_tb.set_icon_widget(self.scapy_logo)
 
         # Separator

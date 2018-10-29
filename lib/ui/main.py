@@ -53,7 +53,7 @@ print
 
 # Load the theme (this fixes a bug on Windows)
 if sys.platform == "win32":
-    Gtk.rc_add_default_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'inguma_gtkrc')
+    Gtk.rc_add_default_file(os.path.join('lib', 'ui', 'data', 'inguma_gtkrc'))
 
 # splash!
 from lib.ui.splash import Splash
@@ -278,7 +278,7 @@ class MainApp(Gtk.Window):
         b_factory = Gtk.VBox
         b = b_factory(spacing=1)
         i = Gtk.Image()
-        i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'map.png')
+        i.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'map.png'))
         b.pack_start(label, True, True, 0)
         b.pack_start(i, True, True, 0)
         b.show_all()
@@ -310,7 +310,7 @@ class MainApp(Gtk.Window):
         b_factory = Gtk.VBox
         b = b_factory(spacing=1)
         i = Gtk.Image()
-        i.set_from_file('lib' + os.sep + 'ui' + os.sep + 'data' + os.sep + 'icons' + os.sep + 'terminal.png')
+        i.set_from_file(os.path.join('lib', 'ui', 'data', 'icons', 'terminal.png'))
         b.pack_start(label, True, True, 0)
         b.pack_start(i, True, True, 0)
         b.show_all()
