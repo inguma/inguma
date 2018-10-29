@@ -1,17 +1,17 @@
 ##      nmapscan.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -39,7 +39,7 @@ class NmapScan:
         self.dialog = Gtk.Dialog(title=TITLE, parent=None, buttons=(Gtk.STOCK_HELP, Gtk.ResponseType.HELP, Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,Gtk.STOCK_OK,Gtk.ResponseType.OK))
         self.dialog.resize(250, 75)
 
-        # Label 
+        # Label
         self.tglab = Gtk.Label(label='Target:')
         self.tglab.set_alignment(0.0, 0.5)
 
@@ -47,7 +47,7 @@ class NmapScan:
         self.tgentry = Gtk.Entry(max=50)
         self.tgentry.set_text(self.ip)
 
-        # Label 
+        # Label
         self.prolab = Gtk.Label(label='Profile:')
         self.prolab.set_alignment(0.0, 0.5)
 
@@ -57,7 +57,7 @@ class NmapScan:
             self.combobox.append_text(profile)
         self.combobox.connect('changed', self.changed_cb)
 
-        # Label 
+        # Label
         self.comlab = Gtk.Label(label='Command:')
         self.comlab.set_alignment(0.0, 0.5)
 

@@ -43,7 +43,7 @@ def checkPacker(pyew, doprint=True):
         if doprint:
             print "***No match"
         return
-    
+
     return matches
 
 functions = {"packer":checkPacker}

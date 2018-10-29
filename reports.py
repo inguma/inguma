@@ -28,13 +28,13 @@ NOTE: Should be rewritten from scratch!!!
 import sys
 import pprint
 
-baseVars = ["target", "otherTargets", "services", "port", "covert", 
+baseVars = ["target", "otherTargets", "services", "port", "covert",
                     "timeout", "waittime", "wizard", "user", "password"]
 
 def generateReport(data, host=''):
 
     DATA = ''
- 
+
     if data.has_key("hosts") and host == '':
         for host in data["hosts"]:
             title = "Report for host %s" % host
@@ -55,7 +55,7 @@ def generateReport(data, host=''):
 
                         for y in data[x][0]:
                             print "\t", str(y).upper() +':', data[x][0][y]
-                            DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n' 
+                            DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n'
                     else:
                         if len(data[x]) == 1:
                             print field + ':\t', data[x][0]
@@ -87,7 +87,7 @@ def generateReport(data, host=''):
 
                     for y in data[x][0]:
                         print "\t", str(y).upper() +':', data[x][0][y]
-                        DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n' 
+                        DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n'
                 else:
                     if len(data[x]) == 1:
                         print field + ':\t', data[x][0]

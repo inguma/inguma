@@ -35,11 +35,11 @@ class HTTPRealmFinderHandler(urllib2.HTTPBasicAuthHandler):
 
     def http_error_401(self, req, fp, code, msg, headers):
         realm_string = headers['www-authenticate']
-        
+
         q1 = realm_string.find('"')
         q2 = realm_string.find('"', q1+1)
         realm = realm_string[q1+1:q2]
-        
+
         self.realm = realm
 
 class HTTPRealmFinder:
@@ -66,7 +66,7 @@ class HTTPRealmFinder:
             realm = self.handler.realm
         except AttributeError:
             realm = None
-        
+
         return realm
 
     def prt(self):
@@ -83,7 +83,7 @@ class IngumaHttpException(exceptions.Exception):
 
     def __init__(self):
         return
-    
+
     def __str__(self):
         return self.msg
 
@@ -128,7 +128,7 @@ class CIngumaHttp:
             x = IngumaHttpException()
             x.msg = "No url specified"
             raise x
-        
+
         url = self.url
 
         if webuser:

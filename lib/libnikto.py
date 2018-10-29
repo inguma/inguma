@@ -47,7 +47,7 @@ class CNiktoRule:
     summary = None
     httpData = None
     headers = None
-    
+
     def __init__(self, props):
         self.testId = props[0].strip('"')
         self.osvdbId = props[1].strip('"')
@@ -70,13 +70,13 @@ def readSignatures():
         print "*** Error reading Nikto's signatures"
         print sys.exc_info()[1]
         raise
-    
+
     for line in f:
         line = line.strip("\r").strip("\n")
-        
+
         if line.startswith("#") or line.replace(" ", "") == "":
             continue # Is a comment or a blank line
-        
+
         props = line.split(",")
         SIGNATURES.append(props[0:12] + ["".join(props[12:]), ])
 
@@ -104,7 +104,7 @@ def updateDatabases():
 
 #    try:
 #        res = raw_input("Do you want to download Nikto databases (y/n)? [n] ")
-#        
+#
 #        if res.lower() != "y":
 #            return False
 #    except:
@@ -113,7 +113,7 @@ def updateDatabases():
 
     print "[+] Downloading nikto database ... "
     data = urllib.urlopen(DATABASE_URL).read()
-    
+
     print "[+] Saving database ... "
     f = file(os.path.join("data", "db_tests"), "w")
     f.write(data)

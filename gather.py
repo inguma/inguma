@@ -44,10 +44,10 @@ def doGather(vars):
             mTarget = raw_input("Target: ")
         else:
             mTarget = target
-    
+
         vars = (mTarget, port, covert, timeout, waittime, services, wizard)
 
-        print 
+        print
         print "Available modules:"
         print
 
@@ -64,7 +64,7 @@ def doGather(vars):
             if res.lower() == "all" or res.lower() == "":
                 for x in modules:
                     res = runGatherModule(vars, x)
-    
+
                     if res:
                         try:
                             targets += res
@@ -72,7 +72,7 @@ def doGather(vars):
                             pass
             else:
                 res = runGatherModule(vars, modules[int(res)-1])
-    
+
                 if res:
                     try:
                         targets += res

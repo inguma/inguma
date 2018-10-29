@@ -4,13 +4,13 @@
 # Immunity libdisassemble
 #
 # Most of the functions are ported from the great libdisassm since we
-#  we are using their opcode map. 
+#  we are using their opcode map.
 
 # TODO:
 #    - Fix the getSize(), doesn't work well with all the opcodes
 #    - Enhance the metadata info with more information on opcode.
 #      i.e. we need a way to know if an address is an immediate, a relative offset, etc
-#    - Fix the jmp (SIB) opcode in at&t that it has different output that the others. 
+#    - Fix the jmp (SIB) opcode in at&t that it has different output that the others.
 #    - support all the PREFIX*
 
 # NOTE: This is less than a week work, so it might be full of bugs (we love bugs!)
@@ -18,17 +18,17 @@
 # Any question, comments, hate mail: dave@immunitysec.com
 
 
-# 
+#
 #    This library is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU Lesser General Public
 #    License as published by the Free Software Foundation; either
 #    version 2.1 of the License, or (at your option) any later version.
-#                                                                                
+#
 #    This library is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #    Lesser General Public License for more details.
-#                                                                                
+#
 #    You should have received a copy of the GNU Lesser General Public
 #    License along with this library; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,16 +36,16 @@
 # This code largely copyright Immunity, Inc (2004), parts
 # copyright mammon and used under the LGPL by permission
 
-import opcode86 
+import opcode86
 import struct
 from sys import *
 
 table86=opcode86.tables86
-OP_PERM_MASK =  0x0000007L  
-OP_TYPE_MASK =  0x0000F00L  
-OP_MOD_MASK  =  0x00FF000L  
-OP_SEG_MASK  =  0x00F0000L  
-OP_SIZE_MASK = 0x0F000000L  
+OP_PERM_MASK =  0x0000007L
+OP_TYPE_MASK =  0x0000F00L
+OP_MOD_MASK  =  0x00FF000L
+OP_SEG_MASK  =  0x00F0000L
+OP_SIZE_MASK = 0x0F000000L
 
 
 class Mode:
@@ -55,7 +55,7 @@ class Mode:
         self.flag  = type & OP_PERM_MASK
         self.length = 0
         self.mode = mode
-        
+
     # format "AT&T" or "INTEL"
     def printOpcode(self, format, eip=0):
         return "Not available"
@@ -65,19 +65,19 @@ class Mode:
 
     def getSize(self):
         return self.length
-    
+
     def getFlag(self):
         return self.flag
 
     def getSFlag(self):
         return ("R", "W", "X")[self.flag/2]
-    
+
     def getOpSize(self):
         return (self.type & OP_SIZE_MASK)
 
     def getAddrMeth(self):
         return (self.type & opcode86.ADDRMETH_MASK)
-    
+
 class Register(Mode):
     def __init__(self, regndx, type=opcode86.OP_REG):
         Mode.__init__(self, type)
@@ -92,11 +92,11 @@ class Register(Mode):
 
     def getName(self):
         return self.name
-    
+
 class Address(Mode):
     def __init__(self, data, length, type=opcode86.ADDEXP_DISP_OFFSET, signed=1, relative = None):
         Mode.__init__(self, type)
-        
+
         self.signed=signed
         self.length  = length
         #print "'%s' %d %x, %s"%(data, length, type, relative)
@@ -104,7 +104,7 @@ class Address(Mode):
             fmt = ("b", "h", "l")[length/2]
         else:
             fmt = ("B", "H", "L")[length/2]
-        
+
         if (self.getAddrMeth() ==  opcode86.ADDRMETH_A):
             fmt += "H"
             length += 2
@@ -112,17 +112,17 @@ class Address(Mode):
         else:
             self.value, = struct.unpack(fmt, data[:length])
             self.segment = None
-        
+
         self.relative = relative
 
-        
+
     def printOpcode(self, format="INTEL", eip=0, exp=0):
         value = self.value
         segment = self.segment
-        
+
         if (self.relative):
             value += eip
-            
+
         if format == "INTEL":
             tmp=""
             if (segment):
@@ -135,7 +135,7 @@ class Address(Mode):
             #if self.length == 4 or not self.signed:
                 return "%s0x%x" % (tmp,self.value)
             #else:
-                
+
         else:
             pre=""
             #if self.getAddrMeth() == opcode86.ADDRMETH_E and not exp:
@@ -179,7 +179,7 @@ class Expression(Mode):
                     tmp += self.disp.printOpcode(format, eip, 1)
             pre=""
             optype=self.getOpSize()
-        
+
             addr_meth=self.getAddrMeth()
             if addr_meth == opcode86.ADDRMETH_E:
                 if optype  == opcode86.OPTYPE_b:
@@ -225,12 +225,12 @@ class SIB(Mode):
 
             return tmp
         return tmp 	
-        
+
 class Prefix:
     def __init__(self, ndx, ptr):
         self.ptr = ptr
         self.type = opcode86.prefix_table[ndx]
-    
+
     def getType(self):
         return self.type
 
@@ -239,7 +239,7 @@ class Prefix:
             return self.ptr[6]
         else:
             return ""
-    
+
 class Opcode:
     def __init__(self, data, mode=32):
         self.length = 0
@@ -255,14 +255,14 @@ class Opcode:
 
     def getOpcodetype(self):
         return self.opcodetype
-        
+
     def parse(self, table, off):
         """
         Opcode.parse() is the core logic of libdisassemble.  It recurses through the supplied bytes digesting prefixes and opcodes, and then handles operands.
         """
         try:    ## Crash Gracefully with a "invalid" opcode
             self.addr_size = 4
-            ndx = ord(self.data[off]) 
+            ndx = ord(self.data[off])
             ### This next line slices and dices the opcode to make it fit correctly into the current lookup table.
             #
             #      byte  min          shift       mask
@@ -276,7 +276,7 @@ class Opcode:
                 table = table86[table[5]]               # if the opcode byte falls outside the bounds of accepted values, use the table pointed to as table[5]
             ndx = ( (ndx - table[3]) >> table[1]) & table[2]
             ptr = table[0][ndx] # index from table
-            
+
             if ptr[1] == opcode86.INSTR_PREFIX:
                 # You can have more than one prefix (!?)
                 if ptr[0] != 0 and len(self.data) > off and self.data[off+1] == '\x0F':
@@ -284,38 +284,38 @@ class Opcode:
                 else:
                     self.prefix.append( Prefix(ndx, ptr) )
                     self.parse(table, off+1) # parse next instruction
-                
+
                 return
             if ptr[0] != 0:
                 # > 1 byte length opcode
                 self.parse(table86[ptr[0]],  off+1)
-                return 
-            
+                return
+
             ### End Recursion, we hit a leaf node.
-            
+
             self.opcode     = ptr[6]
             self.opcodetype = ptr[1]
             self.cpu        = ptr[5]
             self.off        = off + 1 # This instruction
-            
+
             if table[2] != 0xff:        # Is this byte split between opcode and operand?  If so, let's not skip over this byte quite yet...
                 self.off-=1
             #print >>stderr,("   opcode = %s\n   opcodetype = %x\n   cpu = %x\n   off = %d"%(ptr[6], ptr[1], ptr[5], off+1))
-            
+
             bytes=0
             #       src dst aux
             values=['', '', '' ]		
             #print self.off
-            
+
             for a in range(2, 5):
                 ret = (0, None)
-                
+
                 tmp =ptr[a]
                 addr_meth = tmp & opcode86.ADDRMETH_MASK;
                 if addr_meth == opcode86.OP_REG:
                     # what do i supposed to do?
                     pass
-                
+
                 operand_size = self.get_operand_size(tmp)
                 #print operand_size
                 if operand_size == 1:
@@ -324,58 +324,58 @@ class Opcode:
                     genreg = opcode86.REG_WORD_OFFSET
                 else:
                     genreg= opcode86.REG_DWORD_OFFSET
-    
-    
+
+
                 # Begin hashing on the ADDRMETH for this operand.  This should determine the number of bytes to advance in the data.
                 if addr_meth == opcode86.ADDRMETH_E:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)  
-                    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_M:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_N:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_Q:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)  
-                    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_R:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, genreg, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_W:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_C:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_CTRL_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_CTRL_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_D:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_DEBUG_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_DEBUG_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_G:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, genreg, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, genreg, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_P:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_MMX_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_S:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_SEG_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_SEG_OFFSET, self.addr_size, tmp)
+
                 #elif addr_meth == opcode86.ADDRMETH_T:      #TEST REGISTERS?:
-                    #ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_TEST_OFFSET, self.addr_size, tmp)  
-                
+                    #ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_TEST_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_U:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)  
-                
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_EA, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_V:
-                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)  
-    
+                    ret=self.get_modrm(self.data[self.off:], opcode86.MODRM_reg, opcode86.REG_SIMD_OFFSET, self.addr_size, tmp)
+
                 elif addr_meth == opcode86.ADDRMETH_A:
-                    ret= (self.addr_size, Address(self.data[self.off:], self.addr_size, tmp, signed=0))  
-    
+                    ret= (self.addr_size, Address(self.data[self.off:], self.addr_size, tmp, signed=0))
+
                 elif addr_meth == opcode86.ADDRMETH_F:
                     # eflags, so what?
                     pass
-    
+
                 elif addr_meth == opcode86.ADDRMETH_I:
                     if tmp & opcode86.OP_SIGNED:
                         ret = (operand_size, Address( self.data[self.off+bytes:], operand_size, tmp))
@@ -383,20 +383,20 @@ class Opcode:
                     else:
                         ret = (operand_size, Address( self.data[self.off+bytes:], operand_size,tmp,  signed=0))
                         #ret = (self.addr_size, Address( self.data[self.off+bytes:], operand_size,tmp,  signed=0))
-    
+
                 elif addr_meth == opcode86.ADDRMETH_J:
                     ret = (operand_size, Address( self.data[self.off+bytes:], operand_size, tmp, signed=1, relative=True))
                     #ret = (self.addr_size, Address( self.data[self.off+bytes:], operand_size, tmp, signed=1, relative=True))
-    
+
                 elif addr_meth == opcode86.ADDRMETH_O:
                     ret = (self.addr_size, Address( self.data[self.off:], self.addr_size, tmp, signed=0))
-                
+
                 elif addr_meth == opcode86.ADDRMETH_X:
                     ret = (0, Register(6+opcode86.REG_DWORD_OFFSET, tmp))
-                    
+
                 elif addr_meth == opcode86.ADDRMETH_Y:
                     ret = (0, Register(7+opcode86.REG_DWORD_OFFSET, tmp))
-    
+
                 else:
                     if tmp & opcode86.OP_REG:
                         ret = (0, Register(ptr[5+a], tmp))
@@ -404,16 +404,16 @@ class Opcode:
                         ret = (0, Address("%c"%ptr[5+a], 1, signed=0))
                     else:
                         ret= (0, None)
-                if ret[1]: 
+                if ret[1]:
                     if isinstance(ret[1], Expression):
                         ret[1].setPsize(operand_size)				
                 values[a-2]=ret[1]
                 bytes += ret[0]
-                
+
             self.source = values[0]
             self.dest   = values[1]
             self.aux    = values[2]
-    
+
             self.off += bytes
             #self.data = self.data[:self.off]
         except:
@@ -422,39 +422,39 @@ class Opcode:
                 output += "%02x"%ord(self.data[i])
 
             print >>stderr,("Error Parsing Opcode - Data: %s\t Offset: 0x%x"%(repr(output),self.off))
-            
+
             x,y,z = exc_info()
             excepthook(x,y,z)
 
     def getSize(self):
         return self.off
-    
-    def get_operand_size(self, opflag):      
+
+    def get_operand_size(self, opflag):
         """
-        get_operand_size() gets the operand size, not the address-size or the size of the opcode itself.  
+        get_operand_size() gets the operand size, not the address-size or the size of the opcode itself.
         But it's also bastardized, because it manipulates self.addr_size at the top
         """
         size=self.mode / 8      #initial setting (4 for 32-bit mode)
-        
+
         flag = opflag & opcode86.OPTYPE_MASK
-        
+
         #print "flag=%x   mode=%d"%(flag,self.mode)
         if (flag in opcode86.OPERSIZE.keys()):                  # lookup the value in the table
             size = opcode86.OPERSIZE[flag][self.mode >> 5]
-            
-            
+
+
         for a in self.prefix:
             if a.getType() & opcode86.PREFIX_OP_SIZE  and size > 2:
                 size = 2
-            if a.getType() & opcode86.PREFIX_ADDR_SIZE:   
+            if a.getType() & opcode86.PREFIX_ADDR_SIZE:
                # this simply swaps between 16- to 32-bit (default is determined on a "system-wide" level.  This will require changing for 64-bit mode
                 if (self.addr_size == 2):
-                    self.addr_size = 4 
+                    self.addr_size = 4
                 else:
                     self.addr_size = 2
-                    
+
         return size
-        
+
         """
         ### THIS IS THE OLD LIBDISASSEMBLE CODE...
         #print flag
@@ -476,7 +476,7 @@ class Opcode:
             size = 8		
         # - a lot more to add
         """
-    
+
     def get_reg(self, regtable, num):
         return regtable[num]	
 
@@ -485,7 +485,7 @@ class Opcode:
         sib     = ord(data[0])
         s=None
         #print "SIB: %s" %  hex(ord(data[0]))
-        
+
         scale    = (sib >> 6) & 0x3   #  XX
         index    = (sib & 56) >>3     #    XXX
         base     = sib & 0x7          #       XXX
@@ -538,7 +538,7 @@ class Opcode:
                     #print ("mod:%d\t reg:%d\t rm:%d"%(mod,reg,rm))
                     base=Register(rm, type_flag)
             else:
-                
+
                 if rm ==4:
                     disp_base = 2
                     (tmpcount, base) =self.get_sib(data[count:], mod)
@@ -558,10 +558,10 @@ class Opcode:
         else:
             result=Register(reg+reg_type, type_flag)
             count=0
-            
+
         return (count, result)
     # FIX:
-    #   
+    #
     def getOpcode(self, FORMAT, eip = 0):
         opcode=[]
         if not self.opcode:
@@ -585,10 +585,10 @@ class Opcode:
                 addr_meth = self.source.getAddrMeth()
                 optype = self.source.getOpSize()
                 mnemonic = self.opcode
-                
+
                 if addr_meth == opcode86.ADDRMETH_E and\
                   not (isinstance(self.source, Register) or\
-                       isinstance(self.dest, Register)): 
+                       isinstance(self.dest, Register)):
                     if optype  == opcode86.OPTYPE_b:
                         mnemonic+="b"
                     elif optype== opcode86.OPTYPE_w:
@@ -603,19 +603,19 @@ class Opcode:
                 #post = "%s, %s" % (self.dest.printOpcode(FORMAT,eip),  self.source.printOpcode(FORMAT, eip))
             elif self.source:
                 #second="%-06s %s" %  (mnemonic, " " * space)
-                opt = self.getOpcodetype() 
+                opt = self.getOpcodetype()
                 tmp=""
                 if (opt== opcode86.INS_CALL or\
                     opt== opcode86.INS_BRANCH)\
                    and self.source.getAddrMeth() == opcode86.ADDRMETH_E:
-                    
+
                     tmp = "*"
                 post=[tmp + self.source.printOpcode(FORMAT, eip)]
                 #post += "%s" % self.source.printOpcode(FORMAT, eip)				
             opcode = [mnemonic] + post
-            
+
         return opcode
-    
+
     def printOpcode(self, FORMAT, eip = 0, space=6):
         opcode=self.getOpcode(FORMAT, eip + self.getSize())
         prefix=self.getPrefix();
@@ -627,7 +627,7 @@ class Opcode:
         elif len(opcode) ==3:	
             return "%-08s%s%s, %s" % (prefix+opcode[0], " " * space, opcode[1], opcode[2])
             #return "%-08s%s%s, %s" % (prefix+ opcode[0], " " * 6, opcode[1], opcode[2])
-        elif len(opcode) ==4:   
+        elif len(opcode) ==4:
             return "%-08s%s%s, %s, %s" % (prefix+opcode[0], " " * space, opcode[3], opcode[1], opcode[2])
         else:
             return "%-08s" % (prefix+opcode[0])		
@@ -659,7 +659,7 @@ if __name__=="__main__":
     while 1:
         try:
                         p=Opcode(buf[off:])
-                                                                                
+
                         print " %08X:   %s" % (off+offset, p.printOpcode(FORMAT))
                         off+=p.getSize()
         except:

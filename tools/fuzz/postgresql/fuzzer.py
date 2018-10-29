@@ -87,7 +87,7 @@ def fuzzFunction(name, args):
 
 def connect():
     global connection
-    
+
     connection = PgSQL.connect(host="localhost", database="testdb", client_encoding="utf-8", unicode_results=1,
                                                         user="test")
 
@@ -95,15 +95,15 @@ def main():
     connect()
     cur = connection.cursor()
     cur.execute("""
-              select proname, pronargs 
-    		     from pg_proc 
-            where pronargs > 0 
-              and proName not in ('substring', 'bpcharicregexeq', 'bpcharicregexne', 'bpcharregexeq', 
+              select proname, pronargs
+    		     from pg_proc
+            where pronargs > 0
+              and proName not in ('substring', 'bpcharicregexeq', 'bpcharicregexne', 'bpcharregexeq',
                                                     'bpcharregexne', 'nameicregexeq', 'nameicregexne', 'numeric_fac',
                                                     'numeric_power', 'regexnesel', 'regexp_replace', 'texticnlike',
                                                     'texticregexeq', 'texticregexne', 'texticregexeq', 'factorial', 'textregexq','textregexeq', 'textregexne')
 		    order by proname""")
-    
+
     i = 0
 
     for proName in cur.fetchall():

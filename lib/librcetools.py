@@ -30,11 +30,11 @@ def bin2ascii(binarystr,one='1', zero='0'):
                     offset += 1
                     i = binarystr[x+offset+ci]
                 byt *= 2
-                if i == one:  
+                if i == one:
                     byt += 1
             except Exception,e:
                 print("Error '%s'...  Problems in char %s.  Not binary?  Should be either a '0' or a '1'"%(e,i))
-                
+
         output += chr(byt)
         x += 8 + offset
     return output

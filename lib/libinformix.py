@@ -175,7 +175,7 @@ class InformixCommand:
 
     def getPacket(self):
         buf = self.header % self.opcode
-        
+
         if type(self.sql) is list:
             for sql in self.sql:
                 buf += chr(len(sql))
@@ -189,7 +189,7 @@ class InformixCommand:
         return buf
 
 class InformixLoginResponse:
-    
+
     """ Read and parse a login response """
     isValidUser = False
     isValidDatabase = False
@@ -207,40 +207,40 @@ class InformixLoginResponse:
         try:
             if len(buf) < 50:
                 raise Exception("Invalid packet")
-            
+
             self.isValidUser = buf[0] == "\x01"
             self.isValidDatabase = buf[1:3] == "\x05\x02"
-            
+
             #
             # IEEE is the platform type. This can be IEEEI, IEEEM or DECALPHA
             #
             ieeeLen = ord(buf[15:16])
             self.ieee = buf[16:16+ieeeLen-1]
             self.name = buf[23:37].strip("\x00")
-            
+
             bannerLen = ord(buf[37:38])
             self.banner = buf[38:bannerLen+38-1]
-            
+
             curPos = bannerLen+38+2
             lastPos = buf[curPos:].find("\x00")
-            
+
             if lastPos > -1:
                 self.serialNumber = buf[curPos:curPos+lastPos]
             else:
                 raise Exception("Invalid serial number in packet")
-            
+
             curPos = curPos+lastPos+2
             dbPathLen = ord(buf[curPos])
             self.databasePath = buf[curPos+1:curPos+dbPathLen]
-            
+
             curPos = curPos+dbPathLen+30+1
             lastPos = buf[curPos:].find("\x00")
-            
+
             if lastPos > -1:
                 self.protocol = buf[curPos:curPos+lastPos]
             else:
                 raise Exception("Invalid protocol in packet")
-                
+
             curPos = curPos+lastPos
             lastPos = 37
             hostnameLen = ord(buf[curPos+lastPos])
@@ -248,12 +248,12 @@ class InformixLoginResponse:
             self.hostname = buf[curPos+1:curPos+hostnameLen]
             curPos = curPos + hostnameLen + 2
             terminalLen = ord(buf[curPos])
-            
+
             self.terminal = buf[curPos+1:curPos+terminalLen]
-            
+
             curPos = curPos+terminalLen+2
             installLen = ord(buf[curPos])
-            
+
             self.homePath = buf[curPos+1:curPos+installLen]
         except:
             print "***Error:", sys.exc_info()[1]
@@ -294,7 +294,7 @@ class Informix:
         data  = ' %s -p%s %s %s -d%s -f%s DBPATH=%s DBMONEY=%s CLIENT_LOCALE=%s SINGLELEVEL=%s '
         data += 'LKNOTIFY=%s LOCKDOWN=%s NODEFDAC=%s CLNT_PAM_CAPABLE=%s '
         data  = data % (self.username, self.password, self.version, self.serialNumber, self.databaseName,
-                             self.ieee, self.databasePath, self.databaseMoney, self.clientLocale, 
+                             self.ieee, self.databasePath, self.databaseMoney, self.clientLocale,
                              self.singleLevel, self.lkNotify, self.lockDown, self.noDefDac,
                              self.clientPamCapable)
         data += self.encodedData
@@ -309,7 +309,7 @@ class Informix:
 
     def getLoginPacket(self):
         return self.getPacket()
-    
+
     def get2ndPacket(self):
         return self.__sqlexec2nd
 
@@ -338,7 +338,7 @@ def simpleFuzzer(target="192.168.1.11",  port=9088,  timeout=500):
     """ A simple SQLEXEC protocol fuzzer """
     import socket
     import libfuzz
-    
+
     properties = ["version", "serialNumber","databaseName", "databasePath", "databaseMoney",
                   "clientLocale", "singleLevel", "lkNotify", "lockDown", "noDefDac",
                   "clientPamCapable"]
@@ -363,7 +363,7 @@ def simpleFuzzer(target="192.168.1.11",  port=9088,  timeout=500):
                 data = ifx.getPacket()
 
                 print "[+] Sending packet: %s" % repr(data)
-                
+
                 try:
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     s.connect((target,  port))
@@ -376,5 +376,5 @@ def simpleFuzzer(target="192.168.1.11",  port=9088,  timeout=500):
                     s.close()
                 except:
                     print "***Error:",  sys.exc_info()[1]
-    
+
     return False

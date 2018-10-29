@@ -1,17 +1,17 @@
 #       textviews.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -390,7 +390,7 @@ class TextViews(Gtk.HBox):
             start = iter
 
         if search_string:
-            self.search_string = search_string 
+            self.search_string = search_string
             res = start.forward_search(self.search_string, Gtk.TextSearchFlags.TEXT_ONLY)
 
             # Search 'function_name' instead of 'FUNCTION function_name'
@@ -421,7 +421,7 @@ class TextViews(Gtk.HBox):
                 return True
 
             else:
-                self.search_string = None      
+                self.search_string = None
                 self.last_search_iter = None
                 return False
 
@@ -434,21 +434,21 @@ class TextViews(Gtk.HBox):
             else:
                 path = os.path.abspath(self.uicore.core.filename)
             f = Gio.File(path)
-        
+
             path = f.get_path()
-        
+
             info = f.query_info("*")
-    
+
             mime_type = info.get_content_type()
             language = None
-        
+
             if mime_type:
                 language = self.get_language_for_mime_type(mime_type)
                 if not language:
                     print 'No language found for mime type "%s"' % mime_type
             else:
                 print 'Couldn\'t get mime type for file "%s"' % self.uicore.core.filename
-    
+
             #self.buffer.set_language(language)
 
         return language

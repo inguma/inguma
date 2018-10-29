@@ -26,10 +26,10 @@ class CPayload:
     covert = 0
     verifyCommand = ""
     connection = None
-    
+
     host = ""
     port = ""
-    
+
     type = 1
 
     def __init__(self):
@@ -52,12 +52,12 @@ class CPayload:
         ret = objRun.run()
 
         return ret
-    
+
     def verify(self, connection):
         sql = self.verifyCommand
         cursor = connection.cursor()
         cursor.execute(sql)
-        
+
         for x in cursor.fetchall():
             return True
 
@@ -74,4 +74,4 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
+

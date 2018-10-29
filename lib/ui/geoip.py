@@ -1,17 +1,17 @@
 ##      geoip.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -73,9 +73,9 @@ class Gui(Gtk.Window):
         # Paint the map in the DrawArea
         mapstyle = self.drawarea.get_style()
         self.mapgc = mapstyle.fg_gc[Gtk.StateType.NORMAL]
-        
+
         self.font = 0
-        
+
         mapname = "lib/ui/data/map4.png"
 
         image = cairo.ImageSurface.create_from_png(mapname)
@@ -91,9 +91,9 @@ class Gui(Gtk.Window):
         imagepattern.set_matrix(scaler)
 
         imagepattern.set_filter(cairo.FILTER_BEST)
-        
+
         context = self.pixmap.cairo_create()
-        
+
         context.set_source(imagepattern)
 
         drawable = self.drawarea.window
@@ -180,7 +180,7 @@ class Gui(Gtk.Window):
         # Add tooltips for each point of the map
         if keyboard_tip:
             return False
-        
+
         for i in range(len(self.geodata)):
             storedx = self.geodata[i]["px_x"]
             storedy = self.geodata[i]["px_y"]
@@ -188,7 +188,7 @@ class Gui(Gtk.Window):
                 tooltip.set_markup(self.tooltips[self.geodata[i]["city"]])
                 return True;
         return False
-    
+
     def destroy(self, widget):
             self.destroy()
             return 0
@@ -234,8 +234,8 @@ class Gui(Gtk.Window):
         cellCountry    = Gtk.CellRendererText()
         cellCountryc   = Gtk.CellRendererText()
         cellTimezone   = Gtk.CellRendererText()
-        
-        #add cells to columns 
+
+        #add cells to columns
         tvcIp.pack_start(cellIp, True)
         tvcLat.pack_start(cellLat, True)
         tvcLon.pack_start(cellLon, True)
@@ -245,7 +245,7 @@ class Gui(Gtk.Window):
         tvcCountry.pack_start(cellCountry, True)
         tvcCountryc.pack_start(cellCountryc, True)
         tvcTimezone.pack_start(cellTimezone, True)
-        
+
         #set properties for rows (text/background)
         tvcIp.set_attributes(cellIp, text=0)
         tvcLat.set_attributes(cellLat, text=1)
@@ -256,7 +256,7 @@ class Gui(Gtk.Window):
         tvcCountry.set_attributes(cellCountry, text=6)
         tvcCountryc.set_attributes(cellCountryc, text=7)
         tvcTimezone.set_attributes(cellTimezone, text=8)
-        
+
         #make treeview sortable
         tvcIp.set_sort_column_id(0)
         tvcLat.set_sort_column_id(1)
@@ -267,7 +267,7 @@ class Gui(Gtk.Window):
         tvcCountry.set_sort_column_id(6)
         tvcCountryc.set_sort_column_id(7)
         tvcTimezone.set_sort_column_id(8)
-        
+
         treeview.set_reorderable(0)
         scrolledwindow = Gtk.ScrolledWindow()
         scrolledwindow.add(treeview)
@@ -286,7 +286,7 @@ class Gui(Gtk.Window):
 #        self.liststore = self.refreshListstore(self.liststore)
 #        ### update the liststore
 #        return
-    
+
     def refreshListstore(self, list):
     # Takes an liststore object and fills it with the data
         self.liststore.clear()

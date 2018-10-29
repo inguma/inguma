@@ -37,7 +37,7 @@ class CAutoCrack:
 
     algorithm = []
     debugLevel = 1
-    
+
     _hash = ""
 
     def clean(self, x):
@@ -81,7 +81,7 @@ class CAutoCrack:
         tmpHash = self.hash
         ret = self.pCompare(tmpPassword, tmpHash)
         self.printMsg(ret, "MD5")
-        
+
         return ret
 
     def getMd5(self, password):
@@ -94,7 +94,7 @@ class CAutoCrack:
         ret = self.pCompare(tmpPassword, tmpHash)
         self.printMsg(ret, "SHA1")
         return ret
-    
+
     def getSha1(self, password):
         return hashlib.sha1(password).hexdigest()
 
@@ -179,13 +179,13 @@ class CAutoCrack:
     def supportUnicode(self, method):
         if method.lower()[3:].find("crypt") == 0:
             return False
-        
+
         return True
 
     def doMethodTwoTimes(self, tries, gets, password, isUnicode = False):
         for property in tries:
             fGet = eval("self." + property.replace("try", "get"))
-            
+
             if isUnicode:
                 if not self.supportUnicode(property):
                     continue
@@ -314,11 +314,11 @@ class CAutoCrack:
                 ret = self.doMethodPlain(tries, gets, str2uni(password + self.hash[0:i]), True)
             else:
                 return ret
-        
+
         self.salt = ""
 
     def run(self):
-    
+
         self.algorithm = []
 
         tries = []
@@ -329,9 +329,9 @@ class CAutoCrack:
                 tries.append(property)
             elif property.find("get") == 0:
                 gets.append(property)
-        
+
         ret = self.realRun(tries, gets)
-        
+
         if ret:
             return ret
 
@@ -362,11 +362,11 @@ def allTests():
     print "[+] SHA1 based hash"
     objCrack.hash = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
     objCrack.run()
-    
+
     print "[+] Unix Crypt based"
     objCrack.hash = "$1$Zfn8aEtA$wYhuRA9cKWz3Imi9LukZ6/"
     objCrack.run()
-    
+
     print "[+] Base64 based"
     objCrack.hash = "dGVzdA=="
     objCrack.run()

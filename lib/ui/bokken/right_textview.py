@@ -1,17 +1,17 @@
 #       right_textview.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -74,7 +74,7 @@ class RightTextView(Gtk.VBox, Searchable):
         self.view.set_highlight_current_line(True)
         # posible values: Gtk.WrapMode.NONE, Gtk.WrapMode.CHAR, Gtk.WrapMode.WORD...
         self.view.set_wrap_mode(Gtk.WrapMode.NONE)
-        
+
         # setup view
         font_desc = Pango.FontDescription('monospace 9')
         if font_desc:
@@ -216,18 +216,18 @@ class RightTextView(Gtk.VBox, Searchable):
                 # Add Xrefs menu
                 refs = []
                 xrefs = []
-    
+
                 xmenu = xrefs_menu.XrefsMenu(self.uicore, self.main)
                 addr = self.uicore.core.num.get(addr)
                 fcn = self.uicore.core.anal.get_fcn_at(addr)
-    
+
                 for ref in fcn.get_refs():
                     if not "0x%08x" % ref.addr in refs:
                         refs.append("0x%08x" % ref.addr)
                 for xref in fcn.get_xrefs():
                     if not "0x%08x" % xref.addr in xrefs:
                         xrefs.append("0x%08x" % xref.addr)
-    
+
                 refs_menu = xmenu.create_menu("0x%08x" % addr, refs, xrefs, False)
                 sep = Gtk.SeparatorMenuItem()
                 menu.prepend(sep)
@@ -409,9 +409,9 @@ class RightTextView(Gtk.VBox, Searchable):
                         self.seek_index += 1
                         if len(self.seeks) != self.seek_index:
                             self.seeks = self.seeks[:self.seek_index]
-    
+
                 else:
-                    self.search_string = None      
+                    self.search_string = None
                     self.last_search_iter = None
                 if self.uicore.backend == 'radare' and self.dograph:
                     self.textviews.update_graph(self, self.search_string)

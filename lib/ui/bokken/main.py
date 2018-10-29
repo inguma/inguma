@@ -1,17 +1,17 @@
 #       main.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -113,7 +113,7 @@ class MainApp:
         self.window.set_focus = True
         self.window.connect("delete_event", self.quit)
         self.window.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
-        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main") 
+        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main")
 
         # Title
         self.window.set_title(MAINTITLE)

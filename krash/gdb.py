@@ -33,15 +33,15 @@ def gdbTrace(pid, funcs):
 
     # Wait a bit
     time.sleep(1)
-    
+
     for func in funcs:
         c.sendline("b %s" % func)
     #c.sendline("b kqlsrcsql")
-    
+
     try:
         while 1:
             c.expect("Breakpoint .*")
-            
+
             print
             # Get the data stored at the register's addresses
             strEax = getRegisterValue(c, "$eax")
@@ -64,7 +64,7 @@ def gdbTrace(pid, funcs):
             print "ESI", strEsi
             print "EDI", strEdi
             print "EIP", strEip
-    
+
             c.sendline("cont") # Continue
     except KeyboardInterrupt:
         c.interact()
@@ -90,10 +90,10 @@ def gdbRun(cmdline, run = True):
 
     # Set a very high timeout
     c.timeout = 300000
-    
+
     # Uncomment the following line to see what occurs, only for debugging
     #c.interact()
-    
+
     # Wait for a signal...
     ret = c.expect('Program received signal ')
     print "Program crashes, inspecting it ... "
@@ -108,10 +108,10 @@ def gdbRun(cmdline, run = True):
     c.sendline("i r")
     # Wait for the prompt
     c.expect("(gdb)")
-    
+
     # Ignore the line as is a blank line
     c.readline()
-    
+
     # Read register's values
     eax = c.readline().strip("\r\n")
     ecx = c.readline().strip("\r\n")

@@ -65,7 +65,7 @@ class CPayload:
 
     host = ""
     port = ""
-    
+
     connection = None
 
     def __init__(self):
@@ -79,7 +79,7 @@ class CPayload:
 
         if self.host == "":
             self.host = raw_input("Host to connect: ")
-        
+
         if self.port == "":
             self.port = raw_input("Port to listen: ")
 
@@ -97,15 +97,15 @@ class CPayload:
         ret = objRun.run()
 
         return ret
-    
+
     def verify(self, connection):
         sql = self.verifyCommand
         cursor = connection.cursor()
         cursor.execute(sql)
-        
+
         for x in cursor.fetchall():
             return True
-        
+
         return False
 
 def main():
@@ -119,4 +119,4 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
+

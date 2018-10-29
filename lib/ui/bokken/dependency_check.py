@@ -1,17 +1,17 @@
 #       dependency_check.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -57,7 +57,7 @@ def tidy_dependency_check():
 
 def pyew_dependency_check():
     '''We need to verify the presence of pyew'''
-    
+
     print 'Checking:'
     print '\tPyew availability...',
 
@@ -76,7 +76,7 @@ def pyew_dependency_check():
 
 def radare_dependency_check():
     '''We need to verify the presence of radare2'''
-    
+
     print '\tRadare availability...',
 
     global HAS_RADARE
@@ -132,7 +132,7 @@ def gtkui_dependency_check():
         print FAIL + "\tD'oh!" + ENDC
         msg = 'You have to install GTK and PyGTK versions >=2.12 to be able to run the GTK user interface.\n'
         msg += '    - On Debian-based distributions: apt-get install python-gtk2\n'
-        msg += '    - On Mac: sudo port install py25-gtk'        
+        msg += '    - On Mac: sudo port install py25-gtk'
         print msg
         sys.exit( 1 )
 

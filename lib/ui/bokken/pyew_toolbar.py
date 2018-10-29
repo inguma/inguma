@@ -1,17 +1,17 @@
 #       pyew_toolbar.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -317,12 +317,12 @@ class TopButtons(Gtk.HBox):
     def search_pdfstreams(self, widget):
         if self.uicore.core.format in 'PDF':
             streams = self.uicore.get_pdf_streams()
-    
+
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
-    
+
             for hit in streams:
                 hit = ( "HIT [0x%08x]:\t%s\n" % (hit[0], hit[1].translate(FILTER)) )
                 self.search_dialog.output_buffer.insert(enditer, hit)
@@ -337,12 +337,12 @@ class TopButtons(Gtk.HBox):
             model = self.search_combo.get_model()
             active = self.search_combo.get_active()
             option = model[active][1]
-    
+
             results = self.uicore.dosearch(data, self.options_dict[option])
-    
+
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             FILTER=''.join([(len(repr(chr(x)))==3) and chr(x) or '.' for x in range(256)])
             for element in results:
                 hit = ("HIT [0x%08x]: %s\n" % (element.keys()[0], element.values()[0].translate(FILTER)))
@@ -353,7 +353,7 @@ class TopButtons(Gtk.HBox):
         if urls:
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             for url in urls:
                 self.search_dialog.output_buffer.insert(enditer, url + '\n')
         else:
@@ -376,7 +376,7 @@ class TopButtons(Gtk.HBox):
             self.throbber.running('')
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-        
+
             if self.uicore.checked_urls:
                 for url in self.uicore.checked_urls:
                     self.search_dialog.output_buffer.insert(enditer, url + '\t\t[OK]\n')
@@ -398,7 +398,7 @@ class TopButtons(Gtk.HBox):
             self.throbber.running('')
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-        
+
             if self.uicore.bad_urls:
                 for url in self.uicore.bad_urls:
                     self.search_dialog.output_buffer.insert(enditer, url + '\n')
@@ -411,7 +411,7 @@ class TopButtons(Gtk.HBox):
         if vt_answer:
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             for match in vt_answer:
                 self.search_dialog.output_buffer.insert(enditer, match[0] + '\t\t' + match[1] + '\n')
         else:
@@ -449,7 +449,7 @@ class TopButtons(Gtk.HBox):
         if packers:
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             for packer in packers:
                 self.search_dialog.output_buffer.insert(enditer, ''.join(packer) + '\n')
         else:

@@ -301,5 +301,5 @@ def getSyscall(syscallName):
 
     # Encode to hexadecimal
     hexUid = chr(syscallId)
-    
+
     return hexUid

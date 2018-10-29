@@ -182,7 +182,7 @@ class Elf:
                 mystr+= "\n"+repr(dyn)
 
         return mystr
- 
+
 
     def getStrtabString(self, offset, section=".strtab"):
         bytes = self.getSection(section).getBytes()
@@ -343,7 +343,7 @@ class Elf:
             self.e_shoff += ilen
 
         print "INSERTED: ",ilen," bytes"
-            
+
     def getDataOffset(self):
         return self.hdrlen + (self.e_phentsize * self.e_phnum)
 
@@ -358,7 +358,7 @@ class Elf:
             offset -= self.getDataOffset()
 
         self.data = self.data[:offset] + bytes + self.data[offset+blen:]
-        
+
 
     def appendSection(self, section, name=None):
         """
@@ -454,7 +454,7 @@ class Elf:
                     else:
                         print "WARNING: 64bits ELF programs aren't supported yet"
                         return
-                    
+
                     index = reloc.getSymTabIndex()
                     try:
                         sym = self.dynamic_symbols[index]
@@ -614,7 +614,7 @@ class Elf32Symbol:
     st_other
     st_shndx
     """
-    
+
     def __init__(self, bytes=None):
         self.name = ""
         self.st_name = 0
@@ -886,7 +886,7 @@ class Elf32Section:
 
     def getUncompressed(self):
         """
-        Get the bytes described by this section.  If sh_entsize != sh_size, run uncompress before returning 
+        Get the bytes described by this section.  If sh_entsize != sh_size, run uncompress before returning
         """
         if self.elf:
             if (self.sh_entsize > 0 and self.sh_size != self.sh_entsize):

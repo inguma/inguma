@@ -45,10 +45,10 @@ def doDiscover(vars):
             mTarget = raw_input("Target: ")
         else:
             mTarget = target
-    
+
         vars = (mTarget, port, covert, timeout, waittime, wizard)
 
-        print 
+        print
         print "Available modules:"
         print
 
@@ -89,7 +89,7 @@ def doDiscover(vars):
 def cleanTargets(targets):
 
     ret = ()
-    
+
     for x in targets:
         bFound = False
         for y in ret:
@@ -98,7 +98,7 @@ def cleanTargets(targets):
                 break
             else:
                 bFound = False
-                
+
         if not bFound:
             ret += (x, )
 

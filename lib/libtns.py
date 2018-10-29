@@ -60,45 +60,45 @@ class TNSBasePacket:
 
     def getPacket(self):
         data = len(self.data) + 10
-        
+
         if self.packetType == chr(TNS_TYPE_DATA):
             self.packetLength = struct.pack(">h", int(data))
         else:
             self.packetLength = struct.pack(">h", int(data))
-        
+
         buf = self.packetChecksum
         buf += self.packetType
         buf += self.reservedByte
         buf += self.headerChecksum
-        
+
         if self.dataFlag:
             buf += self.dataFlag
 
         buf += self.data
         self.packetLength = len(buf)
         buf = struct.pack(">h", self.packetLength+2) + buf
-        
+
         return buf
-    
+
     def readPacket(self, buf):
         if len(buf) < 8:
             return False
-        
+
         self.packetLength = buf[0:2]
         self.packetChecksum = buf[2:4]
         self.packetType = buf[4:5]
         self.reservedByte = buf[5:6]
         self.headerChecksum = buf[6:8]
         self.data = buf[8:]
-        
+
         return True
 
     def getPacketType(self):
         return ord(self.packetType)
-    
+
     def getPacketTypeString(self):
         mType = ord(self.packetType)
-        
+
         if mType == TNS_TYPE_CONNECT:
             return "Connect"
         elif mType == TNS_TYPE_ACCEPT:
@@ -132,7 +132,7 @@ class TNSRedirectPacket(TNSBasePacket):
 
     redirectDataLength = "\x00\x34"
     redirectData = "(DESCRIPTION=(ADDRESS=())"
-    
+
     def getPacket(self):
         data = len(self.redirectData) + 10
         buf = struct.pack(">h", int(data))
@@ -176,10 +176,10 @@ class TNSPacket:
 
         x1 = str(hex(hLen1)).replace("0x", "")
         x2 = str(hex(hLen2)).replace("0x", "")
-        
+
         if len(x1) == 1:
             x1 = "0" + x1
-        
+
         if len(x2) == 1:
             x2 = "0" + x2
 
@@ -249,10 +249,10 @@ class TNS:
         v = eval(v)
 
         return(v)
-    
+
     def getTnsError(self, code):
         return getTnsErrorMessage(code)
-    
+
     def getPropertyValue(self, data, property):
         pos    = data.find(property + "=")
 
@@ -263,7 +263,7 @@ class TNS:
         data = data[pos+len(property)+1:endPos]
 
         return data
-    
+
     def extractErrorcode(self, data):
         errCode = self.getPropertyValue(data, "CODE")
 
@@ -290,7 +290,7 @@ class TNSParser:
     def __init__(self, data):
         if data:
             self.data = data
-    
+
     def getValueFor(self, thekey, single = False):
         buf = []
         level = 0
@@ -307,7 +307,7 @@ class TNSParser:
 
                 word = ""
             elif char == ")":
-            
+
                 if key.lower() == thekey.lower():
                     if not single:
                         buf.append(word)
@@ -334,7 +334,7 @@ class TNSDataFormatter:
     def __init__(self, data):
         if data:
             self.data = data
-    
+
     def format(self):
         buf = "\r\n"
         level = 0

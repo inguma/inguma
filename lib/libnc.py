@@ -1,5 +1,5 @@
 """
-as the name suggests, this is NetCat writtin entirely in Python.  
+as the name suggests, this is NetCat writtin entirely in Python.
 Not all features are supported from netcat, and additional functionality (RAW sockets) has been added.
 """
 import sys
@@ -38,7 +38,7 @@ class wratchet:
 		if lport: self.setLPort(lport)
 		if raddr: self.setRAddr(raddr)
 		if rport: self.setRPort(rport)
-		if proto: 
+		if proto:
 			
 			self.setProto(proto)
 			if (self.proto != 6):	self.makeRAW()
@@ -126,9 +126,9 @@ class wratchet:
 		self.s.setblocking(0)
 		
 	def sendUDP(self, data, addr=None, port=None):
-		if (not addr): 
+		if (not addr):
 			addr = self.raddr
-		if (not port): 
+		if (not port):
 			port = self.rport
 		buf = data
 		while (len(buf) > 16384):
@@ -137,9 +137,9 @@ class wratchet:
 		self.s.sendto(buf, (addr,port))
 		
 	def sendRAW(self, data, addr=None, port=0):
-		if (not addr): 
+		if (not addr):
 			addr = self.raddr
-		if (self.rport): 
+		if (self.rport):
 			port = self.rport
 		buf = data
 		print ("%s %d"%(addr,port))
@@ -162,17 +162,17 @@ class wratchet:
 
 	def recvUDP(self,size=1000000):
 		(data, addr) = self.s.recvfrom(size, self.lport)
-		if ((not MONOGOMOUS) or (not self.raddr)):  
+		if ((not MONOGOMOUS) or (not self.raddr)):
 			self.raddr,d = addr
-		if ((not MONOGOMOUS) or (not self.rport)):  
+		if ((not MONOGOMOUS) or (not self.rport)):
 			d,self.rport = addr
 		return data
 		
 	def recvRAW(self,size=1000000):
 		(data, addr) = self.s.recvfrom(size, self.laddr)
-		if ((not MONOGOMOUS) or (not self.raddr)):  
+		if ((not MONOGOMOUS) or (not self.raddr)):
 			self.raddr,d = addr
-		if ((not MONOGOMOUS) or (not self.rport)):  
+		if ((not MONOGOMOUS) or (not self.rport)):
 			d,self.rport = addr
 		return data
 		
@@ -224,7 +224,7 @@ def manageConn(wrcht1, wrcht2, wait = None):
 				idle = 0
 				tmp = wrcht2.recv()
 				if (VERYVERBOSE): sys.stderr.write("cmd:  len: %d\n%s"%(len(tmp),tmp))
-				if (len(tmp) == 0): 
+				if (len(tmp) == 0):
 					break
 				wrcht1.send(tmp)
 
@@ -233,7 +233,7 @@ def manageConn(wrcht1, wrcht2, wait = None):
 			if (wait and idle > (wait*10)):
 				break
 			select([],[],[], .1)
-	except: 
+	except:
 		print >>sys.stderr,("Score!!")
 		try:
 			sys.excepthook(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])

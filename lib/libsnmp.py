@@ -224,7 +224,7 @@ def valueToLayers(values):
     for i in range(1, len(LAYER_VALUES)):
         if LAYER_VALUES[i] > mValue:
             return LAYER_VALUES[:i]
-    
+
     return None
 
 def oidToHuman(oid):

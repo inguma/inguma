@@ -432,8 +432,8 @@ class CheatsheetDialog(Gtk.Dialog):
         dialog.destroy()
 
     def _show_about(self, widget):
-        md = Gtk.MessageDialog(self, 
-            Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, 
+        md = Gtk.MessageDialog(self,
+            Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO,
             Gtk.ButtonsType.CLOSE, "")
         md.set_markup('The data for this cheat sheet\nhas been borrowed from:\n\n<a href="http://www.rnicrosoft.net">http://www.rnicrosoft.net</a>\n\nThe original cheat sheet can be\ndownloaded from <a href="http://www.rnicrosoft.net/docs/X86_Win32_Reverse_Engineering_Cheat_Sheet.pdf">here</a>')
         md.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')

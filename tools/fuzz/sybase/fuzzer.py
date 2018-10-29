@@ -28,7 +28,7 @@ connection = None
 
 funnydata = ("TEST", "SA", "''", '"', "A"*30, "A"*100, "A"*128,"A"*256,"A"*512,"A"*1024,
                         "A"*2048,"A"*3000,"A"*4000,"A"*5000,"A"*6000,"A"*7000,"A"*8000,"A"*10000,"A"*15000,"A"*20000,"A"*25000,
-                        "A"*30000,"A"*32767, -1, -2, 0, 1, 2, 2147483647, -2147483647, 2147483648, 
+                        "A"*30000,"A"*32767, -1, -2, 0, 1, 2, 2147483647, -2147483647, 2147483648,
                         -2147483648,
                         "OID", "%s%s%s%s%s%s%s", "%x%x%x%x%x%x", "%d%d%d%d%d%d", "%f%f%f%f%f%f",
                         "A"*8000 + "\?", "./", "../../../../../../../../tmp", "dir > c:\\fuzzy.txt",
@@ -49,14 +49,14 @@ def getTypes(name):
     global connection
 
     mTypes = ()
-    
+
     sql = """
     Select st.name
   FROM master..syscolumns sc,
 	   master..systypes st,
-       master..sysobjects so 
- WHERE sc.id in (select id 
-				   from master..sysobjects 
+       master..sysobjects so
+ WHERE sc.id in (select id
+				   from master..sysobjects
                   where type ='P')
    AND so.type ='P'
    AND sc.id = so.id
@@ -64,11 +64,11 @@ def getTypes(name):
    AND sc.type <> 39
    AND so.name = '%s'
  order by 1""" % (name)
- 
+
     try:
         cur = connection.cursor()
         cur.execute(sql)
-        
+
         for value in cur.fetchall():
             mTypes += (value, )
     except:
@@ -120,19 +120,19 @@ def fuzzFunction(name, args):
                                 break
 
                             params += (funny, )
-                    
+
                     if mBreak:
                         mBreak = False
                         continue
 
                     cur = connection.cursor()
                     curData = data % (params)
-                    
+
                     if type(funny) is int:
                         log = "Number", funny
                     else:
                         log = "String",len(str(funny))
-                    
+
                     if args > 1:
                         if type(refunny) is int:
                             log += "Number", refunny
@@ -170,9 +170,9 @@ def main():
                Select so.name, count(distinct sc.name)
   FROM master..syscolumns sc,
 	   master..systypes st,
-       master..sysobjects so 
- WHERE sc.id in (select id 
-				   from master..sysobjects 
+       master..sysobjects so
+ WHERE sc.id in (select id
+				   from master..sysobjects
                   where type ='P')
    AND so.type ='P'
    AND sc.id = so.id
@@ -180,7 +180,7 @@ def main():
    AND sc.type <> 39
  group by so.name
  order by 1""")
-    
+
     i = 0
 
     for proName in cur.fetchall():

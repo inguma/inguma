@@ -91,14 +91,14 @@ def parseNmap(file):
 def insertData(uicore, outputs):
 
     for output in outputs:
-        
+
         # Add a new target, hostname and OS
         uicore.set_kbfield( 'targets', output['hostip'] )
         if 'hostname' in output.keys():
             uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
         if 'os' in output.keys():
             uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
-    
+
         # Add Open ports and services
 #        print output['ports']
         for port in output['ports'].keys():
@@ -109,7 +109,7 @@ def insertData(uicore, outputs):
                     uicore.set_kbfield( output['hostip'] + '_' + port + '-info', output['ports'][port][2] )
                 except:
                     pass
-    
+
         # Add traceroute
         localip = uicore.getLocalIP()
         uicore.set_kbfield( output['hostip'] + '_trace', localip )

@@ -428,7 +428,7 @@ def main(exploit=''):
     # create buffer
     buffer = gtksourceview.Buffer()
     mgr = gtksourceview.style_scheme_manager_get_default()
-    
+
     # Set theme ftom config theme
     style_scheme = mgr.get_scheme(theme)
     if style_scheme:

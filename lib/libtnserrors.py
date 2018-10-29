@@ -936,9 +936,9 @@ TNS_ERROR_CODES = {
 
 def getTnsErrorMessage(errCode):
     TNS_ERROR_CODES
-    
+
     err = ""
-    
+
     if len(errCode) < 5:
         errCode = "0"*(5-len(errCode)) + errCode
 

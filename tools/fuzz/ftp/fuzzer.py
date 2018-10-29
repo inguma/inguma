@@ -57,17 +57,17 @@ class CFuzzer:
 
         if target:
             self.target = target
-        
+
         if port:
             self.port = int(port)
-        
+
         if path:
             self.readDict(path)
         else:
             self.readDict()
 
     def readDict(self, path = None):
-    
+
         if not path:
             f = open(self.path + "commands", "r")
         else:
@@ -85,7 +85,7 @@ class CFuzzer:
             line = line.strip("\n")
 
             self.commands[i] = line
-        
+
         f.close()
 
     def debugPrint(self, mdata):
@@ -102,14 +102,14 @@ class CFuzzer:
             self.socket = None
             self.connect()
             self.login()
-            
+
             return False
         except:
             return True
 
     def login(self):
         if self.socket is None:
-        
+
             try:
                 self.connect()
             except:
@@ -163,7 +163,7 @@ class CFuzzer:
             return self.checkHost()
 
     def run(self):
-        
+
         commandList = {}
         objData = self.data
 
@@ -175,9 +175,9 @@ class CFuzzer:
 
         if self.numbers:
             commandList.update(objData.numbers)
-        
+
         for cmd in self.commands:
-        
+
             if cmd == 1 and self.fuzzUsername == False:
                 continue
             elif cmd == 2 and self.fuzzPassword == False:
@@ -205,7 +205,7 @@ class CFuzzer:
                         print
                         print "Service crashed with packet",self.commands[cmd], commandList[test], objData.sizes[size]
                         return
-            
+
             print
 
         print "Fuzzing session finished with no luck :("

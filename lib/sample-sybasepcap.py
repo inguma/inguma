@@ -11,11 +11,11 @@ from scapy.all import *
 from fuzzpcap import *
 
 def main(pcapFile, dest, destPort):
-    
+
     replayList = []
-    
+
     pktList = rdpcap(pcapFile)
-    
+
     for pkt in pktList:
         tcpPkt = pkt[TCP]
         flags = tcpPkt.sprintf("%flags%")
@@ -40,7 +40,7 @@ def main(pcapFile, dest, destPort):
     replayer.fuzz()
 
 if __name__ == "__main__":
-    
+
     if len(sys.argv) < 4:
         #main("/tmp/ifx/ifx.dump", "192.168.1.11", "sqlexec")
         main("/tmp/syb/sybase.dump", "192.168.1.11", "5000")

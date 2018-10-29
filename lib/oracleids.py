@@ -36,7 +36,7 @@ def getRandomSpaces(min = 0, max = 50, comments = True):
             num = random.randint(1, 5)
         else:
             num = random.randint(1, 3)
-        
+
         if num == 1:
             tmp += " "
         elif num == 2:
@@ -45,13 +45,13 @@ def getRandomSpaces(min = 0, max = 50, comments = True):
             tmp += "\n"
         else:
             tmp += "/*" + getRandomSpaces(comments = False) + "*/"
-    
+
     return tmp
 
 def randomizeSpaces(data):
-    
+
     tmp = data
     for word in wordsToRandomize:
         tmp = tmp.replace(word, getRandomSpaces(0,5) + word + getRandomSpaces(0,5))
-    
+
     return tmp

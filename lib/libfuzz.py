@@ -39,14 +39,14 @@ TOKEN_TYPE_INJECT = 1
 TOKEN_TYPE_APPEND = 0
 
 def tokenizePacket(pkt, mode):
-    
+
     if mode == 0:
         """
         Split a packet into tokens
         """
         ret = []
         tmp = ""
-    
+
         for x in pkt:
             if x in separators:
                 if tmp != "":
@@ -55,10 +55,10 @@ def tokenizePacket(pkt, mode):
                 tmp = ""
             else:
                 tmp += x
-    
+
         if tmp != "":
             ret.append(tmp)
-    
+
         return ret
     elif mode == 1:
         """ Fuzz every character """
@@ -69,7 +69,7 @@ def tokenizePacket(pkt, mode):
         return ret
 
 def token2str(tkn):
-    """ 
+    """
     Convert a token list into a Python string
     """
 
@@ -102,9 +102,9 @@ def fuzzCallback(func, cmd, idx, var=0, mode=0, fastMode = False):
             x+= 1
             if x < var:
                 continue
-            
+
             print "Fuzzing var %d:%d" % (i, x)
-            
+
             tmp = tokens
             tmp[i] = num
 
@@ -115,9 +115,9 @@ def fuzzCallback(func, cmd, idx, var=0, mode=0, fastMode = False):
             x+= 1
             if x < var:
                 continue
-            
+
             print "Fuzzing var %d:%d" % (i, x)
-            
+
             tmp = tokens
             tmp[i] = struct.pack("<l", num)
 

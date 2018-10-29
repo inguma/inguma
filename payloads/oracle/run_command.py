@@ -91,7 +91,7 @@ def main():
     for n in range(1, 500):
         print "Test",n
         cur = connection.cursor()
-        cur.execute(cmd)        
+        cur.execute(cmd)
         cur.execute("SELECT * FROM USER_ERRORS")
 
         for x in cur.fetchall():

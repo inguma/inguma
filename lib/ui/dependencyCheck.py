@@ -128,7 +128,7 @@ def gtkui_dependency_check(config):
         if os.path.exists(config.NMAP_PATH):
             print OKGREEN + "\tOK" + ENDC
         else:
-            raise    
+            raise
     except:
         print WARNING + "\tD'oh!" + ENDC
         print WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC
@@ -156,7 +156,7 @@ def gtkui_dependency_check(config):
 #        if os.path.exists(config.W3AF_PATH):
 #            print OKGREEN + "\tOK" + ENDC
 #        else:
-#            raise    
+#            raise
 #    except:
 #        print WARNING + "\tD'oh!" + ENDC
 #        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
@@ -168,12 +168,12 @@ def __find_executables(path):
     # Thanks to Ero Carrera
 
     """Used by find_graphviz
-    
+
     path - single directory as a string
-    
+
     If any of the executables are found, it will return a dictionary
     containing the program names as keys and their paths as values.
-    
+
     Otherwise returns None
     """
 
@@ -181,19 +181,19 @@ def __find_executables(path):
     if platform.system() != 'Windows':
         progs = {'dot': '', 'twopi': '', 'neato': '', 'circo': '', 'fdp': '', 'sfdp': ''}
     else:
-        progs = {'dot.exe': '', 'twopi.exe': '', 'neato.exe': '', 'circo.exe': '', 'fdp.exe': '', 'sfdp.exe': ''}    
-    
+        progs = {'dot.exe': '', 'twopi.exe': '', 'neato.exe': '', 'circo.exe': '', 'fdp.exe': '', 'sfdp.exe': ''}
+
     was_quoted = False
     path = path.strip()
     if path.startswith('"') and path.endswith('"'):
         path = path[1:-1]
         was_quoted =  True
-    
-    if os.path.isdir(path) : 
+
+    if os.path.isdir(path) :
 
         for prg in progs.iterkeys():
 
-            #print prg 
+            #print prg
             if progs[prg]:
                 continue
 

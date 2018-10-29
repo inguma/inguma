@@ -48,7 +48,7 @@ class CCallGraphGenerator(object):
             print "Error:", sys.exc_info()[1]
             l = [self.pyew.ep]
         functions = []
-        
+
         for ep in l:
             if self.pyew.functions.has_key(ep):
                 fep = self.pyew.functions[ep]
@@ -56,11 +56,11 @@ class CCallGraphGenerator(object):
                     if c in self.pyew.functions:
                         if c not in functions:
                             functions.append(c)
-                        
+
                         n1 = CNode(self.pyew.names[ep], self.pyew.names[ep])
                         n2 = CNode(self.pyew.names[c], self.pyew.names[c])
                         dot.addConnectedNode(n1, n2)
-        
+
         dones = []
         while len(functions) > 0:
             addr = functions.pop()
@@ -69,18 +69,18 @@ class CCallGraphGenerator(object):
                 if c in self.pyew.functions and c not in dones:
                     functions.append(c)
                     dones.append(c)
-                    
+
                     n1 = CNode(self.pyew.names[addr], self.pyew.names[addr])
                     n2 = CNode(self.pyew.names[c], self.pyew.names[c])
                     dot.addConnectedNode(n1, n2)
-                    
+
         return dot.generateDot()
 
 def showDotInXDot(buf):
-    try:    
+    try:
         import gtk, thread
         from xdot import DotWindow
-        
+
         win = DotWindow()
         win.connect('destroy', Gtk.main_quit)
         win.set_filter("dot")
@@ -115,7 +115,7 @@ def showBinaryImage(pyew, doprint=True):
         for x in range(int(size)):
             if i > len(buf) or len(buf)-i <= 3:
                 break
-            
+
             value = (ord(buf[i:i+1]), ord(buf[i+1:i+2]), ord(buf[i+3:i+4]))
             i += 3
             putpixel((x, y), value)

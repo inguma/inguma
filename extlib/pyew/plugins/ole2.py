@@ -60,8 +60,8 @@ def ole2Explore(pyew):
                             v = '(binary data)'
                             break
                 print "   ", k, v
-                
-        
+
+
     # Read all streams to check if there are errors:
     print '\nChecking streams...'
     for streamname in ole.listdir():

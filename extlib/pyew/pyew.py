@@ -41,7 +41,7 @@ except ImportError:
 
 try:
     import readline
-    
+
     histfile = os.path.join(os.environ["HOME"], ".pyew")
     try:
         readline.read_history_file(histfile)
@@ -57,7 +57,7 @@ try:
     hasPefile = True
 except ImportError:
     hasPefile = False
-    
+
 try:
     from Elf import Elf
     hasElf = True
@@ -130,12 +130,12 @@ def createSchema(db):
         sql = """create table samples (id integer not null primary key,
                                        md5, sha1, sha256, filename, type)"""
         db.execute(sql)
-        
+
         sql = """create table function_stats (
                         id integer not null primary key,
                         sample_id, addr, nodes, edges, cc)"""
         db.execute(sql)
-        
+
         sql = """create table antidebugs (
                         id integer not null primary key,
                         sample_id, addr, mnemonic
@@ -150,26 +150,26 @@ def saveSample(db, pyew, buf, amd5):
         asha256 = sha256(buf).hexdigest()
         name = pyew.filename
         format = pyew.format
-        
+
         cur = db.cursor()
         sql = """ insert into samples (md5, sha1, sha256, filename, type)
                                values (?, ?, ?, ?, ?)"""
         cur.execute(sql, (amd5, asha1, asha256, name, format))
         rid = cur.lastrowid
-        
+
         sql = """ insert into function_stats (sample_id, addr, nodes, edges, cc)
                                       values (?, ?, ?, ?, ?) """
         for f in pyew.function_stats:
             addr = "0x%08x" % f
             nodes, edges, cc = pyew.function_stats[f]
             cur.execute(sql, (rid, addr, nodes, edges, cc))
-        
+
         sql = """ insert into antidebugs (sample_id, addr, mnemonic) values (?, ?, ?) """
         for antidbg in pyew.antidebug:
             addr, mnem = antidbg
             addr = "0x%08x" % addr
             cur.execute(sql, (rid, addr, mnem))
-        
+
         db.commit()
     except:
         print sys.exc_info()[1]
@@ -180,21 +180,21 @@ def saveAndCompareInDatabase(pyew):
     createSchema(db)
     cur = db.cursor()
     bcontinue = True
-    
+
     try:
         buf = pyew.getBuffer()
         amd5 = md5(buf).hexdigest()
         name = pyew.filename
         sql = """ select * from samples where md5 = ? """
         cur.execute(sql, (amd5, ))
-        
+
         for row in cur.fetchall():
             if row[4] != name:
                 print "NOTICE: File was previously analyzed (%s)" % row[4]
                 print
             bcontinue = False
         cur.close()
-        
+
         if bcontinue:
             saveSample(db, pyew, buf, amd5)
     except:
@@ -215,7 +215,7 @@ def setupAutoCompletion(pyew):
 
     try:
         import rlcompleter
-        
+
         readline.set_completer(rlcompleter.Completer(commands).complete)
         readline.parse_and_bind("tab: complete")
     except:
@@ -258,47 +258,47 @@ def main(filename):
     while 1:
         try:
             last_cmd = cmd
-            
+
             if len(pyew.previousoffset) > 0:
                 if pyew.previousoffset[len(pyew.previousoffset)-1] != pyew.offset:
                     pyew.previousoffset.append(pyew.offset)
             else:
                 pyew.previousoffset.append(pyew.offset)
-            
+
             va = None
             if pyew.virtual:
                 va = pyew.getVirtualAddressFromOffset(pyew.offset)
-            
+
             if va:
                 prompt = "[0x%08x:0x%08x]> " % (pyew.offset, va)
             else:
                 prompt = "[0x%08x]> " % pyew.offset
-            
+
             try:
                 cmd = commands[0].rstrip()
                 commands.pop(0)
             except:
                 cmd = raw_input(prompt)
-            
+
             if cmd in ["", "b"] and (last_cmd in ["b", "x", "c", "d", "dump", "hexdump", "dis", "pd", "p", "r", "buf"] or last_cmd.isdigit()):
                 if cmd == "b":
                     tmp = pyew.previousoffset.pop()
-                    
+
                     if len(pyew.previousoffset) > 0:
                         tmp = pyew.previousoffset[len(pyew.previousoffset)-1]
                     else:
                         tmp = 0
-                        
+
                     pyew.offset = tmp
                     pyew.lastasmoffset = tmp
                     pyew.seek(tmp)
                     if last_cmd.isdigit():
                         last_cmd = "c"
-                    
+
                 elif cmd == "b" and last_cmd == "b":
                     if len(pyew.previousoffset) < 2:
                         continue
-                    
+
                     tmp = pyew.previousoffset.pop()
                     tmp = pyew.previousoffset[len(pyew.previousoffset)-1]
                     pyew.seek(tmp)
@@ -316,11 +316,11 @@ def main(filename):
             break
         except KeyboardInterrupt:
             break
-        
+
         try:
             if cmd.strip(" ") == "":
                 continue
-            
+
             if cmd.lower() in ["exit", "quit", "q"]:
                 break
             elif cmd.lower() in ["a", "anal"]:
@@ -336,7 +336,7 @@ def main(filename):
                             pyew.offset = pyew.ep
                     else:
                         pyew.names.has_key(data[1].lower())
-                        
+
                         if data[1].lower()[0] in ["+", "-"]:
                             pyew.offset += int(data[1])
                         elif data[1].lower().startswith("0x"):
@@ -348,7 +348,7 @@ def main(filename):
                                     break
                         else:
                             pyew.offset = int(data[1])
-                        
+
                 pyew.seek(pyew.offset)
             elif cmd.lower().split(" ")[0] in ["c", "d", "dis", "pd"]:
                 data = cmd.lower().split(" ")
@@ -363,7 +363,7 @@ def main(filename):
                             ret = pyew.dosearch(pyew.f, cmd[0][1:2], cmd[1], cols=60, doprint=False, offset=pyew.offset)
                         else:
                             ret = pyew.dosearch(pyew.f, cmd[0][1:2], "", cols=60, doprint=False, offset=pyew.offset)
-                        
+
                         for x in ret:
                             dis = pyew.disassemble(x.values()[0], pyew.processor, pyew.type, pyew.lines, pyew.bsize, baseoffset=x.keys()[0])
                             print dis
@@ -383,7 +383,7 @@ def main(filename):
                     if len(line) == pyew.hexcolumns:
                         print repr(line)
                         line = ""
-                
+
                 if line != "":
                     print repr(line)
             elif cmd == "byte":
@@ -394,7 +394,7 @@ def main(filename):
                     if len(line) >= pyew.hexcolumns / (1.00/4.00):
                         print line
                         line = ""
-                
+
                 if line != "":
                     print "%s" % line
             elif cmd.lower().split(" ")[0] in ["r", "repr"]:
@@ -492,7 +492,7 @@ def main(filename):
                     data = unhexlify(cmd.split(" ")[1])
                 else:
                     data = cmd.split(" ")[1]
-                
+
                 pyew.f.seek(pyew.offset)
                 pyew.f.write(data)
                 pyew.seek(pyew.offset)

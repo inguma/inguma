@@ -43,7 +43,7 @@ try:
     hasPefile = True
 except ImportError:
     hasPefile = False
-    
+
 try:
     from Elf import Elf
     hasElf = True
@@ -90,23 +90,23 @@ class CStrings:
     def getStrings(self, buf=None, unicode=False):
         if buf:
             self.buf = buf
-        
+
         scanner = re.compile('[\w| |{|}|\[|\]|,|\||\,|.|\-|_|?|/|\$|@|"|''|!|\\|&|\(|\)|\<|\>|\*|\+|\;|\:|\^|\=|\%|\#|\~|\`|\ñ|\ç|\€]{4,}',
                             re.MULTILINE | re.IGNORECASE)
         ret = scanner.findall(self.buf)
         return ret
 
 class COffsetString:
-    
+
     def __init__(self):
         self.buf = None
         self.minsize = 3
         self.offset = 4
-    
+
     def searchForStringAt(self, i):
         initial = i
         ret = self.buf[i:i+1]
-        
+
         while 1:
             i += self.offset
             tmp = self.buf[i:i+1]
@@ -127,10 +127,10 @@ class COffsetString:
         ret = []
         while 1:
             c = self.buf[i:i+1]
-            
+
             if not c:
                 break
-            
+
             if c.isalpha():
                 s = self.searchForStringAt(i)
                 if s is not None:
@@ -140,7 +140,7 @@ class COffsetString:
                     i += 1
             else:
                 i += 1
-        
+
         return ret
 
 class CPyew:
@@ -179,7 +179,7 @@ class CPyew:
         self.exports = {}
         self.ep = 0
         self.case = 'high'
-        
+
         self.database = None
         self.names = {}
         self.functions = {}
@@ -195,7 +195,7 @@ class CPyew:
         self.basic_blocks = {}
         self.analysis_timeout = CONFIG_ANALYSIS_TIMEOUT
         self.warnings = []
-        
+
         self.batch = batch
         self.loadPlugins()
 
@@ -224,12 +224,12 @@ class CPyew:
         ret = []
         for x in obj:
             ret.append(str(x.mnemonic))
-        
+
         return ret
 
     def getByte(self, offset):
         return self.getBytes(offset, 1)
-    
+
     def getBytes(self, offset, num):
         moffset = self.offset
         self.f.seek(offset)
@@ -247,7 +247,7 @@ class CPyew:
         elif self.format == "ELF":
             # XXX: FIXME!!!
             ret = offset
-        
+
         return ret
 
     def getOffsetFromVirtualAddress(self, va):
@@ -257,7 +257,7 @@ class CPyew:
             except:
                 print sys.exc_info()[1]
                 return None
-        
+
         return None
 
     def showSettings(self):
@@ -278,7 +278,7 @@ class CPyew:
     def loadFile(self, filename, mode="rb"):
         self.filename = filename
         self.mode = mode
-        
+
         if self.filename.lower().startswith("http://") or \
            self.filename.lower().startswith("https://") or \
            self.filename.lower().startswith("ftp://"):
@@ -290,7 +290,7 @@ class CPyew:
             self.physical = True
             self.f = file(filename, mode)
             self.maxsize = os.path.getsize(filename)
-        
+
         self.seek(0)
         self.fileTypeLoad()
         self.offset = 0
@@ -368,7 +368,7 @@ class CPyew:
 
     def createIntelFunctionsByPrologs(self):
         total = 0
-        
+
         anal=CX86CodeAnalyzer(self)
         anal.timeout = self.analysis_timeout
         anal.antidebug = self.antidebug
@@ -380,7 +380,7 @@ class CPyew:
         anal.xrefs_from = self.xrefs_from
         anal.basic_blocks = self.basic_blocks
         anal.function_stats = self.function_stats
-        
+
         if self.type == 32:
             prologs = ["8bff558b", "5589e5"]
         else:
@@ -391,7 +391,7 @@ class CPyew:
         self.log("\b"*80 + "Found %d possible function(s) using method #1" % len(hints) + " "*20 + "\b"*80)
         for hint in hints:
             anal.doCodeAnalysis(ep = False, addr = int(hint.keys()[0]))
-        
+
         prologs = ["558bec"]
         for prolog in prologs:
             hints += self.dosearch(self.f, "x", prolog, cols=60, doprint=False, offset=0)
@@ -405,12 +405,12 @@ class CPyew:
         ops = str(ops)
         if ops.startswith("["):
             ops = ops.replace("[", "").replace("]", "")
-        
+
         try:
             ops = int(ops, 16)
         except ValueError:
             return orig
-        
+
         if ops in self.names:
             return self.names[ops]
         else:
@@ -420,7 +420,7 @@ class CPyew:
         anal = CX86CodeAnalyzer(self, self.type)
         anal.timeout = self.analysis_timeout
         anal.doCodeAnalysis()
-        
+
         if self.deepcodeanalysis:
             self.log("\b"*80 + "Searching typical function's prologs..." + " "*20)
             self.createIntelFunctionsByPrologs()
@@ -439,11 +439,11 @@ class CPyew:
             self.elf = Elf(self.filename)
         else:
             self.elf = Elf(self.getBuffer())
-        
+
         self.format = "ELF"
         self.log("ELF Information")
         self.log()
-        
+
         if self.elf.e_machine == 62: # x86_64
             self.type = 64
             self.processor = "intel"
@@ -453,13 +453,13 @@ class CPyew:
         else:
             self.log("Warning! Unsupported architecture, defaulting to Intel x86 (32 bits)")
             self.type = 32
-        
+
         for x in self.elf.secnames:
             if self.elf.e_entry >= self.elf.secnames[x].sh_addr and self.elf.e_entry < self.elf.secnames[x].sh_addr + self.elf.secnames[x].sh_size:
                 self.ep = self.elf.secnames[x].sh_offset
             #self.log("\t", self.elf.secnames[x].name, "0x%08x" % self.elf.secnames[x].sh_addr, self.elf.secnames[x].sh_size)
         #self.log()
-        
+
         self.log("Entry Point at 0x%x" % self.ep)
         if self.database is None:
             self.loadElfFunctions(self.elf)
@@ -470,13 +470,13 @@ class CPyew:
             for x in self.elf.relocs:
                 self.names[x.r_offset] = x.name
                 self.imports[x.r_offset] = x.name
-            
+
             for x in self.elf.symbols:
                 if x.name != "" and x.st_value != 0:
                     self.names[name] = x.st_value
         except:
             pass
-        
+
         if self.codeanalysis:
             if self.processor == "intel":
                 self.findFunctions(self.processor)
@@ -497,17 +497,17 @@ class CPyew:
             if not self.batch:
                 print "***Error loading imports", sys.exc_info()[1]
             self.warnings.append("Error loading imports: %s" % sys.exc_info()[1])
-            
+
         try:
             addr = None
-            
+
             for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols:
-                
+
                 try:
                     addr = self.pe.get_offset_from_rva(exp.address)
                 except:
                     addr = exp.address
-                
+
                 if exp.name and exp.name != "":
                     self.names[addr] = exp.name
                     self.exports[addr] = exp.name
@@ -516,7 +516,7 @@ class CPyew:
                     self.exports[addr] = "#" + str(expordinal)
         except:
             pass
-        
+
         if self.codeanalysis:
             if self.processor == "intel":
                 self.findFunctions(self.processor)
@@ -532,13 +532,13 @@ class CPyew:
                 buf = self.f.read()
                 self.pe = pefile.PE(data=buf)
                 self.seek(0)
-            
+
             self.format = "PE"
             self.log("PE Information")
             self.log()
-            
+
             self.virtual = True
-            
+
             if self.pe.FILE_HEADER.Machine == 0x14C: # IMAGE_FILE_MACHINE_I386
                 self.processor="intel"
                 self.type = 32
@@ -546,17 +546,17 @@ class CPyew:
                 self.processor="intel"
                 self.type = 64
                 self.log("64 Bits binary")
-            
+
             self.log("Sections:")
             for section in self.pe.sections:
                 self.log("  ", section.Name, hex(section.VirtualAddress), hex(section.Misc_VirtualSize), section.SizeOfRawData)
             self.log()
             x = self.pe.OPTIONAL_HEADER.AddressOfEntryPoint
-            
+
             for s in self.pe.sections:
                 if x >= s.VirtualAddress and x <= s.VirtualAddress + s.SizeOfRawData:
                     break
-            
+
             x = x - s.VirtualAddress
             x += s.PointerToRawData
             ep = x
@@ -567,7 +567,7 @@ class CPyew:
                 self.ep = x
             except:
                 self.log(sys.exc_info()[1])
-            
+
             if self.database is None:
                 self.loadPeFunctions(self.pe)
             self.log()
@@ -580,18 +580,18 @@ class CPyew:
     def loadPlugins(self):
         path = PLUGINS_PATH
         sys.path.append(path)
-        
+
         for f in os.listdir(path):
             if f.startswith("_") or f.startswith(".") or not f.endswith(".py"):
                 continue
-            
+
             f = f.rstrip(".py")
             try:
                 m = __import__(f)
-                
+
                 if not "functions" in dir(m):
                     continue
-                
+
                 if self.plugins == {}:
                     self.plugins = m.functions
                 else:
@@ -614,10 +614,10 @@ class CPyew:
 
     def hexdump(self, src=None, length=8, baseoffset=0, bsize=512):
         """ Show hexadecimal dump for the the given buffer """
-        
+
         if not src:
             src = self.buf[:bsize]
-        
+
         N=0; result=''
         while src:
             s,src = src[:length],src[length:]
@@ -643,7 +643,7 @@ class CPyew:
             ret.size = obj[1]
             ret.mnemonic = "".join(obj[2])
             ret.mnemonic = ret.mnemonic.split(" ")[0]
-            
+
             data = obj[2].split(" ")
             if len(data) > 1:
                 operands = ""
@@ -651,7 +651,7 @@ class CPyew:
                     operands += x + " "
             else:
                 operands = ""
-            
+
             ret.operands = operands
             ret.instructionHex = obj[3]
             return ret
@@ -664,7 +664,7 @@ class CPyew:
             ret.instructionHex = obj.instructionHex
             return ret
             #return obj
-    
+
     def disasm(self, offset=0, processor="intel", mtype=32, lines=1, bsize=512):
         if processor == "intel":
             if mtype == 32:
@@ -675,7 +675,7 @@ class CPyew:
                 decode = Decode64Bits
             else:
                 raise EUnknownDisassemblyType()
-            
+
             ret = []
             self.calls = []
             i = None
@@ -685,16 +685,16 @@ class CPyew:
             except OverflowError:
                 # OverflowError: long int too large to convert to int
                 return []
-            
+
             for i in Decode(offset, buf, decode):
                 i = self.getDisassembleObject(i, ilines)
                 ret.append(i)
-                
+
                 ilines += 1
-                
+
                 if ilines == lines:
                     break
-                
+
             return ret
 
     def disassemble(self, buf, processor="intel", type=32, lines=40, bsize=512, baseoffset=0):
@@ -708,21 +708,21 @@ class CPyew:
                 decode = Decode64Bits
             else:
                 raise EUnknownDisassemblyType()
-            
+
             pos = 0
             ret = ""
             index = 0
             self.calls = []
             offset = 0
             i = None
-            
+
             for i in Decode(baseoffset, buf, decode):
                 i = self.getDisassembleObject(i)
                 pos += 1
                 ops = str(i.operands)
                 comment = ""
                 func = ""
-                
+
                 if str(i.mnemonic).lower().startswith("call") or \
                    str(i.mnemonic).lower().startswith("j") or \
                    str(i.mnemonic).lower().startswith("loop"):
@@ -731,12 +731,12 @@ class CPyew:
                             ops = str(i.operands).replace("[", "").replace("]", "")
                         else:
                             ops = str(i.operands)
-                        
+
                         ops = int(ops, 16)
-                        
+
                         if self.names.has_key(ops):
                             func = self.names[ops]
-                        
+
                         if self.maxsize >= ops and ops > 0:
                             index += 1
                             comment = "\t; %d %s" % (index, func)
@@ -748,7 +748,7 @@ class CPyew:
                                 ops = func
                             else:
                                 ops = "0x%08x" % ops
-                            
+
                             comment = ""
                     except:
                         ops = str(i.operands)
@@ -757,7 +757,7 @@ class CPyew:
                     if len(tmp) > 0:
                         tmp = int(tmp[0], 16)
                         if self.names.has_key(tmp):
-                            
+
                             if self.imports.has_key(tmp):
                                 comment = "\t; %s" % self.names[tmp]
                             else:
@@ -774,11 +774,11 @@ class CPyew:
                                     mxrefs.append(self.names[tmp])
                                 else:
                                     mxrefs.append("sub_%08x" % tmp)
-                                
+
                                 if tmpidx == 3:
                                     mxrefs.append("...")
                                     break
-                        
+
                         pos += 1
                         if len(mxrefs) > 0:
                             ret += "0x%08x ; FUNCTION %s\t XREFS %s\n" % (i.offset, self.names[i.offset], ", ".join(mxrefs))
@@ -790,7 +790,7 @@ class CPyew:
 
                 if self.case == 'high':
                     ret += "0x%08x (%02x) %-20s %s%s\n" % (i.offset, i.size, i.instructionHex, str(i.mnemonic) + " " + str(ops), comment)
-                # if pyew.case is 'low' or wrong 
+                # if pyew.case is 'low' or wrong
                 else:
                     ret += "0x%08x (%02x) %-20s %s%s\n" % (i.offset, i.size, i.instructionHex, str(i.mnemonic).lower() + " " + str(ops).lower(), comment)
                 if str(i.mnemonic).lower().startswith("j") or \
@@ -798,10 +798,10 @@ class CPyew:
                    str(i.mnemonic).lower().find("loop") > -1:
                     pos += 1
                     ret += "0x%08x " % i.offset + "-"*70 + "\n"
-                
+
                 if pos >= lines:
                     break
-            
+
             if i:
                 self.lastasmoffset = i.offset + i.size
         elif processor == "python":
@@ -811,35 +811,35 @@ class CPyew:
             self.log(dis.dis(buf))
             self.seek(moffset)
             ret = ""
-        
+
         return ret
 
     def strings(self, buf, doprint=True, offset=0):
         strs = CStrings(buf)
         ret = strs.getStrings()
-        
+
         hints = []
-        
+
         for x in ret:
             pos = buf.find(x)
             hints.append({pos+offset:x})
             if doprint:
                 self.log("HINT[0x%08x]: %s" % (pos, x))
-        
+
         return hints
 
     def extract(self, buf, strre, doprint=True, offset=0):
         obj = re.compile(strre, re.IGNORECASE | re.MULTILINE)
         ret = obj.findall(buf)
-        
+
         hints = []
-        
+
         for x in ret:
             pos = buf.find(x)
             hints.append({pos+offset:x})
             if doprint:
                 self.log("HINT[0x%08x]: %s" % (pos, x))
-        
+
         return hints
 
     def extractoffsetstring(self, buf, doprint=True, offset=0):
@@ -858,13 +858,13 @@ class CPyew:
     def dosearch(self, f, mtype, search, cols=32, doprint=True, offset=0):
         if (search == None or search == "") and mtype not in ["s", "o"]:
             return []
-        
+
         oldpos = f.tell()
         f.seek(offset)
         buf = f.read()
         moffset = 0
         hints = []
-        
+
         if mtype == "s" and search=="":
             hints = self.strings(buf, doprint, offset=offset)
         elif mtype == "u" and search == "":
@@ -873,7 +873,7 @@ class CPyew:
             hints = self.extract(buf, strre=search, doprint=doprint, offset=offset)
         elif mtype == "o":
             hints = self.extractoffsetstring(buf, doprint=doprint, offset=offset)
-        
+
         else:
             try:
                 self.calls = []
@@ -893,7 +893,7 @@ class CPyew:
                     else:
                         self.log("Unknown search type!")
                         break
-                    
+
                     if pos > -1:
                         if doprint:
                             s = buf[pos:pos+cols]
@@ -904,7 +904,7 @@ class CPyew:
                         hints.append({moffset+pos+offset:buf[pos:pos+cols]})
                         moffset += pos + len(search)
                         buf = buf[pos+len(search):]
-                        
+
                         if buf == "":
                             break
                     else:
@@ -914,7 +914,7 @@ class CPyew:
             except:
                 self.log("Error:", sys.exc_info()[1])
                 raise
-            
+
         f.seek(oldpos)
         return hints
 
@@ -923,5 +923,5 @@ class CPyew:
         self.f.seek(0)
         buf = self.f.read()
         self.seek(moffset)
-        
+
         return buf

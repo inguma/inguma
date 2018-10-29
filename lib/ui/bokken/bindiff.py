@@ -1,17 +1,17 @@
 #       bindiff.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -181,7 +181,7 @@ class Bindiff():
             os.unlink(file_r)
         else:
             dw.set_code_r('digraph code { }', False)
-    
+
     def set_file(self, file_r, fcn_thr, bb_thr, bytes):
         # Init cores
         self.c2.config.set_i("io.va", 1)
@@ -194,7 +194,7 @@ class Bindiff():
         self.dw.clear_functions()
         self.dw.set_filename_l(self.c.filename)
         self.dw.set_filename_r(file_r)
-    
+
     def diff(self):
         # Diff
         self.c.core.gdiff(self.c2)

@@ -3,7 +3,7 @@
 import sys
 import pickle
 import StringIO
- 
+
 class SafeUnpickler(pickle.Unpickler):
     PICKLE_SAFE = {
         "copy_reg": set(['_reconstructor']),
@@ -13,7 +13,7 @@ class SafeUnpickler(pickle.Unpickler):
         "_ctypes":["_unpickle"],
         "pydistorm":["_WString"],
         "Elf":["Elf", "Elf64Dynamic", "Elf32Dynamic", "Elf64Section", "Elf32Section",
-               "Elf64Pheader", "Elf32Pheader", "Elf64Symbol", "Elf32Symbol", "Elf64Reloca"],  
+               "Elf64Pheader", "Elf32Pheader", "Elf64Symbol", "Elf32Symbol", "Elf64Reloca"],
         "pefile":["PE", "Structure", "SectionStructure", "ImportDescData", "ImportData",
                   "ResourceDirData", "ResourceDirEntryData", "ResourceDataEntryData"],
     }
@@ -30,7 +30,7 @@ class SafeUnpickler(pickle.Unpickler):
             )
         klass = getattr(mod, name)
         return klass
- 
+
     @classmethod
     def loads(cls, pickle_string):
         return cls(StringIO.StringIO(pickle_string)).load()

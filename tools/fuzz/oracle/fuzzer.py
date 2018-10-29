@@ -219,7 +219,7 @@ select position        "Position",
 
                 index += 1
                 mtypes += (x[2],)
-                
+
                 if func == 0:
                     if index == 1:
                         data += str(x[1]) + "=>:" + str(index)
@@ -249,4 +249,4 @@ END;"""
 
 if __name__ == "__main__":
     main()
-    
+

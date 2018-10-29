@@ -1,17 +1,17 @@
 #       main.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -58,7 +58,7 @@ class MainApp:
             if self.uicore.pyew.format != 'URL' and not os.path.isfile(self.target):
                 print "Incorrect file argument:", FAIL, self.target, ENDC
                 sys.exit(1)
-    
+
             # Use threads to avoid freezing the GUI load
             thread = threading.Thread(target=self.load_file, args=(self.target,))
             thread.start()
@@ -68,7 +68,7 @@ class MainApp:
             self.empty_gui = True
 
 
-        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main") 
+        Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main")
 
         # Create VBox to contain top buttons and other VBox
         self.supervb = Gtk.VBox(False, 1)

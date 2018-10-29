@@ -42,7 +42,7 @@ def urlExtract(pyew, doprint=True):
     pyew.seek(0)
     buf = pyew.f.read()
     ret = []
-    
+
     for x in urlfinders:
         ret += doFind(x, buf)
 
@@ -81,15 +81,15 @@ def doFind(x, buf):
         for url in l:
             if len(url) > 8 and url not in ret:
                 ret.append(url)
-    
+
     return ret
 
 def checkUrls(pyew, doprint=True):
     """ Check URLs of the current file """
-    
+
     oks = []
     urls = urlExtract(pyew, doprint=False)
-    
+
     if len(urls) == 0:
         print "***No URLs found"
         return
@@ -100,11 +100,11 @@ def checkUrls(pyew, doprint=True):
                 sys.stdout.write("Checking %s ... " % url)
                 sys.stdout.flush()
             r = urllib.urlopen(url)
-            
+
             if doprint:
                 sys.stdout.write("OK\n")
                 sys.stdout.flush()
-            
+
             oks.append(url)
         except KeyboardInterrupt:
             print "Aborted"
@@ -112,14 +112,14 @@ def checkUrls(pyew, doprint=True):
         except:
             sys.stdout.write("DOWN\n")
             sys.stdout.flush()
-        
+
     return oks
 
 def checkBad(pyew, doprint=True):
     """ Check for known bad URLs """
-    
+
     returls = []
-    
+
     url = "http://www.malware.com.br/cgi/submit?action=list_adblock"
     try:
         l = urllib.urlopen(url).readlines()
@@ -128,7 +128,7 @@ def checkBad(pyew, doprint=True):
         return
 
     urls = urlExtract(pyew, doprint=False)
-    
+
     if len(urls) == 0:
         print "***No URLs found"
         return
@@ -141,7 +141,7 @@ def checkBad(pyew, doprint=True):
             if url.lower().find(badurl) > -1:
                 if doprint:
                     print "***Found bad URL: %s" % url
-                
+
                 returls.append(url)
                 break
 

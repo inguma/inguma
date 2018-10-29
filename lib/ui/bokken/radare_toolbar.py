@@ -1,17 +1,17 @@
 #       radare_toolbar.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -223,7 +223,7 @@ class TopButtons(Gtk.HBox):
         magic = self.uicore.core.cmd_str('pm')
         #self.uicore.core.cmd0('e io.va=1')
         if magic:
-            md = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, 
+            md = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                 Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, None)
             md.set_icon_from_file(os.path.dirname(__file__)+os.sep+'data'+os.sep+'bokken.svg')
             md.set_markup("<b>Detected file magic:</b>\n\n" + magic)
@@ -284,12 +284,12 @@ class TopButtons(Gtk.HBox):
             model = self.search_combo.get_model()
             active = self.search_combo.get_active()
             option = model[active][1]
-    
+
             results = self.uicore.search(data, self.options_dict[option])
-    
+
             self.create_search_dialog()
             enditer = self.search_dialog.output_buffer.get_end_iter()
-    
+
             for element in results:
                 self.search_dialog.output_buffer.insert(enditer, element)
 

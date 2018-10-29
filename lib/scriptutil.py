@@ -6,7 +6,7 @@ Copyright (c) 2008, Muharem Hrnjadovic
 
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
 
@@ -97,12 +97,12 @@ def ffind(path, shellglobs=None, namefs=None, relative=True):
             else:
                 fileList.extend(['%s%s%s' % (dir, os.sep, f) for f in files])
         if not relative: fileList = map(os.path.abspath, fileList)
-        if namefs: 
+        if namefs:
             for ff in namefs: fileList = filter(ff, fileList)
     except Exception, e: raise ScriptError(str(e))
     return(fileList)
 
-def ffindgrep(path, regexl, shellglobs=None, namefs=None, 
+def ffindgrep(path, regexl, shellglobs=None, namefs=None,
               relative=True, linenums=False):
     """
     Find files in the directory tree starting at 'path' (filtered by
@@ -112,7 +112,7 @@ def ffindgrep(path, regexl, shellglobs=None, namefs=None,
     Additionaly, the file content will be filtered by the regular
     expressions in the 'regexl' sequence. Each entry in the latter
     is a
-    
+
       - either a string (with the regex definition)
       - or a tuple with arguments accepted by re.compile() (the
         re.M and re.S flags will have no effect though)
@@ -139,7 +139,7 @@ def ffindgrep(path, regexl, shellglobs=None, namefs=None,
     @rtype: dict
     @return: file name (key) and lines filtered by 'regexl' (value)
     """
-    fileList = ffind(path, shellglobs=shellglobs, 
+    fileList = ffind(path, shellglobs=shellglobs,
                      namefs=namefs, relative=relative)
     if not fileList: return dict()
 
@@ -254,7 +254,7 @@ def freplace(path, regexl, shellglobs=None, namefs=None, bext='.bak'):
 def printr(results):
     """
     Print the results of the ffind()/ffindgrep() functions.
-    
+
     The output format is similar to the one used by the UNIX find utility.
     """
     if type(results) == types.DictType:

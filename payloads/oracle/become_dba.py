@@ -57,7 +57,7 @@ class CPayload:
 
         for x in cursor.fetchall():
             return True
-        
+
         return False
 
 def main():
@@ -71,4 +71,4 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
+

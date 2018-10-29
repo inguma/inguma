@@ -25,7 +25,7 @@ import os, sys
 from hashlib import sha256
 from pyew_core import CPyew
 
-def primes(n): 
+def primes(n):
     if n==2: return [2]
     elif n<2: return []
     s=range(3,n+1,2)
@@ -59,7 +59,7 @@ class CAdjacencyList(object):
             print "Error:", sys.exc_info()[1]
             l = [pyew.ep]
         functions = []
-        
+
         for ep in l:
             if pyew.functions.has_key(ep):
                 fep = pyew.functions[ep]
@@ -67,9 +67,9 @@ class CAdjacencyList(object):
                     if c in pyew.functions:
                         if c not in functions:
                             functions.append(c)
-                        
+
                         al.append((pyew.function_stats[ep], pyew.function_stats[c]))
-        
+
         dones = []
         while len(functions) > 0:
             addr = functions.pop()
@@ -78,24 +78,24 @@ class CAdjacencyList(object):
                 if c in pyew.functions and c not in dones:
                     functions.append(c)
                     dones.append(c)
-                    
+
                     al.append((pyew.function_stats[addr], pyew.function_stats[c]))
-        
+
         return al
 
     def getSimilarity(self, s1, s2):
         m = max(len(s1), len(s2))
-        
+
         diff1 = len(s1.difference(s2))
         diff2 = len(s2.difference(s1))
         diff = (diff1 + diff2)*100./m
-        
+
         simil1 = len(s1.intersection(s2))
         simil = simil1*100. / m
-        
+
         metric = simil + diff
         diff = diff * 100. / metric
-        
+
         return diff
 
     def compareTwoSets(self, set1, set2):
@@ -103,7 +103,7 @@ class CAdjacencyList(object):
         pyew2 = set2.values()[0]
         al1 = self.createAdjacencyList(pyew1)
         al2 = self.createAdjacencyList(pyew2)
-        
+
         if al1 == al2:
             return 0
         else:
@@ -112,7 +112,7 @@ class CAdjacencyList(object):
             diff = len(s1.difference(s2)) + len(s2.difference(s1))
             total = max(len(s1), len(s2))
             simil = diff * 100. / total
-            
+
             return simil
 
     def cluster(self):
@@ -138,7 +138,7 @@ class CPrimesCluster(object):
                     val *= p
                     primes_done.append(p)
                 dones.append((nodes, edges, cc))
-        
+
         return val, dones
 
     def compareManySets(self, sets):
@@ -150,19 +150,19 @@ class CPrimesCluster(object):
             pyew = s.values()[0]
             val, prime = self.generateHash(pyew)
             hash = sha256(pyew.getBuffer()).hexdigest()
-            
+
             primes[hash] = prime
             values[hash] = val
             files[hash] = pyew.filename
             del pyew
-        
+
         dones = []
         size = len(primes)
         for h1 in values:
             for h2 in values:
                 if h1 == h2 or (h1, h2) in dones or (h2, h1) in dones:
                     continue
-                
+
                 if values[h1] == values[h2]:
                     print "%s;%s;0" % (files[h1], files[h2])
                     dones.append((h1, h2))
@@ -173,22 +173,22 @@ class CPrimesCluster(object):
                     s1 = set(primes[h1])
                     s2 = set(primes[h2])
                     diff = self.getSimilarity(s1, s2)
-                    
+
                     print "%s;%s;%f" % (files[h1], files[h2], diff)
 
     def getSimilarity(self, s1, s2):
         m = max(len(s1), len(s2))
-        
+
         diff1 = len(s1.difference(s2))
         diff2 = len(s2.difference(s1))
         diff = (diff1 + diff2)*100./m
-        
+
         simil1 = len(s1.intersection(s2))
         simil = simil1*100. / m
-        
+
         metric = simil + diff
         diff = diff * 100. / metric
-        
+
         return diff
 
     def compareTwoSets(self, set1, set2):
@@ -198,7 +198,7 @@ class CPrimesCluster(object):
         val2, primes2 = self.generateHash(pyew2)
         s1 = set(primes1)
         s2 = set(primes2)
-        
+
         if val1 == val2:
             return 0
         else:
@@ -221,12 +221,12 @@ class CExpertCluster(object):
         # Get the ciclomatic complexity statistical data of the 2 samples
         ccs1 = set1.values()[0].program_stats["ccs"]
         ccs2 = set2.values()[0].program_stats["ccs"]
-        
+
         avg_cc_distance = abs(ccs1["avg"] - ccs2["avg"])
         max_cc_distance = abs(ccs1["max"] - ccs2["max"])
         min_cc_distance = abs(ccs1["min"] - ccs2["min"])
         total_functions = abs(len(set1.values()[0].functions) - len(set2.values()[0].functions))
-        
+
         difference = avg_cc_distance*0.5 + \
                      max_cc_distance*0.3 + \
                      min_cc_distance*0.1 + \
@@ -258,7 +258,7 @@ class CGraphCluster(object):
         pyew.deepcodeanalysis = self.deep
         pyew.analysis_timeout = 0
         pyew.loadFile(filename)
-        
+
         if pyew.format in ["PE", "ELF"]:
             hash = sha256(pyew.getBuffer()).hexdigest()
             self.data.append({hash:pyew})
@@ -269,7 +269,7 @@ class CGraphCluster(object):
     def comparePrimes(self):
         cluster = CPrimesCluster(self.data)
         val = cluster.cluster()
-        
+
         if val == 0:
             print "Primes system: Programs are 100% equals"
         else:
@@ -278,7 +278,7 @@ class CGraphCluster(object):
     def compareAdjacencyLists(self):
         cluster = CAdjacencyList(self.data)
         val = cluster.cluster()
-        
+
         if val == 0:
             print "ALists system: Programs are 100% equals"
         else:
@@ -287,12 +287,12 @@ class CGraphCluster(object):
     def compareExpert(self):
         cluster = CExpertCluster(self.data)
         val = cluster.cluster()
-        
+
         if val == 0:
             print "Expert system: Programs are 100% equals"
         else:
             print "Expert system: Programs differs in %f%s" % (round(val, 1), "%")
-        
+
         return val
 
     def processFiles(self):

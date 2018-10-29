@@ -1,17 +1,17 @@
 #       main_button_menu.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -39,7 +39,7 @@ class MenuBar(Gtk.Menu):
         newi = Gtk.ImageMenuItem(Gtk.STOCK_NEW, agr)
         newi.connect("activate", self.new_file)
         key, mod = Gtk.accelerator_parse("<Control>N")
-        newi.add_accelerator("activate", agr, key, 
+        newi.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
         self.append(newi)
 
@@ -109,14 +109,14 @@ class MenuBar(Gtk.Menu):
         helpi = Gtk.ImageMenuItem(Gtk.STOCK_HELP, agr)
         helpi.connect("activate", self.show_wiki)
         key, mod = Gtk.accelerator_parse("<Control>H")
-        helpi.add_accelerator("activate", agr, key, 
+        helpi.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
         self.append(helpi)
 
         aboutm = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT, agr)
         aboutm.connect("activate", self.create_about_dialog)
         key, mod = Gtk.accelerator_parse("<Control>A")
-        aboutm.add_accelerator("activate", agr, key, 
+        aboutm.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
         self.append(aboutm)
 
@@ -125,11 +125,11 @@ class MenuBar(Gtk.Menu):
 
         exit = Gtk.ImageMenuItem(Gtk.STOCK_QUIT, agr)
         key, mod = Gtk.accelerator_parse("<Control>Q")
-        exit.add_accelerator("activate", agr, key, 
+        exit.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
 
         exit.connect("activate", self.main.quit)
-        
+
         self.append(exit)
 
     #

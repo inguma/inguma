@@ -32,7 +32,7 @@ webMode = False
 def getRegisterValue(c, register, format = "/s"):
     c.sendline("x %s %s" % (format, register))
     c.expect("(gdb)")
-    
+
     c.readline()
     return c.readline().strip("\r\n")
 
@@ -56,10 +56,10 @@ def gdbRun(cmdline, run = True):
     msg2 = c.readline()
     print msg.strip("\r").strip("\n")
     print msg2.strip("\r").strip("\n")
-    
+
     c.sendline("i r")
     c.expect("(gdb)")
-    
+
     c.readline()
     eax = c.readline().strip("\r\n")
     ecx = c.readline().strip("\r\n")
@@ -81,7 +81,7 @@ def gdbRun(cmdline, run = True):
     print edi
     print eip
     print
-    
+
     instruction = getRegisterValue(c, "$pc", "/i")
     print "Current instruction:", instruction
     print
@@ -95,7 +95,7 @@ def gdbRun(cmdline, run = True):
     strEsi = getRegisterValue(c, "$esi")
     strEdi = getRegisterValue(c, "$edi")
     strEip = getRegisterValue(c, "$eip")
-    
+
     print "EAX", strEax
     print "ECX", strEcx
     print "EDX", strEdx
@@ -162,10 +162,10 @@ def sendssl(pkt, host, port):
 
         if verbose or webMode:
             print "Request (size %d):" % (len(pkt))
-            
+
             if not webMode:
                 print repr(pkt[0:1024])
-                print 
+                print
 
         if not lineMode:
             ssl_sock.send(pkt)
@@ -197,7 +197,7 @@ def sendssl(pkt, host, port):
         if sys.exc_info()[1][0] == 111:
             print "*** Found a bug?"
             print "Waiting for a while...."
-            
+
             if maxthreads == 1:
                 time.sleep(1)
 
@@ -241,7 +241,7 @@ def send(pkt, host, port):
         if verbose and not lineMode:
             print "Request (size %d):" % (len(pkt))
             print repr(pkt[0:1024])
-            print 
+            print
 
         if not lineMode:
             s.send(pkt)
@@ -256,7 +256,7 @@ def send(pkt, host, port):
                     print repr(line[0:4096])
 
                 res = s.recv(128)
-    
+
                 if verbose:
                     print "Response:"
                     print repr(res)
@@ -269,7 +269,7 @@ def send(pkt, host, port):
 
         if sys.exc_info()[1][0] == 111:
             print "*** Found a bug?"
-            
+
             if maxthreads > 1:
                 print "Waiting for a while...."
                 time.sleep(1)
@@ -314,7 +314,7 @@ def checkAlive(host, port, times = 0):
             print
             print "-"*80
             #raise Exception("*** Found a bug?\r\n" + "-"*80)
-        
+
             if startCommand:
                 print "[+] Starting up target program ..."
                 print "[+] Running: %s " % startCommand
@@ -374,8 +374,8 @@ def fuzz(basePacket, host, port, idx):
     mtokens = tokenizePacket(basePacket)
 
     # Fuzzing data
-    strings = ("A", 
-                "%s", "%n", "%x", "%d", 
+    strings = ("A",
+                "%s", "%n", "%x", "%d",
                 "/.", "\\\\", "C:\\", "../", "..\\")
 
     numbers = (-2, -1, 0, 1, 2147483647, 4294967294, -2147483647, -4294967294)
@@ -406,7 +406,7 @@ def fuzz(basePacket, host, port, idx):
             x+= 1
             if x < 0:
                 continue
-                
+
             if verbose:
                 print "Fuzzing var %d:%d" % (i, x)
             tmp = tokens
@@ -421,7 +421,7 @@ def fuzz(basePacket, host, port, idx):
                 x += 1
                 if x < 0:
                     continue
-                
+
                 if verbose:
                     print "Fuzzing var %d:%d:%d" % (i, x, size)
                 tmp = tokens
@@ -434,7 +434,7 @@ def fuzz(basePacket, host, port, idx):
                 j += 1
 
             for char in range(0, 255):
-            
+
                 if chr(char) in ["&", "="]:
                     continue
                 x += 1
@@ -519,9 +519,9 @@ def main():
             """
             Using it will be very hard to identify the bug which makes crashing the server but,
             anyway, it may be usefull (speed!).
-            
+
             If you want to audit a product using threads you should do the following:
-            
+
                 1) Launch the fuzzer with threads (i.e., 256) to see if it crashes
                 2) If you found a crash relaunch the fuzzer using a single thread (unset USE_THREADS)
 

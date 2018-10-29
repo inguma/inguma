@@ -9,11 +9,11 @@ from pyew_core import CPyew
 
 def printData(pyew, path, msg):
     buf = pyew.getBuffer()
-    
+
     print "File  :", path
     print "MD5   :", hashlib.md5(buf).hexdigest()
     print "SHA1  :", hashlib.sha1(buf).hexdigest()
-    print "SHA256:", hashlib.sha256(buf).hexdigest() 
+    print "SHA256:", hashlib.sha256(buf).hexdigest()
     print "Found :", msg
 
 def checkAntidebug(path):

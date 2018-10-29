@@ -154,7 +154,7 @@ webserver = []
 winspdetect = []
 xmlrpc = []
 
-# Brutes 
+# Brutes
 # By default all have elements: target, port and user
 bruteftp = []
 brutehttp = ["url"]

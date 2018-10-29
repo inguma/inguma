@@ -1,17 +1,17 @@
 #       url.py
-#       
+#
 #       copyright 2011 hugo teso <hugo.teso@gmail.com>
-#       
+#
 #       this program is free software; you can redistribute it and/or modify
 #       it under the terms of the gnu general public license as published by
 #       the free software foundation; either version 2 of the license, or
 #       (at your option) any later version.
-#       
+#
 #       this program is distributed in the hope that it will be useful,
 #       but without any warranty; without even the implied warranty of
 #       merchantability or fitness for a particular purpose.  see the
 #       gnu general public license for more details.
-#       
+#
 #       you should have received a copy of the gnu general public license
 #       along with this program; if not, write to the free software
 #       foundation, inc., 51 franklin street, fifth floor, boston,
@@ -33,7 +33,7 @@ def extract(pyew):
     pyew.seek(0)
     buf = pyew.buf
     ret = []
-    
+
     for x in urlfinders:
         ret += doFind(x, buf)
 
@@ -57,7 +57,7 @@ def check(pyew):
 
     oks = []
     urls = extract(pyew)
-    
+
     if len(urls) == 0:
         print "***No URLs found"
         return
@@ -65,7 +65,7 @@ def check(pyew):
     for url in urls:
         try:
             r = urllib.urlopen(url)
-            
+
             oks.append(url)
         except KeyboardInterrupt:
             print "Aborted"
@@ -73,7 +73,7 @@ def check(pyew):
         except:
             sys.stdout.write("DOWN\n")
             sys.stdout.flush()
-        
+
     return oks
 
 def check_bad(pyew):
@@ -81,7 +81,7 @@ def check_bad(pyew):
 
     import sys, urllib
     returls = []
-    
+
     url = "http://www.malware.com.br/cgi/submit?action=list_adblock"
     try:
         l = urllib.urlopen(url).readlines()
@@ -90,7 +90,7 @@ def check_bad(pyew):
         return
 
     urls = extract(pyew)
-    
+
     if len(urls) == 0:
         print "***No URLs found"
         return
@@ -102,7 +102,7 @@ def check_bad(pyew):
             badurl = badurl.strip("\n").strip("\r")
             if url.lower().find(badurl) > -1:
                 print "***Found bad URL: %s" % url
-                
+
                 returls.append(url)
                 break
 

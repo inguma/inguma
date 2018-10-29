@@ -51,7 +51,7 @@ class RMIOutputStream:
     def readPacket(self,  pkt):
         if len(pkt) < 6:
             raise Exception("Invalid RMI packet")
-    
+
         self.header = pkt[:4]
         self.version = pkt[4:5]
         self.protocol = pkt[5:6]
@@ -69,7 +69,7 @@ class RMIInputStream:
         pass
 
 class RMIResponse:
-    
+
     header = ""
     version = ""
     data = ""
@@ -91,10 +91,10 @@ class RMIResponse:
         self.data = pkt[4:]
 
 class RMI:
-    
+
     inStream = None
     outStream = None
-    
+
     def __init__(self):
         self.inStream = RMIInputStream()
         self.outStream = RMIOutputStream()

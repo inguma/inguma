@@ -58,42 +58,42 @@ class KrashLib:
         self.stop = False
     def token2str(self, token):
         buffer = ""
-    
+
         for character in token:
             buffer += str(character)
-    
+
         return buffer
 
     def sendssl(self, packet, host, port):
 
         self.numthreads += 1
-    
+
         try:
             socket.setdefaulttimeout(3000)
             ssl_sock = None
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
+
             if self.verbose:
                 self.om.echo("Connecting to %s:%d" % (host, int(port)))
             else:
                 if self.verbose:
                     sys.stdout.write(".")
                     sys.stdout.flush()
-    
+
             s.connect((host, int(port)))
             ssl_sock = socket.ssl(s)
-    
+
             if self.verbose or self.web_mode:
                 self.om.echo("Request (size %d):" % (len(packet)))
-                
+
                 if not self.web_mode:
                     self.om.echo(repr(packet[0:1024]))
                     self.om.echo()
-    
+
             if not self.line_mode:
                 ssl_sock.send(packet)
                 res = ssl_sock.recv(128)
-    
+
                 if self.verbose:
                     if not self.web_mode:
                         self.om.echo("Response:")
@@ -106,7 +106,7 @@ class KrashLib:
                 for line in StringIO.StringIO(packet):
                     ssl_sock.send(line)
                     res = ssl_sock.recv(128)
-    
+
                     if self.verbose:
                         self.om.echo("Response:")
                         self.om.echo(repr(res))
@@ -116,24 +116,24 @@ class KrashLib:
                     self.om.echo("Exception:")
                     last_error = str(sys.exc_info()[1])
                     self.om.echo(last_error)
-    
+
             if sys.exc_info()[1][0] == 111:
                 self.om.echo("*** Found a bug?")
                 self.om.echo("Waiting for a while....")
-                
+
                 if self.maxthreads == 1:
                     time.sleep(1)
-    
+
 #                    try:
 #                        raw_input("Continue (Ctrl+C or Enter)?")
 #                    except:
 #                        self.om.echo("Ok. Aborted.")
 #                        sys.exit(0)
-    
+
         self.numthreads -= 1
         del ssl_sock
         s.close()
-    
+
         if self.wait_time > 0:
             time.sleep(float(self.wait_time))
 
@@ -144,7 +144,7 @@ class KrashLib:
         try:
             socket.setdefaulttimeout(0.3)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
+
             if self.verbose:
                 self.om.echo("Connecting to %s:%d" % (host, int(port)))
             else:
@@ -152,12 +152,12 @@ class KrashLib:
                     sys.stdout.write(".")
                     sys.stdout.flush()
             s.connect((host, int(port)))
-    
+
             if self.verbose and not self.line_mode:
                 self.om.echo("Request (size %d):" % (len(packet)))
                 self.om.echo(repr(packet[0:1024]))
                 self.om.echo()
-    
+
             if not self.line_mode:
                 s.send(packet)
                 res = s.recv(128)
@@ -169,9 +169,9 @@ class KrashLib:
                     if self.verbose:
                         self.om.echo("Request (size %d):" % (len(line)))
                         self.om.echo(repr(line[0:4096]))
-    
+
                     res = s.recv(128)
-        
+
                     if self.verbose:
                         self.om.echo("Response:")
                         self.om.echo(repr(res))
@@ -181,11 +181,11 @@ class KrashLib:
                     self.om.echo("Exception:")
                     last_error = str(sys.exc_info()[1])
                     self.om.echo(last_error)
-    
+
             if sys.exc_info()[1][0] == 111:
                 self.om.echo("*** Found a bug?")
                 self.om.echo("Waiting for a while....")
-                
+
                 if self.maxthreads > 1:
                     time.sleep(1)
 
@@ -194,10 +194,10 @@ class KrashLib:
 #                    except:
 #                        self.om.echo("Ok. Aborted.")
 #                        sys.exit(0)
-    
+
         self.numthreads -= 1
         s.close()
-    
+
         if self.wait_time > 0:
             time.sleep(float(self.wait_time))
 
@@ -216,7 +216,7 @@ class KrashLib:
                     self.om.echo("Host appears to be down...")
                     self.om.echo("Startup it previous to try krashing something ;)")
                     #sys.exit(0)
-    
+
                 self.om.echo("HEALTH CHECK: Could not connect to host %s at %d" % (host, int(port)))
                 self.om.echo("Host may be dead (Yippie!)")
                 print
@@ -227,7 +227,7 @@ class KrashLib:
                 print
                 self.om.echo("-"*80)
                 #raise Exception("*** Found a bug?\r\n" + "-"*80)
-            
+
                 if self.start_command:
                     self.om.echo("[+] Starting up target program ...")
                     self.om.echo("[+] Running: %s " % self.start_command)
@@ -244,21 +244,21 @@ class KrashLib:
                     time.sleep(3)
 
     def send_wrapper(self, packet, host, port):
-    
+
         if self.health:
             self.check_alive(host, port)
-    
+
         if self.maxthreads > 1 and self.verbose:
             self.om.echo("Using %d thread(s) out of a maximun of %d thread(s)" % (self.numthreads, self.maxthreads))
-    
+
         self.last_packet = packet
-    
+
         while self.numthreads > self.maxthreads:
             if self.verbose:
                 self.om.echo("Waiting for child threads to end...")
-    
+
             time.sleep(0.1)
-    
+
         if self.maxthreads == 1:
             if not self.ssl_mode:
                 self.send(packet, host, port)
@@ -267,17 +267,17 @@ class KrashLib:
         else:
             if self.numthreads >= self.maxthreads:
                 time.sleep(0.5)
-    
+
             if not self.ssl_mode:
                 thread.start_new_thread(self.send, (packet, host, port))
             else:
                 thread.start_new_thread(self.sendssl, (packet, host, port))
 
     def tokenize_packet(self, packet):
-    
+
         ret = []
         buffer = ""
-    
+
         for character in packet:
             if character in self.separators:
                 if buffer != "":
@@ -286,10 +286,10 @@ class KrashLib:
                 buffer = ""
             else:
                 buffer += character
-    
+
         if buffer != "":
             ret.append(buffer)
-    
+
         return ret
 
     def fuzz(self, base_packet, host, port, idx):
@@ -297,66 +297,66 @@ class KrashLib:
         mtokens = self.tokenize_packet(base_packet)
 
         # Fuzzing data
-        strings = ("A", 
-                   "%s", "%n", "%x", "%d", 
+        strings = ("A",
+                   "%s", "%n", "%x", "%d",
                    "/.", "\\\\", "C:\\", "../", "..\\")
         numbers = (-2, -1, 0, 1, 2147483647, 4294967294, -2147483647, -4294967294)
         sizes   = (1, 4, 100, 500, 2000, 5000, 9000, 10000)
-    
+
         tokens = mtokens
         global_counter = 0
-    
+
         # Go over the tokens starting at idx
         for index in range(int(idx), len(mtokens)):
             if not self.stop:
                 tokens = self.tokenize_packet(base_packet)
                 buffer = ""
-        
+
                 # Skip separators and characters to ignore
                 if tokens[index] in self.separators:
                     if tokens[index] in self.ignorechars:
                         continue
-        
+
                 # Used to mark a token as URL parameter
                 is_var = False
-        
+
                 if self.url_mode:
                     if tokens[index-1] == "&":
                         is_var = True
                         continue
                     else:
                         is_var = False
-        
+
                 counter = 0
-        
+
                 # Fuzz with numbers
                 for num in numbers:
                     if not self.stop:
                         counter+= 1
                         if counter < 0:
                             continue
-                            
+
                         if self.verbose:
                             self.om.echo("Fuzzing var %d:%d" % (index, counter))
                         buffer = tokens
                         buffer[index] = num
-            
+
                         self.send_wrapper(self.token2str(buffer), host, port)
                         global_counter += 1
                     else:
                         break
-        
+
                 # Fuzz with different sizes
                 for size in sizes:
                     if not self.stop:
-        
+
                         # Fuzz using defined strings
                         for fuzz_str in strings:
                             if not self.stop:
                                 counter += 1
                                 if counter < 0:
                                     continue
-                                
+
                                 if self.verbose:
                                     self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
                                 buffer = tokens
@@ -365,24 +365,24 @@ class KrashLib:
                                     self.send_wrapper(self.token2str(buffer), host, port)
                                 else:
                                     self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
-                
+
                                 global_counter += 1
                             else:
                                 break
-            
+
                         # Fuzz using all caracters
                         for char in range(0, 255):
                             if not self.stop:
-                        
+
                                 if chr(char) in ["&", "="]:
                                     continue
                                 counter += 1
                                 if counter < 0:
                                     continue
-                
+
                                 if self.verbose:
                                     self.om.echo("Fuzzing var %d:%d:%d" % (index, counter, size))
-                
+
                                 buffer = tokens
                                 buffer[index] = chr(char)*size
                                 if not is_var:

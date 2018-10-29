@@ -1,17 +1,17 @@
 #       left_buttons.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -72,7 +72,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.fcn_pix, False, False, 1)
             fcntb.add(a)
-    
+
             # Sections
             sectb = Gtk.ToggleButton()
             handler = sectb.connect('toggled', self._on_toggle)
@@ -83,7 +83,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.bb_pix, False, False, 1)
             sectb.add(a)
-    
+
             self.pack_start(fcntb, False, False, 0)
             self.pack_start(sectb, False, False, 0)
 
@@ -98,7 +98,7 @@ class LeftButtons(Gtk.VBox):
                 a.pack_start(l, False, False, 1)
                 a.pack_start(self.imp_pix, False, False, 1)
                 imptb.add(a)
-        
+
                 # Exports
                 exptb = Gtk.ToggleButton()
                 handler = exptb.connect('toggled', self._on_toggle)
@@ -109,7 +109,7 @@ class LeftButtons(Gtk.VBox):
                 a.pack_start(l, False, False, 1)
                 a.pack_start(self.exp_pix, False, False, 1)
                 exptb.add(a)
-        
+
                 self.pack_start(imptb, False, False, 0)
                 self.pack_start(exptb, False, False, 0)
         elif option == 'pdf':
@@ -122,7 +122,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.exp_pix, False, False, 1)
             pdftb.add(a)
-        
+
             self.pack_start(pdftb, False, False, 0)
         elif option == 'url':
             # URL
@@ -136,7 +136,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.fcn_pix, False, False, 1)
             lnktb.add(a)
-        
+
             hdrtb = Gtk.ToggleButton()
             handler = hdrtb.connect('toggled', self._on_toggle)
             hdrtb.handler = handler
@@ -146,7 +146,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.exp_pix, False, False, 1)
             hdrtb.add(a)
-        
+
             ccktb = Gtk.ToggleButton()
             handler = ccktb.connect('toggled', self._on_toggle)
             ccktb.handler = handler
@@ -156,7 +156,7 @@ class LeftButtons(Gtk.VBox):
             a.pack_start(l, False, False, 1)
             a.pack_start(self.imp_pix, False, False, 1)
             ccktb.add(a)
-        
+
             self.pack_start(lnktb, False, False, 0)
             self.pack_start(hdrtb, False, False, 0)
             self.pack_start(ccktb, False, False, 0)

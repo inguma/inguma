@@ -55,7 +55,7 @@ class CReplayFuzzer:
 
     def __init__(self, target, port, replayList):
         self.target = target
-        
+
         if not str(port).isdigit():
             self.port = socket.getservbyname(port)
         else:
@@ -68,11 +68,11 @@ class CReplayFuzzer:
         idx = -1
         pocFile = self.pocsDir + "/poc" + str(time.time()) + ".py"
         f = file(pocFile, "w")
-        
+
         buf = ""
         for pkt in self.replayList:
             idx += 1
-            
+
             if idx == self.currentIndex:
                 break
             else:
@@ -82,9 +82,9 @@ class CReplayFuzzer:
         f.writelines("#The last sent packet:\n")
         f.writelines("crashBuf=%s\n\n" % repr(self.lastPacket))
         f.close()
-        
+
         print "Proof of concept %s saved." % pocFile
-        
+
         if self.foundPocs > 100:
             print "Hey brotha, we found more than 100 POC(s)!"
             raw_input("Continue? Ctrl+C to stop...")
@@ -99,7 +99,7 @@ class CReplayFuzzer:
         print
         print "Happy haunting!"
         print
-        
+
         if self.restartCommand == "":
             # Interactive fuzzing session
             ret = raw_input("Continue fuzzing? (y/n) ")
@@ -108,10 +108,10 @@ class CReplayFuzzer:
             else:
                 self.connectSocket()
         else:
-            
+
             print "Saving proof of concept ... "
             self.savePoc()
-            
+
             print "Restarting target ... "
             print "Waiting for a while (%d) ... " % self.restartWait
             time.sleep(self.restartWait)
@@ -121,7 +121,7 @@ class CReplayFuzzer:
 
     def connectSocket(self):
         socket.setdefaulttimeout(self.timeout)
-        
+
         if self.msocket != None:
             try:
                 self.msocket.close()
@@ -129,7 +129,7 @@ class CReplayFuzzer:
                 pass
 
         self.msocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
+
         try:
             self.msocket.connect((self.target, self.port))
         except KeyboardInterrupt:
@@ -206,7 +206,7 @@ class CReplayFuzzer:
                     print "As is packet %d OK" % idx
 
             print "Sending fuzzy packet (Current packet %d - Current index %d) ..." % (self.currentIndex, index)
-            
+
             if self.verbose:
                 print repr(fuzzyPacket)
             else:
@@ -231,21 +231,21 @@ class CReplayFuzzer:
         self.currentIndex = -1
         for pkt in self.replayList:
             self.currentIndex += 1
-            
+
             if self.currentIndex < self.startPacket:
                 continue
 
             libfuzz.fuzzCallback(self.fuzzCallback, pkt, 0, 0, 0, False) # Fast mode
             libfuzz.fuzzCallback(self.fuzzCallback, pkt, 0, 0, 1, False) # Fast mode
-        
+
         print
         print "Fuzzing done!"
-        
+
         if self.foundPocs > 0:
             print
             print "A total of %d POC(s) were saved in directory %s" % (self.foundPocs, self.pocsDir)
             print
         else:
-            print 
+            print
             print "No luck my friend :( Life sucks..."
             print

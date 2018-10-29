@@ -114,7 +114,7 @@ class Display:
 	def Process(self):
 		l_hex, l_char, n_char = '', '', 0
 		
-		self.hand = open(self.file, 'rb')   
+		self.hand = open(self.file, 'rb')
 		self.Header()
 
 		while 1:

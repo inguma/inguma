@@ -1,17 +1,17 @@
 #       pyew_core.py
-#       
+#
 #       Copyright 2011 Hugo Teso <hugo.teso@gmail.com>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -287,7 +287,7 @@ class Core():
                 self.core.previousoffset.append(self.core.offset)
         else:
             self.core.previousoffset.append(self.core.offset)
-        
+
         self.core.f.seek(self.core.offset)
         self.core.buf = self.core.f.read(self.core.bsize)
 
@@ -304,11 +304,11 @@ class Core():
                 self.core.previousoffset.append(self.core.offset)
         else:
             self.core.previousoffset.append(self.core.offset)
-        
+
 #        va = None
 #        if self.core.virtual:
 #            va = self.core.getVirtualAddressFromOffset(self.core.offset)
-#        
+#
 #        if va:
 #            prompt = "[0x%08x:0x%08x]> " % (self.core.offset, va)
 #        else:
@@ -316,12 +316,12 @@ class Core():
 
         if self.cmd == "b":
             tmp = self.core.previousoffset.pop()
-            
+
             if len(self.core.previousoffset) > 0:
                 tmp = self.core.previousoffset[ len(self.core.previousoffset)-1 ]
             else:
                 tmp = 0
-                
+
             self.core.offset = tmp
             self.core.lastasmoffset = tmp
 
@@ -330,7 +330,7 @@ class Core():
         elif self.cmd == "b" and self.last_cmd == "b":
             if len(self.core.previousoffset) < 2:
                 return
-            
+
             tmp = self.core.previousoffset.pop()
             tmp = self.core.previousoffset[ len(self.core.previousoffset)-1 ]
 
@@ -434,7 +434,7 @@ class Core():
             for s in self.pe.sections:
                 if x >= s.VirtualAddress and x <= s.VirtualAddress + s.SizeOfRawData:
                     break
-    
+
             x = x - s.VirtualAddress
             x += s.PointerToRawData
             ep = x
@@ -446,7 +446,7 @@ class Core():
                 self.ep = x
             except:
                 print sys.exc_info()[1]
-    
+
             return hex(va), hex(ep)
 
     def get_file_info(self):
@@ -565,7 +565,7 @@ class Core():
             if cookielib:
                 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
                 urllib2.install_opener(opener)
-        
+
         theurl = self.core.filename
         txdata = None
         txheaders =  {'User-agent' : 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
@@ -601,21 +601,21 @@ class Core():
         self.createSchema(db)
         cur = db.cursor()
         bcontinue = True
-        
+
         try:
             buf = self.core.getBuffer()
             amd5 = md5(buf).hexdigest()
             name = self.core.filename
             sql = """ select * from samples where md5 = ? """
             cur.execute(sql, (amd5, ))
-            
+
             for row in cur.fetchall():
                 if row[4] != name:
                     print "NOTICE: File was previously analyzed (%s)" % row[4]
                     print
                 bcontinue = False
             cur.close()
-            
+
             if bcontinue:
                 self.saveSample(db, pyew, buf, amd5)
         except:
@@ -628,26 +628,26 @@ class Core():
             asha256 = sha256(buf).hexdigest()
             name = self.core.filename
             format = self.core.format
-            
+
             cur = db.cursor()
             sql = """ insert into samples (md5, sha1, sha256, filename, type)
                                    values (?, ?, ?, ?, ?)"""
             cur.execute(sql, (amd5, asha1, asha256, name, format))
             rid = cur.lastrowid
-            
+
             sql = """ insert into function_stats (sample_id, addr, nodes, edges, cc)
                                           values (?, ?, ?, ?, ?) """
             for f in self.core.function_stats:
                 addr = "0x%08x" % f
                 nodes, edges, cc = self.core.function_stats[f]
                 cur.execute(sql, (rid, addr, nodes, edges, cc))
-            
+
             sql = """ insert into antidebugs (sample_id, addr, mnemonic) values (?, ?, ?) """
             for antidbg in self.core.antidebug:
                 addr, mnem = antidbg
                 addr = "0x%08x" % addr
                 cur.execute(sql, (rid, addr, mnem))
-            
+
             db.commit()
         except:
             print sys.exc_info()[1]
@@ -658,12 +658,12 @@ class Core():
             sql = """create table samples (id integer not null primary key,
                                            md5, sha1, sha256, filename, type)"""
             db.execute(sql)
-            
+
             sql = """create table function_stats (
                             id integer not null primary key,
                             sample_id, addr, nodes, edges, cc)"""
             db.execute(sql)
-            
+
             sql = """create table antidebugs (
                             id integer not null primary key,
                             sample_id, addr, mnemonic

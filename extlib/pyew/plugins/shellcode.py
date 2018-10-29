@@ -37,7 +37,7 @@ def shellcodeSearch(pyew):
     if hasLibEmu:
         emu = libemu.Emulator()
         ret = emu.test(pyew.buf)
-        
+
         if ret:
             if ret > 0:
                 print "HINT[emu:0x%x] %x" % (moffset + ret, repr(buf[ret:ret+options.cols]))

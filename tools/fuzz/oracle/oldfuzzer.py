@@ -51,7 +51,7 @@ def fuzzData(data, index):
 
             cur = connection.cursor()
             cur.execute(data, varList)
-            
+
         except:
             error = str(sys.exc_info()[1])
 
@@ -88,7 +88,7 @@ def connect():
 
 def isFunc(data, index, cursorData):
     global connection
-    
+
     try:
         varList = []
 
@@ -103,7 +103,7 @@ def isFunc(data, index, cursorData):
                 data += str(x[1]) + "=>:" + str(index)
             else:
                 data += "," + str(x[1]) + "=>:" + str(index)
-        
+
         data += """);
 end;"""
 
@@ -112,7 +112,7 @@ end;"""
 
         cur = connection.cursor()
         cur.execute(data, varList)
-        
+
         return 0
     except:
         error = str(sys.exc_info()[1])
@@ -120,7 +120,7 @@ end;"""
             return 1
         else:
             return 0
-    
+
 def die(msg):
     print msg
     sys.exit(0)
@@ -130,9 +130,9 @@ def main():
 
     fuzzPackages = """
  select distinct owner           "Owner",
-       package_name    "Package",       
-       package_name    "Package",       
-       package_name    "Package",       
+       package_name    "Package",
+       package_name    "Package",
+       package_name    "Package",
        object_name     "Program_Unit"
   from sys.all_arguments x
  where argument_name is not null
@@ -159,7 +159,7 @@ select position        "Position",
   from sys.all_arguments
  where argument_name is not null
    and owner = :1
-   and (:2 is null or 
+   and (:2 is null or
         instr(upper(object_name),upper(:3)) > 0 or
         instr(upper(package_name),upper(:4)) > 0 )
    and object_name = :5
@@ -180,7 +180,7 @@ select position        "Position",
         """
 
         pkgName = ""
-        
+
         func = 0
 
         print "Running first query. It may take a long while ... "
@@ -227,7 +227,7 @@ select position        "Position",
                         data += "," + str(x[1]) + "=>:" + str(index)
                     else:
                         data += ", :" + str(index)
-            
+
             if func == 0:
                 data += """);
 end;"""
@@ -245,8 +245,8 @@ end;"""
         print "Error",e
         print "While fuzzing index",totalProcs,"relative to",pkgName
         raise e
-    
-    print 
+
+    print
     print "Fuzzed",totalProcs,"procedure(s) and function(s)."
     print "Done."
 

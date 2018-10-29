@@ -22,7 +22,7 @@ e0 -> X.224: Type (high nibble) = 0xe = CR TPDU; credit (low nibble)	= 0
 00 00 -> X.224: Source reference = 0
 00 -> X.224: Class and options = 0
 
-43 6f 6f 6b 69 65 3a 20 6d 73 74 73 68 61 73 68 
+43 6f 6f 6b 69 65 3a 20 6d 73 74 73 68 61 73 68
 3d 65 6c 74 6f 6e 73 -> "Cookie: mstshash=eltons"
 0d -> CR (carriage return)
 0a -> LF (line feed)
@@ -128,9 +128,9 @@ def callback(data, var):
         print "  --> Received response %d byte(s)" % len(s.recv(4096))
         print "  --> Sending fuzzy data ... "
         print "--- THE BUF ---"
-        print 
+        print
         print repr(data)
-        print 
+        print
         print "--- END BUF ---"
         try:
             s.sendall(data)

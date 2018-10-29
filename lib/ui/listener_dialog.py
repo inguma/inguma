@@ -177,7 +177,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
         colormap = widget.get_colormap()
         #bg_ok = colormap.alloc_color("white")
         bg_not_valid = colormap.alloc_color("red")
-    
+
         if port and port != 'Port to listen':
             self.uicore.create_listener(host, int(port))
             self._quit(widget)
@@ -191,7 +191,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
         colormap = widget.get_colormap()
         #bg_ok = colormap.alloc_color("white")
         bg_not_valid = colormap.alloc_color("red")
-    
+
         if port and port != 'Port to listen':
             self.uicore.create_listener(host, int(port))
             self._quit(widget)

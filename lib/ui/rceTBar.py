@@ -1,18 +1,18 @@
 #       rcemenu.py
-#       
+#
 #       Copyright 2009 Hugo Teso <hugo.teso@gmail.com>
 #       Based on code from w3af by Andres Riancho (w3af.sourceforge.net)
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -86,7 +86,7 @@ class RceMenu(Gtk.HBox):
 
 class SemiStockButton(Gtk.Button):
     '''Takes the image from the stock, but the label which is passed.
-    
+
     @param text: the text that will be used for the label
     @param image: the stock widget from where extract the image
     @param tooltip: the tooltip for the button
@@ -101,10 +101,10 @@ class SemiStockButton(Gtk.Button):
         self.label.set_text(text)
         if tooltip is not None:
             self.set_tooltip_text(tooltip)
-            
+
     def changeInternals(self, newtext, newimage, tooltip=None):
         '''Changes the image and label of the widget.
-    
+
         @param newtext: the text that will be used for the label
         @param newimage: the stock widget from where extract the image
         @param tooltip: the tooltip for the button

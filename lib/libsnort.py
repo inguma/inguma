@@ -36,12 +36,12 @@ class CSnortRule:
     rev = ""
     pcre = ""
     reference = ""
-    
+
     def getProperties(self):
         return ("msg", "flow", "content", "classtype", "sid", "rev", "pcre", "reference")
-    
+
     def setProperty(self, param, value):
-    
+
         if value.startswith('"') and value.endswith('"'):
             # Strip the starting and ending quotes
             value = value[1:len(value)-1]
@@ -75,25 +75,25 @@ class CSnortRuleParser:
 
     def processLine(self, line):
         """
-        
-        Example rule: 
 
-        alert tcp $EXTERNAL_NET any -> $SQL_SERVERS $ORACLE_PORTS (msg:"ORACLE misparsed login response"; flow:from_server,established; 
-        content:"description=|28|"; nocase; content:!"connect_data=|28|sid="; nocase; content:!"address=|28|protocol=tcp"; nocase; 
+        Example rule:
+
+        alert tcp $EXTERNAL_NET any -> $SQL_SERVERS $ORACLE_PORTS (msg:"ORACLE misparsed login response"; flow:from_server,established;
+        content:"description=|28|"; nocase; content:!"connect_data=|28|sid="; nocase; content:!"address=|28|protocol=tcp"; nocase;
         classtype:suspicious-login; sid:1675; rev:4;)
         """
         data = line
         pos = data.find("(")
-        
+
         if pos == -1:
             return False
 
         data = data[pos+1:len(data)-1]
         objRule = CSnortRule()
-        
+
         for element in data.split(";"):
             properties = element.split(":")
-            
+
             if len(properties) == 2:
                 if properties[0].lstrip() in objRule.getProperties():
                     objRule.setProperty(properties[0].lstrip(), properties[1])
@@ -101,7 +101,7 @@ class CSnortRuleParser:
         self.rules.append(objRule)
 
     def parse(self, mfile):
-        
+
         f = file(self.path + os.sep + mfile, "r")
 
         for line in f:

@@ -207,15 +207,15 @@ class Searchable(object):
 
     def highlight(self, text, tag='yellow-background', case_sensitive=True):
         """Find the text, and handle highlight."""
-        
+
         # Before searching, I clean the text parameter, as it might contain
         # null bytes, which will trigger an error like:
         # TypeError: GtkTextIter.forward_search() argument 1 must be string without null bytes, not str
         text = str(text)
         text = text.replace('\x00','')
         # TODO: Will the highlighting succeed? How's the text with \0's actually
-        # printed in the textview? 
-        
+        # printed in the textview?
+
         flags = Gtk.TextSearchFlags.VISIBLE_ONLY
         startIter =  self.textbuf.get_start_iter()
         # find the positions where the phrase is found
@@ -257,7 +257,7 @@ class Searchable(object):
 #
 class SemiStockButton(Gtk.Button):
     '''Takes the image from the stock, but the label which is passed.
-    
+
     @param text: the text that will be used for the label
     @param image: the stock widget from where extract the image
     @param tooltip: the tooltip for the button
@@ -272,10 +272,10 @@ class SemiStockButton(Gtk.Button):
         self.label.set_text(text)
         if tooltip is not None:
             self.set_tooltip_text(tooltip)
-            
+
     def changeInternals(self, newtext, newimage, tooltip=None):
         '''Changes the image and label of the widget.
-    
+
         @param newtext: the text that will be used for the label
         @param newimage: the stock widget from where extract the image
         @param tooltip: the tooltip for the button

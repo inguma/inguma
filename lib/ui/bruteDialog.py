@@ -75,7 +75,7 @@ class BruteDialog(Gtk.Dialog):
 
     def _setInputText(self, widget, close=False):
         '''Checks the entry to see if it has text.
-        
+
         @param close: If True, the Dialog will be closed.
         '''
         if not self._allWithText():

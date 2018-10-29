@@ -172,7 +172,7 @@ if __name__ == "__main__":
     print "#include <stdio.h>"
     print
     print 'char *sc="%s";' % sc
-    print 
+    print
     print "/** Disassembly"
     print "*"
 

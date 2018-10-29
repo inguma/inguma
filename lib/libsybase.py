@@ -37,7 +37,7 @@ magicNumber2 = "512"
 def makeSqlServerPacket(hostname = "", username = "sa", password = "test", encoding = "iso_1",
                                                     appName = "example1", ip_address = "192.168.1.14", language = "english", dbname = "master"):
 
-    packet = '\x02\x00\x02\x00\x00\x00\x00\x00' # Packet header 
+    packet = '\x02\x00\x02\x00\x00\x00\x00\x00' # Packet header
     packet += hostname + "\x00"*(MAX_HOST_SIZE - len(hostname)) + int2hex(len(hostname))
     packet += username + "\x00"*(MAX_USER_SIZE - len(username)) + int2hex(len(username))
     packet += dbname + "\x00"*(MAX_USER_SIZE - len(dbname)) + int2hex(len(password))
@@ -51,7 +51,7 @@ def makeSqlServerPacket(hostname = "", username = "sa", password = "test", encod
     packet += "L\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
     packet += encoding + "\x00"*(MAX_ENCODING_SIZE - len(encoding)) + int2hex(len(encoding)) + "\x01"
     packet += magicNumber2 + "\x00\x00\x00" + int2hex(len(magicNumber2)) + "\x00\x00\x00\x00\x00\x00\x00\x00"
-    
+
     return packet
 
 class CSybaseLib:
@@ -70,7 +70,7 @@ class CSybaseLib:
 
     def getLoginPacket(self):
         self.dbname = self.password
-        packet = '\x02\x00\x02\x00\x00\x00\x00\x00' # Packet header 
+        packet = '\x02\x00\x02\x00\x00\x00\x00\x00' # Packet header
         packet += self.hostname + "\x00"*(MAX_HOST_SIZE - len(self.hostname)) + int2hex(len(self.hostname))
         packet += self.username + "\x00"*(MAX_USER_SIZE - len(self.username)) + int2hex(len(self.username))
         packet += self.dbname + "\x00"*(MAX_USER_SIZE - len(self.dbname)) + int2hex(len(self.dbname))

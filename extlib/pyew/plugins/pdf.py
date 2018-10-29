@@ -233,7 +233,7 @@ def pdfInfo(pyew, doprint=True):
        f.close()
     else:
         filename = pyew.filename
-    
+
     print PDFiD2String(PDFiD(filename, False, True, False, False), False)
 
 def pdfStreams(pyew, doprint=True, get_buf=False):
@@ -249,9 +249,9 @@ def pdfStreams(pyew, doprint=True, get_buf=False):
     for token in tokens:
         if token == '':
             continue
-        
+
         token = unescape(token)
-        
+
         if token == "Filter":
             bfilters = True
         elif token == "stream":
@@ -306,7 +306,7 @@ def pdfViewStreams(pyew, doprint=True, stream_id=-1, gui=False):
                                 continue
                         else:
                             dones.append(filter)
-                        
+
                         if filter == "FlateDecode":
                             tmp = zlib.decompress(tmp.strip("\r").strip("\n"))
                         elif filter == "ASCIIHexDecode":
@@ -320,11 +320,11 @@ def pdfViewStreams(pyew, doprint=True, stream_id=-1, gui=False):
                     except:
                         failed = True
                         print "Error applying filter %s" % filter, sys.exc_info()[1]
-                
+
                 print "Encoded Stream %d" % streams
             else:
                 print "Stream %d" % streams
-            
+
             if not gui:
                 print "-"*80
                 if tmp.find("\x00") == -1:
@@ -337,21 +337,21 @@ def pdfViewStreams(pyew, doprint=True, stream_id=-1, gui=False):
                     textbox("Stream %d" % streams, "Stream", tmp)
                 else:
                     codebox("Stream %d" % streams, "Stream", pyew.hexdump(tmp, pyew.hexcolumns))
-            
+
             if tmp.find("\x00") > -1 and not failed and not gui:
                 res = raw_input("Show disassembly (y/n)? [n]: ")
                 if res == "y":
                     print pyew.disassemble(tmp)
-        
+
         buf = buf[pos2+11:]
         if buf.find("stream") == -1:
             break
-        
+
         if stream_id == -1:
             try:
                 if not gui:
                     res = raw_input("Continue? ")
-                    
+
                     if res in ["q", "n"]:
                         break
                 else:
@@ -389,10 +389,10 @@ def pdfSeekObj(pyew, args=None):
     if args == None:
         print "An argument is required"
         return False
-    
+
     num = args[0].strip(" ")
     d = pyew.dosearch(pyew.f, "r", "\d+ \d+ obj.*", cols=60, doprint=False, offset=0)
-    
+
     for element in d:
         pos = element.keys()[0]
         if element.values()[0].split(" ")[0] == num:
@@ -407,7 +407,7 @@ def pdfSeekStream(pyew, args = None):
     if not args:
         print "An argument is required"
         return False
-    
+
     l = pdfStream(pyew, doprint=False)
     num = int(args[0])-1
     if num > len(l):

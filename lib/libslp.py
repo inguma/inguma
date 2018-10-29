@@ -21,7 +21,7 @@ MA 02110-1301, USA.
 class CSlp:
     """
     Library for the Service Location Protocol
-    
+
     It's used, i.e., by IBM Corporation (IBM Director, etc...).
     """
     version = 0x2

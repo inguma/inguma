@@ -96,7 +96,7 @@ class CSidGuess(CIngumaBruteModule):
         pass
 
     def tryEm(self):
-        """ 
+        """
         Get the Database's SID from the Enterprise Manager web page.
         Thanks to Alexander Kornbrust.
         """
