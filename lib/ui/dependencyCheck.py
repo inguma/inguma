@@ -18,6 +18,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+from __future__ import print_function
 import os, sys, platform
 
 def gtkui_dependency_check(config):
@@ -30,8 +31,8 @@ def gtkui_dependency_check(config):
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
-    print 'Checking:'
-    print '\tGTK UI dependencies...',
+    print('Checking:')
+    print('\tGTK UI dependencies...', end='')
 
     # Check Gtk
     try:
@@ -39,127 +40,127 @@ def gtkui_dependency_check(config):
         gi.require_version('Gtk', '3.0')
         from gi.repository import Gtk
         assert Gtk.get_major_version(), Gtk.get_minor_version() >= (3, 14)
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print FAIL + "D'oh!" + ENDC
+        print(FAIL + "D'oh!" + ENDC)
         msg = 'You have to install GTK and PyGTK versions >=3.14 to be able to run the GTK user interface.\n'
         msg += '    - On Debian-based distributions: apt-get install python-gtk2\n'
         msg += '    - On Mac: sudo port install py25-gtk'
-        print msg
+        print(msg)
         sys.exit( 1 )
 
     # Check Scapy
     try:
-        print "\tScapy...",
+        print("\tScapy...", end='')
         import scapy.all as scapy
-        print OKGREEN + "\t\tOK" + ENDC
+        print(OKGREEN + "\t\tOK" + ENDC)
     except:
-        print FAIL + "\tD'oh!" + ENDC
-        print WARNING + "No scapy found" + ENDC
+        print(FAIL + "\tD'oh!" + ENDC)
+        print(WARNING + "No scapy found" + ENDC)
         sys.exit( 1 )
 
     # Check Network
     try:
-        print "\tNetwork connectivity...",
-        for net,msk,gw,iface,addr in scapy.read_routes():
+        print("\tNetwork connectivity...", end='')
+        for net, mask, gw, iface, addr, metric in scapy.read_routes():
             if iface == scapy.conf.iface and gw != '0.0.0.0':
                 pass
         if gw:
-            print OKGREEN + "\tOK" + ENDC
+            print(OKGREEN + "\tOK" + ENDC)
         else:
             raise Exception("D'Oh!")
     except:
-        print FAIL + "\tD'oh!" + ENDC
-        print WARNING + "No network connectivity found" + ENDC
-        sys.exit( 1 )
+        print(FAIL + "\tD'oh!" + ENDC)
+        print(WARNING + "No network connectivity found" + ENDC)
+        sys.exit(1)
 
-    # Check tkSourceView2
+    # Check GtkSourceView2
     try:
-        print "\tGtkSourceView2...",
+        print("\tGtkSourceView2...", end='')
         import gtksourceview2 as gtksourceview
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "GtkSourceView2 not found, module and exploits editors will be disabled" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "GtkSourceView2 not found, module and exploits editors will be disabled" + ENDC)
         config.HAS_SOURCEVIEW = False
 
     # Check Vte
     try:
-        print "\tVTE Terminal...",
+        print("\tVTE Terminal...", end='')
         gi.require_version('Vte', '2.91')
         from gi.repository import Vte
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "VTE Terminal not found, Sniffer, Scapy, and terminals will be disabled" + ENDC)
         config.HAS_VTE = False
 
     # Check Impacket
     try:
-        print "\tImpacket library...",
+        print("\tImpacket library...", end='')
         import impacket
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "Impacket library not found, some modules would not work" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "Impacket library not found, some modules would not work" + ENDC)
 
     # Check PySNMP
     try:
-        print "\tPySNMP library...",
+        print("\tPySNMP library...", end='')
         import pysnmp
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "PySNMP library not found, some modules would not work" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "PySNMP library not found, some modules would not work" + ENDC)
 
     # Check GeoIP
     try:
-        print "\tGeoIP library...",
+        print("\tGeoIP library...", end='')
         import GeoIP
-        print OKGREEN + "\tOK" + ENDC
+        print(OKGREEN + "\tOK" + ENDC)
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "GeoIP library not found, some modules would not work" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "GeoIP library not found, some modules would not work" + ENDC)
         config.HAS_GEOIP = False
 
     # Check Nmap
     try:
-        print "\t" + config.NMAP_PATH + "...",
+        print("\t" + config.NMAP_PATH + "...", end='')
         if os.path.exists(config.NMAP_PATH):
-            print OKGREEN + "\tOK" + ENDC
+            print(OKGREEN + "\tOK" + ENDC)
         else:
             raise
     except:
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC)
         config.HAS_NMAP = False
 
     # Check Graphviz
-    print "\tGraphviz binaries...",
+    print("\tGraphviz binaries...", end='')
     if os.environ.has_key('PATH'):
         for path in os.environ['PATH'].split(os.pathsep):
             progs = __find_executables(path)
 
             if progs is not None :
-                #print progs
-                print OKGREEN + "\tOK" + ENDC
+                #print(progs)
+                print(OKGREEN + "\tOK" + ENDC)
                 return
 
-        print WARNING + "\tD'oh!" + ENDC
-        print WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC
+        print(WARNING + "\tD'oh!" + ENDC)
+        print(WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC)
         sys.exit( 1 )
 
 #   Not yey necessary
 #    # Check w3af
 #    try:
-#        print "\t" + config.W3AF_PATH + "...",
+#        print("\t" + config.W3AF_PATH + "...", end='')
 #        if os.path.exists(config.W3AF_PATH):
-#            print OKGREEN + "\tOK" + ENDC
+#            print(OKGREEN + "\tOK" + ENDC)
 #        else:
 #            raise
 #    except:
-#        print WARNING + "\tD'oh!" + ENDC
-#        print WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC
+#        print(WARNING + "\tD'oh!" + ENDC)
+#        print(WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC)
 #        config.HAS_W3AF = False
 
 def __find_executables(path):
@@ -193,7 +194,7 @@ def __find_executables(path):
 
         for prg in progs.iterkeys():
 
-            #print prg
+            #print(prg)
             if progs[prg]:
                 continue
 

@@ -22,6 +22,8 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
+import sys
+
 try:
     import scapy.all as scapy
     from scapy.modules.nmap import *

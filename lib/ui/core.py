@@ -202,12 +202,12 @@ class UIcore():
             return False
 
     def getLocalGW(self):
-        for net,msk,gw,iface,addr in scapy.read_routes():
+        for net, msk, gw, iface, addr, metric in scapy.read_routes():
             if iface == scapy.conf.iface and gw != '0.0.0.0':
                 return gw
 
     def getLocalNetwork(self):
-        for net,msk,gw,iface,addr in scapy.read_routes():
+        for net, msk, gw, iface, addr, metric in scapy.read_routes():
             if iface == scapy.conf.iface and scapy.ltoa(msk) != '0.0.0.0':
                 net = IPy.IP( str(net) + "/" + scapy.ltoa(msk) )
                 return net
