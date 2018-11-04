@@ -99,7 +99,7 @@ class MainApp(Gtk.Window):
     def __init__(self):
         super(MainApp, self).__init__()
 
-#        #################################################################################################################################
+#        #################################################################
 #        # Load and apply gtkrc
 #        #################################################################
 #        # No exception control because rc_parse doesn't throw exception on fail... sad but true ;)
@@ -123,11 +123,11 @@ class MainApp(Gtk.Window):
         # Create config
         self.config = config
 
-        #################################################################################################################################
+        #################################################################
         # Create a new window
         #################################################################
         splash.push(("Creating main window..."))
-        self.set_icon_from_file('logo' + os.sep + 'inguma_16.png')
+        self.set_icon_from_file(os.path.join('logo', 'inguma_16.png'))
         self.set_focus = True
         self.connect("delete_event", self._quit)
         splash.push(("Loading..."))
@@ -142,10 +142,10 @@ class MainApp(Gtk.Window):
         # Maximize window
         self.maximize()
 
-        #################################################################################################################################
+        #################################################################
         # Load UIcore...
         #################################################################
-        #Initialize KB
+        # Initialize KB
         splash.push(("Loading KB..."))
         self.uicore = uicore.UIcore(self.gom)
         self.uicore.add_local_asn()
@@ -155,7 +155,7 @@ class MainApp(Gtk.Window):
         setattr(self.uicore, 'SHOW_MODULE_WIN', self.config.SHOW_MODULE_WIN)
         self.uicore.set_om(self.gom)
 
-        #################################################################################################################################
+        #################################################################
         # Main VBox
         #################################################################
         mainvbox = Gtk.VBox(False, 1)
@@ -163,7 +163,7 @@ class MainApp(Gtk.Window):
         self.add(mainvbox)
         mainvbox.show()
 
-        #################################################################################################################################
+        #################################################################
         # ToolBar
         #################################################################
         splash.push(("Creating menu and toolbar..."))
@@ -179,7 +179,7 @@ class MainApp(Gtk.Window):
             self.toolbar.sniffer_tb.set_sensitive(False)
             self.toolbar.scapy_tb.set_sensitive(False)
 
-        #################################################################################################################################
+        #################################################################
         # Map tab
         #################################################################
         # Will contain on top the notebook and on bottom log window
@@ -215,7 +215,7 @@ class MainApp(Gtk.Window):
         setattr(self.uicore, 'xdot', self.xdotw)
         self.uicore.getDot(doASN=False)
 
-        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+        self.xdotw.set_dotcode(self.uicore.get_last_dot())
         self.xdotw.zoom_image(1.0)
 
         #################################################################
@@ -302,7 +302,7 @@ class MainApp(Gtk.Window):
         self.notebook.set_action_widget(self.log_btn, Gtk.PackType.END)
         self.log_btn.show()
 
-        #################################################################################################################################
+        #################################################################
         # Consoles Tab
         #################################################################
         label = Gtk.Label(label=' Terminals')
@@ -329,7 +329,7 @@ class MainApp(Gtk.Window):
         self.terms_paned.show_all()
         self.notebook.append_page(self.terms_paned, b)
 
-        #################################################################################################################################
+        #################################################################
         # RCE Iface
         #################################################################
 
@@ -356,7 +356,7 @@ class MainApp(Gtk.Window):
 #            self.bokken_tb.init_core()
             self.bokken_tb.hide()
 
-        #################################################################################################################################
+        #################################################################
         # Xploit Iface
         #################################################################
         # Exploits Notebook for Exploit DB, Fuzzing and Exploit Dev
@@ -423,7 +423,7 @@ class MainApp(Gtk.Window):
         self.notebook.show()
 
 
-        #################################################################################################################################
+        #################################################################
         # Log Window
         #################################################################
         self.logtext = Gtk.TextView(buffer=None)
@@ -523,12 +523,12 @@ class MainApp(Gtk.Window):
         # Must be connected here to avoid errors due to bottom_nb not yet existing
         self.exploits_nb.connect("switch_page", self.on_exploits_switch)
 
-        #################################################################################################################################
-        #StatusBar
+        #################################################################
+        # StatusBar
         #################################################################
         self.statusbar = statusbar.Statusbar()
         self.statusbar.create_statusbar()
-        self.statusbar.add_text(None, core.get_inguma_version())
+        self.statusbar.add_text(None, glob.version)
         mainvbox.pack_end(self.statusbar, False, False, 1)
 
         if self.config.HAS_SOURCEVIEW:
@@ -542,7 +542,7 @@ class MainApp(Gtk.Window):
         # Systray
         self.systray = systray.Systray(self)
 
-        #################################################################################################################################
+        #################################################################
         # finish it
         #################################################################
         self.vpaned.show()
@@ -563,7 +563,7 @@ class MainApp(Gtk.Window):
                 self.treeview.update_tree()
 
                 # Adding text to Log window
-                self.gom.echo( 'Loaded' , False)
+                self.gom.echo('Loaded', False)
             else:
                 libAutosave.remove_kb()
 
@@ -572,14 +572,14 @@ class MainApp(Gtk.Window):
 
         # Update Map
         self.uicore.getDot(False)
-        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+        self.xdotw.set_dotcode(self.uicore.get_last_dot())
         self.treeview.update_tree()
         self.treeview.expand_all()
         self.xdotw.zoom_image(1.0)
 
         Gtk.main()
 
-#################################################################################################################################
+#################################################################
 # Functions
 #################################################################
 
@@ -678,10 +678,10 @@ class MainApp(Gtk.Window):
         if opt != Gtk.ResponseType.YES:
             return True
 
-        self.gom.echo( 'Killing all listeners', False)
+        self.gom.echo('Killing all listeners', False)
         self.uicore.kill_all_listeners()
         self.uicore.remove_dot_file()
-        self.gom.echo( 'Exit!', False)
+        self.gom.echo('Exit!', False)
         Gtk.main_quit()
         if glob.http_server:
             glob.http.terminate()
@@ -691,7 +691,7 @@ class MainApp(Gtk.Window):
     def run_debugger(self, widget):
         '''run vdbbin GUI'''
 
-        t = threading.Thread( target=os.popen('lib/debugger/vdbbin -G') )
+        t = threading.Thread(target=os.popen('lib/debugger/vdbbin -G'))
         t.start()
 
 def main():

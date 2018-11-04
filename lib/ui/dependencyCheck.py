@@ -78,6 +78,7 @@ def gtkui_dependency_check(config):
     # Check GtkSource
     try:
         print("\tGtkSource...", end='')
+        gi.require_version('GtkSource', '3.0')
         from gi.repository import GtkSource
         print(OKGREEN + "\tOK" + ENDC)
         # Having GtkSource enables Bokken and hell breaks loose.

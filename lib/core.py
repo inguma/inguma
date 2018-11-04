@@ -22,7 +22,11 @@
 """ This library has core functions used in Inguma that don't fit anywhere
 else. """
 
+import os
 import sys
+
+import lib.globals as glob
+import lib.ui.cli.core as clicore
 
 try:
     import scapy.all as scapy
@@ -74,7 +78,7 @@ def regexp2pyre(regexp):
 
     return buf
 
-def isIpAddr4(data):
+def is_ip_addr4(data):
     """ Verification function for IPv4 addresses """
     x = data.split("/")
 
@@ -92,8 +96,7 @@ def isIpAddr4(data):
                 except:
                     return False
         return True
-    else:
-        return False
+    return False
 
 def getMacVendor(mac):
     """ Extract the card vendor from a MAC address """
@@ -131,7 +134,6 @@ def getProtocolName(proto):
 
 def check_args():
     '''Checks arguments in the command line to trigger special options.'''
-    import lib.globals as glob
 
     for arg in sys.argv:
         if arg.lower() == "-d" or arg.lower() == "--debug":
@@ -139,19 +141,18 @@ def check_args():
         elif arg.lower() == "-w":
             glob.http_server = True
         elif arg.lower() == "-h" or arg.lower() == "--help":
-            uicore.usage(gom)
+            clicore.usage(glob.gom)
             sys.exit(0)
 
     return True
 
 def check_distorm_lib(path):
     """Returns True if the distorm library exists at the supplied path"""
-    import os
+
     return os.path.isfile(path + 'libdistorm64.so')
 
 def create_profile_dir():
     """ Tries to create ~/.inguma in the user's homedir. """
-    import os
 
     inguma_homedir = get_profile_file_path('')
 
@@ -165,15 +166,8 @@ def create_profile_dir():
         print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
         return False
 
-def get_inguma_version():
-    """ Returns the current version. """
-    import lib.globals as glob
-
-    return glob.version
-
 def get_profile_file_path(item):
     """ This function returns the proper file path for loading/saving personal
     data in user's homedir. """
-    import os
 
-    return os.path.expanduser('~' + os.sep + '.inguma' + os.sep + item)
+    return os.path.expanduser(os.path.join('~', '.inguma', item))

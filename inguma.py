@@ -590,7 +590,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                 else:
                     user_data["hosts"] = [target]
 
-            if not core.isIpAddr4(target) and target.lower().strip(" ") != "localhost":
+            if not core.is_ip_addr4(target) and target.lower().strip(" ") != "localhost":
                 showLaunch("whois", "Getting whois database information target %s\n" % target)
 
             if target.find("/") == -1:

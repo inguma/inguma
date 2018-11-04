@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import gi
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 class ModuleDialog(Gtk.Dialog):
     '''Window to popup module output'''

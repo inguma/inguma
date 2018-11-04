@@ -18,19 +18,21 @@
 #       MA 02110-1301, USA.
 
 import os
-from gi.repository import Gtk
+from gi.repository import GdkPixbuf, Gtk
+
+import lib.globals as glob
 
 class AboutDialog():
     '''About dialog'''
 
     def create_dialog(self):
-        from lib.core import get_inguma_version
-
         about = Gtk.AboutDialog()
         about.set_program_name("Inguma")
-        about.set_version(get_inguma_version())
-        about.set_copyright("(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"+
-                "(c) 2009-2011 Hugo Teso <hteso@inguma.eu>")
+        about.set_version(glob.version)
+        about.set_copyright(
+            """(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"""
+            """(c) 2009-2011 Hugo Teso <hteso@inguma.eu>"""
+        )
         about.set_comments("A penetration testing and vulnerability research toolkit")
         about.set_website("http://inguma.eu")
         about.set_authors(['Hugo Teso <hteso@inguma.eu>', 'David Martinez Moreno <ender@inguma.eu>'])

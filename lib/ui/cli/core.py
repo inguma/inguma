@@ -122,9 +122,7 @@ def unified_input_prompt(caller, prompt = ''):
 def print_banner(gom):
     """Prints the salute banner."""
 
-    from lib.core import get_inguma_version
-
-    gom.echo('Inguma v' + get_inguma_version())
+    gom.echo('Inguma v' + glob.version)
     gom.echo('Copyright (c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>')
     gom.echo('Copyright (c) 2009-2011 Hugo Teso <hugo.teso@gmail.com>')
     gom.echo()
