@@ -2,6 +2,7 @@ Long development on road to 1.0...
 ----------------------------------
 
 Version 0.5 (released ??-Dec-2018)
+    * Removal of the in-tree Scapy.
     * Migration to GTK+3.
     * REST HTTP UI server (still experimental), based on webpy.
     * Big revamp to the UI:
@@ -21,9 +22,9 @@ Version 0.5 (released ??-Dec-2018)
     * Bug fixes, bug fixes, bug fixes, bug fixes, and bug fixes.
 
 Version 0.4 (released 14-Sep-2011)
-    * Added systray
-    * Added Logs tab warning
-    * Removed debugger
+    * Added systray.
+    * Added Logs tab warning.
+    * Removed debugger.
     * Fixed tab completion on OS X.
     * Lots of cleanups in the CLI code.
     * Added new 'subdomain' discover module.

@@ -21,6 +21,7 @@
 from __future__ import print_function
 import os, sys, platform
 
+
 def gtkui_dependency_check(config):
     '''
     This function verifies that the dependencies that are needed by the GTK user interface are met.
@@ -43,11 +44,11 @@ def gtkui_dependency_check(config):
         print(OKGREEN + "\tOK" + ENDC)
     except:
         print(FAIL + "D'oh!" + ENDC)
-        msg = 'You have to install GTK and PyGTK versions >=3.14 to be able to run the GTK user interface.\n'
-        msg += '    - On Debian-based distributions: apt-get install python-gtk2\n'
-        msg += '    - On Mac: sudo port install py25-gtk'
+        msg = 'You have to install GTK and GObject versions >=3.14 to be able to run the GTK user interface.\n'
+        msg += '    - On Debian-based distributions: apt-get install python-gi gir1.2-gtk-3.0\n'
+        msg += '    - On Mac: read the Installation instructions in the README'
         print(msg)
-        sys.exit( 1 )
+        sys.exit(1)
 
     # Check Scapy
     try:
@@ -57,7 +58,7 @@ def gtkui_dependency_check(config):
     except:
         print(FAIL + "\tD'oh!" + ENDC)
         print(WARNING + "No scapy found" + ENDC)
-        sys.exit( 1 )
+        sys.exit(1)
 
     # Check Network
     try:
@@ -74,14 +75,17 @@ def gtkui_dependency_check(config):
         print(WARNING + "No network connectivity found" + ENDC)
         sys.exit(1)
 
-    # Check GtkSourceView2
+    # Check GtkSource
     try:
-        print("\tGtkSourceView2...", end='')
-        import gtksourceview2 as gtksourceview
+        print("\tGtkSource...", end='')
+        from gi.repository import GtkSource
         print(OKGREEN + "\tOK" + ENDC)
+        # Having GtkSource enables Bokken and hell breaks loose.
+        print(WARNING + "GtkSource found but force-disabled, module and exploits editors will be disabled" + ENDC)
+        config.HAS_SOURCEVIEW = False
     except:
         print(WARNING + "\tD'oh!" + ENDC)
-        print(WARNING + "GtkSourceView2 not found, module and exploits editors will be disabled" + ENDC)
+        print(WARNING + "GtkSource not found, module and exploits editors will be disabled" + ENDC)
         config.HAS_SOURCEVIEW = False
 
     # Check Vte
@@ -102,7 +106,7 @@ def gtkui_dependency_check(config):
         print(OKGREEN + "\tOK" + ENDC)
     except:
         print(WARNING + "\tD'oh!" + ENDC)
-        print(WARNING + "Impacket library not found, some modules would not work" + ENDC)
+        print(WARNING + "Impacket library not found, some modules will not work" + ENDC)
 
     # Check PySNMP
     try:
@@ -111,7 +115,7 @@ def gtkui_dependency_check(config):
         print(OKGREEN + "\tOK" + ENDC)
     except:
         print(WARNING + "\tD'oh!" + ENDC)
-        print(WARNING + "PySNMP library not found, some modules would not work" + ENDC)
+        print(WARNING + "PySNMP library not found, some modules will not work" + ENDC)
 
     # Check GeoIP
     try:
@@ -120,7 +124,7 @@ def gtkui_dependency_check(config):
         print(OKGREEN + "\tOK" + ENDC)
     except:
         print(WARNING + "\tD'oh!" + ENDC)
-        print(WARNING + "GeoIP library not found, some modules would not work" + ENDC)
+        print(WARNING + "GeoIP library not found, some modules will not work" + ENDC)
         config.HAS_GEOIP = False
 
     # Check Nmap
@@ -132,7 +136,7 @@ def gtkui_dependency_check(config):
             raise
     except:
         print(WARNING + "\tD'oh!" + ENDC)
-        print(WARNING + "Nmap not found on: " + config.NMAP_PATH + " some features will be disabled" + ENDC)
+        print(WARNING + "Nmap not found on: " + config.NMAP_PATH + ", so some features will be disabled" + ENDC)
         config.HAS_NMAP = False
 
     # Check Graphviz
@@ -142,26 +146,13 @@ def gtkui_dependency_check(config):
             progs = __find_executables(path)
 
             if progs is not None :
-                #print(progs)
                 print(OKGREEN + "\tOK" + ENDC)
                 return
 
         print(WARNING + "\tD'oh!" + ENDC)
         print(WARNING + "Graphviz binaries not found, this software is necessary to run the GUI" + ENDC)
-        sys.exit( 1 )
+        sys.exit(1)
 
-#   Not yey necessary
-#    # Check w3af
-#    try:
-#        print("\t" + config.W3AF_PATH + "...", end='')
-#        if os.path.exists(config.W3AF_PATH):
-#            print(OKGREEN + "\tOK" + ENDC)
-#        else:
-#            raise
-#    except:
-#        print(WARNING + "\tD'oh!" + ENDC)
-#        print(WARNING + "w3af not found on: " + config.W3AF_PATH + " some features will be disabled" + ENDC)
-#        config.HAS_W3AF = False
 
 def __find_executables(path):
     # Code borrowed from pydot
@@ -194,7 +185,6 @@ def __find_executables(path):
 
         for prg in progs.iterkeys():
 
-            #print(prg)
             if progs[prg]:
                 continue
 

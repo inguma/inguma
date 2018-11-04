@@ -30,7 +30,7 @@ class Systray(Gtk.StatusIcon):
 
         self.main = main
 
-        self.set_from_file('logo' + os.sep + 'inguma_16.png')
+        self.set_from_file(os.path.join('logo', 'inguma_32.png'))
         self.connect('popup-menu', self.on_right_click)
         self.connect('activate', self.on_left_click)
         self.set_tooltip_text('Inguma ' + glob.version)
@@ -43,14 +43,14 @@ class Systray(Gtk.StatusIcon):
             self.main.hide()
         else:
             self.main.show()
-        self.set_from_file('logo' + os.sep + 'inguma_16.png')
+        self.set_from_file(os.path.join('logo', 'inguma_32.png'))
         return True
 
     def set_new_tooltip(self, text):
         if text:
             self.set_tooltip((text))
         else:
-            self.set_tooltip(('Inguma 0.4'))
+            self.set_tooltip(('Inguma %s' % glob.version))
 
     def make_menu(self, event_button, event_time):
         menu = Gtk.Menu()
