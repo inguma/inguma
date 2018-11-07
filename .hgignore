@@ -6,6 +6,7 @@ data/*.kb
 data/*.csv
 *.swp
 extlib/pyew/*
+doc/_build
 
 # Debian rules
 debian/stamp-patched
