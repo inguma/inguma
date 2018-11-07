@@ -57,7 +57,7 @@ class TargetDialog(popup_dialog.PopupDialog):
         self.dom_rbutton.connect("toggled", self.rbcallback, "DOM")
 
         # A target text entry
-        self.tgentry = Gtk.Entry(max=30)
+        self.tgentry = Gtk.Entry()
         self.tgentry.set_focus = True
         self.tgentry.set_icon_from_stock(1, Gtk.STOCK_ADD)
         self.tgentry.connect('activate', self.validate_data)

@@ -17,8 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from gi.repository import Gtk
-from gi.repository import GObject
+from gi.repository import GdkPixbuf, GObject, Gtk
 
 import os, sys, threading, urllib, gzip
 sys.path.append('../..')
@@ -56,7 +55,7 @@ class PropDialog(popup_dialog.PopupDialog):
         self.iface_lbl = Gtk.Label(label='Network interface:')
 
         store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
-        self.iface_combo = Gtk.ComboBox(store)
+        self.iface_combo = Gtk.ComboBox.new_with_model(store)
         rendererText = Gtk.CellRendererText()
         rendererPix = Gtk.CellRendererPixbuf()
         self.iface_combo.pack_start(rendererPix, False)

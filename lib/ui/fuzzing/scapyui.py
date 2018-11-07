@@ -116,14 +116,18 @@ class ScapyUI(Gtk.Frame):
         self.selected_sw.add_with_viewport(self.selected_tv)
 
         # Treeviews Drag and Drop stuff
-        self.layers_tv.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.COPY)
-        self.layers_tv.connect("drag-data-get", self.drag_data_get_cb)
+        # I'm not sure what it is, but there's something wrong here that it's
+        # causing error spew on the console about Gtk.Boxed.__init__ called with
+        # arguments.  Given that this is not working very well, I'm commenting
+        # all the drag&drop code in the layers_tv object for now.
+        #self.layers_tv.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.COPY)
+        #self.layers_tv.connect("drag-data-get", self.drag_data_get_cb)
 
-        self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], Gdk.DragAction.COPY)
-        self.selected_tv.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.MOVE)
-        #self.selected_tv.connect("drag-begin", self.drag_selected_begin_cb)
-        #self.selected_tv.connect("drag-end", self.drag_selected_end_cb)
-        self.selected_tv.connect("drag-data-received", self.drag_data_received_cb)
+        #self.selected_tv.enable_model_drag_dest([("text/plain", 0, 80)], Gdk.DragAction.COPY)
+        #self.selected_tv.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [Gtk.TargetEntry("text/plain", Gtk.TargetFlags.SAME_APP, 80)], Gdk.DragAction.MOVE)
+        ##self.selected_tv.connect("drag-begin", self.drag_selected_begin_cb)
+        ##self.selected_tv.connect("drag-end", self.drag_selected_end_cb)
+        #self.selected_tv.connect("drag-data-received", self.drag_data_received_cb)
 
 
         self.hseparator = Gtk.HSeparator()
@@ -180,8 +184,9 @@ class ScapyUI(Gtk.Frame):
         self.del_icon.set_from_stock(Gtk.STOCK_DELETE, Gtk.IconSize.SMALL_TOOLBAR)
 
         # Delete button drag and drop stuff
-        self.del_icon.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP, [Gtk.TargetEntry( "text/plain", Gtk.TargetFlags.SAME_APP, 80) ], Gdk.DragAction.MOVE)
-        self.del_icon.connect("drag_drop", self.drag_drop_cb)
+        # See comment on lines 119-121 about drag&drop not working.
+        #self.del_icon.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP, [Gtk.TargetEntry( "text/plain", Gtk.TargetFlags.SAME_APP, 80) ], Gdk.DragAction.MOVE)
+        #self.del_icon.connect("drag_drop", self.drag_drop_cb)
         #self.del_icon.set_no_show_all(True)
         #self.del_icon.hide()
 

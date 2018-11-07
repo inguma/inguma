@@ -149,10 +149,10 @@ class FileManagerNotebook(Gtk.Notebook):
                     dir = os.path.join(self.path, node)
                     if os.path.isdir(dir):
                         self.create_dir_menu(dir)
-                        self.dir_menu.popup(None, None, None, 1, event.time)
+                        self.dir_menu.popup(None, None, None, None, 1, event.time)
                     else:
                         self.create_file_menu(dir)
-                        self.file_menu.popup(None, None, None, 1, event.time)
+                        self.file_menu.popup(None, None, None, None, 1, event.time)
 
     def _go_home(self, widget):
         home = os.path.expanduser('~')

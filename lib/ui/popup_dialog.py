@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 class PopupDialog(Gtk.Window):
     '''Generic windows used as toolbar popup dialog'''
@@ -79,8 +79,8 @@ class PopupDialog(Gtk.Window):
         self.move(x, y)
 
     def _get_coord(self):
-        x, y = self.win.get_origin()
-        return  x +self. button.allocation[0] - 5, y + self.button.allocation.height + 10
+        x, y = self.win.get_position()
+        return  x +self.button.get_allocation().width - 5, y + self.button.get_allocation().height + 10
 
     def add_content(self, content):
         self.vbox.pack_start(content, False, False, 5)

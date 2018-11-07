@@ -17,7 +17,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, GdkPixbuf, Gtk
 
 import lib.globals as glob
 import lib.ui.popup_dialog as popup_dialog
@@ -54,7 +54,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
 
         # Choose network iface combo
         store = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
-        self.iface_combo = Gtk.ComboBox(store)
+        self.iface_combo = Gtk.ComboBox.new_with_model(store)
         rendererText = Gtk.CellRendererText()
         rendererPix = Gtk.CellRendererPixbuf()
         self.iface_combo.pack_start(rendererPix, False)

@@ -22,24 +22,26 @@ import threading
 import webbrowser
 
 import lib.ui.about as about
+import lib.globals as glob
 import lib.ui.libAutosave as libAutosave
 
 class MenuBar(Gtk.Menu):
     '''Main button menu elements'''
 
     def __init__(self, main):
-        super(MenuBar,self).__init__()
+        super(MenuBar, self).__init__()
 
         self.main = main
         self.gom = self.main.gom
         self.uicore = self.main.uicore
 
         agr = Gtk.AccelGroup()
-        #self.main.window.add_accel_group(agr)
+        self.main.add_accel_group(agr)
 
         # New KB item
         newi = Gtk.ImageMenuItem(Gtk.STOCK_NEW, agr)
         #newi.connect("activate", self.new_file)
+        newi.get_children()[0].set_label('New KB')
         key, mod = Gtk.accelerator_parse("<Control>N")
         newi.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
@@ -133,6 +135,7 @@ class MenuBar(Gtk.Menu):
 
         # About item
         abouti = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT, agr)
+        abouti.get_children()[0].set_label('About Inguma %s' % glob.version)
         key, mod = Gtk.accelerator_parse("<Control>A")
         abouti.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
@@ -165,6 +168,7 @@ class MenuBar(Gtk.Menu):
         msg = ("Do you really want to quit?")
         dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
         dlg.set_default_response(Gtk.ResponseType.YES)
+        dlg.set_transient_for(self.main)
         opt = dlg.run()
         dlg.destroy()
 
@@ -366,7 +370,7 @@ class MenuBar(Gtk.Menu):
         webbrowser.open_new_tab('http://inguma.eu/projects/inguma/wiki/Wiki')
 
     def create_about_dialog(self, widget):
-        about_dlg = about.AboutDialog()
+        about_dlg = about.AboutDialog(self.main)
         dialog = about_dlg.create_dialog()
 
         dialog.run()

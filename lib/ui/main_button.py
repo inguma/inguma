@@ -37,7 +37,7 @@ class MainMenuButton (Gtk.ToggleButton):
     """
 
     def __init__(self, text, menu):
-        GObject.GObject.__init__(self)
+        super(Gtk.ToggleButton, self).__init__()
         self.menu = menu
         hbox1 = Gtk.HBox()
         hbox2 = Gtk.HBox()
@@ -61,7 +61,7 @@ class MainMenuButton (Gtk.ToggleButton):
         self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_can_focus(True)
         self.set_can_default(False)
-        self.connect("toggled", self.on_toggled)
+        self.connect("button-press-event", self.on_button_press)
 
         for sig in "selection-done", "deactivate", "cancel":
             menu.connect(sig, self.on_menu_dismiss)
@@ -82,16 +82,10 @@ class MainMenuButton (Gtk.ToggleButton):
         # popup() with event details here rather than leaving it to the toggled
         # handler.
         pos_func = self._get_popup_menu_position
-        self.menu.popup(None, None, pos_func, None, event.button, event.time)
+        self.menu.popup(None, None, pos_func, widget, event.button, event.time)
         self.set_active(True)
+        self.menu.show_all()
 
-    def on_toggled(self, togglebutton):
-        # Post the menu from a keypress. Dismiss handler untoggles it.
-        if togglebutton.get_active():
-            if not self.menu.get_property("visible"):
-                pos_func = self._get_popup_menu_position
-                self.menu.popup(None, None, pos_func, None, 1, 0)
-                self.menu.show_all()
 
     def on_menu_dismiss(self, *a, **kw):
         # Reset the button state when the user's finished, and
@@ -100,9 +94,10 @@ class MainMenuButton (Gtk.ToggleButton):
         self.set_active(False)
         self.grab_focus()
 
+
     def _get_popup_menu_position(self, menu, *junk):
         # Underneath the button, at the same x position.
-        x, y = self.window.get_origin()
-        y += self.allocation.height
-        return x, y + 5, True
-
+        x, y = self.get_window().get_origin()[1:]
+        x += self.get_allocation().x+1
+        y += self.get_allocation().y+self.get_allocation().height
+        return x, y, True

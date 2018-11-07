@@ -72,7 +72,7 @@ class Systray(Gtk.StatusIcon):
 
     def create_about_dialog(self, widget):
 
-        about_dlg = about.AboutDialog()
+        about_dlg = about.AboutDialog(self.main)
         dialog = about_dlg.create_dialog()
 
         dialog.run()

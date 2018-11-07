@@ -34,7 +34,7 @@ class Toolbar(Gtk.HBox):
     '''Main Toolbar Buttons'''
 
     def __init__(self, main):
-        super(Toolbar,self).__init__(False, 1)
+        super(Toolbar, self).__init__(False, 1)
 
         self.main = main
         self.gom = main.gom
@@ -185,6 +185,7 @@ class Toolbar(Gtk.HBox):
         msg = ("Do you really want to quit?")
         dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
         dlg.set_default_response(Gtk.ResponseType.YES)
+        dlg.set_transient_for(self.main)
         opt = dlg.run()
         dlg.destroy()
 
@@ -222,7 +223,7 @@ class Toolbar(Gtk.HBox):
     def add_target(self, event, button):
         self._clean_popup_dialogs()
         if button.get_active():
-            self.addtgt = target_dialog.TargetDialog(self.main, self.window, button)
+            self.addtgt = target_dialog.TargetDialog(self.main, self.main, button)
             self.popup_dialogs.append(self.addtgt)
         else:
             if self.addtgt in self.popup_dialogs:
@@ -232,7 +233,7 @@ class Toolbar(Gtk.HBox):
     def add_listener(self, event, button):
         self._clean_popup_dialogs()
         if button.get_active():
-            self.add_listener = listener_dialog.ListenerDialog(self.main, self.window, button)
+            self.add_listener = listener_dialog.ListenerDialog(self.main, self.main, button)
             self.popup_dialogs.append(self.add_listener)
         else:
             if self.add_listener in self.popup_dialogs:
@@ -242,7 +243,7 @@ class Toolbar(Gtk.HBox):
     def show_pref(self, event, button):
         self._clean_popup_dialogs()
         if button.get_active():
-            self.prefs_dialog = preferences_dialog.PropDialog(self.main, self.window, button)
+            self.prefs_dialog = preferences_dialog.PropDialog(self.main, self.main, button)
             self.popup_dialogs.append(self.prefs_dialog)
         else:
             if self.prefs_dialog in self.popup_dialogs:

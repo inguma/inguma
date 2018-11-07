@@ -458,7 +458,7 @@ class KBtree(Gtk.TreeView):
                 if path is not None and len(path) == 1:
                     node = self.treestore[path][1]
                     self.node_menu.set_data(node)
-                    self.node_menu.popmenu.popup(None, None, None, 1, event.time)
+                    self.node_menu.popmenu.popup(None, None, None, None, 1, event.time)
 
     def popup_vuln_menu(self, tree, event):
         if event.button == 3:
@@ -485,7 +485,7 @@ class KBtree(Gtk.TreeView):
                 if path is not None and glob.listeners:
                     node = self.liststore[path][1]
                     menu = self.listener_popup.create_menu(node, self.liststore[path][2])
-                    menu.popup(None, None, None, 1, event.time)
+                    menu.popup(None, None, None, None, 1, event.time)
                     menu.show_all()
 
     def update_tree(self):

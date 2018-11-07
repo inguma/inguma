@@ -25,6 +25,9 @@ import lib.globals as glob
 class AboutDialog():
     '''About dialog'''
 
+    def __init__(self, main):
+        self.main = main
+
     def create_dialog(self):
         about = Gtk.AboutDialog()
         about.set_program_name("Inguma")
@@ -32,6 +35,7 @@ class AboutDialog():
         about.set_copyright(
             """(c) 2006-2008 Joxean Koret <joxeankoret@yahoo.es>\n"""
             """(c) 2009-2011 Hugo Teso <hteso@inguma.eu>"""
+            """(c) 2012-2018 Inguma dev team <nguma-devel@inguma.eu>"""
         )
         about.set_comments("A penetration testing and vulnerability research toolkit")
         about.set_website("http://inguma.eu")
@@ -39,5 +43,6 @@ class AboutDialog():
         about.set_artists(['Ana Muniesa <ana.muniesa@gmail.com>', 'Juanje <juanje@gmail.com>', ' * Web: http://www.puntodepartida.com'])
         about.set_logo(GdkPixbuf.Pixbuf.new_from_file(os.path.join('lib', 'ui', 'data', 'logo.png')))
         about.set_modal(True)
+        about.set_transient_for(self.main)
 
         return about
