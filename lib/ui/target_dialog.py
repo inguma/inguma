@@ -32,12 +32,22 @@ class TargetDialog(popup_dialog.PopupDialog):
 
         super(TargetDialog, self).__init__(main, coord, button)
 
-        self.DISCOVERS = ['hostname',
-                    'tcptrace',
-                    'asn',
-                    'netcraft']
+        datatypes = [
+                ['Single IPv4', 'IP'],
+                ['Single IPv6', 'IPv6'],
+                ['Domain', 'DOM'],
+                ]
+        self.DISCOVERS = [
+                'hostname',
+                'tcptrace',
+                'asn',
+                #'netcraft',
+                ]
 
-        self.GATHERS = ['portscan', 'identify']
+        self.GATHERS = [
+                'portscan',
+                'identify',
+                ]
 
         # Core instance for manage the KB
         self.main = main
@@ -48,17 +58,23 @@ class TargetDialog(popup_dialog.PopupDialog):
         self.xdotw = main.xdotw
         self.button = button
 
-        # Radio buttons
-        self.ip_rbutton= Gtk.RadioButton(group=None, label='Single IP')
-        self.ip_rbutton.connect("toggled", self.rbcallback, "IP")
-        self.active = 'IP'
-        self.ip_rbutton.set_active(True)
-        self.dom_rbutton = Gtk.RadioButton(self.ip_rbutton, label='Domain')
-        self.dom_rbutton.connect("toggled", self.rbcallback, "DOM")
+        # List of data types.
+
+        self.combo_datatype = Gtk.ComboBoxText.new()
+        datatype_store = Gtk.ListStore(str, str)
+        for item in datatypes:
+            datatype_store.append(item)
+        self.combo_datatype = Gtk.ComboBox.new_with_model(datatype_store)
+        # We need to make this to render a ListStore, and indicate the column.
+        rendered_text = Gtk.CellRendererText()
+        self.combo_datatype.pack_start(rendered_text, True)
+        self.combo_datatype.add_attribute(rendered_text, "text", 0)
+
+        self.combo_datatype.set_active(0)
+        self.combo_datatype.set_focus = True
 
         # A target text entry
         self.tgentry = Gtk.Entry()
-        self.tgentry.set_focus = True
         self.tgentry.set_icon_from_stock(1, Gtk.STOCK_ADD)
         self.tgentry.connect('activate', self.validate_data)
         self.tgentry.connect('icon-press', self.validate_data)
@@ -80,8 +96,7 @@ class TargetDialog(popup_dialog.PopupDialog):
         table.set_col_spacings(2)
 
         # Add elements to Table
-        table.attach(self.ip_rbutton, 0, 1, 0, 1)
-        table.attach(self.dom_rbutton, 1, 2, 0, 1)
+        table.attach(self.combo_datatype, 0, 1, 0, 1)
         table.attach(self.tgentry, 0, 2, 1, 2)
         table.attach(self.audit, 0, 1, 2, 3)
         table.attach(self.nmap, 1, 2, 2, 3)
@@ -94,32 +109,28 @@ class TargetDialog(popup_dialog.PopupDialog):
     def validate_data(self, widget, icon_pos=None, event=None):
         '''Validate user input and call insert_data when done'''
 
-        if self.active == 'IP':
+        entry = self.tgentry.get_text()
+        model = self.combo_datatype.get_model()
+        active = model[self.combo_datatype.get_active_iter()][0]
+        if active == 'IP':
             try:
-                if self.tgentry.get_text():
-                    ip = IPy.IP( self.tgentry.get_text() )
-                #self.destroy()
-                self._quit(widget)
-                self.insert_data('ip', ip)
+                if entry:
+                    entry = IPy.IP(entry)
             except:
-                self.show_error_dlg( self.tgentry.get_text() + ' is not a valid IP address')
-        elif self.active == 'DOM':
-                self.insert_data('dom', self.tgentry.get_text())
-                #self.destroy()
+                self.show_error_dlg('%s is not a valid IP address' % entry)
                 self._quit(widget)
 
-    def rbcallback(self, widget, data=None):
-        self.active = data
+        self.insert_data(active, entry)
+        self._quit(widget)
 
-    def insert_data(self, type, ip):
-        if type == 'ip':
-            #print "Adding IP target: " + ip.strNormal()
+
+    def insert_data(self, datatype, ip):
+        if datatype == 'IP':
             ip = ip.strNormal()
-            self.uicore.set_kbfield( 'target', ip )
-            self.uicore.set_kbfield( 'hosts', ip )
-        elif type == 'dom':
-            #print "Adding Domain target: " + ip
-            self.uicore.set_kbfield( 'target', ip )
+            self.uicore.set_kbfield('target', ip)
+            self.uicore.set_kbfield('hosts', ip)
+        elif datatype == 'DOM':
+            self.uicore.set_kbfield('target', ip)
 
         if self.audit.get_active():
             if self.nmap.get_active():
@@ -131,11 +142,11 @@ class TargetDialog(popup_dialog.PopupDialog):
                 GObject.timeout_add(1000, self.check_nmap_thread, t)
             else:
                 # Run discover modules
-                t = threading.Thread(target=self.run_modules, args=(type,))
+                t = threading.Thread(target=self.run_modules, args=(datatype,))
                 t.start()
         else:
-            if type == 'dom':
-                self.gom.echo( "Running ipaddr" )
+            if datatype == 'DOM':
+                self.gom.echo("Running ipaddr")
                 self.uicore.uiRunDiscover('ipaddr', join=True)
                 ip = self.uicore.get_kbfield('hosts')
                 ip = ip[-1]
@@ -145,27 +156,27 @@ class TargetDialog(popup_dialog.PopupDialog):
 
             # Update graph
             self.uicore.getDot(doASN=False)
-            self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+            self.xdotw.set_dotcode(self.uicore.get_last_dot())
 
 
-    def run_modules(self, type):
+    def run_modules(self, datatype):
 
-        if type == 'dom':
-            self.gom.echo( "Running ipaddr" )
+        if datatype == 'DOM':
+            self.gom.echo("Running ipaddr")
             self.uicore.uiRunDiscover('ipaddr', join=True)
             ipaddr = self.uicore.get_kbfield('hosts')
             ipaddr = ipaddr[-1]
-            self.gom.echo( "Running subdomainer" )
+            self.gom.echo("Running subdomainer")
             self.uicore.uiRunDiscover('subdomainer', join=True)
-            self.gom.echo( "\tDone, setting target to " + ipaddr )
+            self.gom.echo("\tDone, setting target to " + ipaddr)
             self.uicore.set_kbfield('target', ipaddr)
 
         for module in self.DISCOVERS:
-            self.gom.echo( "Running discover: " + module )
+            self.gom.echo("Running discover: " + module)
             self.uicore.uiRunDiscover(module, join=True)
 
         for module in self.GATHERS:
-            self.gom.echo( "Running gather: " + module )
+            self.gom.echo("Running gather: " + module)
             self.uicore.uiRunDiscover(module, join=True)
 
     def check_nmap_thread(self, thread):
@@ -179,13 +190,13 @@ class TargetDialog(popup_dialog.PopupDialog):
 
             import lib.ui.nmapParser as nmapParser
 
-            self.gom.echo( 'Parsing scan results...', False)
+            self.gom.echo('Parsing scan results...', False)
             nmapData = nmapParser.parseNmap('/tmp/nmapxml.xml')
             os.remove('/tmp/nmapxml.xml')
-            self.gom.echo( 'Inserting data in KB...', False)
+            self.gom.echo('Inserting data in KB...', False)
             nmapParser.insertData(self.uicore, nmapData)
 
-            self.gom.echo( 'Loaded\nUpdating Graph', False)
+            self.gom.echo('Loaded\nUpdating graph', False)
 
             self.uicore.getDot(doASN=False)
 
@@ -200,13 +211,14 @@ class TargetDialog(popup_dialog.PopupDialog):
         return model[active][0]
 
     def show_error_dlg(self, error_string):
-        """This Function is used to show an error dialog when
+        """This function is used to show an error dialog when
         an error occurs.
         error_string - The error string that will be displayed
         on the dialog.
         """
-        error_dlg = Gtk.MessageDialog(type=Gtk.MessageType.ERROR
-                    , message_format=error_string
-                    , buttons=Gtk.ButtonsType.OK)
+        error_dlg = Gtk.MessageDialog(
+                message_type=Gtk.MessageType.ERROR,
+                message_format=error_string,
+                buttons=Gtk.ButtonsType.OK)
         error_dlg.run()
         error_dlg.destroy()

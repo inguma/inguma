@@ -149,6 +149,7 @@ class MenuBar(Gtk.Menu):
 
         # Exit item
         exit = Gtk.ImageMenuItem(Gtk.STOCK_QUIT, agr)
+        exit.get_children()[0].set_label('Quit')
         key, mod = Gtk.accelerator_parse("<Control>Q")
         exit.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)

@@ -48,9 +48,9 @@ class Systray(Gtk.StatusIcon):
 
     def set_new_tooltip(self, text):
         if text:
-            self.set_tooltip((text))
+            self.set_tooltip_text((text))
         else:
-            self.set_tooltip(('Inguma %s' % glob.version))
+            self.set_tooltip_text(('Inguma %s' % glob.version))
 
     def make_menu(self, event_button, event_time):
         menu = Gtk.Menu()
