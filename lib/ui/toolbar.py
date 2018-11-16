@@ -192,7 +192,7 @@ class Toolbar(Gtk.HBox):
         if opt != Gtk.ResponseType.YES:
             return True
 
-        self.gom.echo( 'Killing all listeners', False)
+        self.gom.echo('Killing all listeners', False)
         self.uicore.kill_all_listeners()
         self.uicore.remove_dot_file()
         Gtk.main_quit()

@@ -45,7 +45,7 @@ class CWhois(CIngumaDiscoverModule):
         self.gom.echo("""db = <internic|ripe|arin|lacnic|apnic|afrinic>
 
     Internic - Internet Network Information Center
-    RIPE     - Reseaux IP Europeens - Network Cooedination Centre User Link
+    RIPE     - Reseaux IP Europeens - Network Coordination Centre User Link
     ARIN     - American Registry for Internet Numbers User Link
     LACNIC   - Latin America and Caribbean Network Information Centre User Link
     APNIC    - Asia Pacific Network Information Centre User Link

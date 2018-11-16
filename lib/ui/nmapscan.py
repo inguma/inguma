@@ -44,7 +44,7 @@ class NmapScan:
         self.tglab.set_alignment(0.0, 0.5)
 
         # A target text entry
-        self.tgentry = Gtk.Entry(max=50)
+        self.tgentry = Gtk.Entry()
         self.tgentry.set_text(self.ip)
 
         # Label
@@ -62,7 +62,7 @@ class NmapScan:
         self.comlab.set_alignment(0.0, 0.5)
 
         # A command text entry
-        self.comentry = Gtk.Entry(max=200)
+        self.comentry = Gtk.Entry()
         self.comentry.set_text('nmap -v -A ' + self.ip)
 
         # Separator

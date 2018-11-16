@@ -176,7 +176,7 @@ class MenuBar(Gtk.Menu):
         if opt != Gtk.ResponseType.YES:
             return True
 
-        self.gom.echo( 'Killing all listeners', False)
+        self.gom.echo('Killing all listeners', False)
         self.uicore.kill_all_listeners()
         self.uicore.remove_dot_file()
         Gtk.main_quit()
@@ -211,7 +211,7 @@ class MenuBar(Gtk.Menu):
                 chooser.destroy()
 
             elif response == Gtk.ResponseType.CANCEL:
-                self.gom.echo( 'Closed, no files selected', False)
+                self.gom.echo('Closed, no files selected', False)
                 chooser.destroy()
                 return False
 
@@ -222,21 +222,21 @@ class MenuBar(Gtk.Menu):
         else:
             res = file
 
-        self.gom.echo( 'Loading KB...', False)
-        self.gom.echo(  res + ' selected' , False)
+        self.gom.echo('Loading KB...', False)
+        self.gom.echo( res + ' selected' , False)
         self.manager.add_item('file://' + res)
         #glob.kb.load(res)
         self.uicore.loadKB(res)
 
         # Update Map
         self.uicore.getDot(doASN=False)
-        self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+        self.xdotw.set_dotcode(self.uicore.get_last_dot())
         self.xdotw.zoom_image(1.0)
         # Update KB Tree
         self.treeview.update_tree()
 
         # Adding text to Log window
-        self.gom.echo( 'Loaded' , False)
+        self.gom.echo('Loaded' , False)
         self.main.kbfile = res
 
         # Add text to the statusbar
@@ -293,22 +293,22 @@ class MenuBar(Gtk.Menu):
         response = chooser.run()
         filter = chooser.get_filter()
         if response == Gtk.ResponseType.OK and type == 'nmap':
-            self.gom.echo( 'Loading Nmap Scan...', False)
-            self.gom.echo(  chooser.get_filename() + ' selected' , False)
+            self.gom.echo('Loading Nmap Scan...', False)
+            self.gom.echo( chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
 
             import lib.ui.nmapParser as nmapParser
             try:
-                self.gom.echo( 'Parsing scan results...', False)
+                self.gom.echo('Parsing scan results...', False)
                 nmapData = nmapParser.parseNmap(res)
-                self.gom.echo( 'Inserting data in KB...', False)
+                self.gom.echo('Inserting data in KB...', False)
                 nmapParser.insertData(self.uicore, nmapData)
 
                 askASN = Gtk.MessageDialog(parent=None, flags=Gtk.DialogFlags.MODAL, type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO, message_format="Resolve ASN of IP addresses?")
                 askASN.set_default_response(Gtk.ResponseType.YES)
                 do_asn = askASN.run()
 
-                self.gom.echo( 'Loaded\nUpdating Graph', False)
+                self.gom.echo('Loaded\nUpdating Graph', False)
 
                 if do_asn == Gtk.ResponseType.YES:
                     doASN=True
@@ -328,8 +328,8 @@ class MenuBar(Gtk.Menu):
                 md.destroy()
 
         elif response == Gtk.ResponseType.OK and type == 'hosts':
-            self.gom.echo( 'Loading Host list...', False)
-            self.gom.echo(  chooser.get_filename() + ' selected' , False)
+            self.gom.echo('Loading Host list...', False)
+            self.gom.echo( chooser.get_filename() + ' selected' , False)
             res = chooser.get_filename()
             try:
                 hfile = open(res, 'r')
@@ -337,20 +337,20 @@ class MenuBar(Gtk.Menu):
                 hfile.close()
                 hlist = hlist[0].split(',')
 
-                self.gom.echo( 'Inserting data in KB...', False)
+                self.gom.echo('Inserting data in KB...', False)
                 for host in hlist:
                     self.uicore.set_kbfield('targets', host.strip())
                     self.uicore.set_kbfield('hosts', host.strip())
 
                 # Update graph and KB tree
                 self.uicore.getDot(doASN=False)
-                self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+                self.xdotw.set_dotcode(self.uicore.get_last_dot())
                 self.gom.kbwin.update_tree()
             except:
                 print "Your lack of faith on my parsing capabilities is disturbing..."
 
         elif response == Gtk.ResponseType.CANCEL:
-            self.gom.echo( 'Closed, no files selected', False)
+            self.gom.echo('Closed, no files selected', False)
 
         chooser.destroy()
 
@@ -363,7 +363,7 @@ class MenuBar(Gtk.Menu):
             self.uicore = self.main.uicore
 
             self.uicore.getDot(doASN=False)
-            self.xdotw.set_dotcode( self.uicore.get_last_dot() )
+            self.xdotw.set_dotcode(self.uicore.get_last_dot())
             self.gom.kbwin.update_tree()
             return False
 

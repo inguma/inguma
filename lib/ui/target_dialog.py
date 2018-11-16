@@ -33,7 +33,7 @@ class TargetDialog(popup_dialog.PopupDialog):
         super(TargetDialog, self).__init__(main, coord, button)
 
         datatypes = [
-                ['Single IPv4', 'IP'],
+                ['Single IPv4', 'IPv4'],
                 ['Single IPv6', 'IPv6'],
                 ['Domain', 'DOM'],
                 ]
@@ -106,26 +106,28 @@ class TargetDialog(popup_dialog.PopupDialog):
         # Finish
         self.show_all()
 
+
     def validate_data(self, widget, icon_pos=None, event=None):
         '''Validate user input and call insert_data when done'''
 
         entry = self.tgentry.get_text()
         model = self.combo_datatype.get_model()
-        active = model[self.combo_datatype.get_active_iter()][0]
-        if active == 'IP':
+        active = model[self.combo_datatype.get_active_iter()][1]
+        if active in ['IPv4', 'IPv6']:
             try:
                 if entry:
                     entry = IPy.IP(entry)
             except:
-                self.show_error_dlg('%s is not a valid IP address' % entry)
+                self.show_error_dlg('%s is not a valid %s address' % (entry, active))
                 self._quit(widget)
+                return
 
         self.insert_data(active, entry)
         self._quit(widget)
 
 
     def insert_data(self, datatype, ip):
-        if datatype == 'IP':
+        if datatype == 'IPv4':
             ip = ip.strNormal()
             self.uicore.set_kbfield('target', ip)
             self.uicore.set_kbfield('hosts', ip)

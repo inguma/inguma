@@ -42,7 +42,7 @@ class MainMenuButton (Gtk.ToggleButton):
         hbox1 = Gtk.HBox()
         hbox2 = Gtk.HBox()
         icon = Gtk.Image()
-        icon.set_from_file('logo' + os.sep + 'inguma_16.png')
+        icon.set_from_file(os.path.join('logo', 'inguma_16.png'))
         hbox1.pack_start(icon, True, True, 3)
         label = Gtk.Label(label=text)
         hbox1.pack_start(label, True, True, 3)

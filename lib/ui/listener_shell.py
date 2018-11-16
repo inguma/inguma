@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import os
-from gi.repository import Gtk
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
 
 import bokken.throbber as throbber
 
@@ -170,7 +170,7 @@ class ListenerShell(Gtk.VBox):
         self.pack_start(self.listener_sw, True, True, 0)
 
         # Commands Entry
-        self.comm_entry = Gtk.Entry(max=0)
+        self.comm_entry = Gtk.Entry()
         self.comm_entry.set_icon_from_stock(1, Gtk.STOCK_EXECUTE)
         self.comm_entry.set_icon_from_stock(0, Gtk.STOCK_CLEAR)
 
