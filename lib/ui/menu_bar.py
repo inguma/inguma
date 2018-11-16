@@ -154,7 +154,7 @@ class MenuBar(Gtk.Menu):
         exit.add_accelerator("activate", agr, key,
             mod, Gtk.AccelFlags.VISIBLE)
 
-        exit.connect("activate", self._bye)
+        exit.connect("activate", self.main.menu_quit)
 
         self.append(exit)
 
@@ -164,23 +164,6 @@ class MenuBar(Gtk.Menu):
 
     # Private methods
     #
-
-    def _bye(self, widget):
-        msg = ("Do you really want to quit?")
-        dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
-        dlg.set_default_response(Gtk.ResponseType.YES)
-        dlg.set_transient_for(self.main)
-        opt = dlg.run()
-        dlg.destroy()
-
-        if opt != Gtk.ResponseType.YES:
-            return True
-
-        self.gom.echo('Killing all listeners', False)
-        self.uicore.kill_all_listeners()
-        self.uicore.remove_dot_file()
-        Gtk.main_quit()
-        return False
 
     def recent_kb(self, widget):
         """Activated when an item from the recent projects menu is clicked"""

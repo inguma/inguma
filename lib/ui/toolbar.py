@@ -148,7 +148,7 @@ class Toolbar(Gtk.HBox):
 
         # Exit button
         self.exit_tb = Gtk.ToolButton(Gtk.STOCK_QUIT)
-        self.exit_tb.connect("clicked", self._bye)
+        self.exit_tb.connect("clicked", self.main.menu_quit)
         self.exit_tb.set_tooltip_text('Have a nice day ;-)')
         self.main_tb.insert(self.exit_tb, 15)
 
@@ -181,22 +181,6 @@ class Toolbar(Gtk.HBox):
 
     # Private methods
     #
-    def _bye(self, widget):
-        msg = ("Do you really want to quit?")
-        dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
-        dlg.set_default_response(Gtk.ResponseType.YES)
-        dlg.set_transient_for(self.main)
-        opt = dlg.run()
-        dlg.destroy()
-
-        if opt != Gtk.ResponseType.YES:
-            return True
-
-        self.gom.echo('Killing all listeners', False)
-        self.uicore.kill_all_listeners()
-        self.uicore.remove_dot_file()
-        Gtk.main_quit()
-        return False
 
     def _miau(self):
         pass

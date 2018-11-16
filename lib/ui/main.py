@@ -129,7 +129,7 @@ class MainApp(Gtk.Window):
         splash.push(("Creating main window..."))
         self.set_icon_from_file(os.path.join('logo', 'inguma_16.png'))
         self.set_focus = True
-        self.connect("delete_event", self._quit)
+        self.connect("delete_event", self.event_quit)
         splash.push(("Loading..."))
         Gtk.Settings.get_default().set_long_property("gtk-button-images", True, "main")
 
@@ -662,16 +662,31 @@ class MainApp(Gtk.Window):
 
         Gtk.Window.do_configure_event(self, event.configure)
 
-    def _quit(self, widget, event, data=None):
-        '''Main quit.
+    def event_quit(self, widget, event, data=None):
+        '''Main quit routine coming from an event.
 
         @param widget: who sent the signal.
         @param event: the event that happened
         @param data: optional data to receive.
         '''
+        return self._quit()
+
+
+    def menu_quit(self, item):
+        '''Main quit routine coming from a menu item or button activation.
+
+        @param item: The object (menu item or button) which received the signal.
+        '''
+        return self._quit()
+
+
+    def _quit(self):
+        '''Main quit routine.  It disables the HTTP threads if they're running.
+        '''
         msg = ("Do you really want to quit?")
         dlg = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, msg)
         dlg.set_default_response(Gtk.ResponseType.YES)
+        dlg.set_transient_for(self)
         opt = dlg.run()
         dlg.destroy()
 
