@@ -1,15 +1,16 @@
 Long development on road to 1.0...
 ----------------------------------
 
-Version 0.5 (released ??-Dec-2018)
+Version 0.5 (released ??-Jul-2019)
     * Removal of the in-tree Scapy.
     * Migration to GTK+3.
+    * Migration to Python 3.
     * REST HTTP UI server (still experimental), based on webpy.
     * Big revamp to the UI:
       - Right KB tree totally redone, added icons and filtering capabilities.
       - New toolbar.
       - New status bar.
-    * TONS of code cleanups (an ongoing effort).  There are more shared code
+    * TONS of code cleanups (an ongoing effort).  There is more shared code
       now between the CLI and GUI versions.
     * All modules have cleaned up and converted to a new version of
       CIngumaModule, more modular and extensible.

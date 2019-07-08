@@ -184,7 +184,7 @@ def graph_weighted(kb, type):
         for target in kb['targets']:
             if target + '_tcp_ports' in kb:
                 for port in kb[target + '_tcp_ports']:
-                    if not port in weights.keys():
+                    if not port in list(weights.keys()):
                         weights[port] = 0.5
                     else:
                         weights[port] += 0.3
@@ -195,7 +195,7 @@ def graph_weighted(kb, type):
         dotcode += '"' + str(weight) + '" [style=filled, fillcolor="#5E82C6", fixedsize=1, height=' + str(weights[weight]) + ', width=' + str(weights[weight]) + ', shape=circle]\n'
 
     # Add edges
-    target_pairs = pairs( weights.keys() )
+    target_pairs = pairs( list(weights.keys()) )
     for pair in target_pairs[0:-1]:
         dotcode += '"' + str(pair[0]) + '" -- "' + str(pair[1]) + '" [style="invis", minlen=2]\n'
 
@@ -204,7 +204,7 @@ def graph_weighted(kb, type):
     return dotcode
 
 def pairs(dlist):
-    return zip(dlist,dlist[1:]+[dlist[0]])
+    return list(zip(dlist,dlist[1:]+[dlist[0]]))
 
 def graph_to_from(kb, type):
 

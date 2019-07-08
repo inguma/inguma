@@ -118,7 +118,7 @@ class UIManager(Gtk.UIManager):
 
     def geoIp(self, widget):
         geodb_path = get_profile_file_path( 'data' + os.sep + 'GeoLiteCity.dat')
-        print geodb_path
+        print(geodb_path)
         if os.path.exists(geodb_path):
             if config.HAS_GEOIP:
                 import lib.ui.geoip as geoip

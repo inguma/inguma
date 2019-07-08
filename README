@@ -7,8 +7,9 @@ Installation:
 MacOS:
 - install Homebrew
 - brew install gtk+3 libdnet graphviz
-- brew install pygobject3 --with-python@2
+- brew install libffi
 - brew install https://raw.githubusercontent.com/secdev/scapy/master/.travis/pylibpcap.rb
-- pip install scapy psutil
+- export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
+- pip install PyGObject scapy psutil
 
-Clone the git or mercurial repository, and run ./ginguma.
+Clone the git or mercurial repository, and run ./ginguma.py.

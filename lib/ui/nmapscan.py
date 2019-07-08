@@ -53,7 +53,7 @@ class NmapScan:
 
         # A ComboBox
         self.combobox = Gtk.ComboBoxText()
-        for profile in self.profiles.keys():
+        for profile in list(self.profiles.keys()):
             self.combobox.append_text(profile)
         self.combobox.connect('changed', self.changed_cb)
 

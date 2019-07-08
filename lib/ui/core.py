@@ -26,7 +26,7 @@ import inguma
 import threading
 import scapy.all as scapy
 scapy.conf.verb = 0
-import dotgen
+from . import dotgen
 
 import lib.IPy as IPy
 import lib.listener as liblistener
@@ -74,7 +74,7 @@ class UIcore():
 
         if (gw is None):
             # We don't have a gateway at the moment.
-            print "\nERROR: Houston, we have a problem.  It's been impossible to determine your current gateway.  I cannot continue."
+            print("\nERROR: Houston, we have a problem.  It's been impossible to determine your current gateway.  I cannot continue.")
             sys.exit(1)
 
         #Get localhost information
@@ -140,7 +140,7 @@ class UIcore():
     def set_kbfield(self, field, new_content):
         '''Updates KB field contents'''
 
-        if inguma.user_data.has_key(field):
+        if field in inguma.user_data:
             #print "Existing field", field, "content", new_content
             if type(inguma.user_data[field]) is list:
                 #print "\tField is list"
@@ -210,7 +210,7 @@ class UIcore():
 
     def kill_all_listeners(self):
         if glob.listeners:
-            for listener in glob.listeners.keys():
+            for listener in list(glob.listeners.keys()):
                 glob.listeners[listener].exit()
 
     def getTargetPath(self):
@@ -265,14 +265,16 @@ class UIcore():
     def save_dot(self, dotcode):
         if self.gom.dot_file:
             os.unlink(self.gom.dot_file)
-        # We have to call it with False because otherwise the UAC in Win7 won't allow us to access the
-        # temporary file from two different processes.  So we will need to remove the file after closing it.
-        file = tempfile.NamedTemporaryFile(delete=False)
+        # We have to call it with False because otherwise the UAC in Win7 won't allow us to access
+        # the temporary file from two different processes.  So we will need to remove the file after
+        # closing it.
+        # Remember that NamedTemporaryFile opens the file in binary mode, so we have to write bytes.
+        dotfile = tempfile.NamedTemporaryFile(delete=False)
 
-        file.write(dotcode)
-        file.close()
+        dotfile.write(dotcode.encode('utf-8'))
+        dotfile.close()
 
-        self.gom.dot_file = file.name
+        self.gom.dot_file = dotfile.name
 
     def getDot(self, doASN, direction='TD'):
         ''' Gets new dot code for graph '''
@@ -290,7 +292,7 @@ class UIcore():
             # Get host's ASN
             ASNlist = []
             for ip in inguma.user_data['targets']:
-                if not inguma.user_data.has_key(ip + 'asn'):
+                if ip + 'asn' not in inguma.user_data:
                     asn = self.get_asn(ip)
                     if asn:
                         inguma.user_data[ip + 'asn'] = True
@@ -298,7 +300,7 @@ class UIcore():
                         ASNlist.append(asn[0])
             for path in paths:
                 for ip in path:
-                    if not inguma.user_data.has_key(ip + 'asn'):
+                    if ip + 'asn' not in inguma.user_data:
                         asn = self.get_asn(ip)
                         if asn:
                             inguma.user_data[ip + 'asn'] = True
@@ -353,7 +355,7 @@ class UIcore():
 
         id = os.popen(command)
         output = id.read()
-        print output
+        print(output)
         if self.SHOW_MODULE_WIN:
             GObject.idle_add( self.gom.create_module_dialog )
         GObject.idle_add( self.gom.echo, output )
@@ -366,20 +368,20 @@ class UIcore():
 
     def add_asns(self, ASNs):
 
-        for key in ASNs.keys():
+        for key in list(ASNs.keys()):
             inguma.user_data['graph']['ASNs'][key] = ASNs[key]
 
         #print "user_data ASNs:\n", inguma.user_data['graph']['ASNs']
 
     def add_asds(self, ASDs):
 
-        for key in ASDs.keys():
+        for key in list(ASDs.keys()):
             inguma.user_data['graph']['ASDs'][key] = ASDs[key]
         #print "user_data ASDs:\n", inguma.user_data['graph']['ASDs']
 
     def has_asn(self, value):
 
-        for x in inguma.user_data['graph']['ASNs'].values():
+        for x in list(inguma.user_data['graph']['ASNs'].values()):
             try:
                 x.index(value)
                 #print str(x) + " == " + value

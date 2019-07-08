@@ -35,14 +35,14 @@ def generateReport(data, host=''):
 
     DATA = ''
 
-    if data.has_key("hosts") and host == '':
+    if "hosts" in data and host == '':
         for host in data["hosts"]:
             title = "Report for host %s" % host
-            print title
+            print(title)
             DATA += title + '\n'
-            print "-"*len(title)
+            print("-"*len(title))
             DATA += "-"*len(title) + '\n'
-            print
+            print()
             DATA += '\n'
 
             for x in data:
@@ -50,31 +50,31 @@ def generateReport(data, host=''):
                     field = str(x[len(host)+1:]).upper()
 
                     if type(data[x][0]) is dict:
-                        print str(field) + ":"
+                        print(str(field) + ":")
                         DATA += str(field) + ":\n"
 
                         for y in data[x][0]:
-                            print "\t", str(y).upper() +':', data[x][0][y]
+                            print("\t", str(y).upper() +':', data[x][0][y])
                             DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n'
                     else:
                         if len(data[x]) == 1:
-                            print field + ':\t', data[x][0]
+                            print(field + ':\t', data[x][0])
                             DATA += field + ':\t' + str(data[x][0]) + '\n'
                         else :
-                            print field + ':'
+                            print(field + ':')
                             DATA += field + ':\n'
                             for element in data[x]:
-                                print "\t" + str(element)
+                                print("\t" + str(element))
                                 DATA += "\t" + str(element) + '\n'
-            print
+            print()
             DATA += '\n'
     else:
         title = "Report for host %s" % host
-        print title
+        print(title)
         DATA += title + '\n'
-        print "-"*len(title)
+        print("-"*len(title))
         DATA += "-"*len(title) + '\n'
-        print
+        print()
         DATA += '\n'
 
         for x in data:
@@ -82,23 +82,23 @@ def generateReport(data, host=''):
                 field = str(x[len(host)+1:]).upper()
 
                 if type(data[x][0]) is dict:
-                    print str(field) + ":"
+                    print(str(field) + ":")
                     DATA += str(field) + ":\n"
 
                     for y in data[x][0]:
-                        print "\t", str(y).upper() +':', data[x][0][y]
+                        print("\t", str(y).upper() +':', data[x][0][y])
                         DATA += "\t", str(y).upper() +':\n', data[x][0][y] + '\n'
                 else:
                     if len(data[x]) == 1:
-                        print field + ':\t', data[x][0]
+                        print(field + ':\t', data[x][0])
                         DATA += field + ':\t' + str(data[x][0]) + '\n'
                     else :
-                        print field + ':'
+                        print(field + ':')
                         DATA += field + ':\n'
                         for element in data[x]:
-                            print "\t" + str(element)
+                            print("\t" + str(element))
                             DATA += "\t" + str(element) + '\n'
-        print
+        print()
         DATA += '\n'
 
     return DATA

@@ -124,7 +124,7 @@ def getMacVendor(mac):
 
 def getProtocolName(proto):
     try:
-        for x in scapy.conf.protocols.keys():
+        for x in list(scapy.conf.protocols.keys()):
             if scapy.conf.protocols[x] == proto:
                 return x
     except:
@@ -158,12 +158,12 @@ def create_profile_dir():
 
     try:
         if not os.path.exists(inguma_homedir):
-            os.mkdir(inguma_homedir, 0700)
+            os.mkdir(inguma_homedir, 0o700)
         if not os.path.exists(inguma_homedir + 'data'):
-            os.mkdir(inguma_homedir + 'data', 0700)
+            os.mkdir(inguma_homedir + 'data', 0o700)
         return True
     except:
-        print "Cannot create " + inguma_homedir + ' or one of its subdirectories.'
+        print("Cannot create " + inguma_homedir + ' or one of its subdirectories.')
         return False
 
 def get_profile_file_path(item):

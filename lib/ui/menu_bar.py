@@ -329,7 +329,7 @@ class MenuBar(Gtk.Menu):
                 self.xdotw.set_dotcode(self.uicore.get_last_dot())
                 self.gom.kbwin.update_tree()
             except:
-                print "Your lack of faith on my parsing capabilities is disturbing..."
+                print("Your lack of faith on my parsing capabilities is disturbing...")
 
         elif response == Gtk.ResponseType.CANCEL:
             self.gom.echo('Closed, no files selected', False)

@@ -29,7 +29,7 @@ def doDiscover(vars):
     targets = ()
 
     if not vars:
-        print "INTERNAL ERROR: No one variable was passed"
+        print("INTERNAL ERROR: No one variable was passed")
         return False
     else:
         target = vars[0]
@@ -42,23 +42,23 @@ def doDiscover(vars):
 
     try:
         if target == "":
-            mTarget = raw_input("Target: ")
+            mTarget = input("Target: ")
         else:
             mTarget = target
 
         vars = (mTarget, port, covert, timeout, waittime, wizard)
 
-        print
-        print "Available modules:"
-        print
+        print()
+        print("Available modules:")
+        print()
 
         index = 0
         for x in modules:
-            print "\t",index+1,x.name,"  \t",x.brief_description
+            print("\t",index+1,x.name,"  \t",x.brief_description)
             index += 1
 
-        print
-        res = raw_input("Select module [all]: ")
+        print()
+        res = input("Select module [all]: ")
 
         try:
             if res.lower() == "all" or res.lower() == "":
@@ -67,11 +67,11 @@ def doDiscover(vars):
             else:
                 targets += runModule(vars, modules[int(res)-1])
         except KeyboardInterrupt:
-            print "Aborted."
+            print("Aborted.")
         except EOFError:
-            print "Aborted."
+            print("Aborted.")
         except:
-            print "Internal error:",sys.exc_info()[1]
+            print("Internal error:",sys.exc_info()[1])
 
         tmp = (mTarget, )
         tmp += cleanTargets(targets)
@@ -79,11 +79,11 @@ def doDiscover(vars):
 
         return ret
     except KeyboardInterrupt:
-        print "Aborted."
+        print("Aborted.")
     except EOFError:
-        print "Aborted."
+        print("Aborted.")
     except:
-        print "Error from module:",sys.exc_info()[1]
+        print("Error from module:",sys.exc_info()[1])
         return
 
 def cleanTargets(targets):

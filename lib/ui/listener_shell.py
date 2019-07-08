@@ -20,7 +20,7 @@
 import os
 from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
 
-import bokken.throbber as throbber
+from .bokken import throbber as throbber
 
 class ListenerShell(Gtk.VBox):
 
@@ -96,7 +96,7 @@ class ListenerShell(Gtk.VBox):
             'MacOS':GdkPixbuf.Pixbuf.new_from_file(os.path.dirname(__file__) + os.sep + 'data' + os.sep + 'icons' + os.sep + 'apple.png'),
         }
 
-        for option in options.keys():
+        for option in list(options.keys()):
             store.append([options[option], option])
         self.postxpl_combo.set_active(0)
         self.postxpl_combo_align.add(self.postxpl_combo)

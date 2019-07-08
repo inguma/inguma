@@ -172,7 +172,7 @@ class DiscoverDialog:
 
         if self.portentry.get_text() != '':
             port =  int(self.portentry.get_text())
-            print "Port:", port
+            print(("Port:", port))
             self.uicore.set_kbfield( 'port', port )
         # Run discover module
         self.uicore.uiRunDiscover(self.module)

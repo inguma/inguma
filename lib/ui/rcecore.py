@@ -18,8 +18,8 @@
 #       MA 02110-1301, USA.
 
 import sys, os, shutil
-import cPickle as pickle
-from config import *
+import pickle as pickle
+from .config import *
 
 def create_kb_file(outfile, poc):
     """
@@ -56,7 +56,7 @@ def uploadFile(poc):
     try:
         shutil.move("%s.kb" % theFile, DBS_PATH)
     except shutil.Error:
-        print "%s.kb already existed it will be overwritten" % theFile
+        print("%s.kb already existed it will be overwritten" % theFile)
         os.unlink("%s%s.kb" % (DBS_PATH, theFile))
         create_kb_file(theFile, poc)
     finally:
@@ -64,12 +64,12 @@ def uploadFile(poc):
     try:
         shutil.move("%s.sqlite" % theFile, DBS_PATH)
     except shutil.Error:
-        print "%s.sqlite already existed it will be overwritten" % theFile
+        print("%s.sqlite already existed it will be overwritten" % theFile)
         os.unlink("%s%s.sqlite" % (DBS_PATH, theFile))
         create_db_file(theFile, poc)
     finally:
         shutil.move("%s.sqlite" % theFile, DBS_PATH)
-    print "Binary " + poc + " disassembled!"
+    print("Binary " + poc + " disassembled!")
 
 def generate_graphs(poc):
     '''generate graph for each function'''
@@ -87,7 +87,7 @@ def generate_graphs(poc):
         os.rmdir(dir)
         os.mkdir(dir)
     for function in data[1]:
-        print "Creating graph for function:", function.name
+        print("Creating graph for function:", function.name)
         os.system(GEN_PATH + " dis/navigator/dbs/" + theFile + ".kb " + function.name)
         shutil.move(function.name + ".dot", "dis/navigator/dbs/" + theFile)
         shutil.move(function.name + ".jpg", "dis/navigator/dbs/" + theFile)

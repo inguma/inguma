@@ -21,7 +21,7 @@
 import os
 from gi.repository import Gtk
 
-import bokken.throbber as throbber
+from .bokken import throbber as throbber
 import lib.ui.reportWin as reportWin
 import lib.ui.preferences_dialog as preferences_dialog
 import lib.ui.target_dialog as target_dialog

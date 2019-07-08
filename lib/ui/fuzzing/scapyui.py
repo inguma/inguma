@@ -375,7 +375,7 @@ class ScapyUI(Gtk.Frame):
         packet = ''
         self.fields = []
 
-        for layer in fuzzeables.keys():
+        for layer in list(fuzzeables.keys()):
             # Add destination
             if layer == 'IP':
                 packet += layer + '(dst="' + self.target + '")/'
@@ -401,7 +401,7 @@ class ScapyUI(Gtk.Frame):
                 if field.name in self.fields:
                     if isinstance(field, PacketListField):
                         for attribute in getattr(q, field.name):
-                            print "fuzzing", repr(attribute)
+                            print("fuzzing", repr(attribute))
                             fuzz(attribute, _inplace=1)
                     elif field.default is not None:
                         rnd = field.randval()
@@ -411,15 +411,15 @@ class ScapyUI(Gtk.Frame):
         return packet
 
     def add_layer(self, layers):
-        for layer in layers.keys():
+        for layer in list(layers.keys()):
             parent = self.selected_store.append( None, (layer, None, None) )
             for element in layers[layer]:
                 self.selected_store.append( parent, (element, None, None) )
 
     def get_layers(self):
 
-        import __builtin__
-        all = __builtin__.__dict__.copy()
+        import builtins
+        all = builtins.__dict__.copy()
         all.update(globals())
         objlst = sorted(conf.layers, key=lambda x:x.__name__)
         for o in objlst:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #       ginguma.py
 #
@@ -27,7 +27,7 @@ import sys
 if sys.platform != "win32":
     display = os.getenv("DISPLAY")
     if display is None or display.strip() is "":
-        print "The DISPLAY environment variable is not set!  Do you have graphical capabilities?"
+        print("The DISPLAY environment variable is not set!  Do you have graphical capabilities?")
         sys.exit(1)
 import lib.ui.main
 # lib.ui.main.main(profile)

@@ -19,7 +19,7 @@
 
 from gi.repository import GdkPixbuf, GObject, Gtk
 
-import os, sys, threading, urllib, gzip
+import os, sys, threading, urllib.request, urllib.parse, urllib.error, gzip
 sys.path.append('../..')
 
 from lib.core import get_profile_file_path
@@ -223,7 +223,7 @@ class PropDialog(popup_dialog.PopupDialog):
         page = "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
         self.gom.echo( "Downloading " + page, False )
         geoip_db_path = get_profile_file_path('data/');
-        urllib.urlretrieve(page, geoip_db_path + "GeoLiteCity.dat.gz")
+        urllib.request.urlretrieve(page, geoip_db_path + "GeoLiteCity.dat.gz")
 
         # Extract DB and remove original file
         self.gom.echo( "Extracting files...", False )
@@ -252,7 +252,7 @@ class PropDialog(popup_dialog.PopupDialog):
         else:
             page = "http://inguma.eu/attachments/download/69/libdistorm64-32.so"
         self.gom.echo( "Downloading " + page, False )
-        urllib.urlretrieve(page, path + "libdistorm64.so")
+        urllib.request.urlretrieve(page, path + "libdistorm64.so")
         self.gom.echo( "Operation Complete", False )
         self.dis_bt.set_sensitive(True)
 

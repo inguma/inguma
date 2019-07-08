@@ -75,7 +75,7 @@ class UIManager(Gtk.UIManager):
         do_remove = askRemove.run()
 
         if do_remove == Gtk.ResponseType.YES:
-            print "Let's remove data for node:", self.ip
+            print("Let's remove data for node:", self.ip)
 #            self.uicore.remove_node(self.ip)
             t = threading.Thread(target=self.uicore.remove_node, args=(self.ip,))
             t.start()

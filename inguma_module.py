@@ -35,7 +35,7 @@ def runModule(vars, module, dict, om=None):
             try:
                 exec("objModule." + x + " = vars[x]")
             except:
-                print "ERROR", sys.exc_info()[1]
+                print("ERROR", sys.exc_info()[1])
 
     if objModule.run():
         objModule.print_summary()

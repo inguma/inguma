@@ -18,7 +18,7 @@
 #       MA 02110-1301, USA.
 
 import sys
-import xdot
+from . import xdot
 from gi.repository import Gdk
 
 

@@ -94,14 +94,14 @@ def insertData(uicore, outputs):
 
         # Add a new target, hostname and OS
         uicore.set_kbfield( 'targets', output['hostip'] )
-        if 'hostname' in output.keys():
+        if 'hostname' in list(output.keys()):
             uicore.set_kbfield( output['hostip'] + '_name', output['hostname'] )
-        if 'os' in output.keys():
+        if 'os' in list(output.keys()):
             uicore.set_kbfield( output['hostip'] + '_os', output['os'] )
 
         # Add Open ports and services
 #        print output['ports']
-        for port in output['ports'].keys():
+        for port in list(output['ports'].keys()):
             if output['ports'][port][0] == 'open':
                 uicore.set_kbfield( output['hostip'] + '_tcp_ports', port )
                 try:

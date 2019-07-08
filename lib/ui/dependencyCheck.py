@@ -18,7 +18,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from __future__ import print_function
+
 import os, sys, platform
 
 
@@ -121,7 +121,7 @@ def gtkui_dependency_check(config):
     # Check GeoIP
     try:
         print("\tGeoIP library...", end='')
-        import GeoIP
+        from . import GeoIP
         print(OKGREEN + "\tOK" + ENDC)
     except:
         print(WARNING + "\tD'oh!" + ENDC)
@@ -142,7 +142,7 @@ def gtkui_dependency_check(config):
 
     # Check Graphviz
     print("\tGraphviz binaries...", end='')
-    if os.environ.has_key('PATH'):
+    if 'PATH' in os.environ:
         for path in os.environ['PATH'].split(os.pathsep):
             progs = __find_executables(path)
 
@@ -160,6 +160,7 @@ def __find_executables(path):
     # http://code.google.com/p/pydot/
     # Thanks to Ero Carrera
 
+    # FIXME: This code is horrible and it needs to die, sooner rather than later (ender).
     """Used by find_graphviz
 
     path - single directory as a string
@@ -182,9 +183,9 @@ def __find_executables(path):
         path = path[1:-1]
         was_quoted =  True
 
-    if os.path.isdir(path) :
+    if os.path.isdir(path):
 
-        for prg in progs.iterkeys():
+        for prg in list(progs.keys()):
 
             if progs[prg]:
                 continue

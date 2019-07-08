@@ -39,7 +39,7 @@ def debug_print(*args):
     for arg in args:
         output_string += str(arg) + " "
 
-    print output_string
+    print(output_string)
 
 def show_exploit_info(cmd):
 
@@ -100,16 +100,16 @@ def unified_input_prompt(caller, prompt = ''):
         prompt = default_prompt
 
     try:
-        input = raw_input(prompt + '> ')
+        input = eval(input(prompt + '> '))
     except KeyboardInterrupt:
-        print
+        print()
         input = ""
     except EOFError:
-        print
+        print()
         return None
     except:
         # Uh-oh, what happened?
-        print "Internal error:", sys.exc_info()[1]
+        print(("Internal error:", sys.exc_info()[1]))
 
     if input.lower() in ['help', 'h', '?']:
         caller.show_help()

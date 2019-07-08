@@ -145,7 +145,7 @@ class KBtree(Gtk.TreeView):
         kb = self.uicore.get_kbList()
         targets = kb['targets']
         for target in targets:
-            if kb.has_key(target + '_os'):
+            if target + '_os' in kb:
                 oss = kb[target + '_os'][0].lower()
                 for os_icon in config.ICONS:
                     if os_icon in oss and os_icon not in added_os:
@@ -298,9 +298,9 @@ class KBtree(Gtk.TreeView):
                     icon = Gtk.Image()
                     icon = icon.render_icon(Gtk.STOCK_CONNECT, Gtk.IconSize.MENU)
                     port_iter = self.treestore.append(piter, [icon, str(port) + '/TCP', None])
-                    if host + '_'+ str(port) + '-web-vulns' in kb.keys():
+                    if host + '_'+ str(port) + '-web-vulns' in list(kb.keys()):
                         for id, vuln in kb[host + '_' + str(port) + '-web-vulns']:
-                            if id not in ids.keys():
+                            if id not in list(ids.keys()):
                                 #print "Set element:", element
                                 iditer = self.treestore.append(port_iter, [self.node_icon, 'OSVDB: ' + id, host + ':' + str(port)])
                                 self.treestore.append(iditer, [self.vuln_icon, vuln,  id + '-' + host + ':' + str(port)])
@@ -425,7 +425,7 @@ class KBtree(Gtk.TreeView):
         if len(model.get_path(iter)) == 1:
             # Check os filter buttons
             if model.get_value(iter, 2) and self.os_visible:
-                if not model.get_value(iter, 2) in self.os_visible.keys():
+                if not model.get_value(iter, 2) in list(self.os_visible.keys()):
                     return True
                 elif not self.os_visible[model.get_value(iter, 2)]:
                     return False

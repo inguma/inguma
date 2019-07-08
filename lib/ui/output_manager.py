@@ -43,7 +43,7 @@ class OutputManager:
         self.dot_file = ''
 
         if self.iface != 'gui' and self.iface != 'console':
-            print "Output interface not valid, must be 'gui' or 'console'"
+            print("Output interface not valid, must be 'gui' or 'console'")
             sys.exit(0)
 
     def console(self, data=''):
@@ -90,7 +90,7 @@ class OutputManager:
                 #self.omwidget.set_text(data + '\n')
 
         elif self.iface == 'console':
-            print data
+            print(data)
 
         return False
 
@@ -168,7 +168,7 @@ class OutputManager:
 
         context = self.ing.bokken_sb.get_context_id('sb')
         self.text = ''
-        for element in data_dict.keys():
+        for element in list(data_dict.keys()):
             self.text += element.capitalize() + ': ' + str(data_dict[element]) + ' | '
         self.ing.bokken_sb.push(context, self.text)
         if version:

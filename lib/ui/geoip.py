@@ -20,7 +20,7 @@
 import os
 import gtk, cairo
 
-import GeoIP
+from . import GeoIP
 
 class Gui(Gtk.Window):
     def __init__(self, core):

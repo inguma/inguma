@@ -29,7 +29,7 @@ import gtksourceview2 as gtksourceview
 from gi.repository import Gio
 from gi.repository import Pango
 
-from config import theme
+from .config import theme
 
 ######################################################################
 ##### global vars
@@ -110,9 +110,9 @@ def open_file(buffer, filename):
     if mime_type:
         language = get_language_for_mime_type(mime_type)
         if not language:
-            print 'No language found for mime type "%s"' % mime_type
+            print('No language found for mime type "%s"' % mime_type)
     else:
-        print 'Couldn\'t get mime type for file "%s"' % filename
+        print('Couldn\'t get mime type for file "%s"' % filename)
 
     buffer.set_language(language)
     buffer.set_highlight_syntax(True)
@@ -375,14 +375,14 @@ def create_view_window(buffer, sourceview = None):
         view.set_mark_category_pixbuf (MARK_TYPE_1, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_1, 1)
     else:
-        print 'could not load mark 1 image.  Spurious messages might get triggered'
+        print('could not load mark 1 image.  Spurious messages might get triggered')
 
     pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(DATADIR,'pixmaps/apple-red.png'))
     if pixbuf:
         view.set_mark_category_pixbuf (MARK_TYPE_2, pixbuf)
         view.set_mark_category_priority (MARK_TYPE_2, 2)
     else:
-        print 'could not load mark 2 image.  Spurious messages might get triggered'
+        print('could not load mark 2 image.  Spurious messages might get triggered')
 
     vbox.show_all()
 

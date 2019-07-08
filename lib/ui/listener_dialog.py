@@ -138,7 +138,7 @@ class ListenerDialog(popup_dialog.PopupDialog):
         store = Gtk.ListStore(str)
 
         if glob.listeners:
-            for listener in glob.listeners.keys():
+            for listener in list(glob.listeners.keys()):
                 store.append([listener])
 
         treeView = Gtk.TreeView(store)

@@ -63,7 +63,7 @@ class GatherDialog(Gtk.Dialog):
             self.entries.append(entry)
 
             # Let's add tooltips at entries
-            if self.descs.has_key(tit):
+            if tit in self.descs:
                 info = Gtk.Image()
                 info.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
                 info.set_tooltip_text(self.descs[tit])

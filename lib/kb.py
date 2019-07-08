@@ -91,7 +91,6 @@ class KnowledgeBase:
         # it in some way for ginguma before using this class there.
 
         import pickle
-        import sys
 
         if not filename:
             filename = self.default_filename
@@ -132,7 +131,7 @@ class KnowledgeBase:
             output.close()
         except:
             # FIXME: Only for console!!
-            print "Error saving knowledge base:", sys.exc_info()[1]
+            print("Error saving knowledge base:", sys.exc_info()[1])
 
 
     def set_defaults(self):

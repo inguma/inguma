@@ -25,8 +25,8 @@ import threading
 if sys.platform != "win32":
     # Need root for most modules, so...
     if os.geteuid() != 0:
-        print "You must be root to run most of the modules."
-        answer = raw_input("Do you want to continue [y/N]? ")
+        print("You must be root to run most of the modules.")
+        answer = input("Do you want to continue [y/N]? ")
         if answer.lower() != 'y':
             sys.exit(1)
 
@@ -39,11 +39,11 @@ dependencyCheck.gtkui_dependency_check(config)
 from gi.repository import Gdk, Gtk
 
 # This is just general info, to help people knowing their system
-print "Starting Inguma, running on:"
-print "  Python version:"
-print "\n".join("    "+x for x in sys.version.split("\n"))
-print "  GTK version:", ".".join((str(Gtk.get_major_version()), str(Gtk.get_minor_version())))
-print
+print("Starting Inguma, running on:")
+print("  Python version:")
+print(("\n".join("    "+x for x in sys.version.split("\n"))))
+print(("  GTK version:", ".".join((str(Gtk.get_major_version()), str(Gtk.get_minor_version())))))
+print()
 
 ## Threading initializer
 #if sys.platform == "win32":

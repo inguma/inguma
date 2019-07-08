@@ -191,7 +191,7 @@ def load_module(path, atype, marray, bLoad = True):
                     exec("import " + file)
                     exec("global " + marray)
                 else:
-                    print "The module %s%s%s has errors or a non-alphanumeric name." % (path, os.sep, complete_filename)
+                    print("The module %s%s%s has errors or a non-alphanumeric name." % (path, os.sep, complete_filename))
                     continue
 
                 try:
@@ -204,12 +204,12 @@ def load_module(path, atype, marray, bLoad = True):
                                 exec ("global " + aGlobal)
                                 glob.GLOBAL_VARIABLES += "global " + aGlobal + ";"
                             else:
-                                print "The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename)
-                                print "The suspicious code:"
-                                print aGlobal
+                                print("The global variable of the module %s%s%s doesn't appear to be a variable..." % (path, os.sep, complete_filename))
+                                print("The suspicious code:")
+                                print(aGlobal)
                 except:
                     uicore.debug_print(FAIL + "Error loading global variables" + ENDC)
-                    print sys.exc_info()[1]
+                    print(sys.exc_info()[1])
 
                 exec(marray + ".append(eval(file))")
                 # Do this in the meantime to populate the glob.* structures.
@@ -229,7 +229,7 @@ def load_module(path, atype, marray, bLoad = True):
                     elif eval(file).type == "brute":
                         exec("brutes.append(eval(file))")
 
-                for x in filter(lambda x: x.startswith("C"), dir(eval(file))):
+                for x in [x for x in dir(eval(file)) if x.startswith("C")]:
                     classes.append(file + "." + x)
                     uicore.debug_print("Registering class",file + "." + x)
                     uicore.debug_print("Creating a base object ....")
@@ -244,7 +244,7 @@ def load_module(path, atype, marray, bLoad = True):
             if file.isalnum():
                 eval(marray).append(file)
             else:
-                print WARNING + "The module %s appears to be a non-valid module" + ENDC % file
+                print(WARNING + "The module %s appears to be a non-valid module" + ENDC % file)
                 continue
 
 def readCommands():
@@ -261,7 +261,7 @@ def readCommands():
     }
 
     # Load all modules.
-    for exploit_type, exploit_dir in modules.iteritems():
+    for exploit_type, exploit_dir in modules.items():
         path = "modules" + os.sep + exploit_dir
         load_module(path, exploit_dir, exploit_type)
 
@@ -278,9 +278,9 @@ def exploitWizard():
 
     if target == "" or target == None:
         if not glob.isGui:
-            target = raw_input("Target: ")
+            target = input("Target: ")
         else:
-            print "[!] You need to specify the target"
+            print("[!] You need to specify the target")
 
     wizard = True
 
@@ -296,7 +296,7 @@ def exploitWizard():
     print
     """
     if not glob.isGui:
-        res = raw_input("Select module [all]: ")
+        res = input("Select module [all]: ")
     else:
         res = ""
 
@@ -308,10 +308,10 @@ def exploitWizard():
     else:
         for mod in exploits:
             try:
-                print "Running",mod.name,"..."
+                print("Running",mod.name,"...")
                 runRegisteredCommand(mod.name, locals())
             except:
-                print "Error",sys.exc_info()[1]
+                print("Error",sys.exc_info()[1])
 
 def runRegisteredCommand(cmd, mVars = None):
 
@@ -329,7 +329,7 @@ def runRegisteredCommand(cmd, mVars = None):
     elif mType == "discover":
         ret = runModule(vars, glob.commands[cmd], user_data, gom)
     else:
-        print "Unknown module type '" + str(mType) + "'"
+        print("Unknown module type '" + str(mType) + "'")
 
     if ret:
         user_data = ret
@@ -339,7 +339,7 @@ def runRegisteredCommand(cmd, mVars = None):
 def execute(command, index):
 
     if len(command) < index:
-        print "Not enough arguments"
+        print("Not enough arguments")
         return
     else:
         cmd = ""
@@ -376,7 +376,7 @@ def runCommand(data, mVars = None):
                 return True
             else:
 
-                if glob.commands.has_key(word.lower()):
+                if word.lower() in glob.commands:
                     runRegisteredCommand(word.lower(), mVars)
                     return True
                 else:
@@ -390,7 +390,7 @@ def runCommand(data, mVars = None):
                     showOptions()
                     return True
                 else:
-                    print "Unknown option",word,"for show command"
+                    print("Unknown option",word,"for show command")
                     return True
             elif mode == "use":
                 load_module(word, "unknown", "others")
@@ -418,69 +418,69 @@ def showOptions():
     else:
         mTarget = target
 
-    print "Options"
-    print
-    print "Target:  \t\t", mTarget
-    print "Port:    \t\t", port
-    print "Covert level:\t\t", covert
-    print "Timeout:\t\t", timeout
-    print "Wait time:\t\t", waittime
-    print "Wizard mode:\t\t", wizard
-    print
+    print("Options")
+    print()
+    print("Target:  \t\t", mTarget)
+    print("Port:    \t\t", port)
+    print("Covert level:\t\t", covert)
+    print("Timeout:\t\t", timeout)
+    print("Wait time:\t\t", waittime)
+    print("Wizard mode:\t\t", wizard)
+    print()
 
 def showDiscover():
-    print
-    print "List of discover modules"
-    print "------------------------"
-    print
+    print()
+    print("List of discover modules")
+    print("------------------------")
+    print()
 
     for x in discovers:
-        print x.name + "    \t\t" + x.brief_description
-    print
+        print(x.name + "    \t\t" + x.brief_description)
+    print()
 
 def showGather():
-    print
-    print "List of gather modules"
-    print "----------------------"
-    print
+    print()
+    print("List of gather modules")
+    print("----------------------")
+    print()
     for x in gathers:
         cmd = x.name
 
         if len(cmd) < 4:
             cmd += "  "
 
-        print cmd + "    \t\t" + x.brief_description
-    print
+        print(cmd + "    \t\t" + x.brief_description)
+    print()
 
 def showRce():
-    print
-    print "List of rce modules"
-    print "-------------------"
-    print
+    print()
+    print("List of rce modules")
+    print("-------------------")
+    print()
 
     for x in rces:
-        print x.name + "    \t\t" + x.brief_description
-    print
+        print(x.name + "    \t\t" + x.brief_description)
+    print()
 
 def showBrutes():
-    print
-    print "List of brute force modules"
-    print "---------------------------"
-    print
+    print()
+    print("List of brute force modules")
+    print("---------------------------")
+    print()
     for x in brutes:
         cmd = x.name
 
         if len(cmd) < 4:
             cmd += "  "
 
-        print cmd + "    \t\t" + x.brief_description
-    print
+        print(cmd + "    \t\t" + x.brief_description)
+    print()
 
 def showExploits():
-    print
-    print "List of exploit modules"
-    print "-----------------------"
-    print
+    print()
+    print("List of exploit modules")
+    print("-----------------------")
+    print()
 
     mList = []
     zerodays = []
@@ -493,39 +493,39 @@ def showExploits():
 
     zerodays.sort()
     for x in zerodays:
-        print x
-    print
+        print(x)
+    print()
 
     mList.sort()
     for x in mList:
-        print x
-    print
+        print(x)
+    print()
 
 def showFuzzers():
-    print
-    print "List of fuzzing modules"
-    print "-----------------------"
-    print
+    print()
+    print("List of fuzzing modules")
+    print("-----------------------")
+    print()
 
     for x in fuzzers:
         if type(x) is str:
-            print " " + x
+            print(" " + x)
         else:
-            print " " + x.name + "    \t\t" + x.brief_description
+            print(" " + x.name + "    \t\t" + x.brief_description)
 
-    print
+    print()
 
 def showLaunch(module, message):
     global target
     global user_data
 
-    print message
+    print(message)
 
     try:
         interactive = False
         runCommand(module, locals())
     except:
-        print module + ":", sys.exc_info()[1]
+        print(module + ":", sys.exc_info()[1])
 
 def doAutoScan(guest = "no", fuzz = "no"):
     global target
@@ -543,13 +543,13 @@ def doAutoScan(guest = "no", fuzz = "no"):
         wizard = False
 
         if target == "" and not glob.isGui:
-            target = raw_input("Target host or network: ")
+            target = input("Target host or network: ")
 
         if not glob.isGui:
-            guestPasswords = raw_input("Brute force username and passwords (y/n)[n]: ")
+            guestPasswords = input("Brute force username and passwords (y/n)[n]: ")
         else:
             guestPasswords = guest
-            print "Guest passwords set to", guest
+            print("Guest passwords set to", guest)
 
         if guestPasswords.lower() == "y" or guestPasswords.lower() == "yes":
             guestPasswords = True
@@ -557,7 +557,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
             guestPasswords = False
 
         if not glob.isGui:
-            autoFuzz = raw_input("Automagically fuzz available targets (y/n)[n]: ")
+            autoFuzz = input("Automagically fuzz available targets (y/n)[n]: ")
         else:
             autoFuzz = fuzz
 
@@ -567,7 +567,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
             autoFuzz = False
 
         if not glob.isGui:
-            printTo = raw_input("Print to filename (enter for stdout): ")
+            printTo = input("Print to filename (enter for stdout): ")
 
             if printTo != "":
                 f = file(printTo, "w")
@@ -577,15 +577,15 @@ def doAutoScan(guest = "no", fuzz = "no"):
                 sys.stdout = objPrintWrapper
 
         x = "Inguma 'autoscan' report started at " + time.ctime()
-        print x
-        print "-"*len(x)
-        print
+        print(x)
+        print("-"*len(x))
+        print()
 
         try:
             if target.find("/") > -1:
                 showLaunch("arping", "Detecting hosts in network %s\n" % target)
             else:
-                if user_data.has_key("hosts"):
+                if "hosts" in user_data:
                     user_data["hosts"].append(target)
                 else:
                     user_data["hosts"] = [target]
@@ -601,7 +601,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
             for host in mHosts:
                 target = host
 
-                if user_data.has_key("ignore_host"):
+                if "ignore_host" in user_data:
                     if host in user_data["ignore_host"]:
                         continue
 
@@ -615,7 +615,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
                 showLaunch("ispromisc", "Checking if is in promiscuous state target %s\n" % target)
                 showLaunch("identify", "Identifying services target %s\n" % target)
-                if user_data.has_key(target + "_tcp_ports"):
+                if target + "_tcp_ports" in user_data:
                     ports = user_data[target + "_tcp_ports"]
 
                     showLaunch("isnated",  "Checking what ports are nated target %s\n" % target)
@@ -638,7 +638,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                     showLaunch("rpcdump", "Dumping RPC endpoints target %s\n" % target)
                     showLaunch("samrdump", "Dumping SAM database target %s\n" % target)
 
-                    if user_data.has_key(target + "_users") and guestPasswords:
+                    if target + "_users" in user_data and guestPasswords:
                         userList = user_data[target + "_users"]
                         for mUser in userList:
                             user = mUser
@@ -646,12 +646,12 @@ def doAutoScan(guest = "no", fuzz = "no"):
 
                     showLaunch("smbgold", "Finding 'gold' anonymously in the CIFS shares target %s" % target)
 
-                    if user_data.has_key(target + "_passwords"):
+                    if target + "_passwords" in user_data:
                         for userPass in user_data[target + "_passwords"]:
                             user, password = userPass.split("/")
                             showLaunch("smbgold", "Finding 'gold' as %s/%s in the CIFS shares target %s" % (user, password, target))
 
-                if user_data.has_key(target + "_services"):
+                if target + "_services" in user_data:
                     for service in user_data[target + "_services"]:
                         if service.find("/tns") > -1:
                             port = int(service.split("/")[0])
@@ -661,7 +661,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                             if guestPasswords:
                                 showLaunch("sidguess", "Getting the Oracle TNS Listener's sid target %s\n" % target)
 
-                                if user_data.has_key(target + "_sid"):
+                                if target + "_sid" in user_data:
                                     sid = user_data[target + "_sid"]
                                     user = ""
                                     showLaunch("bruteora", "Brute forcing Oracle's username/passwords target %s\n" % target)
@@ -670,7 +670,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                             port = int(service.split("/")[0])
 
                             if guestPasswords:
-                                if user_data.has_key(target + "_users"):
+                                if target + "_users" in user_data:
                                     for luser in user_data[target + "_users"]:
                                         user = luser
                                         # FTP Server
@@ -682,7 +682,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                             port = int(service.split("/")[0])
 
                             if guestPasswords:
-                                if user_data.has_key(target + "_users"):
+                                if target + "_users" in user_data:
                                     for luser in user_data[target + "_users"]:
                                         user = luser
                                         # SSH Server
@@ -691,7 +691,7 @@ def doAutoScan(guest = "no", fuzz = "no"):
                     for service in user_data[target + "_services"]:
                         if service.find("/http") > -1:
                             port = int(service.split("/")[0])
-                            print "will use port %d" % port
+                            print("will use port %d" % port)
 
                             # Oracle E-Business Suite 11i
                             showLaunch("apps11i", "Getting information from the Oracle E-Business Suite 11i target %s\n" % target)
@@ -701,22 +701,22 @@ def doAutoScan(guest = "no", fuzz = "no"):
                             showLaunch("nikto", "Using nikto to gather known vulnerable urls target %s\n" % target)
 
                 if 143 in ports and guestPasswords: # IMAP Server
-                    if user_data.has_key(target + "_users"):
+                    if target + "_users" in user_data:
                         for luser in user_data[target + "_users"]:
                             user = luser
                             showLaunch("bruteimap", "Brute forcing IMAP server target %s" % target)
 
                 if 21 in ports and guestPasswords: # POP Server
-                    if user_data.has_key(target + "_users"):
+                    if target + "_users" in user_data:
                         for luser in user_data[target + "_users"]:
                             user = luser
                             showLaunch("brutepop", "Brute forcing POP server target %s" % target)
 
         except:
-            print "AUTOSCAN ERROR:", sys.exc_info()[1]
+            print("AUTOSCAN ERROR:", sys.exc_info()[1])
 
     except:
-        print "Error.", sys.exc_info()[1]
+        print("Error.", sys.exc_info()[1])
 
     if f:
         f.close()
@@ -752,7 +752,7 @@ def main_loop():
             # we have to assign the 'target' global variable to a glob attribute
             # prior to calling the class method.
             glob.target = target
-            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+            res = input('Filename [%s]: ' % glob.kb.default_filename)
             if res:
                 glob.kb.save(res)
             else:
@@ -770,7 +770,7 @@ def main_loop():
             glob.target = target
             glob.gom.echo('* Warning! Warning! Warning! Warning! Warning! Warning! *')
             glob.gom.echo('*** Never load KB files received from untrusted sources ***')
-            res = raw_input('Filename [%s]: ' % glob.kb.default_filename)
+            res = input('Filename [%s]: ' % glob.kb.default_filename)
 
             if res:
                 glob.kb.load(res)
@@ -809,7 +809,7 @@ def main_loop():
                 exec(glob.GLOBAL_VARIABLES + res)
 
             except:
-                print "Exec error:",sys.exc_info()[1]
+                print("Exec error:",sys.exc_info()[1])
 
             prevRes = ""
             if oldPrompt != "":
@@ -824,7 +824,7 @@ def main_loop():
                 if not runCommand(res, locals()):
                     exec(glob.GLOBAL_VARIABLES + res)
             except:
-                print "Internal error.",sys.exc_info()[1]
+                print("Internal error.",sys.exc_info()[1])
 
                 if glob.debug:
                     raise
@@ -885,7 +885,7 @@ def loadHistory():
         try:
             open(historyFile, 'w').close()
         except:
-            print "Cannot create " + historyFile
+            print("Cannot create " + historyFile)
 
 def set_om(debug=glob.debug):
     """ Decides which version of OM should be loaded. """
@@ -916,7 +916,7 @@ def setup_auto_completion():
         loadHistory()
         atexit.register(saveHistory)
     except:
-        print sys.exc_info()[1]
+        print(sys.exc_info()[1])
 
 def inguma_init():
     """Initializes very basic Inguma data structures."""
@@ -965,14 +965,14 @@ def inguma_init():
 
     try:
         # FIXME: This should have look up into the binary directory and not the actual one.
-        f = file("data/ports", "r")
+        f = open("data/ports", "r")
 
         for line in f:
             ports.append(int(line))
 
     except:
         # FIXME: Ugly, only for console version!
-        print sys.exc_info()[1]
+        print(sys.exc_info()[1])
         pass
 
 def main():

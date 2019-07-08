@@ -48,7 +48,7 @@ class Listener:
 
         try:
             self.sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        except socket.error, e:
+        except socket.error as e:
             glob.gom.echo('Error in creating socket for %s:%s (%s).' % (host, port, e), False)
             return False
 
@@ -56,7 +56,7 @@ class Listener:
 
         try:
             self.sockfd.bind((host, port))
-        except socket.error, e:
+        except socket.error as e:
             glob.gom.echo('Error in binding to %s:%s (%s).' % (host, port, e), False)
             return False
 
@@ -74,7 +74,7 @@ class Listener:
             try:
                 self.clientsock, self.clientaddr = self.sockfd.accept()
                 self.connected = True
-            except socket.error, e:
+            except socket.error as e:
                 # Just catch the [Errno 22] Invalid argument.
                 if not e.errno == errno.EINVAL:
                     raise
@@ -113,7 +113,7 @@ class Listener:
 
         try:
             self.sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        except socket.error, e:
+        except socket.error as e:
             glob.gom.echo("Error in creating socket: ", e)
             return False
 
@@ -123,9 +123,9 @@ class Listener:
             #sockfd.bind((host, port))
             # To be used for remote listener
             self.sockfd.connect((host,port))
-        except socket.gaierror, e:
+        except socket.gaierror as e:
             glob.gom.echo("Error (address-related) while connecting to server: ",e)
-        except socket.error, e:
+        except socket.error as e:
             glob.gom.echo("Error while connecting to server: ",e)
             return False
 #        except socket.error, e:
@@ -140,7 +140,7 @@ class Listener:
             self.connected = True
             while 1:
                 try:
-                    cmd = raw_input('--> ')
+                    cmd = input('--> ')
                 except:
                     break
 

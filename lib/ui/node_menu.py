@@ -108,7 +108,7 @@ class NodeMenu(Gtk.UIManager):
 
             #print category
             subcategories = getattr(config, 'sub' + category)
-            for subcat in subcategories.keys():
+            for subcat in list(subcategories.keys()):
                 self.menu_base += '<menu action="' + subcat + '">'
                 self.actiongroup.add_actions( [(subcat, 'my-' + category, '  ' + subcat.capitalize() + '  ')] )
                 #print '\t' + subcat
@@ -349,8 +349,8 @@ self.showBrute )], user_data=[ip, port] )
         inputs = getattr(config, module)
 
         if type(inputs) == dict:
-            exec 'import ' + inputs.keys()[0]
-            dialog = eval(inputs.keys()[0] + '.' + inputs.values()[0] + '(ip=\'' + str(self.ip) + '\')')
+            exec('import ' + list(inputs.keys())[0])
+            dialog = eval(list(inputs.keys())[0] + '.' + list(inputs.values())[0] + '(ip=\'' + str(self.ip) + '\')')
             setattr(dialog, 'uicore', self.uicore)
             setattr(dialog, 'gom', self.gom)
             setattr(dialog, 'module', module)

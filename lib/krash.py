@@ -21,10 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import socket
-import thread
-import StringIO
+import _thread
+import io
 
 class KrashLib:
 
@@ -103,7 +103,7 @@ class KrashLib:
                             self.om.echo("***Interesting response")
                             self.om.echo(repr(res))
             else:
-                for line in StringIO.StringIO(packet):
+                for line in io.StringIO(packet):
                     ssl_sock.send(line)
                     res = ssl_sock.recv(128)
 
@@ -165,7 +165,7 @@ class KrashLib:
                     self.om.echo("Response:")
                     self.om.echo(repr(res))
             else:
-                for line in StringIO.StringIO(packet):
+                for line in io.StringIO(packet):
                     if self.verbose:
                         self.om.echo("Request (size %d):" % (len(line)))
                         self.om.echo(repr(line[0:4096]))
@@ -219,12 +219,12 @@ class KrashLib:
 
                 self.om.echo("HEALTH CHECK: Could not connect to host %s at %d" % (host, int(port)))
                 self.om.echo("Host may be dead (Yippie!)")
-                print
+                print()
                 self.om.echo("The last packet sent was the following (truncated at byte 2048):")
                 self.om.echo("~"*80)
                 self.om.echo(repr(self.last_packet)[0:2048])
                 self.om.echo("~"*80)
-                print
+                print()
                 self.om.echo("-"*80)
                 #raise Exception("*** Found a bug?\r\n" + "-"*80)
 
@@ -269,9 +269,9 @@ class KrashLib:
                 time.sleep(0.5)
 
             if not self.ssl_mode:
-                thread.start_new_thread(self.send, (packet, host, port))
+                _thread.start_new_thread(self.send, (packet, host, port))
             else:
-                thread.start_new_thread(self.sendssl, (packet, host, port))
+                _thread.start_new_thread(self.sendssl, (packet, host, port))
 
     def tokenize_packet(self, packet):
 
@@ -364,7 +364,7 @@ class KrashLib:
                                 if not is_var:
                                     self.send_wrapper(self.token2str(buffer), host, port)
                                 else:
-                                    self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
+                                    self.send_wrapper(urllib.parse.quote(self.token2str(buffer)), host, port)
 
                                 global_counter += 1
                             else:
@@ -388,7 +388,7 @@ class KrashLib:
                                 if not is_var:
                                     self.send_wrapper(self.token2str(buffer), host, port)
                                 else:
-                                    self.send_wrapper(urllib.quote(self.token2str(buffer)), host, port)
+                                    self.send_wrapper(urllib.parse.quote(self.token2str(buffer)), host, port)
                                 global_counter += 1
                             else:
                                 break
