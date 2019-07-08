@@ -147,6 +147,7 @@ class MainApp(Gtk.Window):
         #################################################################
         # Initialize KB
         splash.push(("Loading KB..."))
+        self.kb = glob.kb
         self.uicore = uicore.UIcore(self.gom)
         self.uicore.add_local_asn()
         self.gom.set_core(self.uicore)

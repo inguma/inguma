@@ -3,10 +3,6 @@
 Inguma Penetration Testing Toolkit
 Copyright (c) 2012 David Martínez Moreno <ender@debian.org>
 
-I am providing code in this repository to you under an open source license.
-Because this is a personal repository, the license you receive to my code
-is from me and not my employer (Facebook).
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +21,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 """ This library has functions for accessing the KB. """
 
+import json
+
 import lib.globals as glob
+
+class KBLoadError(Exception):
+    pass
+
+
+class KBSyntaxError(Exception):
+    pass
+
+
+class KBSaveError(Exception):
+    pass
+
 
 class KnowledgeBase:
     """Main class for a generic Knowledge Base."""
@@ -38,17 +48,18 @@ class KnowledgeBase:
 
         self.default_filename = 'data.kb'
 
+
     def reset(self):
         """Clears the KB and resets it with a fresh set of default values."""
         self._kb.clear()
         self.set_defaults()
 
+
     def format_json(self):
         """Returns the KB in JSON format."""
 
-        import json
-
         return json.dumps(self._kb)
+
 
     def format_text(self):
         """Returns the KB in a suitable plain text format."""
@@ -67,9 +78,11 @@ class KnowledgeBase:
 
         return output
 
+
     def get(self):
         """Generic getter.  Right now it just gives you a dictionary."""
         return self._kb
+
 
     def load(self, filename=''):
         """Loads a new KB into the global space"""
@@ -84,21 +97,22 @@ class KnowledgeBase:
             filename = self.default_filename
 
         try:
-            input = open(filename, 'r')
-            # Update has to be careful, as we have references to this object
-            # in the globals module.
-            self._kb.clear()
-            self._kb.update(pickle.load(input))
+            with open(filename, 'r') as f:
+                # Update has to be careful, as we have references to this object
+                # in the globals module.
+                self._kb.clear()
+                self._kb.update(pickle.load(f))
 
-            if not glob.target:
-                if self._kb.has_key('target'):
-                    glob.gom.echo('Setting target (%s)' % self._kb['target'])
-                    glob.target = self._kb['target']
+                if not glob.target:
+                    if self._kb.has_key('target'):
+                        glob.gom.echo('Setting target (%s)' % self._kb['target'])
+                        glob.target = self._kb['target']
 
-            input.close()
-        except:
-            # FIXME: Only for console!!
-            print 'Error loading knowledge base:', sys.exc_info()[1]
+        except (IOError, OSError):
+            raise KBLoadError
+        except pickle.UnpicklingError:
+            raise KBSyntaxError
+
 
     def save(self, filename=''):
         """Saves a KB to disk"""
@@ -119,6 +133,7 @@ class KnowledgeBase:
         except:
             # FIXME: Only for console!!
             print "Error saving knowledge base:", sys.exc_info()[1]
+
 
     def set_defaults(self):
         """Sets a list of default values in the KB."""

@@ -72,7 +72,7 @@ def generate_dot(kb, localip, gw, direction='TD'):
 
     #######################################
     #
-    # Asign URLs
+    # Assign URLs
     #
     #######################################
 
@@ -86,7 +86,7 @@ def generate_dot(kb, localip, gw, direction='TD'):
 
     #######################################
     #
-    # Targets with diferent color
+    # Targets with different color
     #
     #######################################
     if len(targets) != 0:

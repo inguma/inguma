@@ -34,42 +34,26 @@ import lib.globals as glob
 
 class UIcore():
 
-    def __init__(self, om):
+    def __init__(self, main):
 
-        # FIXME: OMG.  Stop this use of user_data as soon as possible.  In the
-        # meantime, attach the glob object to inguma as it was before.
-        inguma.user_data = glob.kb._kb
+        # FIXME: Lots of general-use functions for ginguma are here, ranging from
+        # the KB to finding ASNs, running commands and other.  The KB now belongs
+        # to the main object passed to __init__ and I want to slowly move
+        # functionality out of this module.
+        self.main = main
+        self.main.kb = glob.kb.get()
 
-        #inguma.debug = True
-        inguma.user_data["isGui"] = True
-        inguma.user_data["interactive"] = False
+        #main.kb.debug = True
         glob.isGui = True
 
         # Fix for bug 1807529 (andresriancho)
-        inguma.user_data["base_path"] = '.'
+        self.main.kb["base_path"] = '.'
 
         inguma.readCommands()
         inguma.interactive = False
 
         self.gom = glob.gom
 
-        self.user_data = inguma.user_data
-
-    def loadKB(self, res):
-        """
-        #########################################################
-        # TO BE REMOVED ONCE lib.kb works for ginguma
-        #########################################################
-        """
-
-        input = open(res, 'r')
-        inguma.user_data = pickle.load(input)
-        self.user_data = inguma.user_data
-        if inguma.target == "":
-            if inguma.user_data.has_key("target"):
-                #print "Setting target (%s)" % inguma.user_data["target"]
-                inguma.target = inguma.user_data["target"]
-        input.close()
 
     def saveKB(self, res):
         """

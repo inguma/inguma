@@ -17,6 +17,8 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import os
+
 from gi.repository import Gdk, Gtk
 
 class PopupDialog(Gtk.Window):
@@ -46,10 +48,12 @@ class PopupDialog(Gtk.Window):
         self.move(x, y)
 
         # Change window look
+        self.set_icon_from_file(os.path.join('logo', 'inguma_16.png'))
         self.set_resizable(False)
         self.set_decorated(False)
         self.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
         self.set_keep_above(True)
+        self.props.modal = True
         self.set_transient_for(self.main)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)

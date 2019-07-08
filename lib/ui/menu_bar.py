@@ -206,10 +206,9 @@ class MenuBar(Gtk.Menu):
             res = file
 
         self.gom.echo('Loading KB...', False)
-        self.gom.echo( res + ' selected' , False)
+        self.gom.echo(res + ' selected' , False)
         self.manager.add_item('file://' + res)
-        #glob.kb.load(res)
-        self.uicore.loadKB(res)
+        self.main.kb.load(res)
 
         # Update Map
         self.uicore.getDot(doASN=False)
